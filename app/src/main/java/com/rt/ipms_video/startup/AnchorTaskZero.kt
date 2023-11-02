@@ -1,0 +1,17 @@
+package com.rt.ipms_video.startup
+
+import com.rt.base.start.BaseStartUpManager
+import com.rt.base.start.StartUpKey
+import com.rt.ipms_video.AppApplication
+import com.xj.anchortask.library.AnchorTask
+
+class AnchorTaskZero : AnchorTask(StartUpKey.MUST_BE_INITIALIZED) {
+    override fun isRunOnMainThread(): Boolean {
+        return false
+    }
+
+    override fun run() {
+        BaseStartUpManager.instance().applicationInit(AppApplication.instance())
+        AppStartUpManager.instance().applicationInit(AppApplication.instance())
+    }
+}
