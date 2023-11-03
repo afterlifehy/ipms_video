@@ -7,8 +7,6 @@ object ARouterMap {
 
     const val MAIN = "/ipms_app/main"
 
-    const val LOGIN = "/ipms_app/login"
-
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

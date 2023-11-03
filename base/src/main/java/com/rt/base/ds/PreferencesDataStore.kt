@@ -101,11 +101,29 @@ object PreferencesKeys {
     //    val WALLET_SIGN = booleanPreferencesKey("wallet_sign")
     val wallet_address by stringPreferencesKey()
 
+    val securedCode by stringPreferencesKey()
+
     val ticketCode by stringPreferencesKey()
 
     val userId by stringPreferencesKey()
 
+    val email by stringPreferencesKey()
+
+    val soundClosed by booleanPreferencesKey()
+
+    val headUrl by stringPreferencesKey()
+
+    val nickName by stringPreferencesKey()
+
+    val googleAuthOpen by booleanPreferencesKey()
+
     val isSimulator by intPreferencesKey()
+
+    val calenderNoticeEnable by booleanPreferencesKey()
+
+    val calenderNoticeTime by stringPreferencesKey()
+
+    val appLaunched by booleanPreferencesKey()
 
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }

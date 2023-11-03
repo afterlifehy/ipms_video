@@ -82,18 +82,18 @@
             android:value="${CHANNEL}" />
         <meta-data
             android:name="design_width"
-            android:value="360" />
+            android:value="375" />
 
         <meta-data
             android:name="design_height"
-            android:value="640" />
+            android:value="812" />
 
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.SplashActivity"
+            android:name="com.rt.ipms_video.ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/startTheme"
             android:windowSoftInputMode="adjustResize"
@@ -105,16 +105,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.activity.MainActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
-
-        <activity
-            android:name=".ui.activity.login.LoginActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+<!--        <activity-->
+<!--            android:name=".ui.activity.MainActivity"-->
+<!--            android:exported="false"-->
+<!--            android:launchMode="singleTask"-->
+<!--            android:theme="@style/startTheme" />-->
     </application>
 </manifest>
