@@ -1,7 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffe8eef6">
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_verify_phone_top_bg" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_13"
+        android:src="@mipmap/ic_back" />
+
+    <TextView
+        android:id="@+id/tv_verifyPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_back"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_63"
+        android:text="@string/验证手机号"
+        android:textColor="@color/color_ff1a1a1a"
+        android:textSize="@dimen/sp_24"
+        android:textStyle="bold" />
+
+    <com.aries.ui.view.radius.RadiusLinearLayout
+        android:id="@+id/rll_phone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@+id/tv_verifyPhone"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:padding="@dimen/dp_17"
+        app:rv_radius="@dimen/dp_7"
+        app:rv_strokeColor="@color/color_ff0371f4"
+        app:rv_strokeWidth="@dimen/dp_1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_phone_logo" />
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_14"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/请输入手机号"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_ff6c737b"
+            android:textSize="@dimen/sp_19" />
+    </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    <com.aries.ui.view.radius.RadiusRelativeLayout
+        android:id="@+id/rrl_verificationCode"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@+id/rll_phone"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:padding="@dimen/dp_17"
+        app:rv_radius="@dimen/dp_7"
+        app:rv_strokeColor="@color/color_ff0371f4"
+        app:rv_strokeWidth="@dimen/dp_1">
+
+        <ImageView
+            android:id="@+id/iv_verificationCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_verification_code_logo" />
+
+        <TextView
+            android:id="@+id/tv_getVerificationCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/获取验证码" />
+
+        <EditText
+            android:id="@+id/et_verificationCode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_14"
+            android:layout_toStartOf="@+id/tv_getVerificationCode"
+            android:layout_toEndOf="@+id/iv_verificationCode"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/请输入验证码"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_ff6c737b"
+            android:textSize="@dimen/sp_19" />
+
+    </com.aries.ui.view.radius.RadiusRelativeLayout>
+</RelativeLayout>

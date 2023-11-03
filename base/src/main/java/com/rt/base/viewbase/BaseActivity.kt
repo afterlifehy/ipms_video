@@ -52,7 +52,6 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
             }
         }
         super.onCreate(savedInstanceState)
-        setStatusBarColor()
 
         val loadBuilder = IOSLoadingDialog.Builder(this)
             .setMessage("Loading")
@@ -103,13 +102,13 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     fun setStatusBarColor() {
-        setStatusBarColor(R.color.white)
+        setStatusBarColor(R.color.black, false)
     }
 
-    fun setStatusBarColor(color: Int) {
+    fun setStatusBarColor(color: Int, isLightMode: Boolean) {
         //设置状态栏为白底黑字
         BarUtils.setStatusBarColor(this, ContextCompat.getColor(this, color))
-        BarUtils.setStatusBarLightMode(this, true)
+        BarUtils.setStatusBarLightMode(this, isLightMode)
     }
 
     /**

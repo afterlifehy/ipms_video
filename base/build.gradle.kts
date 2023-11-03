@@ -186,4 +186,6 @@ dependencies {
     api(ThirdPart.lottie)
     //流式布局
 //    api(ThirdPart.flowlayout)
+
+    api(ThirdPart.constraintlayout)
 }

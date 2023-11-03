@@ -1,7 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffe8eef6">
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_login_top_bg" />
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_67"
+        android:src="@mipmap/ic_xun_logo" />
+
+    <com.aries.ui.view.radius.RadiusLinearLayout
+        android:id="@+id/rll_account"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@+id/iv_logo"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_43"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:padding="@dimen/dp_17"
+        app:rv_radius="@dimen/dp_7"
+        app:rv_strokeColor="@color/color_ff0371f4"
+        app:rv_strokeWidth="@dimen/dp_1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_login_account_logo" />
+
+        <EditText
+            android:id="@+id/et_account"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_14"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/请输入账号"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_ff6c737b"
+            android:textCursorDrawable="@drawable/shape_cursor"
+            android:textSize="@dimen/sp_19" />
+    </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    <com.aries.ui.view.radius.RadiusLinearLayout
+        android:id="@+id/rll_pw"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:layout_below="@+id/rll_account"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:padding="@dimen/dp_17"
+        app:rv_radius="@dimen/dp_7"
+        app:rv_strokeColor="@color/color_ff0371f4"
+        app:rv_strokeWidth="@dimen/dp_1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_login_pw_logo" />
+
+        <EditText
+            android:id="@+id/et_pw"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_14"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/请输入密码"
+            android:textColor="@color/black"
+            android:textColorHint="@color/color_ff6c737b"
+            android:textCursorDrawable="@drawable/shape_cursor"
+            android:textSize="@dimen/sp_19" />
+    </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    <TextView
+        android:id="@+id/tv_forgetPw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rll_pw"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_26"
+        android:text="@string/忘记密码"
+        android:textColor="@color/color_ff0371f4"
+        android:textSize="@dimen/sp_19" />
+
+    <com.aries.ui.view.radius.RadiusTextView
+        android:id="@+id/rtv_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_forgetPw"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20"
+        android:text="@string/签到"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="bold"
+        app:rv_backgroundColor="@color/color_990371f4"
+        app:rv_radius="@dimen/dp_7" />
+</RelativeLayout>
