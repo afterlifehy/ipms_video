@@ -10,15 +10,18 @@ object ThirdPart {
     const val UIWidget_tab_layout = "com.github.AriesHoo.UIWidget:tab-layout:3.2.25"
 
     //basequickadapter
-    const val BaseRecyclerViewAdapterHelper = "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
+    const val BaseRecyclerViewAdapterHelper =
+        "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7"
 
     //原角图
     const val roundedimageview = "com.makeramen:roundedimageview:2.3.0"
 
     //下拉刷新
     const val refresh_layout_kernel = "io.github.scwang90:refresh-layout-kernel:2.0.5"      //core
-    const val refresh_header_classics = "io.github.scwang90:refresh-header-classics:2.0.5"    //ClassicsHeader
-    const val refresh_footer_classics = "io.github.scwang90:refresh-footer-classics:2.0.5"    //ClassicsFooter
+    const val refresh_header_classics =
+        "io.github.scwang90:refresh-header-classics:2.0.5"    //ClassicsHeader
+    const val refresh_footer_classics =
+        "io.github.scwang90:refresh-footer-classics:2.0.5"    //ClassicsFooter
 
     //工具库
     const val utilcodex = "com.blankj:utilcodex:1.31.0"
@@ -42,7 +45,8 @@ object ThirdPart {
     const val retrofit_converter_scalars = "com.squareup.retrofit2:converter-scalars:2.4.0"
     const val retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:2.9.0"
     const val okhttp3_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:4.9.0"
-    const val retrofit_kotlin_coroutines_adapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    const val retrofit_kotlin_coroutines_adapter =
+        "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
     const val retrofit_rxjava2_adapter = "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0"
 
     //okhttp3
@@ -113,8 +117,10 @@ object ThirdPart {
     //skin
     const val skin = "skin.support:skin-support:4.0.5"// skin-support 基础控件支持
     const val skin_appcompat = "skin.support:skin-support-appcompat:4.0.5"
-    const val skin_design = "skin.support:skin-support-design:4.0.5"// skin-support-design material design 控件支持[可选]
-    const val skin_cardView = "skin.support:skin-support-cardview:4.0.5"// skin-support-cardview CardView 控件支持[可选]
+    const val skin_design =
+        "skin.support:skin-support-design:4.0.5"// skin-support-design material design 控件支持[可选]
+    const val skin_cardView =
+        "skin.support:skin-support-cardview:4.0.5"// skin-support-cardview CardView 控件支持[可选]
     const val skin_constraint =
         "skin.support:skin-support-constraint-layout:4.0.5" // skin-support-constraint-layout ConstraintLayout 控件支持[可选]
 
@@ -129,4 +135,5 @@ object ThirdPart {
     //流式布局
     const val flowlayout = "com.hyman:flowlayout-lib:1.1.2"
 
+    const val constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.0-alpha07"
 }

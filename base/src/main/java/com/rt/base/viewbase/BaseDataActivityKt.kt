@@ -34,6 +34,8 @@ abstract class BaseDataActivityKt<VM : BaseViewModel> : BaseActivity<VM>(), View
         }
         mViewAddManager?.setIsShowTitle(isShowTitle())
         mViewAddManager?.setIsLoadNotData(isLoadNotData())
+
+        setStatusBarColor(com.rt.base.R.color.black, false)
         if (isFullScreen) {
             BarUtils.transparentStatusBar(this)
             if (marginStatusBarView() != null) {
@@ -52,7 +54,6 @@ abstract class BaseDataActivityKt<VM : BaseViewModel> : BaseActivity<VM>(), View
         setIsLoadContentView(false)
         setContentView(mRoot)
         super.onCreate(savedInstanceState)
-        BarUtils.setStatusBarLightMode(this, true)
     }
 
     open fun getBindingView(): View? {

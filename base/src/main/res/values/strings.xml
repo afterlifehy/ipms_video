@@ -3,4 +3,14 @@
     <string name="tokenExpired">Token invalid</string>
     <string name="Cancel">Cancel</string>
     <string name="Ok">Ok</string>
+    <string name="签退">签退</string>
+    <string name="再按一次退出程序">再按一次退出程序</string>
+    <string name="请输入账号">请输入账号</string>
+    <string name="请输入密码">请输入密码</string>
+    <string name="忘记密码">忘记密码？</string>
+    <string name="签到">签到</string>
+    <string name="验证手机号">验证手机号</string>
+    <string name="请输入手机号">请输入手机号</string>
+    <string name="请输入验证码">请输入验证码</string>
+    <string name="获取验证码">获取验证码</string>
 </resources>

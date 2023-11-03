@@ -203,6 +203,7 @@
     <dimen name="dp_240">240dp</dimen>
     <dimen name="dp_250">250dp</dimen>
     <dimen name="dp_251">251dp</dimen>
+    <dimen name="dp_254">254dp</dimen>
     <dimen name="dp_260">260dp</dimen>
     <dimen name="dp_264">264dp</dimen>
     <dimen name="dp_270">270dp</dimen>
