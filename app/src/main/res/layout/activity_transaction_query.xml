@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffe8eef6">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_deep_top_bg" />
+
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_comment_toolbar" />
+
+    <com.aries.ui.view.radius.RadiusRelativeLayout
+        android:id="@+id/rrl_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_47"
+        android:layout_below="@+id/layout_toolbar"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:paddingStart="@dimen/dp_13"
+        android:paddingEnd="@dimen/dp_13"
+        app:rv_radius="@dimen/dp_7">
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/search" />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_toStartOf="@+id/tv_search"
+            android:layout_toEndOf="@+id/iv_search"
+            android:background="@null"
+            android:hint="@string/请输入车牌号"
+            android:textColorHint="@color/color_ff999999"
+            android:textCursorDrawable="@drawable/shape_cursor"
+            android:textSize="@dimen/sp_19" />
+
+        <TextView
+            android:id="@+id/tv_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/搜索" />
+    </com.aries.ui.view.radius.RadiusRelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rrl_search"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_13" />
+
+    <com.rt.common.view.keyboard.MyKeyboardView
+        android:id="@+id/view_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_keyboard_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/selector_key_bg"
+        android:keyTextColor="@color/black"
+        android:keyTextSize="@dimen/sp_21"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:shadowColor="@color/white"
+        android:shadowRadius="0" />
+</RelativeLayout>

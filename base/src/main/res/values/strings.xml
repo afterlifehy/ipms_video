@@ -13,4 +13,16 @@
     <string name="请输入手机号">请输入手机号</string>
     <string name="请输入验证码">请输入验证码</string>
     <string name="获取验证码">获取验证码</string>
+    <string name="请选择工作路段">请选择工作路段</string>
+    <string name="添加工作路段">添加工作路段</string>
+    <string name="进入工作台">进入工作台</string>
+    <string name="确定">确定</string>
+    <string name="路段选择">路段选择</string>
+    <string name="交易查询">交易查询</string>
+    <string name="欠费追缴">欠费追缴</string>
+    <string name="订单">订单</string>
+    <string name="请输入车牌号">请输入车牌号</string>
+    <string name="搜索">搜索</string>
+    <string name="返回">返回</string>
+    <string name="其他">其他</string>
 </resources>

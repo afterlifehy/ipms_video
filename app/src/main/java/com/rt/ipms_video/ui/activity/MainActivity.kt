@@ -1,11 +1,13 @@
 package com.rt.ipms_video.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.BarUtils
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.i18N
@@ -55,7 +57,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_order -> {
-
+                ARouter.getInstance().build(ARouterMap.ORDER_MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.fl_parkingAbnormal -> {

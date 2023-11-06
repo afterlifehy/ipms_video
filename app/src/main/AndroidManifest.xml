@@ -116,5 +116,23 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/startTheme" />
+
+        <activity
+            android:name=".ui.activity.login.StreetChooseActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/startTheme" />
+
+        <activity
+            android:name=".ui.activity.order.OrderMainActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/startTheme" />
+
+        <activity
+            android:name=".ui.activity.order.TransactionQueryActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/startTheme" />
     </application>
 </manifest>

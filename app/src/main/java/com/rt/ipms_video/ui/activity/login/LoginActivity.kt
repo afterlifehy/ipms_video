@@ -34,7 +34,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
-                ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }

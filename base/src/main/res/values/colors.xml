@@ -49,6 +49,9 @@
     <color name="color_ff0371f4">#ff0371f4</color>
     <color name="color_990371f4">#990371f4</color>
     <color name="color_ff1a1a1a">#ff1a1a1a</color>
+    <color name="color_991a1a1a">#991a1a1a</color>
     <color name="color_ffe8eef6">#ffe8eef6</color>
     <color name="color_ff6c737b">#ff6c737b</color>
+    <color name="color_ffcccccc">#ffcccccc</color>
+    <color name="color_ff999999">#ff999999</color>
 </resources>
