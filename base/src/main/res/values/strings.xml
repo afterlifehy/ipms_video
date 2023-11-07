@@ -25,4 +25,11 @@
     <string name="搜索">搜索</string>
     <string name="返回">返回</string>
     <string name="其他">其他</string>
+    <string name="无内容">无内容</string>
+    <string name="付费时段">付费时段</string>
+    <string name="告知书">告知书</string>
+    <string name="支付查询">支付查询</string>
+    <string name="车牌长度只能是7位或8位">车牌长度只能是7位或8位</string>
+    <string name="请对准车牌">请对准车牌</string>
+    <string name="闪光灯">闪光灯</string>
 </resources>

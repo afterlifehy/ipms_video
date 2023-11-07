@@ -1,10 +1,12 @@
 package com.rt.ipms_video.ui.activity.order
 
+import android.content.Intent
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
@@ -46,7 +48,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_transactionQuery -> {
-
+                ARouter.getInstance().build(ARouterMap.TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rfl_debtCollect -> {

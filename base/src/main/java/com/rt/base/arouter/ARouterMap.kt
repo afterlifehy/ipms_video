@@ -13,6 +13,10 @@ object ARouterMap {
 
     const val ORDER_MAIN = "/ipms_app/orderMain"
 
+    const val TRANSACTION_QUERY = "/ipms_app/transactionQuery"
+
+    const val SCAN_PLATE = "/ipms_app/scanPlate"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

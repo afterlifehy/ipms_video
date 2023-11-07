@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
+        android:scaleType="fitXY"
         android:src="@mipmap/ic_home_top_bg" />
-
 
     <ImageView
         android:layout_width="match_parent"

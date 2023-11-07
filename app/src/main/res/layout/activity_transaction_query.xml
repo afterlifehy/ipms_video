@@ -43,6 +43,7 @@
             android:layout_toEndOf="@+id/iv_search"
             android:background="@null"
             android:hint="@string/请输入车牌号"
+            android:maxLength="8"
             android:textColorHint="@color/color_ff999999"
             android:textCursorDrawable="@drawable/shape_cursor"
             android:textSize="@dimen/sp_19" />
@@ -53,7 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:text="@string/搜索" />
+            android:text="@string/搜索"
+            android:textColor="@color/color_ff0371f4"
+            android:textSize="@dimen/sp_19" />
     </com.aries.ui.view.radius.RadiusRelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -65,8 +68,16 @@
         android:layout_marginTop="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13" />
 
+    <include
+        android:id="@+id/layout_noData"
+        layout="@layout/layout_no_data"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
     <com.rt.common.view.keyboard.MyKeyboardView
-        android:id="@+id/view_keyboard"
+        android:id="@+id/kv_keyBoard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -74,10 +85,12 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:keyBackground="@drawable/selector_key_bg"
-        android:keyTextColor="@color/black"
+        android:keyTextColor="@color/color_ff1a1a1a"
         android:keyTextSize="@dimen/sp_21"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_13"
+        android:paddingBottom="@dimen/dp_10"
         android:shadowColor="@color/white"
-        android:shadowRadius="0" />
+        android:shadowRadius="0.0"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -188,4 +188,13 @@ dependencies {
 //    api(ThirdPart.flowlayout)
 
     api(ThirdPart.constraintlayout)
+
+    //span
+    api(ThirdPart.spanBuilder)
+
+    //车牌识别
+    api(ThirdPart.hyperlpr)
+
+    api(files("libs/zp_cpcl_new.jar"))
+    api(files("libs/zpSDK.jar"))
 }

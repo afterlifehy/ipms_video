@@ -18,26 +18,29 @@ import com.rt.common.R
 
 class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : KeyboardView(context, attrs) {
 
-    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val keyboard = keyboard ?: return
         val keys = keyboard.keys
         if (keys != null && keys.size > 0) {
             val paint = Paint()
-            paint.color = ContextCompat.getColor(BaseApplication.baseApplication, com.rt.base.R.color.color_ff0371f4)
-            paint.textAlign = Paint.Align.CENTER
+            paint.setColor(getContext().getResources().getColor(com.rt.base.R.color.color_ff0371f4));
+            paint.setTextAlign(Paint.Align.CENTER)
             val font: Typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             paint.setTypeface(font)
-            paint.isAntiAlias = true
+            paint.setAntiAlias(true)
 
 
             //此处进行特殊按键的背景色处理
             for (key in keys) {
                 if (key.codes[0] == -2) {
+
                     val rect = RectF(
-                        key.x.toFloat(), key.y.toFloat() + SizeUtils.dp2px(8f), (
-                                key.x + key.width).toFloat(), key.y + key.height + SizeUtils.dp2px(8f).toFloat()
+                        key.x.toFloat(),
+                        key.y.toFloat() + SizeUtils.dp2px(10f),
+                        (
+                                key.x + key.width).toFloat(),
+                        key.y + key.height + SizeUtils.dp2px(10f).toFloat()
                     )
                     canvas.drawRoundRect(
                         rect,
@@ -46,12 +49,12 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                         paint
                     )
 
-                    paint.color = getContext().getResources().getColor(R.color.white);
-                    paint.textSize = SizeUtils.dp2px(15f).toFloat()
+                    paint.setColor(getContext().getResources().getColor(R.color.white));
+                    paint.textSize = SizeUtils.dp2px(21f).toFloat()
                     canvas.drawText(
-                        i18n(com.rt.base.R.string.其他),
+                        "其他",
                         key.x.toFloat() + key.width / 2,
-                        key.y.toFloat() + key.height / 2 + key.height / 4,
+                        key.y.toFloat() + key.height / 2 + key.height / 4 + SizeUtils.dp2px(5f),
                         paint
                     )
 
@@ -59,8 +62,11 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 if (key.codes[0] == -1) {
                     val rect = RectF(
-                        key.x.toFloat(), key.y.toFloat() + SizeUtils.dp2px(8f), (
-                                key.x + key.width).toFloat(), key.y + key.height + SizeUtils.dp2px(8f).toFloat()
+                        key.x.toFloat(),
+                        key.y.toFloat() + SizeUtils.dp2px(10f),
+                        (
+                                key.x + key.width).toFloat(),
+                        key.y + key.height + SizeUtils.dp2px(10f).toFloat()
                     )
                     canvas.drawRoundRect(
                         rect,
@@ -69,12 +75,12 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                         paint
                     )
 
-                    paint.color = ContextCompat.getColor(BaseApplication.baseApplication, com.rt.base.R.color.white)
-                    paint.textSize = SizeUtils.dp2px(15f).toFloat()
+                    paint.setColor(getContext().getResources().getColor(R.color.white));
+                    paint.textSize = SizeUtils.dp2px(21f).toFloat()
                     canvas.drawText(
-                        i18n(com.rt.base.R.string.返回),
+                        "返回",
                         key.x.toFloat() + key.width / 2,
-                        key.y.toFloat() + key.height / 2 + key.height / 4,
+                        key.y.toFloat() + key.height / 2 + key.height / 4+ SizeUtils.dp2px(5f),
                         paint
                     )
                 }
@@ -82,11 +88,14 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
 
                 if (key.codes[0] == -3) {
                     val paint = Paint()
-                    paint.color = ContextCompat.getColor(BaseApplication.baseApplication, com.rt.base.R.color.color_ff0371f4)
+                    paint.setColor(getContext().getResources().getColor(com.rt.base.R.color.color_ff0371f4));
 
                     val rect = RectF(
-                        key.x.toFloat(), key.y.toFloat() + SizeUtils.dp2px(8f), (key.x + key.width).toFloat(),
-                        key.y + key.height + SizeUtils.dp2px(8f).toFloat()
+                        key.x.toFloat(),
+                        key.y.toFloat() + SizeUtils.dp2px(10f),
+                        (
+                                key.x + key.width).toFloat(),
+                        key.y + key.height + SizeUtils.dp2px(10f).toFloat()
                     )
                     canvas.drawRoundRect(
                         rect,
@@ -95,12 +104,12 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                         paint
                     )
 
-                    val dr = ContextCompat.getDrawable(BaseApplication.instance(), com.rt.common.R.mipmap.ic_keyboard_delete) as Drawable
+                    val dr = context.resources.getDrawable(R.mipmap.ic_keyboard_delete) as Drawable
                     dr.setBounds(
                         key.x + key.width / 4,
-                        key.y + key.height / 3 + SizeUtils.dp2px(5f),
+                        key.y + key.height / 3 + SizeUtils.dp2px(9f),
                         key.x + key.width / 4 + key.width / 4 + key.width / 4,
-                        key.y + key.height - SizeUtils.dp2px(8f)
+                        key.y + key.height - SizeUtils.dp2px(6f)
                     )
                     dr.draw(canvas)
                 }

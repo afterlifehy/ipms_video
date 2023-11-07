@@ -8,11 +8,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.CalendarContract
+import android.text.Spannable
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import com.rt.base.BaseApplication
 import com.rt.base.help.ActivityCacheManager
 import com.rt.common.realm.RealmUtil
+import com.zrq.spanbuilder.Spans
+import com.zrq.spanbuilder.TextStyle
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
@@ -189,45 +193,26 @@ object AppUtil {
         }
     }
 
-//    fun insertCalender(year: Int, month: Int, day: Int, hour: Int, minute: Int, contentResolver: ContentResolver) {
-//        // 获取日历实例
-//        val beginTime: Calendar = Calendar.getInstance()
-//        beginTime.set(year, month, day, hour, minute)
-//
-//        val endTime: Calendar = Calendar.getInstance()
-//        endTime.set(year, month, day, hour, minute)
-//
-//        val title = "You have a workout to do,Go to the app and begin your challenge." // 设置事件标题
-//
-//        val cr = contentResolver
-//        val values = ContentValues()
-//        values.put(CalendarContract.Events.DTSTART, beginTime.timeInMillis)
-//        values.put(CalendarContract.Events.DTEND, endTime.timeInMillis)
-//        values.put(CalendarContract.Events.TITLE, title)
-//        values.put(CalendarContract.Events.CALENDAR_ID, 1)
-//        values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
-//        val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
-//
-//        // 获取事件 ID
-//        val eventID: Long = uri?.lastPathSegment!!.toLong()
-//        RealmUtil.instance?.addRealm(CalenderEventIdBean(eventID))
-//
-//        // 添加提醒
-//        val reminderValues = ContentValues()
-//        reminderValues.put(CalendarContract.Reminders.EVENT_ID, eventID)
-//        reminderValues.put(
-//            CalendarContract.Reminders.METHOD,
-//            CalendarContract.Reminders.METHOD_ALERT
-//        )
-//        reminderValues.put(CalendarContract.Reminders.MINUTES, 10)
-//        val reminderUri: Uri? = cr.insert(CalendarContract.Reminders.CONTENT_URI, reminderValues)
-//    }
+    //textview不同字体大小，颜色
+    fun getSpan(strings: Array<String>, sizes: IntArray, colors: IntArray): Spannable? {
+        val builder: Spans.Builder = Spans.builder()
+        for (i in strings.indices) {
+            builder.text(strings[i], sizes[i], BaseApplication.instance().resources.getColor(colors[i]))
+        }
+        return builder.build()
+    }
 
-    fun deleteCalender(eventId:Long,contentResolver: ContentResolver) {
-        // 构建要删除的事件的 URI
-        val deleteUri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
-        // 删除事件
-        val cr = contentResolver
-        val rows = cr.delete(deleteUri, null, null)
+    //textview不同字体大小，颜色
+    fun getSpan(strings: Array<String>, sizes: IntArray, colors: IntArray, textStyles: Array<TextStyle>): Spannable? {
+        val builder: Spans.Builder = Spans.builder()
+        for (i in strings.indices) {
+            if (!TextUtils.isEmpty(strings[i])) {
+                builder.text(strings[i], sizes[i], BaseApplication.instance().resources.getColor(colors[i]))
+                    .style(
+                        textStyles[i]
+                    )
+            }
+        }
+        return builder.build()
     }
 }

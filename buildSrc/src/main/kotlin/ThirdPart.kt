@@ -136,4 +136,10 @@ object ThirdPart {
     const val flowlayout = "com.hyman:flowlayout-lib:1.1.2"
 
     const val constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.0-alpha07"
+
+    //span
+    const val spanBuilder = "com.zrq:spanbuilder:1.0.5"
+
+    //车牌识别
+    const val hyperlpr = "com.github.HyperInspire:hyperlpr3-android-sdk:1.0.3"
 }
