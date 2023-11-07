@@ -26,13 +26,12 @@
 
         <TextView
             android:id="@+id/tv_plate"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_30"
             android:background="@mipmap/ic_plate_bg"
             android:gravity="center"
-            android:padding="@dimen/dp_5"
             android:text="@string/请对准车牌"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_25" />

@@ -3,13 +3,9 @@ package com.rt.ipms_video.ui.activity.order
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -20,37 +16,34 @@ import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
-import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
-import com.rt.common.util.BluePrint
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyOnTouchListener
 import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_video.R
-import com.rt.ipms_video.adapter.TransactionQueryAdapter
-import com.rt.ipms_video.databinding.ActivityTransactionQueryBinding
-import com.rt.ipms_video.mvvm.viewmodel.TransactionQueryViewModel
+import com.rt.ipms_video.adapter.DebtCollectionAdapter
+import com.rt.ipms_video.databinding.ActivityDebtCollectionBinding
+import com.rt.ipms_video.mvvm.viewmodel.DebtCollectionViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 
-@Route(path = ARouterMap.TRANSACTION_QUERY)
-class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, ActivityTransactionQueryBinding>(), OnClickListener {
+@Route(path = ARouterMap.DEBT_COLLECTION)
+class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityDebtCollectionBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
-
-    var transactionQueryAdapter: TransactionQueryAdapter? = null
-    var transactionQueryList: MutableList<Int> = ArrayList()
-    private val print = BluePrint(this)
+    var debtCollectionAdapter: DebtCollectionAdapter? = null
+    var debtCollectionList: MutableList<Int> = ArrayList()
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.交易查询)
+        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.欠费追缴)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
-        initKeyboard()
 
-        binding.rvTransaction.setHasFixedSize(true)
-        binding.rvTransaction.layoutManager = LinearLayoutManager(this)
-        transactionQueryAdapter = TransactionQueryAdapter(transactionQueryList, this)
-        binding.rvTransaction.adapter = transactionQueryAdapter
+        binding.rvDebt.setHasFixedSize(true)
+        binding.rvDebt.layoutManager = LinearLayoutManager(this)
+        debtCollectionAdapter = DebtCollectionAdapter(debtCollectionList, this)
+        binding.rvDebt.adapter = debtCollectionAdapter
+
+        initKeyboard()
     }
 
     private fun initKeyboard() {
@@ -71,7 +64,9 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
     override fun initListener() {
         binding.layoutToolbar.ivBack.setOnClickListener(this)
+        binding.ivCamera.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
+
     }
 
     override fun initData() {
@@ -85,15 +80,21 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                 onBackPressedSupport()
             }
 
+            R.id.iv_camera -> {
+                var rxPermissions = RxPermissions(this@DebtCollectionActivity)
+                rxPermissions.request(
+                    Manifest.permission.CAMERA
+                )
+                    .subscribe {
+                        if (it) {
+                            ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@DebtCollectionActivity, 1)
+                        } else {
+
+                        }
+                    }
+            }
+
             R.id.tv_search -> {
-                query()
-            }
-
-            R.id.fl_notification -> {
-//                print.zkblueprint(printInfo.toString())
-            }
-
-            R.id.fl_paymentInquiry -> {
 
             }
         }
@@ -101,23 +102,35 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
     fun query() {
         keyboardUtil.hideKeyboard()
-        val searchContent = binding.etSearch.text.toString()
-//        if (searchContent.isNotEmpty() && searchContent.length != 7 && searchContent.length != 8) {
-//            ToastUtil.showToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
-//            return
-//        }
-        binding.rvTransaction.show()
+
+        binding.rvDebt.show()
         binding.layoutNoData.root.gone()
-        transactionQueryList.add(0)
-        transactionQueryList.add(1)
-        transactionQueryList.add(2)
-        transactionQueryList.add(3)
-        transactionQueryList.add(4)
-        transactionQueryAdapter?.setList(transactionQueryList)
+        debtCollectionList.add(1)
+        debtCollectionList.add(2)
+        debtCollectionList.add(3)
+        debtCollectionList.add(4)
+        debtCollectionAdapter?.setList(debtCollectionList)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                val plate = data?.getStringExtra("plate")
+                if (!plate.isNullOrEmpty()) {
+                    val plateId = if (plate.contains("新能源")) {
+                        plate.substring(plate.length - 8, plate.length)
+                    } else {
+                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
+                    }
+                    binding.etSearch.setText(plateId)
+                }
+            }
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {
-        return ActivityTransactionQueryBinding.inflate(layoutInflater)
+        return ActivityDebtCollectionBinding.inflate(layoutInflater)
     }
 
     override fun onReloadData() {
@@ -125,10 +138,6 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
     override val isFullScreen: Boolean
         get() = true
-
-    override fun providerVMClass(): Class<TransactionQueryViewModel>? {
-        return TransactionQueryViewModel::class.java
-    }
 
     override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
@@ -144,5 +153,4 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         }
         return false
     }
-
 }

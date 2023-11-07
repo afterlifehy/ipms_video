@@ -3,10 +3,9 @@ package com.rt.ipms_video.startup
 import com.rt.base.start.BaseStartUpManager
 import com.rt.base.start.StartUpKey
 import com.rt.ipms_video.AppApplication
-import com.rt.ipms_video.startup.AppStartUpManager
 import com.xj.anchortask.library.AnchorTask
 
-class AnchorTaskOne : AnchorTask(StartUpKey.MUST_BE_ONE) {
+class AnchorTaskOne : AnchorTask(StartUpKey.TASK_NAME_TWO) {
     override fun isRunOnMainThread(): Boolean {
         return false
     }

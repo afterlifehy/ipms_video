@@ -10,7 +10,9 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
+import com.rt.base.ext.show
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
@@ -21,17 +23,14 @@ import com.rt.ipms_video.mvvm.viewmodel.OrderMainViewmodel
 class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBinding>(), OnClickListener {
 
     override fun initView() {
-        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_home)
-        val lp = binding.layoutToolbar.ivBack.layoutParams
-        lp.width = SizeUtils.dp2px(25f)
-        lp.height = SizeUtils.dp2px(25f)
-        binding.layoutToolbar.ivBack.layoutParams = lp
+        binding.layoutToolbar.ivBack.gone()
+        binding.layoutToolbar.ivBackHome.show()
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.订单)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.baseApplication, com.rt.base.R.color.white))
     }
 
     override fun initListener() {
-        binding.layoutToolbar.ivBack.setOnClickListener(this)
+        binding.layoutToolbar.ivBackHome.setOnClickListener(this)
         binding.rflTransactionQuery.setOnClickListener(this)
         binding.rflDebtCollect.setOnClickListener(this)
         binding.rflOrderInquiry.setOnClickListener(this)
@@ -43,7 +42,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.iv_back -> {
+            R.id.iv_backHome -> {
                 onBackPressedSupport()
             }
 
@@ -52,7 +51,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_debtCollect -> {
-
+                ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rfl_orderInquiry -> {

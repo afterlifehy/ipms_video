@@ -22,7 +22,15 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_25"
+            android:paddingEnd="@dimen/dp_50"
             android:src="@mipmap/ic_back" />
+
+        <ImageView
+            android:id="@+id/iv_backHome"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:src="@mipmap/ic_back_home"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_title"

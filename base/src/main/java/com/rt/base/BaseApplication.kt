@@ -38,28 +38,10 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
 //            .setSkinWindowBackgroundEnable(false) // 关闭windowBackground换肤，默认打开[可选]
 //            .loadSkin()
         initClient()
-        //车牌识别初始化
-        initHyperLPR()
     }
 
     private fun initClient() {
         client = OkHttpClient.Builder().build()
-    }
-
-    private fun initHyperLPR() {
-        // 车牌识别算法配置参数
-
-        // 车牌识别算法配置参数
-        val parameter = HyperLPRParameter()
-            .setDetLevel(HyperLPR3.DETECT_LEVEL_LOW)
-            .setMaxNum(1)
-            .setRecConfidenceThreshold(0.85f)
-        // 初始化(仅执行一次生效)
-        HyperLPR3.getInstance().init(this, parameter)
-
-//        ISNav.getInstance().init { context, path, imageView ->
-//            Glide.with(context).load(path).into(imageView)
-//        }
     }
 
     /**

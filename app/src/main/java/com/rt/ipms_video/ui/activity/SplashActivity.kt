@@ -53,8 +53,8 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     override fun initData() {
         project = AnchorProject.Builder().setContext(this).setLogLevel(LogUtils.LogLevel.DEBUG)
             .setAnchorTaskCreator(ApplicationAnchorTaskCreator())
-            .addTask(StartUpKey.MUST_BE_INITIALIZED)
-            .addTask(StartUpKey.MUST_BE_ONE).afterTask(StartUpKey.MUST_BE_INITIALIZED)
+            .addTask(StartUpKey.TASK_NAME_ONE)
+            .addTask(StartUpKey.TASK_NAME_TWO).afterTask(StartUpKey.TASK_NAME_ONE)
             .build()
         project?.addListener(this)
     }

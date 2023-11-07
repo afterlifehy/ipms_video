@@ -7,10 +7,10 @@ import com.xj.anchortask.library.IAnchorTaskCreator
 class ApplicationAnchorTaskCreator : IAnchorTaskCreator {
     override fun createTask(taskName: String): AnchorTask? {
         when (taskName) {
-            StartUpKey.MUST_BE_INITIALIZED -> {
+            StartUpKey.TASK_NAME_ONE -> {
                 return AnchorTaskZero()
             }
-            StartUpKey.MUST_BE_ONE -> {
+            StartUpKey.TASK_NAME_TWO -> {
                 return AnchorTaskOne()
 
             }

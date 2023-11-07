@@ -5,7 +5,7 @@ import com.rt.base.start.StartUpKey
 import com.rt.ipms_video.AppApplication
 import com.xj.anchortask.library.AnchorTask
 
-class AnchorTaskZero : AnchorTask(StartUpKey.MUST_BE_INITIALIZED) {
+class AnchorTaskZero : AnchorTask(StartUpKey.TASK_NAME_ONE) {
     override fun isRunOnMainThread(): Boolean {
         return false
     }
