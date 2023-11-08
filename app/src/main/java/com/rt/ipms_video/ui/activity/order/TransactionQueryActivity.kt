@@ -70,8 +70,10 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     }
 
     override fun initListener() {
-        binding.layoutToolbar.ivBack.setOnClickListener(this)
+        binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
+        binding.root.setOnClickListener(this)
+        binding.layoutToolbar.toolbar.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -81,7 +83,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.iv_back -> {
+            R.id.fl_back -> {
                 onBackPressedSupport()
             }
 
@@ -95,6 +97,11 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
             R.id.fl_paymentInquiry -> {
 
+            }
+
+            R.id.toolbar,
+            binding.root.id -> {
+                keyboardUtil.hideKeyboard()
             }
         }
     }

@@ -82,7 +82,7 @@
                 android:drawableEnd="@mipmap/ic_double_arrow_right"
                 android:drawablePadding="@dimen/dp_12"
                 android:gravity="center|start"
-                android:text="@string/交易查询"
+                android:text="@string/订单查询"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_23" />
         </com.aries.ui.view.radius.RadiusFrameLayout>

@@ -78,8 +78,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_25"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -87,8 +87,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_36"
                     android:drawableStart="@mipmap/ic_start"
-                    android:drawablePadding="@dimen/dp_11"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:lines="1"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19"
                     tools:text="2023-06-25 08:01:43" />
@@ -98,8 +100,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_36"
                     android:drawableStart="@mipmap/ic_end"
-                    android:drawablePadding="@dimen/dp_11"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:ellipsize="end"
                     android:gravity="center"
+                    android:lines="1"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19"
                     tools:text="2023-06-25 08:01:43" />

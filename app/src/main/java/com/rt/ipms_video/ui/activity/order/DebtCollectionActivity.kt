@@ -37,6 +37,8 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.欠费追缴)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
+        GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.rt.common.R.mipmap.ic_no_data_2)
+        binding.layoutNoData.tvNoDataTitle.text = i18N(com.rt.base.R.string.通过车牌号未查询到欠费订单)
 
         binding.rvDebt.setHasFixedSize(true)
         binding.rvDebt.layoutManager = LinearLayoutManager(this)
@@ -63,20 +65,23 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     }
 
     override fun initListener() {
-        binding.layoutToolbar.ivBack.setOnClickListener(this)
+        binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.ivCamera.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
-
+        binding.root.setOnClickListener(this)
+        binding.layoutToolbar.toolbar.setOnClickListener(this)
     }
 
     override fun initData() {
         query()
+//        binding.layoutNoData.root.show()
+//        binding.rvDebt.gone()
     }
 
     @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.iv_back -> {
+            R.id.fl_back -> {
                 onBackPressedSupport()
             }
 
@@ -96,6 +101,15 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
             R.id.tv_search -> {
 
+            }
+
+            R.id.toolbar,
+            binding.root.id -> {
+                keyboardUtil.hideKeyboard()
+            }
+
+            R.id.rrl_debtCollection -> {
+                ARouter.getInstance().build(ARouterMap.DEBT_ORDER_DETAIL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }

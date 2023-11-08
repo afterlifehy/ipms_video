@@ -153,5 +153,17 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/startTheme" />
+
+        <activity
+            android:name=".ui.activity.order.DebtOrderDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/startTheme" />
+
+        <activity
+            android:name=".ui.activity.order.VideoPicActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/startTheme" />
     </application>
 </manifest>

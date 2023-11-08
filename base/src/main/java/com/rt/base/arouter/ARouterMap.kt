@@ -19,6 +19,9 @@ object ARouterMap {
 
     const val DEBT_COLLECTION = "/ipms_app/debtCollection"
 
+    const val DEBT_ORDER_DETAIL = "/ipms_app/debtOrderDetail"
+
+    const val VIDEO_PIC = "/ipms_app/videoPic"
 
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"

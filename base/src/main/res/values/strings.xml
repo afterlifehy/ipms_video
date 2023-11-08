@@ -33,4 +33,15 @@
     <string name="请对准车牌">请对准车牌</string>
     <string name="闪光灯">闪光灯</string>
     <string name="详情">详情></string>
+    <string name="扫码支付">扫码支付</string>
+    <string name="欠费订单详情">欠费订单详情</string>
+    <string name="微信">微信</string>
+    <string name="支付宝">支付宝</string>
+    <string name="云闪付">云闪付</string>
+    <string name="数字人民币">数字人民币</string>
+    <string name="扫描二维码向上海公共支付平台交纳停车费">扫描二维码向上海公共支付平台交纳停车费</string>
+    <string name="通过车牌号未查询到欠费订单">通过车牌号未查询到欠费订单</string>
+    <string name="订单查询">订单查询</string>
+    <string name="车辆入场">车辆入场</string>
+    <string name="车辆出场">车辆出场</string>
 </resources>

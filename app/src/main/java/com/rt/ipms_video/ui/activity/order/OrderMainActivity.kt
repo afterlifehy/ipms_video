@@ -23,7 +23,7 @@ import com.rt.ipms_video.mvvm.viewmodel.OrderMainViewmodel
 class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBinding>(), OnClickListener {
 
     override fun initView() {
-        binding.layoutToolbar.ivBack.gone()
+        binding.layoutToolbar.flBack.gone()
         binding.layoutToolbar.ivBackHome.show()
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.订单)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.baseApplication, com.rt.base.R.color.white))

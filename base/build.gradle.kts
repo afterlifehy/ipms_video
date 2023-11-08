@@ -197,4 +197,15 @@ dependencies {
 
     api(files("libs/zp_cpcl_new.jar"))
     api(files("libs/zpSDK.jar"))
+
+    //gsyVideoPlayer
+    api(ThirdPart.gsyVideoPlayer)
+//    {
+//        exclude(group = "androidx.appcompat")
+//        exclude(group = "androidx.core")
+//    }
+//    api(ThirdPart.gsyVideoPlayer_exo) {
+//        exclude(group = "androidx.appcompat")
+//        exclude(group = "androidx.core")
+//    }
 }

@@ -142,4 +142,10 @@ object ThirdPart {
 
     //车牌识别
     const val hyperlpr = "com.github.HyperInspire:hyperlpr3-android-sdk:1.0.3"
+
+    //gsyVideoPlayer
+    const val gsyVideoPlayer = "com.shuyu:GSYVideoPlayer:8.1.2"
+
+    //是否需要ExoPlayer模式
+    const val gsyVideoPlayer_exo = "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:v8.1.7-jitpack"
 }

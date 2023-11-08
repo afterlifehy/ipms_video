@@ -18,12 +18,18 @@
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageView
-            android:id="@+id/iv_back"
+        <FrameLayout
+            android:id="@+id/fl_back"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_25"
-            android:paddingEnd="@dimen/dp_50"
-            android:src="@mipmap/ic_back" />
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/dp_50">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:src="@mipmap/ic_back" />
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/iv_backHome"

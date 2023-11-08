@@ -34,7 +34,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     override fun initListener() {
-        binding.layoutToolbar.ivBack.setOnClickListener(this)
+        binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflAddStreet.setOnClickListener(this)
         binding.rtvEnterWorkBench.setOnClickListener(this)
     }
@@ -44,7 +44,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.iv_back -> {
+            R.id.fl_back -> {
                 onBackPressedSupport()
             }
 

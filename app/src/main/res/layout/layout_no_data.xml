@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/iv_noData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_196"
+        android:layout_height="@dimen/dp_110"
+        android:scaleType="fitXY"
         android:src="@mipmap/ic_no_data" />
 
     <TextView
