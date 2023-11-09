@@ -44,4 +44,12 @@
     <string name="订单查询">订单查询</string>
     <string name="车辆入场">车辆入场</string>
     <string name="车辆出场">车辆出场</string>
+    <string name="选择日期范围">选择日期范围</string>
+    <string name="近7天">近7天</string>
+    <string name="近1个月">近1个月</string>
+    <string name="近3个月">近3个月</string>
+    <string name="重置">重置</string>
+    <string name="交易记录">交易记录</string>
+    <string name="订单详细信息">订单详细信息</string>
+    <string name="交易记录信息">交易记录信息</string>
 </resources>

@@ -115,55 +115,62 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.login.LoginActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.login.StreetChooseActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.order.OrderMainActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.order.TransactionQueryActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.camera.ScanPlateActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.order.DebtCollectionActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.order.DebtOrderDetailActivity"
             android:exported="false"
-            android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".ui.activity.order.VideoPicActivity"
             android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.OrderInquiryActivity"
+            android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/startTheme" />
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".ui.activity.order.OrderDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.TransactionRecordActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

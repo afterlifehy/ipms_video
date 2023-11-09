@@ -60,7 +60,7 @@
     </com.aries.ui.view.radius.RadiusRelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_transaction"
+        android:id="@+id/rv_orders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rrl_search"
@@ -72,7 +72,6 @@
         android:id="@+id/layout_noData"
         layout="@layout/layout_no_data"
         android:layout_width="wrap_content"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 

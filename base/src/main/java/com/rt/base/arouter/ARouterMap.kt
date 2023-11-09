@@ -23,6 +23,12 @@ object ARouterMap {
 
     const val VIDEO_PIC = "/ipms_app/videoPic"
 
+    const val ORDER_INQUIRY = "/ipms_app/orderInquiry"
+
+    const val ORDER_DETAIL = "/ipms_app/orderDetail"
+
+    const val TRANSACTION_RECORD = "/ipms_app/transactionRecord"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/cc" />
+        android:src="@mipmap/ic_round_close" />
 
     <com.aries.ui.view.radius.RadiusLinearLayout
         android:layout_width="match_parent"
