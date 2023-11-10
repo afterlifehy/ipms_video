@@ -148,4 +148,6 @@ object ThirdPart {
 
     //是否需要ExoPlayer模式
     const val gsyVideoPlayer_exo = "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:v8.1.7-jitpack"
+
+    const val photoView = "com.github.chrisbanes:PhotoView:2.3.0"
 }

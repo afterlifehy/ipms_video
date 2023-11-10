@@ -24,6 +24,7 @@ import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.DebtCollectionAdapter
 import com.rt.ipms_video.databinding.ActivityDebtCollectionBinding
+import com.rt.ipms_video.dialog.CollectionDialog
 import com.rt.ipms_video.mvvm.viewmodel.DebtCollectionViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 
@@ -32,6 +33,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     private lateinit var keyboardUtil: KeyboardUtil
     var debtCollectionAdapter: DebtCollectionAdapter? = null
     var debtCollectionList: MutableList<Int> = ArrayList()
+    var collectionDialog: CollectionDialog? = null
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -67,6 +69,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.ivCamera.setOnClickListener(this)
+        binding.tvCollect.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
@@ -97,6 +100,16 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
                         }
                     }
+            }
+
+            R.id.tv_collect -> {
+                collectionDialog = CollectionDialog(object : CollectionDialog.CollecteCallBack {
+                    override fun collect(plate: String, color: Int) {
+
+                    }
+
+                })
+                collectionDialog?.show()
             }
 
             R.id.tv_search -> {
@@ -138,6 +151,16 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     binding.etSearch.setText(plateId)
+                }
+            } else if (requestCode == 2) {
+                val plate = data?.getStringExtra("plate")
+                if (!plate.isNullOrEmpty()) {
+                    val plateId = if (plate.contains("新能源")) {
+                        plate.substring(plate.length - 8, plate.length)
+                    } else {
+                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
+                    }
+                    collectionDialog?.setPlate(plateId)
                 }
             }
         }

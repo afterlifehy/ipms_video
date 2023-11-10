@@ -29,6 +29,10 @@ object ARouterMap {
 
     const val TRANSACTION_RECORD = "/ipms_app/transactionRecord"
 
+    const val PREVIEW_IMG = "/ipms_app/previewImg"
+    const val IMG_LIST = "imgList"
+    const val IMG_INDEX = "imgIndex"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

@@ -5,7 +5,6 @@ import android.net.http.HttpResponseCache
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.http.interceptor.*
-import io.realm.Realm
 import okhttp3.Interceptor
 import java.io.File
 
@@ -21,15 +20,8 @@ class AppApplication : BaseApplication() {
         super.onCreate()
         _context = this
         //realm
-        Realm.init(this)
-        val cacheDir = File(cacheDir, "http")
-        HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
+//        Realm.init(this)
 
-        if (com.rt.base.BuildConfig.is_debug) {
-            ARouter.openLog()
-            ARouter.openDebug()
-        }
-        ARouter.init(this@AppApplication)
         //初始化数据库
         //支付宝沙箱环境
 //        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);

@@ -30,7 +30,7 @@
             android:layout_marginStart="@dimen/dp_13"
             android:layout_toStartOf="@+id/tv_search"
             android:paddingStart="@dimen/dp_13"
-            android:paddingEnd="@dimen/dp_13"
+            android:paddingEnd="@dimen/dp_10"
             app:rv_radius="@dimen/dp_7">
 
             <ImageView
@@ -44,16 +44,37 @@
                 android:id="@+id/et_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginStart="@dimen/dp_13"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:layout_toStartOf="@+id/iv_camera"
+                android:layout_toStartOf="@+id/tv_collect"
                 android:layout_toEndOf="@+id/iv_search"
                 android:background="@null"
                 android:hint="@string/请输入车牌号"
+                android:inputType="text"
                 android:maxLength="8"
+                android:maxLines="1"
                 android:textColorHint="@color/color_ff999999"
                 android:textCursorDrawable="@drawable/shape_cursor"
                 android:textSize="@dimen/sp_19" />
+
+            <TextView
+                android:id="@+id/tv_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_toStartOf="@+id/view_liner"
+                android:text="@string/催缴"
+                android:textColor="@color/color_ff0371f4"
+                android:textSize="@dimen/sp_19" />
+
+            <View
+                android:id="@+id/view_liner"
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_toStartOf="@+id/iv_camera"
+                android:background="@color/color_ff0371f4" />
 
             <ImageView
                 android:id="@+id/iv_camera"
@@ -71,7 +92,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_13"
+            android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_13"
             android:text="@string/搜索"
             android:textColor="@color/white"

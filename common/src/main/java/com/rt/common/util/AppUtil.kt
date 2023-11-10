@@ -1,20 +1,15 @@
 package com.rt.common.util
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.CalendarContract
 import android.text.Spannable
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import com.rt.base.BaseApplication
 import com.rt.base.help.ActivityCacheManager
-import com.rt.common.realm.RealmUtil
 import com.zrq.spanbuilder.Spans
 import com.zrq.spanbuilder.TextStyle
 import java.text.DecimalFormat

@@ -1,22 +1,27 @@
 package com.rt.ipms_video.ui.fragment
 
+import android.content.Intent
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.ImageView
 import androidx.viewbinding.ViewBinding
+import com.alibaba.android.arouter.launcher.ARouter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.rt.base.BaseApplication
+import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.viewbase.VbBaseFragment
 import com.rt.common.util.GlideUtils
+import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.FragmentVideoPicBinding
 import com.rt.ipms_video.mvvm.viewmodel.VideoPicFragmentViewModel
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.listener.LockClickListener
 
-class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideoPicBinding>() {
+class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideoPicBinding>(), OnClickListener {
     var url = "http://58.246.81.147:801/20230706/JA03109_20230706171341_1.mp4"
     var picUrl = "https://m1.autoimg.cn/cardfs/product/g30/M05/BA/3D/1024x0_q87_autohomecar__ChwFlGIyj0KAcRoJACAuV1_hUzY722.jpg"
     override fun initView() {
@@ -67,9 +72,22 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
     }
 
     override fun initListener() {
+        binding.rivPic.setOnClickListener(this)
     }
 
     override fun initData() {
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.riv_pic -> {
+                val imgList: MutableList<String> = ArrayList()
+                imgList.add(picUrl)
+                ARouter.getInstance().build(ARouterMap.PREVIEW_IMG).withStringArrayList(ARouterMap.IMG_LIST, imgList as ArrayList)
+                    .withInt(ARouterMap.IMG_INDEX, 0)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+            }
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {
@@ -97,4 +115,5 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         super.onDestroy()
         binding.sgvpVideo.currentPlayer.release()
     }
+
 }

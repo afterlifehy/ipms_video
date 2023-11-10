@@ -1,5 +1,6 @@
 package com.rt.base.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.viewbinding.ViewBinding

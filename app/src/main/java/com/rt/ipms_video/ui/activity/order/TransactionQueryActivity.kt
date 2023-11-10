@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.EditText
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -31,6 +32,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.TransactionQueryAdapter
 import com.rt.ipms_video.databinding.ActivityTransactionQueryBinding
 import com.rt.ipms_video.mvvm.viewmodel.TransactionQueryViewModel
+import com.rt.ipms_video.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
 
 @Route(path = ARouterMap.TRANSACTION_QUERY)
@@ -40,11 +42,16 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     var transactionQueryAdapter: TransactionQueryAdapter? = null
     var transactionQueryList: MutableList<Int> = ArrayList()
     private val print = BluePrint(this)
+    var datePop: DatePop? = null
+    var pageIndex = 1
+    var pageSize = 10
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.交易查询)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
+        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_calendar)
+        binding.layoutToolbar.ivRight.show()
         initKeyboard()
 
         binding.rvTransaction.setHasFixedSize(true)
@@ -72,8 +79,20 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
+        binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
+        binding.srlTransaction.setOnRefreshListener {
+            pageIndex = 1
+            binding.srlTransaction.finishRefresh(5000)
+            transactionQueryList.clear()
+            query()
+        }
+        binding.srlTransaction.setOnLoadMoreListener {
+            pageIndex++
+            binding.srlTransaction.finishLoadMore(5000)
+            query()
+        }
     }
 
     override fun initData() {
@@ -85,6 +104,16 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         when (v?.id) {
             R.id.fl_back -> {
                 onBackPressedSupport()
+            }
+
+            R.id.iv_right -> {
+                datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
+                    override fun selectDate() {
+
+                    }
+
+                })
+                datePop?.showAsDropDown((v.parent) as Toolbar)
             }
 
             R.id.tv_search -> {
@@ -107,6 +136,8 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     }
 
     fun query() {
+        binding.srlTransaction.finishLoadMore()
+        binding.srlTransaction.finishRefresh()
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
 //        if (searchContent.isNotEmpty() && searchContent.length != 7 && searchContent.length != 8) {

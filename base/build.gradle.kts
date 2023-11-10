@@ -171,7 +171,7 @@ dependencies {
     api(ThirdPart.zxing_core)
 
     //realm
-    api(ThirdPart.realm)
+//    api(ThirdPart.realm)
 
     //flycoTabLayout
     api(ThirdPart.flycoTabLayout)
@@ -200,6 +200,9 @@ dependencies {
 
     //gsyVideoPlayer
     api(ThirdPart.gsyVideoPlayer)
+
+    //photoView
+    api(ThirdPart.photoView)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

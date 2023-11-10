@@ -72,7 +72,8 @@
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:allowBackup,android:theme">
+        tools:replace="android:allowBackup,android:theme"
+        tools:targetApi="31">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -172,5 +173,11 @@
             android:name=".ui.activity.order.TransactionRecordActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.order.PreviewImageActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
     </application>
 </manifest>

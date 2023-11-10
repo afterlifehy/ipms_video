@@ -52,4 +52,11 @@
     <string name="交易记录">交易记录</string>
     <string name="订单详细信息">订单详细信息</string>
     <string name="交易记录信息">交易记录信息</string>
+    <string name="催缴">催缴</string>
+    <string name="车牌号码">车牌号码：</string>
+    <string name="识别">识别</string>
+    <string name="车牌颜色">车牌颜色：</string>
+    <string name="取消">取消</string>
+    <string name="保存图片">保存图片</string>
+    <string name="保存成功">保存成功</string>
 </resources>

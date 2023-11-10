@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="MyAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/white_bg</item>
-        <item name="colorAccent">@color/white_bg</item>
-        <item name="android:navigationBarColor">@color/white_bg</item>
-        <item name="android:statusBarColor">@color/white_bg</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowEnableSplitTouch">false</item>
-        <item name="android:splitMotionEvents">false</item>
-    </style>
-
     <style name="ios_dialog_style">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>

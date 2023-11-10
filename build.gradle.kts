@@ -4,7 +4,7 @@ buildscript {
     dependencies {
         classpath(Kotlin.plugin)
         classpath(Gradle.plugin)
-        classpath("io.realm:realm-gradle-plugin:10.11.1")
+//        classpath("io.realm:realm-gradle-plugin:10.11.1")
     }
 }
 plugins {

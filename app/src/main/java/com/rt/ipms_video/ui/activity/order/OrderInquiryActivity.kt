@@ -35,6 +35,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     var orderList: MutableList<Int> = ArrayList()
     var orderInquiryAdapter: OrderInquiryAdapter? = null
     var datePop: DatePop? = null
+    var pageIndex = 1
+    var pageSize = 10
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -73,6 +75,17 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
+        binding.srlOrder.setOnRefreshListener {
+            pageIndex = 1
+            binding.srlOrder.finishRefresh(5000)
+            orderList.clear()
+            query()
+        }
+        binding.srlOrder.setOnLoadMoreListener {
+            pageIndex++
+            binding.srlOrder.finishLoadMore(5000)
+            query()
+        }
     }
 
     override fun initData() {
@@ -82,6 +95,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     }
 
     private fun query() {
+        binding.srlOrder.finishLoadMore()
+        binding.srlOrder.finishRefresh()
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
 //        if (searchContent.isNotEmpty() && searchContent.length != 7 && searchContent.length != 8) {

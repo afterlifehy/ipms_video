@@ -15,11 +15,11 @@ class MyOnTouchListener(
         showKeyboard()
 
         // 切换键盘
-        keyboardUtil.hideSoftInputMethod(v as EditText)
+//        keyboardUtil.hideSoftInputMethod(v as EditText)
         keyboardUtil.changeKeyboard(isNumber)
-        keyboardUtil.setEditText(v)
+        keyboardUtil.setEditText(v as EditText)
 
-        return false
+        return true
     }
 
     fun showKeyboard() {
