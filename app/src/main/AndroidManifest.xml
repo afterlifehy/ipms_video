@@ -179,5 +179,15 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".ui.activity.parking.ParkingLotActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.ParkingSpaceActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

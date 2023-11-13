@@ -33,6 +33,10 @@ object ARouterMap {
     const val IMG_LIST = "imgList"
     const val IMG_INDEX = "imgIndex"
 
+    const val PARKING_LOT = "/ipms_app/parkingLot"
+
+    const val PARKING_SPACE = "/ipms_app/parkingSpace"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

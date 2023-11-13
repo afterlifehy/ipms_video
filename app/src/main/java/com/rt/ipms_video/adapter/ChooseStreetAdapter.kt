@@ -14,6 +14,11 @@ class ChooseStreetAdapter(data: MutableList<Int>? = null) :
         holder.vb.tvStreet.text = "定西路(愚园路～安化路)西侧"
         holder.vb.rlStreet.setOnClickListener {
             holder.vb.cbStreet.isChecked = !holder.vb.cbStreet.isChecked
+            if (holder.vb.cbStreet.isChecked) {
+                checkedList.add(item)
+            } else {
+                checkedList.remove(item)
+            }
         }
     }
 

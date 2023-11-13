@@ -59,4 +59,12 @@
     <string name="取消">取消</string>
     <string name="保存图片">保存图片</string>
     <string name="保存成功">保存成功</string>
+    <string name="空闲">空闲</string>
+    <string name="历史欠费">历史欠费：</string>
+    <string name="场内支付">场内支付</string>
+    <string name="上报异常">上报异常</string>
+    <string name="开始时间">开始时间：</string>
+    <string name="待缴费用">待缴费用：</string>
+    <string name="无车辆进出图片">无车辆进出图片</string>
+    <string name="上报">上报</string>
 </resources>

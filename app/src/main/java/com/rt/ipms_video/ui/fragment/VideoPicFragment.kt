@@ -11,6 +11,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
+import com.rt.base.ext.i18n
+import com.rt.base.ext.show
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.viewbase.VbBaseFragment
 import com.rt.common.util.GlideUtils
@@ -55,9 +57,13 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         binding.sgvpVideo.backButton.gone()
         binding.sgvpVideo.fullscreenButton.gone()
 
-        GlideUtils.instance?.loadImage(
-            binding.rivPic, picUrl
-        )
+        GlideUtils.instance?.loadImage(binding.rivPic, picUrl)
+
+//        binding.llVideo.gone()
+//        binding.layoutNoData.root.show()
+//
+//        binding.layoutNoData.tvNoDataTitle.text = i18n(com.rt.base.R.string.无车辆进出图片)
+//        GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.rt.common.R.mipmap.ic_no_data_3)
     }
 
     fun loadCover(imageView: ImageView, url: String, res: String) {

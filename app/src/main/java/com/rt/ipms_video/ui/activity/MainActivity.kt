@@ -35,7 +35,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         binding.llParkingLot.setOnClickListener(this)
         binding.flStayTuned.setOnClickListener(this)
         binding.flOrder.setOnClickListener(this)
-        binding.flParkingAbnormal.setOnClickListener(this)
+        binding.flBerthAbnormal.setOnClickListener(this)
         binding.flLogout.setOnClickListener(this)
     }
 
@@ -49,7 +49,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.ll_parkingLot -> {
-
+                ARouter.getInstance().build(ARouterMap.PARKING_LOT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.fl_stayTuned -> {
@@ -60,7 +60,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 ARouter.getInstance().build(ARouterMap.ORDER_MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
-            R.id.fl_parkingAbnormal -> {
+            R.id.fl_berthAbnormal -> {
 
             }
 
