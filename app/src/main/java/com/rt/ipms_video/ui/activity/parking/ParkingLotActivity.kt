@@ -22,6 +22,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     var parkingLotList: MutableList<Int> = ArrayList()
     var streetPop: StreetPop? = null
     var streetList: MutableList<Int> = ArrayList()
+
     override fun initView() {
         binding.tvTitle.text = "CN007定西路(愚园)"
 

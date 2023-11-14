@@ -61,11 +61,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_berthAbnormal -> {
-
+                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.fl_logout -> {
-
+                ARouter.getInstance().build(ARouterMap.LOGOUT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }

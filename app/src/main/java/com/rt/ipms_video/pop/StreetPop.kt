@@ -32,7 +32,12 @@ class StreetPop(val context: Context?, val streetList: MutableList<Int>, var cal
         binding = PopStreetBinding.inflate(LayoutInflater.from(context))
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
-        parkingChooseStreetAdapter = ParkingChooseStreetAdapter(streetList, currentStreet)
+        parkingChooseStreetAdapter =
+            ParkingChooseStreetAdapter(streetList, currentStreet, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
+                override fun chooseStreet(street: Int) {
+                    currentStreet = street
+                }
+            })
         binding.rvStreet.adapter = parkingChooseStreetAdapter
 
         binding.rtvOk.setOnClickListener(this)

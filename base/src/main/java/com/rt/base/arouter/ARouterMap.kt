@@ -37,6 +37,12 @@ object ARouterMap {
 
     const val PARKING_SPACE = "/ipms_app/parkingSpace"
 
+    const val BERTH_ABNORMAL = "/ipms_app/berthAbnormal"
+
+    const val ABNORMAL_HELP = "/ipms_app/abnormalHelp"
+
+    const val LOGOUT = "/ipms_app/logout"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

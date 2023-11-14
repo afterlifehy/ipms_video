@@ -7,13 +7,12 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
-import com.rt.base.ext.gone
 import com.rt.base.ext.hide
 import com.rt.base.ext.show
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.databinding.ItemCollectionPlateColorBinding
 
-class CollectionPlateColorAdapter(data: MutableList<Int>? = null, val onClickListener: OnClickListener) :
+class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<Int, ItemCollectionPlateColorBinding>(data) {
     var lastColorPosition = 0
     var checkedColorPosition = 0
@@ -35,7 +34,13 @@ class CollectionPlateColorAdapter(data: MutableList<Int>? = null, val onClickLis
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemCollectionPlateColorBinding {
         val binding = ItemCollectionPlateColorBinding.inflate(inflater)
         var lp = binding.root.layoutParams
-        val width = (ScreenUtils.getScreenWidth()-SizeUtils.dp2px(64f))/7
+        var width = 0
+        if (widthType == 1) {
+            width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(30f)) / 7
+        } else if (widthType == 2) {
+            width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(64f)) / 7
+        }
+
         if (lp == null) {
             lp = ViewGroup.LayoutParams(width, width)
         } else {

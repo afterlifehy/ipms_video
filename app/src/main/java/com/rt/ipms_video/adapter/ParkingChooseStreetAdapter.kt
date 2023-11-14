@@ -7,7 +7,7 @@ import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
 import com.rt.ipms_video.databinding.ItemParkingChooseStreetBinding
 
-class ParkingChooseStreetAdapter(data: MutableList<Int>? = null, var currentStreet: Int) :
+class ParkingChooseStreetAdapter(data: MutableList<Int>? = null, var currentStreet: Int, val callback: ChooseStreetAdapterCallBack) :
     BaseBindingAdapter<Int, ItemParkingChooseStreetBinding>(data) {
     var lastStreetCB: CheckBox? = null
     var currentStreetCB: CheckBox? = null
@@ -17,21 +17,29 @@ class ParkingChooseStreetAdapter(data: MutableList<Int>? = null, var currentStre
             holder.vb.cbStreet.isChecked = true
             currentStreetCB = holder.vb.cbStreet
         }
-        holder.vb.rlStreet.setOnClickListener{
+        holder.vb.rlStreet.setOnClickListener {
             lastStreetCB = currentStreetCB
             lastStreetCB?.isChecked = false
             currentStreetCB = holder.vb.cbStreet
             currentStreetCB?.isChecked = true
+            currentStreet = item
+            callback.chooseStreet(currentStreet)
         }
-        holder.vb.cbStreet.setOnClickListener{
+        holder.vb.cbStreet.setOnClickListener {
             lastStreetCB = currentStreetCB
             lastStreetCB?.isChecked = false
             currentStreetCB = holder.vb.cbStreet
             currentStreetCB?.isChecked = true
+            currentStreet = item
+            callback.chooseStreet(currentStreet)
         }
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemParkingChooseStreetBinding {
         return ItemParkingChooseStreetBinding.inflate(inflater)
+    }
+
+    interface ChooseStreetAdapterCallBack {
+        fun chooseStreet(street: Int)
     }
 }

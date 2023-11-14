@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ff0371f4"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_abnormal_help_top_bg" />
+
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_comment_toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_toolbar">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6">
+
+            <com.aries.ui.view.radius.RadiusFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_7"
+                android:layout_marginEnd="@dimen/dp_7"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_10" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sp_20"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:background="@mipmap/ic_help_title_bg"
+                    android:paddingStart="@dimen/dp_17"
+                    android:paddingTop="@dimen/dp_2"
+                    android:text="1.车位无车"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:lineHeight="@dimen/dp_30"
+                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:textColor="@color/color_ff1a1a1a"
+                    android:textSize="@dimen/sp_19" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:background="@mipmap/ic_help_title_bg"
+                    android:paddingStart="@dimen/dp_17"
+                    android:paddingTop="@dimen/dp_2"
+                    android:text="2.订单丢失"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:lineHeight="@dimen/dp_30"
+                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:textColor="@color/color_ff1a1a1a"
+                    android:textSize="@dimen/sp_19" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:background="@mipmap/ic_help_title_bg"
+                    android:paddingStart="@dimen/dp_17"
+                    android:paddingTop="@dimen/dp_2"
+                    android:text="3.订单丢失"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_20"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginEnd="@dimen/dp_24"
+                    android:lineHeight="@dimen/dp_30"
+                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:textColor="@color/color_ff1a1a1a"
+                    android:textSize="@dimen/sp_19" />
+            </LinearLayout>
+        </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

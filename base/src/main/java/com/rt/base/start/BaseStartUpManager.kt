@@ -24,16 +24,19 @@ class BaseStartUpManager private constructor() : AppInitManager() {
     }
 
     override fun delayInit(application: Application) {
+        //只有测试才开启
         BaseApplication.instance().getOnAppBaseProxyLinsener()?.let {
-            initHyperLPR()
+            if (it.onIsDebug()) {
+
+            }
         }
+        //车牌识别初始化
+        initHyperLPR()
 //        val appDir = File(Environment.getExternalStorageDirectory(), Constant.rt_FILE_PATH)
 //        FileUtils.createOrExistsDir(appDir)
     }
 
     private fun initHyperLPR() {
-        // 车牌识别算法配置参数
-
         // 车牌识别算法配置参数
         val parameter = HyperLPRParameter()
             .setDetLevel(HyperLPR3.DETECT_LEVEL_LOW)

@@ -29,6 +29,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
     var collectioPlateColorList: MutableList<Int> = ArrayList()
     var checkedColor = 0
     private lateinit var keyboardUtil: KeyboardUtil
+    val widthType = 2
 
     init {
         initView()
@@ -44,7 +45,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
         collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_other)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
-        collectionPlateColorAdapter = CollectionPlateColorAdapter(collectioPlateColorList, this)
+        collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
         binding.rvPlateColor.adapter = collectionPlateColorAdapter
 
         binding.rflRecognize.setOnClickListener(this)

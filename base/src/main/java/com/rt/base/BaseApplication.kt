@@ -3,9 +3,6 @@ package com.rt.base
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import com.bumptech.glide.Glide
-import com.hyperai.hyperlpr3.HyperLPR3
-import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.http.OnAddOkhttpInterceptor
 import com.rt.base.proxy.OnAppBaseProxyLinsener

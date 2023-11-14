@@ -67,4 +67,14 @@
     <string name="待缴费用">待缴费用：</string>
     <string name="无车辆进出图片">无车辆进出图片</string>
     <string name="上报">上报</string>
+    <string name="场库名称">场库名称</string>
+    <string name="异常分类">异常分类</string>
+    <string name="请输入备注">请输入备注</string>
+    <string name="泊位异常上报">泊位异常上报</string>
+    <string name="泊位有车POS无订单">泊位有车POS无订单</string>
+    <string name="泊位无车POS有订单">泊位无车POS有订单</string>
+    <string name="在停车牌与POS不一致">在停车牌与POS不一致</string>
+    <string name="异常上报使用帮助">异常上报使用帮助</string>
+    <string name="上班时间">上班时间：</string>
+    <string name="壬通科技祝您健康幸福">勤勤恳恳工作，平平安安回家\n壬通科技祝您健康幸福</string>
 </resources>

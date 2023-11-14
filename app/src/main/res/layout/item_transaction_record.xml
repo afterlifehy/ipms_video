@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_44"
                 android:layout_gravity="center_horizontal"
-                android:drawableStart="@mipmap/but_a"
+                android:drawableStart="@mipmap/ic_print"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/告知书"

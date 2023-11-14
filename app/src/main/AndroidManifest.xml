@@ -189,5 +189,21 @@
             android:name=".ui.activity.parking.ParkingSpaceActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.abnormal.BerthAbnormalActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".ui.activity.abnormal.AbnormalHelpActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.mine.LogoutActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>
