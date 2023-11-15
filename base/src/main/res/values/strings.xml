@@ -84,4 +84,6 @@
     <string name="账户名">账户名</string>
     <string name="手机号">手机号</string>
     <string name="路段名">路段名</string>
+    <string name="开始下载更新">开始下载更新</string>
+    <string name="营收盘点">营收盘点</string>
 </resources>

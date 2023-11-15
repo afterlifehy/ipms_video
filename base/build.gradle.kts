@@ -203,6 +203,9 @@ dependencies {
 
     //photoView
     api(ThirdPart.photoView)
+
+    //filedownloader
+    api(ThirdPart.filedownloader)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

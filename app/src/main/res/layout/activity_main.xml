@@ -96,7 +96,7 @@
                     </LinearLayout>
 
                     <FrameLayout
-                        android:id="@+id/fl_stayTuned"
+                        android:id="@+id/fl_incomeCounting"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -109,7 +109,7 @@
                             android:drawableTop="@mipmap/ic_stay_tuned_logo"
                             android:drawablePadding="@dimen/dp_24"
                             android:gravity="center"
-                            android:text="敬请期待"
+                            android:text="@string/营收盘点"
                             android:textColor="@color/color_ff1a1a1a"
                             android:textSize="@dimen/sp_20"
                             android:textStyle="bold" />

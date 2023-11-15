@@ -33,7 +33,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun initListener() {
         binding.ivHead.setOnClickListener(this)
         binding.llParkingLot.setOnClickListener(this)
-        binding.flStayTuned.setOnClickListener(this)
+        binding.flIncomeCounting.setOnClickListener(this)
         binding.flOrder.setOnClickListener(this)
         binding.flBerthAbnormal.setOnClickListener(this)
         binding.flLogout.setOnClickListener(this)
@@ -52,7 +52,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 ARouter.getInstance().build(ARouterMap.PARKING_LOT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
-            R.id.fl_stayTuned -> {
+            R.id.fl_incomeCounting -> {
 
             }
 

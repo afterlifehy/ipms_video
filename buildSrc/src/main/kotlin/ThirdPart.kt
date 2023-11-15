@@ -150,4 +150,6 @@ object ThirdPart {
     const val gsyVideoPlayer_exo = "com.github.CarGuo.GSYVideoPlayer:gsyVideoPlayer-exo_player2:v8.1.7-jitpack"
 
     const val photoView = "com.github.chrisbanes:PhotoView:2.3.0"
+
+    const val filedownloader = "com.liulishuo.filedownloader:library:1.7.7"
 }
