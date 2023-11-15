@@ -6,6 +6,7 @@ import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.i18n
 import com.rt.base.help.ActivityCacheManager
@@ -13,12 +14,34 @@ import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityLogOutBinding
 import com.rt.ipms_video.mvvm.viewmodel.LogoutViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Route(path = ARouterMap.LOGOUT)
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
+    private var job: Job? = null
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18n(com.rt.base.R.string.签退)
+        job = GlobalScope.launch(Dispatchers.IO) {
+            while (true) {
+                val time = TimeUtils.millis2String(System.currentTimeMillis(), "HH:mm:ss")
+                withContext(Dispatchers.Main) {
+                    binding.rtvHour1.text = time.split(":")[0][0].toString()
+                    binding.rtvHour2.text = time.split(":")[0][1].toString()
+                    binding.rtvMinute1.text = time.split(":")[1][0].toString()
+                    binding.rtvMinute2.text = time.split(":")[1][1].toString()
+                    binding.rtvSec1.text = time.split(":")[2][0].toString()
+                    binding.rtvSec2.text = time.split(":")[2][1].toString()
+                }
+                delay(1000)
+            }
+        }
     }
 
     override fun initListener() {
@@ -40,8 +63,15 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 //                for (i in ActivityCacheManager.instance().getAllActivity()) {
 //                    i.finish()
 //                }
-                ActivityCacheManager.instance()?.getCurrentActivity()?.finish()
+                ActivityCacheManager.instance().getCurrentActivity()?.finish()
             }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        GlobalScope.launch(Dispatchers.IO) {
+            job?.cancelAndJoin()
         }
     }
 

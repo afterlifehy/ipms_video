@@ -45,7 +45,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
-
+                ARouter.getInstance().build(ARouterMap.MINE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.ll_parkingLot -> {

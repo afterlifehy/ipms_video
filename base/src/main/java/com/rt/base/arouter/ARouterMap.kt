@@ -43,6 +43,10 @@ object ARouterMap {
 
     const val LOGOUT = "/ipms_app/logout"
 
+    const val MINE = "/ipms_app/mine"
+
+    const val BASE_INFO = "/ipms_app/baseInfo"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

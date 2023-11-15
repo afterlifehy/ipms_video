@@ -77,4 +77,11 @@
     <string name="异常上报使用帮助">异常上报使用帮助</string>
     <string name="上班时间">上班时间：</string>
     <string name="壬通科技祝您健康幸福">勤勤恳恳工作，平平安安回家\n壬通科技祝您健康幸福</string>
+    <string name="基本信息">基本信息</string>
+    <string name="版本更新">版本更新</string>
+    <string name="我的">我的</string>
+    <string name="姓名">姓名</string>
+    <string name="账户名">账户名</string>
+    <string name="手机号">手机号</string>
+    <string name="路段名">路段名</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dp_n90">-90dp</dimen>
+    <dimen name="dp_n60">-60dp</dimen>
     <dimen name="dp_n53">-53dp</dimen>
     <dimen name="dp_n50">-50dp</dimen>
     <dimen name="dp_n40">-40dp</dimen>
