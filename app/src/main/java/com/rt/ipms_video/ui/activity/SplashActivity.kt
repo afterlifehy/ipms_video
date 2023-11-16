@@ -17,6 +17,7 @@ import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.databinding.ActivitySplashBinding
 import com.rt.ipms_video.mvvm.viewmodel.SplashViewModel
 import com.rt.ipms_video.startup.ApplicationAnchorTaskCreator
+import com.rt.ipms_video.ui.activity.login.LoginActivity
 import com.xj.anchortask.library.AnchorProject
 import com.xj.anchortask.library.OnProjectExecuteListener
 import com.xj.anchortask.library.log.LogUtils
@@ -82,14 +83,26 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
                 if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.ticketCode).isEmpty()) {
-                    ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .navigation()
+                    val intent = Intent(this@SplashActivity, LoginActivity::class.java)
+                    startActivity(intent)
                 } else {
-                    ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                    startActivity(intent)
                 }
+                initArouter()
                 finish()
             }
         }, 100)
+    }
+
+    fun initArouter() {
+        Thread {
+            if (com.rt.base.BuildConfig.is_debug) {
+                ARouter.openLog()
+                ARouter.openDebug()
+            }
+            ARouter.init(BaseApplication.instance())
+        }.start()
     }
 
     override fun onProjectStart() {

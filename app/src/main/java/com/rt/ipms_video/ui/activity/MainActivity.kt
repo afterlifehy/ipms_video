@@ -9,6 +9,9 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.BarUtils
+import com.hyperai.hyperlpr3.HyperLPR3
+import com.hyperai.hyperlpr3.bean.HyperLPRParameter
+import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.i18N
 import com.rt.base.help.ActivityCacheManager
@@ -27,6 +30,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     override fun initView() {
+        initHyperLPR()
 //        setStatusBarColor(com.rt.base.R.color.black, false)
     }
 
@@ -68,6 +72,16 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 ARouter.getInstance().build(ARouterMap.LOGOUT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
+    }
+
+    private fun initHyperLPR() {
+        // 车牌识别算法配置参数
+        val parameter = HyperLPRParameter()
+            .setDetLevel(HyperLPR3.DETECT_LEVEL_LOW)
+            .setMaxNum(1)
+            .setRecConfidenceThreshold(0.85f)
+        // 初始化(仅执行一次生效)
+        HyperLPR3.getInstance().init(BaseApplication.instance(), parameter)
     }
 
     override fun getVbBindingView(): ViewBinding {

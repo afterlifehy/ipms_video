@@ -24,22 +24,18 @@ class AppStartUpManager private constructor() : AppInitManager() {
 
     override fun applicationInit(application: Application) {
 //        CrashHandler.instance()?.initCrash(application)
-        val cacheDir = File(BaseApplication.instance().cacheDir, "http")
-        HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
-
-        if (com.rt.base.BuildConfig.is_debug) {
-            ARouter.openLog()
-            ARouter.openDebug()
-        }
-        ARouter.init(BaseApplication.instance())
-
-        //初始化网络状态监听
-        regNewWorkState(application)
+        Thread {
+            val cacheDir = File(BaseApplication.instance().cacheDir, "http")
+            HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
+            BaseApplication.instance().setOnAppBaseProxyLinsener(OnAppBaseProxyManager())        //初始化全局的刷新
+            SmartRefreshHelp.initRefHead()
+            //初始化网络状态监听
+            regNewWorkState(application)
+        }.start()
     }
 
     override fun delayInit(application: Application) {
-        BaseApplication.instance().setOnAppBaseProxyLinsener(OnAppBaseProxyManager())        //初始化全局的刷新
-        SmartRefreshHelp.initRefHead()
+
     }
 
     /**

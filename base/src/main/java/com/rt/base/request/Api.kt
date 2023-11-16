@@ -6,9 +6,9 @@ import retrofit2.http.*
 
 interface Api {
     /**
-     * 添加钱包地址
+     * 签到
      */
-    @POST("spendingAccount/addWalletAddress")
-    suspend fun addWalletAddress(@Body param: Map<String, String>): HttpWrapper<Boolean>
+    @POST("S_VO2_01")
+    suspend fun login(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 
 }

@@ -93,7 +93,8 @@
         android:layout_marginEnd="@dimen/dp_26"
         android:text="@string/忘记密码"
         android:textColor="@color/color_ff0371f4"
-        android:textSize="@dimen/sp_19" />
+        android:textSize="@dimen/sp_19"
+        android:visibility="invisible" />
 
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_login"
