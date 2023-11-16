@@ -16,9 +16,21 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = 
     BaseBindingAdapter<Int, ItemCollectionPlateColorBinding>(data) {
     var lastColorPosition = 0
     var checkedColorPosition = 0
-    var checkedColor = com.rt.common.R.mipmap.ic_plate_blue
+    var checkedColor = 0
+    var collectioPlateColorList: MutableList<Int> = ArrayList()
+
+    init {
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_blue)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_green)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_yellow)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_yellow_green)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_white)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_black)
+        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_other)
+    }
+
     override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: Int) {
-        GlideUtils.instance?.loadImage(holder.vb.ivColor, item)
+        GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorList[item])
         if (checkedColor == item) {
             holder.vb.rflStroke.show()
             holder.vb.ivHook.show()
@@ -38,7 +50,9 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = 
         if (widthType == 1) {
             width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(30f)) / 7
         } else if (widthType == 2) {
-            width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(64f)) / 7
+            width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(52f)) / 7
+        } else if (widthType == 3) {
+            width = (ScreenUtils.getScreenWidth() - SizeUtils.dp2px(38f)) / 7
         }
 
         if (lp == null) {

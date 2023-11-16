@@ -1,10 +1,15 @@
 package com.rt.ipms_video.ui.activity.camera
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.AppUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.Plate
 import com.rt.base.arouter.ARouterMap
@@ -12,6 +17,7 @@ import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityScanPlateBinding
 import com.rt.ipms_video.mvvm.viewmodel.ScanPlateViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -65,10 +71,18 @@ class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBi
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
-        if (cameraPreview == null) {
-            initCamera()
+        var rxPermissions = RxPermissions(this@ScanPlateActivity)
+        rxPermissions.request(Manifest.permission.CAMERA).subscribe {
+            if (it) {
+                if (cameraPreview == null) {
+                    initCamera()
+                }
+            } else {
+                onBackPressedSupport()
+            }
         }
     }
 

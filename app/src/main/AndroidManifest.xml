@@ -181,6 +181,11 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".ui.activity.order.CollectionManagementActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
             android:name=".ui.activity.parking.ParkingLotActivity"
             android:exported="false"
             android:launchMode="singleTask" />
@@ -215,5 +220,11 @@
             android:name=".ui.activity.mine.BaseInfoActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.income.IncomeCountingActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
     </application>
 </manifest>

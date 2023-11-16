@@ -53,7 +53,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_incomeCounting -> {
-
+                ARouter.getInstance().build(ARouterMap.INCOME_COUNTING).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.fl_order -> {

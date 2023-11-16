@@ -11,10 +11,9 @@ import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.adapter.ParkingChooseStreetAdapter
 import com.rt.ipms_video.databinding.DialogAbnormalStreetListBinding
 
-class AbnormalStreetListDialog(val streetList: MutableList<Int>, val callBack: AbnormalStreetCallBack) :
+class AbnormalStreetListDialog(val streetList: MutableList<Int>, var currentStreet: Int, val callBack: AbnormalStreetCallBack) :
     VBBaseLibDialog<DialogAbnormalStreetListBinding>(ActivityCacheManager.instance().getCurrentActivity()!!) {
     var parkingChooseStreetAdapter: ParkingChooseStreetAdapter? = null
-    var currentStreet = 1
 
     init {
         initView()

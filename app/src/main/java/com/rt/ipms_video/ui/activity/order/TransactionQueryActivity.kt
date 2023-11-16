@@ -33,7 +33,6 @@ import com.rt.ipms_video.adapter.TransactionQueryAdapter
 import com.rt.ipms_video.databinding.ActivityTransactionQueryBinding
 import com.rt.ipms_video.mvvm.viewmodel.TransactionQueryViewModel
 import com.rt.ipms_video.pop.DatePop
-import com.tbruyelle.rxpermissions3.RxPermissions
 
 @Route(path = ARouterMap.TRANSACTION_QUERY)
 class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, ActivityTransactionQueryBinding>(), OnClickListener {

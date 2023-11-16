@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textColor="@color/color_ff666666"
+        android:textSize="@dimen/sp_19"
         android:textStyle="bold"
         tools:text="title" />
 
@@ -28,7 +28,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/black"
+        android:textColor="@color/color_ff1a1a1a"
+        android:textSize="@dimen/sp_19"
         tools:text="这里是辅助说明文字单行这里是辅助说明文字单行这里是辅助说明文字单行这里是辅助说明文字单行" />
 
     <LinearLayout
@@ -60,7 +61,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
-            app:rv_backgroundColor="@color/black"
+            app:rv_backgroundColor="@color/color_ff0371f4"
             app:rv_radius="@dimen/dp_8"
             tools:text="CONFIRM" />
     </LinearLayout>

@@ -36,13 +36,13 @@ class CollectionDialog(val callback: CollecteCallBack) :
     }
 
     private fun initView() {
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_blue)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_green)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_yellow)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_yellow_green)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_white)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_black)
-        collectioPlateColorList.add(com.rt.common.R.mipmap.ic_plate_other)
+        collectioPlateColorList.add(0)
+        collectioPlateColorList.add(1)
+        collectioPlateColorList.add(2)
+        collectioPlateColorList.add(3)
+        collectioPlateColorList.add(4)
+        collectioPlateColorList.add(5)
+        collectioPlateColorList.add(6)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)

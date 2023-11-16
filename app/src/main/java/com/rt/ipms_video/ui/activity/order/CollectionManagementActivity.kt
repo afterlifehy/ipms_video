@@ -1,53 +1,45 @@
-package com.rt.ipms_video.ui.activity.abnormal
+package com.rt.ipms_video.ui.activity.order
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.DialogInterface
-import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
-import com.rt.base.ext.gone
-import com.rt.base.ext.i18n
-import com.rt.base.ext.show
+import com.rt.base.ext.i18N
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.CollectionPlateColorAdapter
-import com.rt.ipms_video.databinding.ActivityBerthAbnormalBinding
-import com.rt.ipms_video.dialog.AbnormalClassificationDialog
+import com.rt.ipms_video.databinding.ActivityCollectionManagementBinding
 import com.rt.ipms_video.dialog.AbnormalStreetListDialog
-import com.rt.ipms_video.mvvm.viewmodel.BerthAbnormalViewModel
+import com.rt.ipms_video.mvvm.viewmodel.CollectionManagementViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
 
-@Route(path = ARouterMap.BERTH_ABNORMAL)
-class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
+@Route(path = ARouterMap.COLLECTION_MANAGEMENT)
+class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(), OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
     var collectioPlateColorList: MutableList<Int> = ArrayList()
     var checkedColor = 0
     private lateinit var keyboardUtil: KeyboardUtil
-    val widthType = 1
-
-    var abnormalStreetListDialog: AbnormalStreetListDialog? = null
+    val widthType = 3
     var streetList: MutableList<Int> = ArrayList()
-
-    var abnormalClassificationDialog: AbnormalClassificationDialog? = null
-    var classificationList: MutableList<String> = ArrayList()
+    var abnormalStreetListDialog: AbnormalStreetListDialog? = null
 
     override fun initView() {
-        binding.layoutToolbar.tvTitle.text = i18n(com.rt.base.R.string.泊位异常上报)
-        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_help)
-        binding.layoutToolbar.ivRight.show()
+        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
+        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.催缴管理)
+        binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
 
         collectioPlateColorList.add(0)
         collectioPlateColorList.add(1)
@@ -56,6 +48,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         collectioPlateColorList.add(4)
         collectioPlateColorList.add(5)
         collectioPlateColorList.add(6)
+
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -66,16 +59,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.layoutToolbar.ivRight.setOnClickListener(this)
-        binding.cbLotName.setOnClickListener(this)
-        binding.rflLotName.setOnClickListener(this)
-        binding.cbAbnormalClassification.setOnClickListener(this)
-        binding.rflAbnormalClassification.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
-        binding.rflReport.setOnClickListener(this)
-        binding.root.setOnClickListener(this)
-        binding.llBerthAbnormal2.setOnClickListener(this)
-
+        binding.rflStreetName.setOnClickListener(this)
+        binding.rflSubmit.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -84,23 +70,19 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         streetList.add(3)
         streetList.add(4)
         streetList.add(5)
-
-        classificationList.add(i18n(com.rt.base.R.string.泊位有车POS无订单))
-        classificationList.add(i18n(com.rt.base.R.string.泊位无车POS有订单))
-        classificationList.add(i18n(com.rt.base.R.string.在停车牌与POS不一致))
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initKeyboard() {
         keyboardUtil = KeyboardUtil(binding.kvKeyBoard) {
-            binding.etPlate.requestFocus()
+            binding.retPlate.requestFocus()
             keyboardUtil.changeKeyboard(true)
-            keyboardUtil.setEditText(binding.etPlate)
+            keyboardUtil.setEditText(binding.retPlate)
         }
 
-        binding.etPlate.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
+        binding.retPlate.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
 
-        binding.etPlate.setOnTouchListener { v, p1 ->
+        binding.retPlate.setOnTouchListener { v, p1 ->
             (v as EditText).requestFocus()
             keyboardUtil.showKeyboard(show = {
                 val location = IntArray(2)
@@ -112,7 +94,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
                 if (binding.kvKeyBoard.height > distanceToBottom) {
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
-                    binding.llBerthAbnormal.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
+                    binding.rllManagement.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
             })
             keyboardUtil.changeKeyboard(true)
@@ -124,7 +106,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (keyboardUtil.isShow()) {
-                binding.llBerthAbnormal.translationY = 0f
+                binding.rllManagement.translationY = 0f
                 keyboardUtil.hideKeyboard()
             } else {
                 return super.onKeyDown(keyCode, event)
@@ -135,7 +117,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
     override fun onClick(v: View?) {
         if (keyboardUtil.isShow()) {
-            binding.llBerthAbnormal.translationY = 0f
+            binding.rllManagement.translationY = 0f
             keyboardUtil.hideKeyboard()
         }
         when (v?.id) {
@@ -143,38 +125,15 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                 onBackPressedSupport()
             }
 
-            R.id.iv_right -> {
-                ARouter.getInstance().build(ARouterMap.ABNORMAL_HELP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-            }
-
-            R.id.cb_lotName -> {
-                showAbnormalStreetListDialog()
-            }
-
-            R.id.rfl_lotName -> {
-                binding.cbLotName.isChecked = true
-                showAbnormalStreetListDialog()
-            }
-
-            R.id.cb_abnormalClassification -> {
-                showAbnormalClassificationDialog()
-            }
-
-            R.id.rfl_abnormalClassification -> {
-                binding.cbAbnormalClassification.isChecked = true
-                showAbnormalClassificationDialog()
-            }
-
             R.id.rfl_recognize -> {
-                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@BerthAbnormalActivity, 1)
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CollectionManagementActivity, 1)
             }
 
-            R.id.rfl_report -> {
-                onBackPressedSupport()
+            R.id.rfl_streetName -> {
+                showAbnormalStreetListDialog()
             }
 
-            R.id.ll_berthAbnormal2,
-            binding.root.id -> {
+            R.id.rfl_submit -> {
 
             }
 
@@ -186,45 +145,22 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     fun showAbnormalStreetListDialog() {
-        val currentStreet = if (binding.tvLotName.text.toString().isEmpty()) {
+        val currentStreet = if (binding.tvStreetName.text.toString().isEmpty()) {
             0
         } else {
-            binding.tvLotName.text.toString().toInt()
+            binding.tvStreetName.text.toString().toInt()
         }
         abnormalStreetListDialog = AbnormalStreetListDialog(
             streetList,
             currentStreet,
             object : AbnormalStreetListDialog.AbnormalStreetCallBack {
                 override fun chooseStreet(currentStreet: Int) {
-                    binding.tvLotName.text = currentStreet.toString()
+                    binding.tvStreetName.text = currentStreet.toString()
                 }
             })
         abnormalStreetListDialog?.show()
         abnormalStreetListDialog?.setOnDismissListener {
-            binding.cbLotName.isChecked = false
-        }
-    }
-
-    fun showAbnormalClassificationDialog() {
-        abnormalClassificationDialog =
-            AbnormalClassificationDialog(
-                classificationList,
-                binding.tvAbnormalClassification.text.toString(),
-                object : AbnormalClassificationDialog.AbnormalClassificationCallBack {
-                    override fun chooseClassification(classification: String) {
-                        binding.tvAbnormalClassification.text = classification
-                        if (classification == i18n(com.rt.base.R.string.在停车牌与POS不一致)) {
-                            binding.llPlate.show()
-                            binding.rvPlateColor.show()
-                        } else {
-                            binding.llPlate.gone()
-                            binding.rvPlateColor.gone()
-                        }
-                    }
-                })
-        abnormalClassificationDialog?.show()
-        abnormalClassificationDialog?.setOnDismissListener {
-            binding.cbAbnormalClassification.isChecked = false
+            binding.cbStreetName.isChecked = false
         }
     }
 
@@ -239,7 +175,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     } else {
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
-                    binding.etPlate.setText(plateId)
                     if (plate.startsWith("蓝")) {
                         collectionPlateColorAdapter?.updateColor(0, 0)
                     } else if (plate.startsWith("绿")) {
@@ -255,13 +190,14 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     } else {
                         collectionPlateColorAdapter?.updateColor(6, 6)
                     }
+                    binding.retPlate.setText(plateId)
                 }
             }
         }
     }
 
     override fun getVbBindingView(): ViewBinding {
-        return ActivityBerthAbnormalBinding.inflate(layoutInflater)
+        return ActivityCollectionManagementBinding.inflate(layoutInflater)
     }
 
     override fun onReloadData() {
@@ -274,8 +210,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         return binding.layoutToolbar.ablToolbar
     }
 
-    override fun providerVMClass(): Class<BerthAbnormalViewModel> {
-        return BerthAbnormalViewModel::class.java
+    override fun providerVMClass(): Class<CollectionManagementViewModel> {
+        return CollectionManagementViewModel::class.java
     }
-
 }

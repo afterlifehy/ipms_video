@@ -89,17 +89,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.iv_camera -> {
-                var rxPermissions = RxPermissions(this@DebtCollectionActivity)
-                rxPermissions.request(
-                    Manifest.permission.CAMERA
-                )
-                    .subscribe {
-                        if (it) {
-                            ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@DebtCollectionActivity, 1)
-                        } else {
-
-                        }
-                    }
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@DebtCollectionActivity, 1)
             }
 
             R.id.tv_collect -> {
@@ -161,8 +151,24 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     collectionDialog?.setPlate(plateId)
+                    if (plate.startsWith("蓝")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(0, 0)
+                    } else if (plate.startsWith("绿")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(1, 1)
+                    } else if (plate.startsWith("黄")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(2, 2)
+                    } else if (plate.startsWith("黄绿")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(3, 3)
+                    } else if (plate.startsWith("白")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(4, 4)
+                    } else if (plate.startsWith("黑")) {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(5, 5)
+                    } else {
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor(6, 6)
+                    }
                 }
             }
+
         }
     }
 

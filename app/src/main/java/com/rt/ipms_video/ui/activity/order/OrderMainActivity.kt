@@ -59,7 +59,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_collectionManagement -> {
-
+                ARouter.getInstance().build(ARouterMap.COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }

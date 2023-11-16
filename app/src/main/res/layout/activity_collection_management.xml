@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffe8eef6"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_deep_top_bg" />
+
+    <include
+        android:id="@+id/layout_toolbar"
+        layout="@layout/layout_comment_toolbar" />
+
+    <com.aries.ui.view.radius.RadiusLinearLayout
+        android:id="@+id/rll_management"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_toolbar"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dp_20"
+        app:rv_backgroundColor="@color/transparent"
+        app:rv_radius="@dimen/dp_10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/车牌号码"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_19" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_13"
+            android:orientation="horizontal">
+
+            <com.aries.ui.view.radius.RadiusEditText
+                android:id="@+id/ret_plate"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_13"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_13"
+                android:paddingEnd="@dimen/dp_13"
+                android:textColor="@color/color_ff1a1a1a"
+                android:textCursorDrawable="@drawable/shape_cursor"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_7" />
+
+            <com.aries.ui.view.radius.RadiusFrameLayout
+                android:id="@+id/rfl_recognize"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_6"
+                android:layout_weight="1"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_7"
+                app:rv_strokeColor="@color/color_ff0371f4"
+                app:rv_strokeWidth="@dimen/dp_1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_recognize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableStart="@mipmap/ic_camera"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:gravity="center"
+                    android:text="@string/识别"
+                    android:textColor="@color/color_ff0371f4"
+                    android:textSize="@dimen/sp_19" />
+            </com.aries.ui.view.radius.RadiusFrameLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_17"
+            android:text="@string/车牌颜色"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_19" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_plateColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_17"
+            android:text="@string/路段名称"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_19" />
+
+        <com.aries.ui.view.radius.RadiusFrameLayout
+            android:id="@+id/rfl_streetName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_47"
+            android:layout_marginTop="@dimen/dp_13"
+            android:paddingStart="@dimen/dp_13"
+            android:paddingEnd="@dimen/dp_13"
+            app:rv_backgroundColor="@color/white"
+            app:rv_radius="@dimen/dp_7">
+
+            <TextView
+                android:id="@+id/tv_streetName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/color_ff1a1a1a"
+                android:textSize="@dimen/sp_19"
+                tools:text="定西路(愚园路～安化路)西侧" />
+
+            <CheckBox
+                android:id="@+id/cb_streetName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:background="@color/transparent"
+                android:button="@drawable/selector_lot_arrow"
+                android:checked="false" />
+        </com.aries.ui.view.radius.RadiusFrameLayout>
+    </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    <com.aries.ui.view.radius.RadiusFrameLayout
+        android:id="@+id/rfl_submit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_47"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:layout_marginBottom="@dimen/dp_13"
+        app:rv_backgroundColor="@color/color_ff0371f4"
+        app:rv_radius="@dimen/dp_7">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@mipmap/ic_report"
+            android:drawablePadding="@dimen/dp_14"
+            android:gravity="center"
+            android:text="@string/提交"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_19"
+            android:textStyle="bold" />
+    </com.aries.ui.view.radius.RadiusFrameLayout>
+
+    <com.rt.common.view.keyboard.MyKeyboardView
+        android:id="@+id/kv_keyBoard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_keyboard_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/selector_key_bg"
+        android:keyTextColor="@color/color_ff1a1a1a"
+        android:keyTextSize="@dimen/sp_21"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_13"
+        android:paddingBottom="@dimen/dp_10"
+        android:shadowColor="@color/white"
+        android:shadowRadius="0.0"
+        android:visibility="gone" />
+</RelativeLayout>

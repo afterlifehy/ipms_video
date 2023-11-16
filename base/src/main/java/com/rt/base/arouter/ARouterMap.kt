@@ -47,6 +47,10 @@ object ARouterMap {
 
     const val BASE_INFO = "/ipms_app/baseInfo"
 
+    const val INCOME_COUNTING = "/ipms_app/incomeCounting"
+
+    const val COLLECTION_MANAGEMENT = "/ipms_app/collectionManagement"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 
