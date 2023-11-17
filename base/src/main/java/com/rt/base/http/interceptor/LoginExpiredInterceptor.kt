@@ -1,5 +1,6 @@
 package com.rt.base.http.interceptor
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
@@ -36,14 +37,14 @@ class LoginExpiredInterceptor : Interceptor {
         if (response.code == 200) {
             val mediaType = response.body!!.contentType()
             val content = response.body!!.string()
-            if (content.contains("code")) {
+            if (content.contains("status")) {
                 val mLoginExpiredCheckData = GsonUtils.fromJson(content, LoginExpiredCheckData::class.java)
-                if (mLoginExpiredCheckData.code == 503) {//登录失效
-                    val mMessage = mHandler.obtainMessage()
-                    mMessage.what = 503
-                    mMessage.obj = mLoginExpiredCheckData
-                    mHandler.sendMessage(mMessage)
-                }
+//                if (mLoginExpiredCheckData.code == 503) {//登录失效
+//                    val mMessage = mHandler.obtainMessage()
+//                    mMessage.what = 503
+//                    mMessage.obj = mLoginExpiredCheckData
+//                    mHandler.sendMessage(mMessage)
+//                }
                 return response.newBuilder()
                     .body(ResponseBody.create(mediaType, content))
                     .build()
@@ -62,11 +63,10 @@ class LoginExpiredInterceptor : Interceptor {
                 503 -> {//登录失效
                     ToastUtil.showToast(i18n(R.string.tokenExpired))
                     runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.wallet_address,"")
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.ticketCode,"")
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.userId,"")
+//                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.wallet_address,"")
+//                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.ticketCode,"")
+//                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.userId,"")
                     }
-                    //Todo 登录失效跳转
 //                    ARouter.getInstance().build(ARouterMap.LOGIN_START).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 //                        .navigation()
                     ActivityCacheManager.instance().getCurrentActivity()?.finish()

@@ -1,3 +1,3 @@
 package com.rt.base.bean
 
-data class HttpWrapper<out T>(val status: Int, val msg: String, val attr: T)
+data class HttpWrapper<out T>(val msg: String, val status: Int, val attr: T)

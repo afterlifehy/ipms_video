@@ -8,28 +8,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.BaseApplication
+import com.rt.base.bean.Street
 import com.rt.base.dialog.VBBaseLibDialog
 import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.ChooseStreetAdapter
 import com.rt.ipms_video.databinding.DialogStreetListBinding
 
-class StreetChooseListDialog(val callback: StreetChooseCallBack) :
+class StreetChooseListDialog(val streetList: MutableList<Street>, val callback: StreetChooseCallBack) :
     VBBaseLibDialog<DialogStreetListBinding>(
         ActivityCacheManager.instance().getCurrentActivity()!!,
         com.rt.base.R.style.CommonBottomDialogStyle
     ), OnClickListener {
 
     var chooseStreetAdapter: ChooseStreetAdapter? = null
-    var streetList: MutableList<Int> = ArrayList()
 
     init {
         initView()
     }
 
     private fun initView() {
-        streetList.add(0)
-        streetList.add(1)
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         chooseStreetAdapter = ChooseStreetAdapter(streetList)
@@ -60,7 +58,7 @@ class StreetChooseListDialog(val callback: StreetChooseCallBack) :
     }
 
     override fun getHeight(): Float {
-        return SizeUtils.dp2px(474f).toFloat()
+        return WindowManager.LayoutParams.WRAP_CONTENT.toFloat()
     }
 
     override fun getCanceledOnTouchOutside(): Boolean {
@@ -72,6 +70,6 @@ class StreetChooseListDialog(val callback: StreetChooseCallBack) :
     }
 
     interface StreetChooseCallBack {
-        fun chooseStreets(checkedList: MutableList<Int>?)
+        fun chooseStreets(checkedList: MutableList<Street>?)
     }
 }

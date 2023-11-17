@@ -1,13 +1,17 @@
 package com.rt.base.bean
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class LoginBean(
     val name: String,
     val phone: String,
-    val result: List<Result>,
+    val result: List<Street>,
     val token: String
 )
 
-data class Result(
+@Parcelize
+data class Street(
     val streetName: String,
     val streetNo: String
-)
+) : Parcelable

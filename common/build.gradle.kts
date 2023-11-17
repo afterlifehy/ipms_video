@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
     id("kotlin-kapt")
-//    id("realm-android")
+    id("realm-android")
 }
 
 android {

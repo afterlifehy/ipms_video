@@ -4,6 +4,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -171,7 +172,7 @@ dependencies {
     api(ThirdPart.zxing_core)
 
     //realm
-//    api(ThirdPart.realm)
+    api(ThirdPart.realm)
 
     //flycoTabLayout
     api(ThirdPart.flycoTabLayout)
@@ -206,6 +207,7 @@ dependencies {
 
     //filedownloader
     api(ThirdPart.filedownloader)
+
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

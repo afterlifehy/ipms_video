@@ -82,7 +82,7 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     override fun onProjectFinish() {
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
-                if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.ticketCode).isEmpty()) {
+                if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {
                     val intent = Intent(this@SplashActivity, LoginActivity::class.java)
                     startActivity(intent)
                 } else {

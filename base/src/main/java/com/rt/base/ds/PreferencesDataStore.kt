@@ -99,13 +99,11 @@ class PreferencesDataStore private constructor() : IDataStore {
 // 而外一个存储 DataStore的Key的类
 object PreferencesKeys {
     //    val WALLET_SIGN = booleanPreferencesKey("wallet_sign")
-    val wallet_address by stringPreferencesKey()
+    val token by stringPreferencesKey()
 
-    val ticketCode by stringPreferencesKey()
+    val phone by stringPreferencesKey()
 
-    val userId by stringPreferencesKey()
-
-    val isSimulator by intPreferencesKey()
+    val name by stringPreferencesKey()
 
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }

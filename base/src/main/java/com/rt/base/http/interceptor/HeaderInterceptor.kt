@@ -1,26 +1,26 @@
 package com.rt.base.http.interceptor
 
-import android.os.Build
 import android.text.TextUtils
-import androidx.annotation.RequiresApi
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
+import com.rt.base.BaseApplication
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
+import com.rt.base.util.Constant
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import okio.Buffer
-import org.json.JSONObject
 import java.nio.charset.Charset
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class HeaderInterceptor : Interceptor {
-    private val secret = "waterbridgedsahuyong"
 
-    companion object {}
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun intercept(chain: Interceptor.Chain): Response {
-        val timeStep = (System.currentTimeMillis() / 1000).toString()
-        var sign = ""
+        var sortParam = ""
 
         val body = chain.request().body
         val buffer = Buffer()
@@ -28,57 +28,60 @@ class HeaderInterceptor : Interceptor {
         var charset = Charset.forName("UTF-8")
         val contentType = body?.contentType()
         if (contentType == null) {
-            sign = EncryptUtils.encryptMD5ToString(secret + timeStep)
+            sortParam = ""
         } else if (TextUtils.equals(contentType.type + contentType.subtype, "applicationx-www-form-urlencoded")) {
             charset = contentType.charset(charset)
             val requestParams = buffer.readString(charset)
-            sign = EncryptUtils.encryptMD5ToString(getSortForm(requestParams) + secret + timeStep)
+            sortParam = getSortForm(requestParams).toString()
         } else {
             charset = contentType.charset(charset)
             val requestParams = buffer.readString(charset)
             if (TextUtils.isEmpty(requestParams)) {//防止参数为空的时候，导致闪退
-                sign = EncryptUtils.encryptMD5ToString(requestParams + secret + timeStep)
+                sortParam = requestParams
             } else {
-                sign = EncryptUtils.encryptMD5ToString(getSortJson(JSONObject(requestParams)) + secret + timeStep)
+                sortParam = getSortJson(JSONObject.parseObject(requestParams))
             }
         }
 
         val addHeader = chain.request().newBuilder()
-
-//            .addHeader(Constant.TIMESTAMP, SpUtil.getInstance().get(Constant.TIMESTAMP))
-//            .addHeader(Constant.USERID, SpUtil.getInstance().get(Constant.USERID))
-//            .addHeader(Constant.TICKETCODE, SpUtil.getInstance().get(Constant.TICKETCODE))
-//            .addHeader(
-//                Constant.VALUATIONCURRENCY, SpUtil.getInstance().get(Constant.VALUATIONCURRENCY)
-//            ).addHeader(
-//                Constant.LANGUAGE,
-//                AppFlag.languageSymbolMap.get(SpUtil.getInstance().get(Constant.LANGUAGE))
-//            ).addHeader(Constant.WBID, MagicValue.WBID + AppUtil.getVerName())
-//            .addHeader(
-//                Constant.SYSTEM_MODEL, "${SystemUtil.brand}-${SystemUtil.systemModel}"
-//            ).addHeader(Constant.SIGN, sign).addHeader(Constant.TIMESTEP, timeStep)
-//            .addHeader(Constant.XAUTH_TOKEN, SpUtil.getInstance()[Constant.XAUTH_TOKEN])
-
+        val timeStamp = System.currentTimeMillis().toString()
+        runBlocking {
+            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            addHeader.addHeader("Content-Type", "application/json")
+                .addHeader("timestamp", timeStamp)
+                .addHeader("token", token)
+                .addHeader("version", AppUtils.getAppVersionName())
+                .addHeader("versionCode", AppUtils.getAppVersionCode().toString())
+                .addHeader("sign", EncryptUtils.encryptMD5ToString(sortParam + timeStamp + Constant.secret))
+        }
         val request = addHeader.build()
         return chain.proceed(request)
     }
 
-    fun getSortJson(json: JSONObject): String? {
-        val iteratorKeys: Iterator<String> = json.keys().iterator()
-        val map: TreeMap<String?, String?> = TreeMap()
-        while (iteratorKeys.hasNext()) {
-            val key = iteratorKeys.next()
-            val value = json.getString(key)
-            map[key] = value
+    fun getSortJson(json: JSONObject): String {
+        val map: Map<String, Any> = JSON.parseObject(json.toString(), Map::class.java) as Map<String, Any>
+        val keys: List<String> = ArrayList(map.keys)
+        Collections.sort(keys)
+        val sb = StringBuilder()
+        for (key in keys) {
+            sb.append(key).append(map[key].toString())
         }
-        var sort = ""
-        val keySets: List<String> = ArrayList<String>(map.keys)
-        for (i in 0 until map.size) {
-            val key = keySets[i]
-            val value = map[key].toString()
-            sort += key + value
-        }
-        return sort
+        return sb.toString()
+//        val iteratorKeys: Iterator<String> = json.keys().iterator()
+//        val map: TreeMap<String?, String?> = TreeMap()
+//        while (iteratorKeys.hasNext()) {
+//            val key = iteratorKeys.next()
+//            val value = json.getString(key)
+//            map[key] = value
+//        }
+//        var sort = ""
+//        val keySets: List<String> = ArrayList<String>(map.keys)
+//        for (i in 0 until map.size) {
+//            val key = keySets[i]
+//            val value = map[key].toString()
+//            sort += key + value
+//        }
+//        return sort
     }
 
     fun getSortForm(form: String): String? {

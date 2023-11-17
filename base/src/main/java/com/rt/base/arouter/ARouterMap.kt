@@ -10,6 +10,7 @@ object ARouterMap {
     const val LOGIN = "/ipms_app/login"
 
     const val STREET_CHOOSE = "/ipms_app/streetChoose"
+    const val STREET_LIST = "streetList"
 
     const val ORDER_MAIN = "/ipms_app/orderMain"
 

@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.rt.base.BaseApplication
-import com.rt.base.http.interceptor.HeaderInterceptor
 import com.rt.base.http.interceptor.HttpLoggingInterceptor
 import okhttp3.Cache
 import okhttp3.Interceptor
@@ -55,9 +54,6 @@ object HttpBuilder {
         }
         return lissInterceptor
     }
-
-    @JvmStatic
-    fun getHeaderInterceptor(): HeaderInterceptor = HeaderInterceptor()
 
     /**
      * 构建okhttpbuilder

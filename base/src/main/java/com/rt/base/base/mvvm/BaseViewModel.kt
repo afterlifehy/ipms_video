@@ -126,7 +126,7 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
         errorBlock: suspend CoroutineScope.() -> Unit
     ) {
         coroutineScope {
-            if (response.status == 0 || response.status == 10012) {
+            if (response.status == 0) {
                 successBlock()
             } else {
                 errorBlock()

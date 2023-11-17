@@ -1,12 +1,10 @@
 package com.rt.ipms_video
 
 import android.content.Context
-import android.net.http.HttpResponseCache
-import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.http.interceptor.*
+import io.realm.Realm
 import okhttp3.Interceptor
-import java.io.File
 
 class AppApplication : BaseApplication() {
     companion object {
@@ -20,7 +18,7 @@ class AppApplication : BaseApplication() {
         super.onCreate()
         _context = this
         //realm
-//        Realm.init(this)
+        Realm.init(this)
 
         //初始化数据库
         //支付宝沙箱环境
@@ -42,7 +40,7 @@ class AppApplication : BaseApplication() {
 
     override fun onAddOkHttpInterceptor(): List<Interceptor> {
         val list = ArrayList<Interceptor>()
-        list.add(NewHeaderInterceptor())
+        list.add(HeaderInterceptor())
         list.add(LoginExpiredInterceptor())
         list.add(HostInterceptor())
         list.add(TokenInterceptor())

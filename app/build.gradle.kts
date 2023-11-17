@@ -4,7 +4,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish")
-//    id("realm-android")
+    id("realm-android")
 }
 
 android {

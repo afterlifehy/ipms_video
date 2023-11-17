@@ -1,13 +1,16 @@
 package com.rt.ipms_video.ui.activity.login
 
 import android.content.Intent
+import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.Street
 import com.rt.base.ext.i18N
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.R
@@ -19,14 +22,16 @@ import com.rt.ipms_video.mvvm.viewmodel.StreetChooseViewModel
 @Route(path = ARouterMap.STREET_CHOOSE)
 class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStreetChooseBinding>(),
     OnClickListener {
-
+    var streetList:MutableList<Street> = ArrayList()
     var streetChooseListDialog: StreetChooseListDialog? = null
     var streetChoosedAdapter: StreetChoosedAdapter? = null
-    var streetChoosedList: MutableList<String> = ArrayList()
+    var streetChoosedList: MutableList<Street> = ArrayList()
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.路段选择)
 
+        streetList = intent.getParcelableArrayListExtra(ARouterMap.STREET_LIST, Street::class.java)!!
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(this)
         streetChoosedAdapter = StreetChoosedAdapter(streetChoosedList, this)
@@ -40,6 +45,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     override fun initData() {
+        streetChoosedAdapter?.setList(streetChoosedList)
     }
 
     override fun onClick(v: View?) {
@@ -49,13 +55,9 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_addStreet -> {
-                streetChooseListDialog = StreetChooseListDialog(object : StreetChooseListDialog.StreetChooseCallBack {
-                    override fun chooseStreets(checkedList: MutableList<Int>?) {
-                        streetChoosedList.add("定西路(愚园路～安化路)1侧")
-                        streetChoosedList.add("定西路(愚园路～安化路)2侧")
-                        streetChoosedList.add("定西路(愚园路～安化路)3侧")
-                        streetChoosedList.add("定西路(愚园路～安化路)4侧")
-                        streetChoosedList.add("定西路(愚园路～安化路)5侧")
+                streetChooseListDialog = StreetChooseListDialog(streetList,object : StreetChooseListDialog.StreetChooseCallBack {
+                    override fun chooseStreets(checkedList: MutableList<Street>?) {
+                        streetChoosedList = checkedList!!
                         streetChoosedAdapter?.setList(streetChoosedList)
                     }
 
@@ -70,7 +72,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_delete -> {
-                val item = v.tag as String
+                val item = v.tag as Street
                 val position = streetChoosedList.indexOf(item)
                 streetChoosedList.remove(item)
                 streetChoosedAdapter?.removeAt(position)
@@ -92,7 +94,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         return StreetChooseViewModel::class.java
     }
 
-    override fun marginStatusBarView(): View? {
+    override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
     }
 }

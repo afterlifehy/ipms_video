@@ -10,11 +10,16 @@
     app:rv_topLeftRadius="@dimen/dp_10"
     app:rv_topRightRadius="@dimen/dp_10">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_ok"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/rv_street"
         android:layout_marginTop="@dimen/dp_112"
         android:gravity="center"
         android:text="@string/确定"
@@ -22,11 +27,5 @@
         android:textSize="@dimen/sp_19"
         app:rv_backgroundColor="@color/color_ff0371f4"
         app:rv_radius="@dimen/dp_7" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_street"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/rtv_ok" />
 
 </com.aries.ui.view.radius.RadiusRelativeLayout>

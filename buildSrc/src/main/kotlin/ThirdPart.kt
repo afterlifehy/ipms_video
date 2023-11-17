@@ -152,4 +152,8 @@ object ThirdPart {
     const val photoView = "com.github.chrisbanes:PhotoView:2.3.0"
 
     const val filedownloader = "com.liulishuo.filedownloader:library:1.7.7"
+
+    const val room_version = "2.5.0"
+    const val room_runtime = "androidx.room:room-runtime:$room_version"
+    const val room = "androidx.room:room-compiler:$room_version"
 }
