@@ -16,6 +16,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.Street
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18n
 import com.rt.base.ext.show
@@ -39,7 +40,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     val widthType = 1
 
     var abnormalStreetListDialog: AbnormalStreetListDialog? = null
-    var streetList: MutableList<Int> = ArrayList()
+    var streetList: MutableList<Street> = ArrayList()
 
     var abnormalClassificationDialog: AbnormalClassificationDialog? = null
     var classificationList: MutableList<String> = ArrayList()
@@ -79,11 +80,11 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     override fun initData() {
-        streetList.add(1)
-        streetList.add(2)
-        streetList.add(3)
-        streetList.add(4)
-        streetList.add(5)
+//        streetList.add(1)
+//        streetList.add(2)
+//        streetList.add(3)
+//        streetList.add(4)
+//        streetList.add(5)
 
         classificationList.add(i18n(com.rt.base.R.string.泊位有车POS无订单))
         classificationList.add(i18n(com.rt.base.R.string.泊位无车POS有订单))
@@ -186,23 +187,23 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     fun showAbnormalStreetListDialog() {
-        val currentStreet = if (binding.tvLotName.text.toString().isEmpty()) {
-            0
-        } else {
-            binding.tvLotName.text.toString().toInt()
-        }
-        abnormalStreetListDialog = AbnormalStreetListDialog(
-            streetList,
-            currentStreet,
-            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
-                override fun chooseStreet(currentStreet: Int) {
-                    binding.tvLotName.text = currentStreet.toString()
-                }
-            })
-        abnormalStreetListDialog?.show()
-        abnormalStreetListDialog?.setOnDismissListener {
-            binding.cbLotName.isChecked = false
-        }
+//        val currentStreet = if (binding.tvLotName.text.toString().isEmpty()) {
+//            null
+//        } else {
+//            null
+//        }
+//        abnormalStreetListDialog = AbnormalStreetListDialog(
+//            streetList,
+//            currentStreet,
+//            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
+//                override fun chooseStreet(currentStreet: Street) {
+//                    binding.tvLotName.text = currentStreet.toString()
+//                }
+//            })
+//        abnormalStreetListDialog?.show()
+//        abnormalStreetListDialog?.setOnDismissListener {
+//            binding.cbLotName.isChecked = false
+//        }
     }
 
     fun showAbnormalClassificationDialog() {

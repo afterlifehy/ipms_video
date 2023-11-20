@@ -25,7 +25,7 @@ class LoginViewModel : BaseViewModel() {
             executeResponse(response, {
                 loginLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = "", code = 1))
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }

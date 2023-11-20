@@ -24,6 +24,7 @@ import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityLoginBinding
 import com.rt.ipms_video.mvvm.viewmodel.LoginViewModel
@@ -84,7 +85,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         if (locationManager == null) {
                             locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                             val provider = LocationManager.NETWORK_PROVIDER
-                            val location = locationManager?.getLastKnownLocation(provider)
                             locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
                                 override fun onLocationChanged(location: Location) {
                                     lat = location.latitude
@@ -116,8 +116,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, it.phone)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, it.name)
                 }
-                ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).withParcelableArrayList(ARouterMap.STREET_LIST, streetList)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                RealmUtil.instance?.deleteAllStreet()
+                RealmUtil.instance?.addRealmAsyncList(streetList)
+                ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
             errMsg.observe(this@LoginActivity) {
                 ToastUtil.showToast(it.msg)

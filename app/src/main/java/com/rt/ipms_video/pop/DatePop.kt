@@ -4,17 +4,13 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.PopupWindow
 import androidx.annotation.RequiresApi
 import com.blankj.utilcode.constant.TimeConstants
 import com.blankj.utilcode.util.TimeUtils
-import com.rt.base.BaseApplication
 import com.rt.base.help.ActivityCacheManager
 import com.rt.common.util.AppUtil
 import com.rt.ipms_video.R
@@ -132,13 +128,14 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
             }
 
             R.id.rtv_ok -> {
+                callback.selectDate(startTime, endTime)
                 dismiss()
             }
         }
     }
 
     interface DateCallBack {
-        fun selectDate()
+        fun selectDate(startTime: String, endTime: String)
     }
 
 

@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("maven-publish")
     id("kotlin-parcelize")
+    id("realm-android")
 }
 
 android {

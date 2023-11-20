@@ -24,13 +24,26 @@ import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.listener.LockClickListener
 
 class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideoPicBinding>(), OnClickListener {
-    var url = "http://58.246.81.147:801/20230706/JA03109_20230706171341_1.mp4"
-    var picUrl = "https://m1.autoimg.cn/cardfs/product/g30/M05/BA/3D/1024x0_q87_autohomecar__ChwFlGIyj0KAcRoJACAuV1_hUzY722.jpg"
+    var video = ""
+    var pic = ""
     override fun initView() {
+
+        val followType = arguments?.getInt("followType")
+        when (followType) {
+            0 -> {
+                video = arguments?.getString("inVideo").toString()
+                pic = arguments?.getString("inPicture").toString()
+            }
+
+            1 -> {
+                video = arguments?.getString("outVideo").toString()
+                pic = arguments?.getString("outPicture").toString()
+            }
+        }
         val gsyVideoOption = GSYVideoOptionBuilder()
         //内置封面可参考SampleCoverVideo
         val imageView = ImageView(ActivityCacheManager.instance().getCurrentActivity())
-        loadCover(imageView, url, picUrl)
+        loadCover(imageView, video, pic)
         gsyVideoOption
             .setThumbImageView(imageView)
             .setIsTouchWiget(true)
@@ -39,7 +52,7 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
             .setAutoFullWithSize(true)
             .setShowFullAnimation(false)
             .setNeedLockFull(true)
-            .setUrl(url)
+            .setUrl(video)
             .setCacheWithPlay(false)
             .setVideoTitle("")
             .setVideoAllCallBack(object : GSYSampleCallBack() {
@@ -57,7 +70,7 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         binding.sgvpVideo.backButton.gone()
         binding.sgvpVideo.fullscreenButton.gone()
 
-        GlideUtils.instance?.loadImage(binding.rivPic, picUrl)
+        GlideUtils.instance?.loadImage(binding.rivPic, pic)
 
 //        binding.llVideo.gone()
 //        binding.layoutNoData.root.show()
@@ -88,7 +101,7 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         when (v?.id) {
             R.id.riv_pic -> {
                 val imgList: MutableList<String> = ArrayList()
-                imgList.add(picUrl)
+                imgList.add(pic)
                 ARouter.getInstance().build(ARouterMap.PREVIEW_IMG).withStringArrayList(ARouterMap.IMG_LIST, imgList as ArrayList)
                     .withInt(ARouterMap.IMG_INDEX, 0)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()

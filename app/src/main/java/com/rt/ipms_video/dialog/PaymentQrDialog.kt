@@ -1,6 +1,5 @@
 package com.rt.ipms_video.dialog
 
-import android.content.Context
 import android.view.Gravity
 import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
@@ -11,7 +10,7 @@ import com.rt.common.util.CodeUtils
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.databinding.DialogPaymentQrBinding
 
-class PaymentQrDialog() : VBBaseLibDialog<DialogPaymentQrBinding>(
+class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,
     com.rt.base.R.style.CommonBottomDialogStyle
 ) {
@@ -21,8 +20,7 @@ class PaymentQrDialog() : VBBaseLibDialog<DialogPaymentQrBinding>(
     }
 
     private fun initView() {
-        var qrCode = "https://www.baidu.com/"
-        val qrBitmap = CodeUtils.createImage(qrCode, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
+        val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
 
         binding.ivClose.setOnClickListener {

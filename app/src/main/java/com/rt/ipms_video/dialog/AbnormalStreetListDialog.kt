@@ -6,12 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ScreenUtils
 import com.rt.base.BaseApplication
+import com.rt.base.bean.Street
 import com.rt.base.dialog.VBBaseLibDialog
 import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.adapter.ParkingChooseStreetAdapter
 import com.rt.ipms_video.databinding.DialogAbnormalStreetListBinding
 
-class AbnormalStreetListDialog(val streetList: MutableList<Int>, var currentStreet: Int, val callBack: AbnormalStreetCallBack) :
+class AbnormalStreetListDialog(val streetList: MutableList<Street>, var currentStreet: Street, val callBack: AbnormalStreetCallBack) :
     VBBaseLibDialog<DialogAbnormalStreetListBinding>(ActivityCacheManager.instance().getCurrentActivity()!!) {
     var parkingChooseStreetAdapter: ParkingChooseStreetAdapter? = null
 
@@ -24,7 +25,7 @@ class AbnormalStreetListDialog(val streetList: MutableList<Int>, var currentStre
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         parkingChooseStreetAdapter =
             ParkingChooseStreetAdapter(streetList, currentStreet, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
-                override fun chooseStreet(currentStreet: Int) {
+                override fun chooseStreet(currentStreet: Street) {
                     callBack.chooseStreet(currentStreet)
                     dismiss()
                 }
@@ -58,6 +59,6 @@ class AbnormalStreetListDialog(val streetList: MutableList<Int>, var currentStre
     }
 
     interface AbnormalStreetCallBack {
-        fun chooseStreet(currentStreet: Int)
+        fun chooseStreet(currentStreet: Street)
     }
 }

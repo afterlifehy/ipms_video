@@ -6,7 +6,6 @@ import android.view.View.OnClickListener
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
-import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.bean.Street
 import com.rt.base.dialog.VBBaseLibDialog
@@ -15,7 +14,11 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.ChooseStreetAdapter
 import com.rt.ipms_video.databinding.DialogStreetListBinding
 
-class StreetChooseListDialog(val streetList: MutableList<Street>, val callback: StreetChooseCallBack) :
+class StreetChooseListDialog(
+    val streetList: MutableList<Street>,
+    var streetChoosedList: MutableList<Street>,
+    val callback: StreetChooseCallBack
+) :
     VBBaseLibDialog<DialogStreetListBinding>(
         ActivityCacheManager.instance().getCurrentActivity()!!,
         com.rt.base.R.style.CommonBottomDialogStyle
@@ -30,7 +33,7 @@ class StreetChooseListDialog(val streetList: MutableList<Street>, val callback: 
     private fun initView() {
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
-        chooseStreetAdapter = ChooseStreetAdapter(streetList)
+        chooseStreetAdapter = ChooseStreetAdapter(streetList,streetChoosedList)
         binding.rvStreet.adapter = chooseStreetAdapter
 
         binding.rtvOk.setOnClickListener(this)
@@ -39,7 +42,7 @@ class StreetChooseListDialog(val streetList: MutableList<Street>, val callback: 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.rtv_ok -> {
-                callback.chooseStreets(chooseStreetAdapter?.checkedList)
+                callback.chooseStreets()
                 dismiss()
             }
         }
@@ -70,6 +73,6 @@ class StreetChooseListDialog(val streetList: MutableList<Street>, val callback: 
     }
 
     interface StreetChooseCallBack {
-        fun chooseStreets(checkedList: MutableList<Street>?)
+        fun chooseStreets()
     }
 }

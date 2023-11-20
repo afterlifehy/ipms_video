@@ -24,7 +24,6 @@ import com.rt.common.view.keyboard.MyOnTouchListener
 import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.OrderInquiryAdapter
-import com.rt.ipms_video.adapter.TransactionQueryAdapter
 import com.rt.ipms_video.databinding.ActivityOrderInquiryBinding
 import com.rt.ipms_video.mvvm.viewmodel.OrderInquiryViewModel
 import com.rt.ipms_video.pop.DatePop
@@ -125,7 +124,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
 
             R.id.iv_right -> {
                 datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
-                    override fun selectDate() {
+                    override fun selectDate(startTime: String, endTime: String) {
 
                     }
 

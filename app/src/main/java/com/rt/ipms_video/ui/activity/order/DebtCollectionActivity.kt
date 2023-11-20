@@ -34,6 +34,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     var debtCollectionAdapter: DebtCollectionAdapter? = null
     var debtCollectionList: MutableList<Int> = ArrayList()
     var collectionDialog: CollectionDialog? = null
+    var carLicense = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -42,6 +43,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.rt.common.R.mipmap.ic_no_data_2)
         binding.layoutNoData.tvNoDataTitle.text = i18N(com.rt.base.R.string.通过车牌号未查询到欠费订单)
 
+        if (intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE) != null) {
+            carLicense = intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE).toString()
+            binding.etSearch.setText(carLicense)
+        }
         binding.rvDebt.setHasFixedSize(true)
         binding.rvDebt.layoutManager = LinearLayoutManager(this)
         debtCollectionAdapter = DebtCollectionAdapter(debtCollectionList, this)

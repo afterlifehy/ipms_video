@@ -136,7 +136,8 @@
         <activity
             android:name=".ui.activity.order.TransactionQueryActivity"
             android:exported="false"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".ui.activity.camera.ScanPlateActivity"
@@ -224,7 +225,8 @@
         <activity
             android:name=".ui.activity.income.IncomeCountingActivity"
             android:exported="false"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
 
     </application>
 </manifest>

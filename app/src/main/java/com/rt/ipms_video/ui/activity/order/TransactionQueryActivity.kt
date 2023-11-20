@@ -1,27 +1,19 @@
 package com.rt.ipms_video.ui.activity.order
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
-import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.BluePrint
 import com.rt.common.util.GlideUtils
@@ -107,7 +99,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
             R.id.iv_right -> {
                 datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
-                    override fun selectDate() {
+                    override fun selectDate(startTime: String, endTime: String) {
 
                     }
 

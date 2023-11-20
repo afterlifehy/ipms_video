@@ -5,14 +5,15 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
+import com.rt.base.bean.Street
 import com.rt.ipms_video.databinding.ItemParkingChooseStreetBinding
 
-class ParkingChooseStreetAdapter(data: MutableList<Int>? = null, var currentStreet: Int, val callback: ChooseStreetAdapterCallBack) :
-    BaseBindingAdapter<Int, ItemParkingChooseStreetBinding>(data) {
+class ParkingChooseStreetAdapter(data: MutableList<Street>? = null, var currentStreet: Street, val callback: ChooseStreetAdapterCallBack) :
+    BaseBindingAdapter<Street, ItemParkingChooseStreetBinding>(data) {
     var lastStreetCB: CheckBox? = null
     var currentStreetCB: CheckBox? = null
-    override fun convert(holder: VBViewHolder<ItemParkingChooseStreetBinding>, item: Int) {
-        holder.vb.tvStreet.text = "林泉路（仙霞路—泉口路）两侧"
+    override fun convert(holder: VBViewHolder<ItemParkingChooseStreetBinding>, item: Street) {
+        holder.vb.tvStreet.text = item.streetName
         if (currentStreet == item) {
             holder.vb.cbStreet.isChecked = true
             currentStreetCB = holder.vb.cbStreet
@@ -40,6 +41,6 @@ class ParkingChooseStreetAdapter(data: MutableList<Int>? = null, var currentStre
     }
 
     interface ChooseStreetAdapterCallBack {
-        fun chooseStreet(street: Int)
+        fun chooseStreet(street: Street)
     }
 }

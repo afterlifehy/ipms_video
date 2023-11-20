@@ -7,18 +7,29 @@ import com.rt.base.adapter.VBViewHolder
 import com.rt.ipms_video.databinding.ItemChooseStreetBinding
 import com.rt.base.bean.Street
 
-class ChooseStreetAdapter(data: MutableList<Street>? = null) :
+class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedList: MutableList<Street>) :
     BaseBindingAdapter<Street, ItemChooseStreetBinding>(data) {
-    var checkedList: MutableList<Street> = ArrayList()
 
     override fun convert(holder: VBViewHolder<ItemChooseStreetBinding>, item: Street) {
         holder.vb.tvStreet.text = item.streetName
+        if (streetChoosedList.contains(item)) {
+            holder.vb.cbStreet.isChecked = true
+        } else {
+            holder.vb.cbStreet.isChecked = false
+        }
         holder.vb.rlStreet.setOnClickListener {
-            holder.vb.cbStreet.isChecked = !holder.vb.cbStreet.isChecked
+            holder.vb.cbStreet.isChecked = !item.ischeck
             if (holder.vb.cbStreet.isChecked) {
-                checkedList.add(item)
+                streetChoosedList.add(item)
             } else {
-                checkedList.remove(item)
+                streetChoosedList.remove(item)
+            }
+        }
+        holder.vb.cbStreet.setOnClickListener {
+            if (holder.vb.cbStreet.isChecked) {
+                streetChoosedList.add(item)
+            } else {
+                streetChoosedList.remove(item)
             }
         }
     }

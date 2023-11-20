@@ -13,6 +13,7 @@ import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
 import com.rt.base.ext.i18N
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.StreetChoosedAdapter
 import com.rt.ipms_video.databinding.ActivityStreetChooseBinding
@@ -22,7 +23,7 @@ import com.rt.ipms_video.mvvm.viewmodel.StreetChooseViewModel
 @Route(path = ARouterMap.STREET_CHOOSE)
 class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStreetChooseBinding>(),
     OnClickListener {
-    var streetList:MutableList<Street> = ArrayList()
+    var streetList: MutableList<Street> = ArrayList()
     var streetChooseListDialog: StreetChooseListDialog? = null
     var streetChoosedAdapter: StreetChoosedAdapter? = null
     var streetChoosedList: MutableList<Street> = ArrayList()
@@ -31,7 +32,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.路段选择)
 
-        streetList = intent.getParcelableArrayListExtra(ARouterMap.STREET_LIST, Street::class.java)!!
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(this)
         streetChoosedAdapter = StreetChoosedAdapter(streetChoosedList, this)
@@ -55,18 +55,23 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_addStreet -> {
-                streetChooseListDialog = StreetChooseListDialog(streetList,object : StreetChooseListDialog.StreetChooseCallBack {
-                    override fun chooseStreets(checkedList: MutableList<Street>?) {
-                        streetChoosedList = checkedList!!
-                        streetChoosedAdapter?.setList(streetChoosedList)
-                    }
+                streetList.clear()
+                RealmUtil.instance?.findAllStreetList()?.let { streetList.addAll(it) }
+                streetChooseListDialog =
+                    StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
+                        override fun chooseStreets() {
+                            streetChoosedAdapter?.setList(streetChoosedList)
+                        }
 
-                })
+                    })
                 streetChooseListDialog?.show()
             }
 
             R.id.rtv_enterWorkBench -> {
                 if (streetChoosedList.isNotEmpty()) {
+                    for(i in streetChoosedList){
+                        RealmUtil.instance?.updateStreetChoosed(i)
+                    }
                     ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }

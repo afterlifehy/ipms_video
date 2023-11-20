@@ -15,19 +15,19 @@ interface Api {
      * 停车场泊位列表
      */
     @POST("S_VO2_02")
-    suspend fun S_VO2_02(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun getParkingLotList(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingLotResultBean>
 
     /**
      * 场内停车费查询
      */
     @POST("S_VO2_03")
-    suspend fun S_VO2_03(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun parkingSpaceFee(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<ParkingSpaceBean>
 
     /**
      * 场内支付
      */
     @POST("S_VO2_04")
-    suspend fun S_VO2_04(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun insidePay(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QRPayBean>
 
     /**
      * 欠费查询
@@ -39,7 +39,7 @@ interface Api {
      * 欠费支付
      */
     @POST("S_VO2_06")
-    suspend fun S_VO2_06(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun S_VO2_06(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QRPayBean>
 
     /**
      * 主动查询支付结果
@@ -69,7 +69,7 @@ interface Api {
      * 签退
      */
     @POST("S_VO2_11")
-    suspend fun S_VO2_11(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun logout(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 查询订单
@@ -99,13 +99,13 @@ interface Api {
      * 视频及图片地址查询
      */
     @POST("S_VO2_16")
-    suspend fun S_VO2_16(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun videoPic(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<VideoPicBean>
 
     /**
      * 营收盘点查询
      */
     @POST("S_VO2_17")
-    suspend fun S_VO2_17(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun incomeCounting(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<IncomeCountingBean>
 
     /**
      * 费率查询

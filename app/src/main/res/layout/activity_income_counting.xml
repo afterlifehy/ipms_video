@@ -97,6 +97,7 @@
                     android:textSize="@dimen/sp_16" />
 
                 <TextView
+                    android:id="@+id/tv_todayOrderNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_ff666666"
@@ -126,6 +127,7 @@
                     android:textSize="@dimen/sp_16" />
 
                 <TextView
+                    android:id="@+id/tv_arrearsOrderNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_ff666666"
@@ -147,6 +149,7 @@
         app:rv_radius="@dimen/dp_10">
 
         <com.aries.ui.view.radius.RadiusTextView
+            android:id="@+id/rtv_dateRange"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_47"
             android:gravity="center_vertical"

@@ -10,6 +10,7 @@ import android.widget.PopupWindow
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rt.base.BaseApplication
+import com.rt.base.bean.Street
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.PopStreetBinding
 import com.rt.ipms_video.adapter.ParkingChooseStreetAdapter
@@ -17,12 +18,11 @@ import com.rt.ipms_video.adapter.ParkingChooseStreetAdapter
 /**
  * Created by huy  on 2022/12/7.
  */
-class StreetPop(val context: Context?, val streetList: MutableList<Int>, var callback: StreetSelectCallBack) :
+class StreetPop(val context: Context?, var currentStreet: Street?, val streetList: MutableList<Street>, var callback: StreetSelectCallBack) :
     PopupWindow(context), View.OnClickListener {
 
     private lateinit var binding: PopStreetBinding
     var parkingChooseStreetAdapter: ParkingChooseStreetAdapter? = null
-    var currentStreet = 1
 
     init {
         initView()
@@ -33,8 +33,8 @@ class StreetPop(val context: Context?, val streetList: MutableList<Int>, var cal
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         parkingChooseStreetAdapter =
-            ParkingChooseStreetAdapter(streetList, currentStreet, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
-                override fun chooseStreet(street: Int) {
+            ParkingChooseStreetAdapter(streetList, currentStreet!!, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
+                override fun chooseStreet(street: Street) {
                     currentStreet = street
                 }
             })
@@ -62,14 +62,14 @@ class StreetPop(val context: Context?, val streetList: MutableList<Int>, var cal
             }
 
             R.id.rtv_ok -> {
-                callback.selectStreet(currentStreet)
+                callback.selectStreet(currentStreet!!)
                 dismiss()
             }
         }
     }
 
     interface StreetSelectCallBack {
-        fun selectStreet(street: Int)
+        fun selectStreet(street: Street)
     }
 
 

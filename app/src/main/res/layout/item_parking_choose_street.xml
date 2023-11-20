@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/dp_17"
+        android:background="@color/transparent"
         android:button="@drawable/selector_parking_street" />
 
     <View

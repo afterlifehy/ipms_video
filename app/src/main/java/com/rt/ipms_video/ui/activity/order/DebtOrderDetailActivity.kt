@@ -17,7 +17,6 @@ import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityDebtOrderDetailBinding
 import com.rt.ipms_video.dialog.PaymentQrDialog
-import com.rt.ipms_video.mvvm.viewmodel.DebtCollectionViewModel
 import com.rt.ipms_video.mvvm.viewmodel.DebtOrderDetailViewModel
 
 @Route(path = ARouterMap.DEBT_ORDER_DETAIL)
@@ -27,6 +26,8 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     val colors2 = intArrayOf(com.rt.base.R.color.color_ff666666, com.rt.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
+    var qr = ""
+
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.欠费订单详情)
@@ -61,7 +62,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             }
 
             R.id.rfl_pay -> {
-                paymentQrDialog = PaymentQrDialog()
+                paymentQrDialog = PaymentQrDialog(qr)
                 paymentQrDialog?.show()
             }
         }

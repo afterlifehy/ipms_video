@@ -99,4 +99,8 @@
     <string name="路段名称">路段名称：</string>
     <string name="提交">提交</string>
     <string name="催缴管理">催缴管理</string>
+    <string name="签退成功">签退成功</string>
+    <string name="在停时间">在停时间</string>
+    <string name="已付金额">已付金额</string>
+    <string name="订单总额">订单总额</string>
 </resources>

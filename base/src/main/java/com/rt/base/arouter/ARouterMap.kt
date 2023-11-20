@@ -10,7 +10,6 @@ object ARouterMap {
     const val LOGIN = "/ipms_app/login"
 
     const val STREET_CHOOSE = "/ipms_app/streetChoose"
-    const val STREET_LIST = "streetList"
 
     const val ORDER_MAIN = "/ipms_app/orderMain"
 
@@ -19,10 +18,12 @@ object ARouterMap {
     const val SCAN_PLATE = "/ipms_app/scanPlate"
 
     const val DEBT_COLLECTION = "/ipms_app/debtCollection"
+    const val DEBT_CAR_LICENSE = "carLicense"
 
     const val DEBT_ORDER_DETAIL = "/ipms_app/debtOrderDetail"
 
     const val VIDEO_PIC = "/ipms_app/videoPic"
+    const val VIDEO_PIC_ORDER_NO = "orderNo"
 
     const val ORDER_INQUIRY = "/ipms_app/orderInquiry"
 
@@ -37,6 +38,10 @@ object ARouterMap {
     const val PARKING_LOT = "/ipms_app/parkingLot"
 
     const val PARKING_SPACE = "/ipms_app/parkingSpace"
+    const val ORDER_NO = "orderNo"
+    const val CAR_LICENSE = "carLicense"
+    const val CAR_COLOR = "carColor"
+    const val PARKING_NO = "parkingNo"
 
     const val BERTH_ABNORMAL = "/ipms_app/berthAbnormal"
 

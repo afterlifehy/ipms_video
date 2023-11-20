@@ -14,6 +14,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.Street
 import com.rt.base.ext.i18N
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
@@ -33,7 +34,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     var checkedColor = 0
     private lateinit var keyboardUtil: KeyboardUtil
     val widthType = 3
-    var streetList: MutableList<Int> = ArrayList()
+    var streetList: MutableList<Street> = ArrayList()
     var abnormalStreetListDialog: AbnormalStreetListDialog? = null
 
     override fun initView() {
@@ -65,11 +66,11 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     }
 
     override fun initData() {
-        streetList.add(1)
-        streetList.add(2)
-        streetList.add(3)
-        streetList.add(4)
-        streetList.add(5)
+//        streetList.add(1)
+//        streetList.add(2)
+//        streetList.add(3)
+//        streetList.add(4)
+//        streetList.add(5)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -145,23 +146,23 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     }
 
     fun showAbnormalStreetListDialog() {
-        val currentStreet = if (binding.tvStreetName.text.toString().isEmpty()) {
-            0
-        } else {
-            binding.tvStreetName.text.toString().toInt()
-        }
-        abnormalStreetListDialog = AbnormalStreetListDialog(
-            streetList,
-            currentStreet,
-            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
-                override fun chooseStreet(currentStreet: Int) {
-                    binding.tvStreetName.text = currentStreet.toString()
-                }
-            })
-        abnormalStreetListDialog?.show()
-        abnormalStreetListDialog?.setOnDismissListener {
-            binding.cbStreetName.isChecked = false
-        }
+//        val currentStreet = if (binding.tvStreetName.text.toString().isEmpty()) {
+//            0
+//        } else {
+//            binding.tvStreetName.text.toString().toInt()
+//        }
+//        abnormalStreetListDialog = AbnormalStreetListDialog(
+//            streetList,
+//            currentStreet,
+//            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
+//                override fun chooseStreet(currentStreet: Street) {
+//                    binding.tvStreetName.text = currentStreet.toString()
+//                }
+//            })
+//        abnormalStreetListDialog?.show()
+//        abnormalStreetListDialog?.setOnDismissListener {
+//            binding.cbStreetName.isChecked = false
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

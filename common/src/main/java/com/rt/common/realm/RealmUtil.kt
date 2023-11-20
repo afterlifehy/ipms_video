@@ -1,5 +1,6 @@
 package com.rt.common.realm
 
+import com.rt.base.bean.Street
 import io.realm.*
 
 class RealmUtil {
@@ -53,6 +54,15 @@ class RealmUtil {
             realm.executeTransactionAsync { realm -> realm.copyToRealmOrUpdate(realmObjectList) }
     }
 
+    /**
+     *  选中streetList
+     */
+    fun updateStreetChoosed(street: Street) {
+        realm.executeTransaction {
+            street.ischeck = true
+        }
+    }
+
     fun deleteRealmAsync(realmObject: RealmObject) {
         transaction = realm.executeTransactionAsync { realm ->
             realmObject.deleteFromRealm()
@@ -65,4 +75,21 @@ class RealmUtil {
         }
     }
 
+    fun findAllStreetList(): List<Street> {
+        return realm.where(Street::class.java).findAll()
+    }
+
+
+    fun findCheckedStreetList(): List<Street> {
+        return realm.where(Street::class.java).equalTo("ischeck", true).findAll()
+    }
+
+    /**
+     *删除所有street
+     */
+    fun deleteAllStreet() {
+        realm.executeTransaction {
+            it.delete(Street::class.java)
+        }
+    }
 }
