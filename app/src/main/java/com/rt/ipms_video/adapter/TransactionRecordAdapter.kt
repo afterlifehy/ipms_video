@@ -5,15 +5,16 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
+import com.rt.base.bean.TransactionBean
 import com.rt.ipms_video.databinding.ItemTransactionRecordBinding
 
-class TransactionRecordAdapter(data: MutableList<Int>? = null, val onClickListener: OnClickListener) :
-    BaseBindingAdapter<Int, ItemTransactionRecordBinding>(data) {
-    override fun convert(holder: VBViewHolder<ItemTransactionRecordBinding>, item: Int) {
-        holder.vb.tvOrderNo.text = "20230625CN00700075601"
-        holder.vb.tvAmount.text = "15.00元"
-        holder.vb.tvStartTime.text = "2023-06-25 08:01:43"
-        holder.vb.tvEndTime.text = "2023-06-25 09:10:52"
+class TransactionRecordAdapter(data: MutableList<TransactionBean>? = null, val onClickListener: OnClickListener) :
+    BaseBindingAdapter<TransactionBean, ItemTransactionRecordBinding>(data) {
+    override fun convert(holder: VBViewHolder<ItemTransactionRecordBinding>, item: TransactionBean) {
+        holder.vb.tvOrderNo.text = item.tradeNo
+        holder.vb.tvAmount.text = item.payedAmount
+        holder.vb.tvStartTime.text = item.startDate
+        holder.vb.tvEndTime.text = item.endDate
         holder.vb.flNotification.tag = item
         holder.vb.flNotification.setOnClickListener(onClickListener)
     }

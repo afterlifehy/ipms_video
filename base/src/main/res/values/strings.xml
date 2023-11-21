@@ -100,7 +100,20 @@
     <string name="提交">提交</string>
     <string name="催缴管理">催缴管理</string>
     <string name="签退成功">签退成功</string>
-    <string name="在停时间">在停时间</string>
-    <string name="已付金额">已付金额</string>
-    <string name="订单总额">订单总额</string>
+    <string name="在停时间">在停时间：</string>
+    <string name="已付金额">已付金额：</string>
+    <string name="订单总额">订单总额：</string>
+    <string name="泊位">泊位</string>
+    <string name="路段">路段</string>
+    <string name="入场">入场</string>
+    <string name="出场">出场</string>
+    <string name="支付成功">支付成功</string>
+    <string name="填写泊位号">填写泊位号</string>
+    <string name="请填写泊位号">请填写泊位号</string>
+    <string name="上报成功">上报成功</string>
+    <string name="已付">已付:</string>
+    <string name="元">元</string>
+    <string name="欠">欠:</string>
+    <string name="时长">时长</string>
+    <string name="总额">总额</string>
 </resources>

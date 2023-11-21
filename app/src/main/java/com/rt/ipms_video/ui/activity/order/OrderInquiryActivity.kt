@@ -12,11 +12,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.OrderBean
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
+import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
@@ -27,15 +33,18 @@ import com.rt.ipms_video.adapter.OrderInquiryAdapter
 import com.rt.ipms_video.databinding.ActivityOrderInquiryBinding
 import com.rt.ipms_video.mvvm.viewmodel.OrderInquiryViewModel
 import com.rt.ipms_video.pop.DatePop
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.ORDER_INQUIRY)
 class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrderInquiryBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
-    var orderList: MutableList<Int> = ArrayList()
+    var orderList: MutableList<OrderBean> = ArrayList()
     var orderInquiryAdapter: OrderInquiryAdapter? = null
     var datePop: DatePop? = null
     var pageIndex = 1
     var pageSize = 10
+    var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+    var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -76,40 +85,41 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         binding.srlOrder.setOnRefreshListener {
             pageIndex = 1
-            binding.srlOrder.finishRefresh(5000)
-            orderList.clear()
             query()
+            binding.srlOrder.finishRefresh(5000)
         }
         binding.srlOrder.setOnLoadMoreListener {
             pageIndex++
-            binding.srlOrder.finishLoadMore(5000)
             query()
+            binding.srlOrder.finishLoadMore(5000)
         }
     }
 
     override fun initData() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            query()
-        }, 1000)
+        showProgressDialog()
+        query()
     }
 
     private fun query() {
-        binding.srlOrder.finishLoadMore()
-        binding.srlOrder.finishRefresh()
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
-//        if (searchContent.isNotEmpty() && searchContent.length != 7 && searchContent.length != 8) {
-//            ToastUtil.showToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
-//            return
-//        }
-        binding.rvOrders.show()
-        binding.layoutNoData.root.gone()
-        orderList.add(0)
-        orderList.add(1)
-        orderList.add(2)
-        orderList.add(3)
-        orderList.add(4)
-        orderInquiryAdapter?.setList(orderList)
+        if (searchContent.isNotEmpty() && (searchContent.length != 7 || searchContent.length != 8)) {
+            ToastUtil.showToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
+            return
+        }
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.name)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginName
+            jsonobject["carLicense"] = searchContent
+            jsonobject["startDate"] = startDate
+            jsonobject["endDate"] = endDate
+            jsonobject["page"] = pageIndex
+            jsonobject["size"] = pageSize
+            param["attr"] = jsonobject
+            mViewModel.orderInquiry(param)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -125,7 +135,11 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             R.id.iv_right -> {
                 datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
-
+                        startDate = startTime
+                        endDate = endTime
+                        pageIndex = 1
+                        showProgressDialog()
+                        query()
                     }
 
                 })
@@ -138,7 +152,43 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
 
             R.id.rll_order -> {
-                ARouter.getInstance().build(ARouterMap.ORDER_DETAIL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val orderBean = v.tag as OrderBean
+                ARouter.getInstance().build(ARouterMap.ORDER_DETAIL).withParcelable(ARouterMap.ORDER, orderBean)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+            }
+        }
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            orderInquiryLiveData.observe(this@OrderInquiryActivity) {
+                dismissProgressDialog()
+                val tempList = it.result
+                if (pageIndex == 1) {
+                    if (tempList.isEmpty()) {
+                        orderInquiryAdapter?.setNewInstance(null)
+                        binding.rvOrders.gone()
+                        binding.layoutNoData.root.show()
+                    } else {
+                        orderList.clear()
+                        orderList.addAll(tempList)
+                        orderInquiryAdapter?.setList(orderList)
+                        binding.srlOrder.finishRefresh()
+                    }
+                } else {
+                    if (tempList.isEmpty()) {
+                        pageIndex--
+                        binding.srlOrder.finishLoadMoreWithNoMoreData()
+                    } else {
+                        orderList.addAll(tempList)
+                        orderInquiryAdapter?.setList(orderList)
+                        binding.srlOrder.finishLoadMore(300)
+                    }
+                }
+            }
+            errMsg.observe(this@OrderInquiryActivity) {
+                ToastUtil.showToast(it.msg)
             }
         }
     }
@@ -153,7 +203,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     override val isFullScreen: Boolean
         get() = true
 
-    override fun providerVMClass(): Class<OrderInquiryViewModel>? {
+    override fun providerVMClass(): Class<OrderInquiryViewModel> {
         return OrderInquiryViewModel::class.java
     }
 

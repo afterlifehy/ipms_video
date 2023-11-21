@@ -12,6 +12,7 @@ import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.i18N
 import com.rt.base.ext.i18n
+import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
@@ -43,6 +44,7 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
     }
 
     override fun initData() {
+        showProgressDialog()
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
@@ -62,6 +64,7 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
         super.startObserve()
         mViewModel.apply {
             videoPicLiveData.observe(this@VideoPicActivity) {
+                dismissProgressDialog()
                 for (i in tabList.indices) {
                     val bundle = Bundle()
                     val videoPicFragment = VideoPicFragment()
@@ -80,6 +83,10 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
                 binding.stlVideoPic.setViewPager(binding.vpVideoPic)
                 binding.stlVideoPic.currentTab = 0
                 binding.vpVideoPic.offscreenPageLimit = 2
+            }
+            errMsg.observe(this@VideoPicActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(it.msg)
             }
         }
     }

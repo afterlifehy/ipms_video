@@ -11,11 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.fastjson.JSONObject
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.DebtCollectionBean
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
+import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
@@ -27,14 +32,16 @@ import com.rt.ipms_video.databinding.ActivityDebtCollectionBinding
 import com.rt.ipms_video.dialog.CollectionDialog
 import com.rt.ipms_video.mvvm.viewmodel.DebtCollectionViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.DEBT_COLLECTION)
 class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityDebtCollectionBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
     var debtCollectionAdapter: DebtCollectionAdapter? = null
-    var debtCollectionList: MutableList<Int> = ArrayList()
+    var debtCollectionList: MutableList<DebtCollectionBean> = ArrayList()
     var collectionDialog: CollectionDialog? = null
     var carLicense = ""
+    var token = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -81,9 +88,6 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     }
 
     override fun initData() {
-        query()
-//        binding.layoutNoData.root.show()
-//        binding.rvDebt.gone()
     }
 
     @SuppressLint("CheckResult")
@@ -108,7 +112,8 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.tv_search -> {
-
+                carLicense = binding.etSearch.text.toString()
+                query()
             }
 
             R.id.toolbar,
@@ -117,21 +122,54 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
             R.id.rrl_debtCollection -> {
-                ARouter.getInstance().build(ARouterMap.DEBT_ORDER_DETAIL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val debtCollectionBean = v.tag as DebtCollectionBean
+                ARouter.getInstance().build(ARouterMap.DEBT_ORDER_DETAIL).withParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }
 
     fun query() {
         keyboardUtil.hideKeyboard()
+        showProgressDialog()
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            if (carLicense.isNotEmpty()) {
+                jsonobject["carLicense"] = carLicense
+            }
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
+        }
+    }
 
-        binding.rvDebt.show()
-        binding.layoutNoData.root.gone()
-        debtCollectionList.add(1)
-        debtCollectionList.add(2)
-        debtCollectionList.add(3)
-        debtCollectionList.add(4)
-        debtCollectionAdapter?.setList(debtCollectionList)
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            debtInquiryLiveData.observe(this@DebtCollectionActivity) {
+                dismissProgressDialog()
+                debtCollectionList.clear()
+                debtCollectionList.addAll(it.result)
+                if (debtCollectionList.size > 0) {
+                    binding.rvDebt.show()
+                    binding.layoutNoData.root.gone()
+                    debtCollectionAdapter?.setList(debtCollectionList)
+                } else {
+                    binding.rvDebt.gone()
+                    binding.layoutNoData.root.show()
+                }
+            }
+            errMsg.observe(this@DebtCollectionActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(it.msg)
+            }
+        }
+    }
+
+    override fun providerVMClass(): Class<DebtCollectionViewModel> {
+        return DebtCollectionViewModel::class.java
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -14,13 +14,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.fastjson.JSONObject
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18n
 import com.rt.base.ext.show
+import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
+import com.rt.common.util.AppUtil
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyTextWatcher
@@ -44,6 +48,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
     var abnormalClassificationDialog: AbnormalClassificationDialog? = null
     var classificationList: MutableList<String> = ArrayList()
+    var currentStreet: Street? = null
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18n(com.rt.base.R.string.泊位异常上报)
@@ -80,11 +85,10 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     override fun initData() {
-//        streetList.add(1)
-//        streetList.add(2)
-//        streetList.add(3)
-//        streetList.add(4)
-//        streetList.add(5)
+        RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
+        currentStreet = streetList[0]
+        binding.tvLotName.text = currentStreet?.streetName
+        binding.rtvStreetNo.text = currentStreet?.streetNo
 
         classificationList.add(i18n(com.rt.base.R.string.泊位有车POS无订单))
         classificationList.add(i18n(com.rt.base.R.string.泊位无车POS有订单))
@@ -171,7 +175,22 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             }
 
             R.id.rfl_report -> {
-                onBackPressedSupport()
+                if (binding.retParkingNo.text.toString().isEmpty()) {
+                    ToastUtil.showToast(i18n(com.rt.base.R.string.请填写泊位号))
+                    return
+                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["streetNo"] = currentStreet?.streetNo
+                jsonobject["parkingNo"] = binding.retParkingNo.text.toString()
+                jsonobject["type"] =
+                    AppUtil.fillZero(classificationList.indexOf(binding.tvAbnormalClassification.text.toString()).toString())
+                jsonobject["remark"] = binding.retRemarks.text.toString()
+                jsonobject["carLicense"] = binding.etPlate.text.toString()
+                jsonobject["carColor"] = checkedColor
+                param["attr"] = jsonobject
+                showProgressDialog()
+                mViewModel.abnormalReport(param)
             }
 
             R.id.ll_berthAbnormal2,
@@ -187,23 +206,20 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     fun showAbnormalStreetListDialog() {
-//        val currentStreet = if (binding.tvLotName.text.toString().isEmpty()) {
-//            null
-//        } else {
-//            null
-//        }
-//        abnormalStreetListDialog = AbnormalStreetListDialog(
-//            streetList,
-//            currentStreet,
-//            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
-//                override fun chooseStreet(currentStreet: Street) {
-//                    binding.tvLotName.text = currentStreet.toString()
-//                }
-//            })
-//        abnormalStreetListDialog?.show()
-//        abnormalStreetListDialog?.setOnDismissListener {
-//            binding.cbLotName.isChecked = false
-//        }
+        abnormalStreetListDialog = AbnormalStreetListDialog(
+            streetList,
+            currentStreet!!,
+            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
+                override fun chooseStreet(street: Street) {
+                    currentStreet = street
+                    binding.tvLotName.text = currentStreet?.streetName
+                    binding.rtvStreetNo.text = currentStreet?.streetNo
+                }
+            })
+        abnormalStreetListDialog?.show()
+        abnormalStreetListDialog?.setOnDismissListener {
+            binding.cbLotName.isChecked = false
+        }
     }
 
     fun showAbnormalClassificationDialog() {
@@ -257,6 +273,21 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         collectionPlateColorAdapter?.updateColor(6, 6)
                     }
                 }
+            }
+        }
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(i18n(com.rt.base.R.string.上报成功))
+                onBackPressedSupport()
+            }
+            errMsg.observe(this@BerthAbnormalActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(it.msg)
             }
         }
     }

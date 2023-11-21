@@ -50,6 +50,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     fun getParkingLotList(street: Street) {
+        showProgressDialog()
         currentStreet = street
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
@@ -89,11 +90,13 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         super.startObserve()
         mViewModel.apply {
             parkingLotListLiveData.observe(this@ParkingLotActivity) {
+                dismissProgressDialog()
                 parkingLotList.clear()
                 parkingLotList.addAll(it.result)
                 parkingLotAdapter?.setList(parkingLotList)
             }
             errMsg.observe(this@ParkingLotActivity) {
+                dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }

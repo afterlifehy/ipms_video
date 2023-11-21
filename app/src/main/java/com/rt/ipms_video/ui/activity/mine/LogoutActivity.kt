@@ -107,6 +107,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                             })
                         }
                         runBlocking {
+                            showProgressDialog()
                             val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
@@ -126,6 +127,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         super.startObserve()
         mViewModel.apply {
             logoutLiveData.observe(this@LogoutActivity) {
+                dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 ActivityCacheManager.instance().getCurrentActivity()?.finish()
                 ToastUtil.showToast(i18N(com.rt.base.R.string.签退成功))
@@ -135,6 +137,10 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
+            }
+            errMsg.observe(this@LogoutActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(it.msg)
             }
         }
     }

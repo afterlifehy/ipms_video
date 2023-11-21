@@ -21,6 +21,7 @@ object ARouterMap {
     const val DEBT_CAR_LICENSE = "carLicense"
 
     const val DEBT_ORDER_DETAIL = "/ipms_app/debtOrderDetail"
+    const val DEBT_ORDER = "debtOrder"
 
     const val VIDEO_PIC = "/ipms_app/videoPic"
     const val VIDEO_PIC_ORDER_NO = "orderNo"
@@ -28,8 +29,10 @@ object ARouterMap {
     const val ORDER_INQUIRY = "/ipms_app/orderInquiry"
 
     const val ORDER_DETAIL = "/ipms_app/orderDetail"
+    const val ORDER = "order"
 
     const val TRANSACTION_RECORD = "/ipms_app/transactionRecord"
+    const val TRANSACTION_RECORD_ORDER_NO = "orderNo"
 
     const val PREVIEW_IMG = "/ipms_app/previewImg"
     const val IMG_LIST = "imgList"

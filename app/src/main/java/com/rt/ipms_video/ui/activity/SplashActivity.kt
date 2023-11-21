@@ -92,7 +92,7 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
                 initArouter()
                 finish()
             }
-        }, 100)
+        }, 1000)
     }
 
     fun initArouter() {

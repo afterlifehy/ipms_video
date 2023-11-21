@@ -33,19 +33,19 @@ interface Api {
      * 欠费查询
      */
     @POST("S_VO2_05")
-    suspend fun S_VO2_05(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun debtInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtCollectionResultBean>
 
     /**
      * 欠费支付
      */
     @POST("S_VO2_06")
-    suspend fun S_VO2_06(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QRPayBean>
+    suspend fun debtPay(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QRPayBean>
 
     /**
      * 主动查询支付结果
      */
     @POST("S_VO2_07")
-    suspend fun S_VO2_07(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun payResult(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultResultBean>
 
     /**
      * 欠费催缴单查询
@@ -63,7 +63,7 @@ interface Api {
      * 异常上报
      */
     @POST("S_VO2_10")
-    suspend fun S_VO2_10(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun abnormalReport(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<AbnormalReportResultBean>
 
     /**
      * 签退
@@ -75,25 +75,25 @@ interface Api {
      * 查询订单
      */
     @POST("S_VO2_12")
-    suspend fun S_VO2_12(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun orderInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderResultBean>
 
     /**
      * 交易查询
      */
     @POST("S_VO2_13")
-    suspend fun S_VO2_13(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun transactionInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean>
 
     /**
      * 根据订单查询交易记录
      */
     @POST("S_VO2_14")
-    suspend fun S_VO2_14(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun transactionInquiryByOrder(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean>
 
     /**
      * 查询告知书
      */
     @POST("S_VO2_15")
-    suspend fun S_VO2_15(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun notificationInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NotificationBean>
 
     /**
      * 视频及图片地址查询

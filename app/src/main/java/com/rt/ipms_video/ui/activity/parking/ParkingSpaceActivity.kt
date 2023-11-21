@@ -1,5 +1,7 @@
 package com.rt.ipms_video.ui.activity.parking
 
+import android.content.DialogInterface
+import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.view.View
 import android.view.View.OnClickListener
@@ -23,10 +25,17 @@ import com.rt.ipms_video.databinding.ActivityParkingSpaceBinding
 import com.rt.ipms_video.dialog.PaymentQrDialog
 import com.rt.ipms_video.mvvm.viewmodel.ParkingSpaceViewModel
 import com.zrq.spanbuilder.TextStyle
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
+    var job: Job? = null
     val sizes = intArrayOf(19, 19)
     val colors = intArrayOf(com.rt.base.R.color.color_ff666666, com.rt.base.R.color.color_ff1a1a1a)
     val colors2 = intArrayOf(com.rt.base.R.color.color_ff666666, com.rt.base.R.color.color_fff70f0f)
@@ -41,6 +50,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var token = ""
 
     var qr = ""
+    var tradeNo = ""
 
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
@@ -54,9 +64,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_video)
         binding.layoutToolbar.ivRight.show()
 
-        runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-        }
     }
 
     override fun initListener() {
@@ -69,15 +76,17 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     override fun initData() {
         showProgressDialog()
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["token"] = token
-        jsonobject["orderNo"] = orderNo
-        jsonobject["carLicense"] = carLicense
-        jsonobject["carColor"] = carColor
-        param["attr"] = jsonobject
-        mViewModel.parkingSpaceFee(param)
-
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["orderNo"] = orderNo
+            jsonobject["carLicense"] = carLicense
+            jsonobject["carColor"] = carColor
+            param["attr"] = jsonobject
+            mViewModel.parkingSpaceFee(param)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -87,7 +96,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.iv_right -> {
-                ARouter.getInstance().build(ARouterMap.VIDEO_PIC_ORDER_NO).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                ARouter.getInstance().build(ARouterMap.VIDEO_PIC).withString(ARouterMap.VIDEO_PIC_ORDER_NO, orderNo)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rrl_arrears -> {
@@ -96,14 +106,34 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePayment -> {
+                GlobalScope.launch(Dispatchers.IO) {
+                    if (job != null) {
+                        job?.cancelAndJoin()
+                    }
+                }
                 paymentQrDialog = PaymentQrDialog(qr)
                 paymentQrDialog?.show()
+                job = GlobalScope.launch(Dispatchers.IO) {
+                    repeat(60) {
+                        checkPayResult()
+                        delay(3000L)
+                    }
+                }
             }
 
             R.id.rfl_abnormalReport -> {
                 ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
+    }
+
+    fun checkPayResult() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["token"] = token
+        jsonobject["tradeNo"] = tradeNo
+        param["attr"] = jsonobject
+        mViewModel.payResult(param)
     }
 
     override fun startObserve() {
@@ -128,10 +158,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 binding.tvOrderAmount.text = AppUtil.getSpan(strings5, sizes, colors)
 
 //                TODO("少两个字段")
+                tradeNo = it.tradeNo
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["token"] = token
-                jsonobject["tradeNo"] = it.tradeNo
+                jsonobject["tradeNo"] = tradeNo
                 jsonobject["carLicense"] = it.carLicense
                 jsonobject["carColor"] = it.carColor
                 param["attr"] = jsonobject
@@ -139,9 +170,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                qr = it.qrCode
+                qr = it.payUrl
+            }
+            payResultLiveData.observe(this@ParkingSpaceActivity) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    if (job != null) {
+                        job?.cancelAndJoin()
+                    }
+                }
+                ToastUtil.showToast(i18N(com.rt.base.R.string.支付成功))
             }
             errMsg.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }

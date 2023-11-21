@@ -5,12 +5,15 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
+import com.rt.base.bean.OrderBean
+import com.rt.base.ext.i18n
 import com.rt.common.util.AppUtil
+import com.rt.common.util.BigDecimalManager
 import com.rt.ipms_video.databinding.ItemOrderBinding
 import com.zrq.spanbuilder.TextStyle
 
-class OrderInquiryAdapter(data: MutableList<Int>? = null, val onClickListener: OnClickListener) :
-    BaseBindingAdapter<Int, ItemOrderBinding>(data) {
+class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListener: OnClickListener) :
+    BaseBindingAdapter<OrderBean, ItemOrderBinding>(data) {
     val colorsBlue = intArrayOf(com.rt.base.R.color.color_ff0371f4, com.rt.base.R.color.color_ff0371f4, com.rt.base.R.color.color_ff0371f4)
     val colorsRed = intArrayOf(com.rt.base.R.color.color_ffe92404, com.rt.base.R.color.color_ffe92404, com.rt.base.R.color.color_ffe92404)
     val sizes = intArrayOf(16, 20, 16)
@@ -18,16 +21,29 @@ class OrderInquiryAdapter(data: MutableList<Int>? = null, val onClickListener: O
     val colors2 = intArrayOf(com.rt.base.R.color.color_ff666666, com.rt.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
 
-    override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: Int) {
-        holder.vb.tvNum.text = AppUtil.fillZero(item.toString())
-        holder.vb.tvLicensePlate.text = "浙AF128S "
-        val strings = arrayOf("已付:", "165.00", "元")
-        holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
-        val strings2 = arrayOf("入场：", "2023-06-25 08:01:43")
+    override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: OrderBean) {
+        holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
+        holder.vb.tvLicensePlate.text = item.carLicense
+        when (item.paidAmount.toDouble() == item.amount.toDouble()) {
+            true -> {
+                val strings = arrayOf(i18n(com.rt.base.R.string.已付), item.paidAmount, i18n(com.rt.base.R.string.元))
+                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
+            }
+
+            false -> {
+                val strings = arrayOf(
+                    i18n(com.rt.base.R.string.欠),
+                    BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()),
+                    i18n(com.rt.base.R.string.元)
+                )
+                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsRed, styles)
+            }
+        }
+        val strings2 = arrayOf(i18n(com.rt.base.R.string.入场) + ":", item.startTime)
         holder.vb.tvStartTime.text = AppUtil.getSpan(strings2, sizes2, colors2)
-        val strings3 = arrayOf("出场：", "2023-06-26 08:01:43")
+        val strings3 = arrayOf(i18n(com.rt.base.R.string.出场) + ":", item.endTime)
         holder.vb.tvEndTime.text = AppUtil.getSpan(strings3, sizes2, colors2)
-        holder.vb.tvNo.text = "CN-007-026"
+        holder.vb.tvNo.text = item.parkingNo
 
         holder.vb.rllOrder.tag = item
         holder.vb.rllOrder.setOnClickListener(onClickListener)

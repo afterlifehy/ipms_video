@@ -118,6 +118,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                 binding.tvOrderPlaced.text = "${it.orderTotal}笔"
             }
             errMsg.observe(this@IncomeCountingActivity) {
+                dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }

@@ -82,6 +82,7 @@
                     android:orientation="horizontal">
 
                     <com.aries.ui.view.radius.RadiusTextView
+                        android:id="@+id/rtv_streetNo"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginEnd="@dimen/dp_6"
@@ -96,15 +97,18 @@
                         tools:text="CN007" />
 
                     <com.aries.ui.view.radius.RadiusEditText
+                        android:id="@+id/ret_parkingNo"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/dp_6"
                         android:layout_weight="1.24"
                         android:gravity="center_vertical"
+                        android:hint="@string/填写泊位号"
                         android:inputType="number"
                         android:paddingStart="@dimen/dp_13"
                         android:paddingEnd="@dimen/dp_13"
                         android:textColor="@color/color_ff1a1a1a"
+                        android:textColorHint="@color/color_ff999999"
                         android:textCursorDrawable="@drawable/shape_cursor"
                         android:textSize="@dimen/sp_19"
                         app:rv_backgroundColor="@color/white"

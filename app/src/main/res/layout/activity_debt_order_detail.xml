@@ -43,6 +43,7 @@
             tools:text="沪A36N81" />
 
         <TextView
+            android:id="@+id/tv_arrearsAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"

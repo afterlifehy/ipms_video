@@ -92,6 +92,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 }
                             })
                         }
+                        dismissProgressDialog()
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["loginName"] = binding.etAccount.text.toString()
@@ -110,6 +111,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         super.startObserve()
         mViewModel.apply {
             loginLiveData.observe(this@LoginActivity) {
+                dismissProgressDialog()
                 val streetList = it.result as ArrayList<Street>
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
@@ -121,6 +123,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
             errMsg.observe(this@LoginActivity) {
+                dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }
