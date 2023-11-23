@@ -13,8 +13,8 @@ class TransactionRecordAdapter(data: MutableList<TransactionBean>? = null, val o
     override fun convert(holder: VBViewHolder<ItemTransactionRecordBinding>, item: TransactionBean) {
         holder.vb.tvOrderNo.text = item.tradeNo
         holder.vb.tvAmount.text = item.payedAmount
-        holder.vb.tvStartTime.text = item.startDate
-        holder.vb.tvEndTime.text = item.endDate
+        holder.vb.tvStartTime.text = item.startTime
+        holder.vb.tvEndTime.text = item.endTime
         holder.vb.flNotification.tag = item
         holder.vb.flNotification.setOnClickListener(onClickListener)
     }

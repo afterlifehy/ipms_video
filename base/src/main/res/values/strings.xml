@@ -116,4 +116,6 @@
     <string name="欠">欠:</string>
     <string name="时长">时长</string>
     <string name="总额">总额</string>
+    <string name="发现新版本是否下载安装更新">发现新版本，是否下载安装更新</string>
+    <string name="开始打印">开始打印</string>
 </resources>

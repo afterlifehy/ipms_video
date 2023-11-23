@@ -9,6 +9,7 @@ open class Street(
     @PrimaryKey
     var streetNo: String = "",
     var streetName: String = "",
-    var ischeck: Boolean = false
+    var ischeck: Boolean = false,
+    var isCurrent: Boolean = false
 ) : RealmObject() {
 }

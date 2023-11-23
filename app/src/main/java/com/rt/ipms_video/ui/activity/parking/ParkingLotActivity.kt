@@ -42,16 +42,16 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     override fun initData() {
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
         RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
-        binding.tvTitle.text = streetList[0].streetName
+        binding.tvTitle.text = currentStreet?.streetName
         if (streetList.size > 0) {
-            getParkingLotList(streetList[0])
+            getParkingLotList()
         }
     }
 
-    fun getParkingLotList(street: Street) {
-        showProgressDialog()
-        currentStreet = street
+    fun getParkingLotList() {
+        showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["streetNo"] = currentStreet!!.streetNo
@@ -68,8 +68,11 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             R.id.ll_title -> {
                 streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
-                        binding.tvTitle.text = street.streetName
-                        getParkingLotList(street)
+                        currentStreet = street
+                        binding.tvTitle.text = currentStreet!!.streetName
+                        val old = RealmUtil.instance?.findCurrentStreet()
+                        RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
+                        getParkingLotList()
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as Toolbar)

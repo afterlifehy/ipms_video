@@ -12,5 +12,7 @@ data class ParkingSpaceBean(
     val startTime: String,
     val streetName: String,
     val streetNo: String,
-    val tradeNo: String
+    val tradeNo: String,
+    val historyCount: Int,
+    val historySum: Double
 )

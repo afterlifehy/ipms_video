@@ -1,6 +1,5 @@
 package com.rt.ipms_video.ui.activity.order
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.KeyEvent
@@ -19,6 +18,7 @@ import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
+import com.rt.base.ext.i18n
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
@@ -31,7 +31,6 @@ import com.rt.ipms_video.adapter.DebtCollectionAdapter
 import com.rt.ipms_video.databinding.ActivityDebtCollectionBinding
 import com.rt.ipms_video.dialog.CollectionDialog
 import com.rt.ipms_video.mvvm.viewmodel.DebtCollectionViewModel
-import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.DEBT_COLLECTION)
@@ -88,6 +87,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     }
 
     override fun initData() {
+        if (carLicense.isEmpty()) {
+            return
+        }
+        query()
     }
 
     @SuppressLint("CheckResult")
@@ -113,6 +116,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
             R.id.tv_search -> {
                 carLicense = binding.etSearch.text.toString()
+                if (carLicense.isEmpty()) {
+                    ToastUtil.showToast(i18n(com.rt.base.R.string.请输入车牌号))
+                    return
+                }
                 query()
             }
 
@@ -131,15 +138,13 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
     fun query() {
         keyboardUtil.hideKeyboard()
-        showProgressDialog()
+        showProgressDialog(20000)
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             val param = HashMap<String, Any>()
             val jsonobject = JSONObject()
             jsonobject["token"] = token
-            if (carLicense.isNotEmpty()) {
-                jsonobject["carLicense"] = carLicense
-            }
+            jsonobject["carLicense"] = carLicense
             param["attr"] = jsonobject
             mViewModel.debtInquiry(param)
         }

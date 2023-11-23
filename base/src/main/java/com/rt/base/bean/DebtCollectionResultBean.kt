@@ -23,7 +23,8 @@ data class DebtCollectionBean(
     val parkingTime: String,
     val startTime: String,
     val streetName: String,
-    val streetNo: String
+    val streetNo: String,
+    val carLicense: String
 ) : Parcelable {
 
 }

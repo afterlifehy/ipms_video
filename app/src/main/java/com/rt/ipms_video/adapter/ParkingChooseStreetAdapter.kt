@@ -17,6 +17,8 @@ class ParkingChooseStreetAdapter(data: MutableList<Street>? = null, var currentS
         if (currentStreet == item) {
             holder.vb.cbStreet.isChecked = true
             currentStreetCB = holder.vb.cbStreet
+        }else{
+            holder.vb.cbStreet.isChecked = false
         }
         holder.vb.rlStreet.setOnClickListener {
             lastStreetCB = currentStreetCB

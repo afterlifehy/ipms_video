@@ -54,9 +54,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_video)
         binding.layoutToolbar.ivRight.show()
 
-        debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER, DebtCollectionBean::class.java)
-//        TODO("少个车牌")
-        binding.tvPlate.text = ""
+        debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? DebtCollectionBean
+
+        binding.tvPlate.text = debtCollectionBean!!.carLicense
         val strings1 = arrayOf("${debtCollectionBean!!.oweMoney / 100.00}", "元")
         binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors)
         val strings2 = arrayOf(i18N(com.rt.base.R.string.订单) + ":", debtCollectionBean!!.orderNo)
@@ -79,17 +79,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     }
 
     override fun initData() {
-        runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["oweOrderId"] = debtCollectionBean!!.oweOrderId
-            jsonobject["oweMoney"] = debtCollectionBean!!.oweMoney
-            jsonobject["orderNo"] = debtCollectionBean!!.orderNo
-            param["attr"] = jsonobject
-            mViewModel.debtPay(param)
-        }
     }
 
     override fun onClick(v: View?) {
@@ -99,26 +88,21 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             }
 
             R.id.iv_right -> {
-                ARouter.getInstance().build(ARouterMap.VIDEO_PIC).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                ARouter.getInstance().build(ARouterMap.VIDEO_PIC).withString(ARouterMap.VIDEO_PIC_ORDER_NO, debtCollectionBean!!.orderNo)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rfl_pay -> {
-                paymentQrDialog = PaymentQrDialog(qr)
-                paymentQrDialog?.show()
-                paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
-                    override fun onDismiss(p0: DialogInterface?) {
-                        GlobalScope.launch(Dispatchers.IO) {
-                            job?.cancelAndJoin()
-                        }
-                    }
-                })
-                paymentQrDialog?.show()
-
-                job = GlobalScope.launch(Dispatchers.IO) {
-                    repeat(60) {
-                        checkPayResult()
-                        delay(3000L)
-                    }
+                runBlocking {
+                    token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["token"] = token
+                    jsonobject["oweOrderId"] = debtCollectionBean!!.oweOrderId
+                    jsonobject["oweMoney"] = debtCollectionBean!!.oweMoney
+                    jsonobject["orderNo"] = debtCollectionBean!!.orderNo
+                    param["attr"] = jsonobject
+                    mViewModel.debtPay(param)
                 }
             }
         }
@@ -140,6 +124,24 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
                 qr = it.payUrl
+                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog?.show()
+                paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
+                    override fun onDismiss(p0: DialogInterface?) {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            if (job != null) {
+                                job?.cancelAndJoin()
+                            }
+                        }
+                    }
+                })
+
+                job = GlobalScope.launch(Dispatchers.IO) {
+                    repeat(60) {
+                        checkPayResult()
+                        delay(3000L)
+                    }
+                }
             }
             payResultLiveData.observe(this@DebtOrderDetailActivity) {
                 payResultLiveData.observe(this@DebtOrderDetailActivity) {

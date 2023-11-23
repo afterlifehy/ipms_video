@@ -69,9 +69,10 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
             R.id.rtv_enterWorkBench -> {
                 if (streetChoosedList.isNotEmpty()) {
-                    for(i in streetChoosedList){
+                    for (i in streetChoosedList) {
                         RealmUtil.instance?.updateStreetChoosed(i)
                     }
+                    RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
                     ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }

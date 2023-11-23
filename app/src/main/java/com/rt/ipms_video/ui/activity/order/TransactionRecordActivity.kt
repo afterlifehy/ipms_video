@@ -1,5 +1,6 @@
 package com.rt.ipms_video.ui.activity.order
 
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -9,9 +10,11 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.PrintInfoBean
 import com.rt.base.bean.TransactionBean
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
+import com.rt.base.ext.i18n
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
@@ -50,11 +53,12 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         query()
     }
 
+    //    TODO("测试参数")
     private fun query() {
-        showProgressDialog()
+        showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["orderNo"] = orderNo
+        jsonobject["orderNo"] = "20230904JAZ038001P7A32A"
         param["attr"] = jsonobject
         mViewModel.transactionInquiryByOrder(param)
     }
@@ -66,13 +70,14 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
 
             R.id.fl_notification -> {
-                showProgressDialog()
+                showProgressDialog(20000)
                 val transactionBean = v.tag as TransactionBean
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
-                jsonobject["tradeNo"] = transactionBean.tradeNo
+                jsonobject["tradeNo"] = "20230825JAZ03850048412"
+//                    transactionBean.tradeNo
                 param["attr"] = jsonobject
-                mViewModel.transactionInquiryByOrder(param)
+                mViewModel.notificationInquiry(param)
             }
         }
     }
@@ -94,7 +99,24 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                 dismissProgressDialog()
             }
             notificationInquiryLiveData.observe(this@TransactionRecordActivity) {
-                print.zkblueprint("")
+                dismissProgressDialog()
+                ToastUtil.showToast(i18n(com.rt.base.R.string.开始打印))
+                val payMoney = it.payMoney
+                val printInfo = PrintInfoBean(
+                    roadId = it.roadName,
+                    plateId = it.carLicense,
+                    payMoney = String.format("%.2f", payMoney.toFloat()),
+                    orderId = orderNo,
+                    phone = it.phone,
+                    startTime = it.startTime,
+                    leftTime = it.endTime,
+                    remark = it.remark,
+                    company = it.businessCname,
+                    oweCount = 0
+                )
+                Thread {
+                    print.zkblueprint(printInfo.toString())
+                }.start()
             }
             errMsg.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()

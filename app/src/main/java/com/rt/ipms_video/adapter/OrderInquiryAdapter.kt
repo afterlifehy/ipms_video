@@ -24,21 +24,21 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
     override fun convert(holder: VBViewHolder<ItemOrderBinding>, item: OrderBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = item.carLicense
-        when (item.paidAmount.toDouble() == item.amount.toDouble()) {
-            true -> {
-                val strings = arrayOf(i18n(com.rt.base.R.string.已付), item.paidAmount, i18n(com.rt.base.R.string.元))
-                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
-            }
-
-            false -> {
-                val strings = arrayOf(
-                    i18n(com.rt.base.R.string.欠),
-                    BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()),
-                    i18n(com.rt.base.R.string.元)
-                )
-                holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsRed, styles)
-            }
+        if (item.paidAmount.toDouble() > 0.0) {
+            val strings = arrayOf(i18n(com.rt.base.R.string.已付), item.paidAmount, i18n(com.rt.base.R.string.元))
+            holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
+        } else if (item.paidAmount.toDouble() == 0.0 && item.amount.toDouble() == 0.0) {
+            val strings = arrayOf(i18n(com.rt.base.R.string.已付), item.paidAmount, i18n(com.rt.base.R.string.元))
+            holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
+        } else {
+            val strings = arrayOf(
+                i18n(com.rt.base.R.string.欠),
+                BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()),
+                i18n(com.rt.base.R.string.元)
+            )
+            holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsRed, styles)
         }
+
         val strings2 = arrayOf(i18n(com.rt.base.R.string.入场) + ":", item.startTime)
         holder.vb.tvStartTime.text = AppUtil.getSpan(strings2, sizes2, colors2)
         val strings3 = arrayOf(i18n(com.rt.base.R.string.出场) + ":", item.endTime)

@@ -1,5 +1,7 @@
 package com.rt.ipms_video.ui.activity.income
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.widget.Toolbar
@@ -9,6 +11,7 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.IncomeCountingBean
 import com.rt.base.dialog.DialogHelp
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
@@ -23,6 +26,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityIncomeCountingBinding
 import com.rt.ipms_video.mvvm.viewmodel.IncomeCountingViewModel
 import com.rt.ipms_video.pop.DatePop
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.runBlocking
 
@@ -34,6 +38,9 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     private val print = BluePrint(this)
     var datePop: DatePop? = null
     var loginName = ""
+    var startDate = ""
+    var endDate = ""
+    var incomeCountingBean: IncomeCountingBean? = null
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.营收盘点)
@@ -41,7 +48,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         binding.layoutToolbar.ivRight.show()
 
         runBlocking {
-            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.name)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
     }
 
@@ -53,11 +60,12 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     }
 
     override fun initData() {
-        var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-        var endDate = startDate.substring(0, 8) + "01"
-        getIncomeCounting(startDate, endDate)
+        endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+        startDate = endDate.substring(0, 8) + "01"
+        getIncomeCounting()
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -65,10 +73,12 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
+                datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
-                        binding.rtvDateRange.text = "${startTime}~${endTime}"
-                        getIncomeCounting(startTime, endTime)
+                        startDate = startTime
+                        endDate = endTime
+                        binding.rtvDateRange.text = "${startDate}~${endDate}"
+                        getIncomeCounting()
                     }
 
                 })
@@ -89,13 +99,17 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
 
             R.id.rtv_print -> {
-                print.zkblueprint("")
+                var str =
+                    "receipt," + loginName + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
+                            ",orderTotalToday" + incomeCountingBean?.orderTotalToday + ",unclearedTotal" + incomeCountingBean?.unclearedTotal +
+                            ",payMoneyTotal" + incomeCountingBean?.payMoneyTotal + ",orderTotal" + incomeCountingBean?.orderTotal
+                print.zkblueprint(str)
             }
         }
     }
 
-    fun getIncomeCounting(startDate: String, endDate: String) {
-        showProgressDialog()
+    fun getIncomeCounting() {
+        showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["loginName"] = loginName
@@ -109,11 +123,11 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         mViewModel.apply {
             incomeCountingLiveData.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
+                incomeCountingBean = it
                 val strings = arrayOf(it.payMoneyToday.toString(), "元")
                 binding.tvTotalCharge.text = AppUtil.getSpan(strings, sizes, colors, styles)
                 binding.tvTodayOrderNum.text = "${it.orderTotalToday}笔"
-//                TODO("少个字段")
-//                binding.tvArrearsOrderNum.text = "${it.}"
+                binding.tvArrearsOrderNum.text = "${it.unclearedTotal}笔"
                 binding.tvTotalIncome.text = "${it.payMoneyTotal}元"
                 binding.tvOrderPlaced.text = "${it.orderTotal}笔"
             }

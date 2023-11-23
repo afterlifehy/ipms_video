@@ -19,14 +19,13 @@ import com.rt.ipms_video.databinding.PopDateBinding
 /**
  * Created by huy  on 2022/12/7.
  */
-class DatePop(val context: Context?, var callback: DateCallBack) :
+class DatePop(val context: Context?, val startDate: String, val endDate: String, var callback: DateCallBack) :
     PopupWindow(context), View.OnClickListener {
 
+    private var startTime: String = ""
+    private var endTime: String = ""
     private lateinit var binding: PopDateBinding
     var datePickerDialog: DatePickerDialog? = null
-
-    var startTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-    var endTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
 
     init {
         initView()
@@ -34,8 +33,8 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
 
     private fun initView() {
         binding = PopDateBinding.inflate(LayoutInflater.from(context))
-        binding.tvStartTime.text = startTime
-        binding.tvEndTime.text = endTime
+        binding.tvStartTime.text = startDate
+        binding.tvEndTime.text = endDate
 
         binding.ivClose.setOnClickListener(this)
         binding.cbSevenDay.setOnClickListener(this)
@@ -73,8 +72,8 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
                 binding.cbSevenDay.isChecked = true
                 binding.cbOneMonth.isChecked = false
                 binding.cbThreeMonth.isChecked = false
-                startTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-                endTime = TimeUtils.getStringByNow(7, TimeConstants.DAY).substring(0, 10)
+                startTime = TimeUtils.getStringByNow(-7, TimeConstants.DAY).substring(0, 10)
+                endTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startTime
                 binding.tvEndTime.text = endTime
             }
@@ -83,8 +82,8 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
                 binding.cbSevenDay.isChecked = false
                 binding.cbOneMonth.isChecked = true
                 binding.cbThreeMonth.isChecked = false
-                startTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-                endTime = TimeUtils.getStringByNow(30, TimeConstants.DAY).substring(0, 10)
+                startTime = TimeUtils.getStringByNow(-30, TimeConstants.DAY).substring(0, 10)
+                endTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startTime
                 binding.tvEndTime.text = endTime
             }
@@ -93,8 +92,8 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
                 binding.cbSevenDay.isChecked = false
                 binding.cbOneMonth.isChecked = false
                 binding.cbThreeMonth.isChecked = true
-                startTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-                endTime = TimeUtils.getStringByNow(90, TimeConstants.DAY).substring(0, 10)
+                startTime = TimeUtils.getStringByNow(-90, TimeConstants.DAY).substring(0, 10)
+                endTime = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startTime
                 binding.tvEndTime.text = endTime
             }
@@ -113,7 +112,7 @@ class DatePop(val context: Context?, var callback: DateCallBack) :
                 datePickerDialog?.show()
                 datePickerDialog?.setOnDateSetListener { datePicker, i, i2, i3 ->
                     endTime = "${i}-${AppUtil.fillZero((i2 + 1).toString())}-${AppUtil.fillZero(i3.toString())}"
-                    binding.tvStartTime.text = endTime
+                    binding.tvEndTime.text = endTime
                 }
             }
 

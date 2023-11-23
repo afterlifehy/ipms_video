@@ -9,7 +9,9 @@ import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.rt.base.BaseApplication;
+import com.rt.base.help.ActivityCacheManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +19,7 @@ import org.json.JSONException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Handler;
 
 import zpCPCLSDK.zpCPCLSDK.PrinterInterface;
 import zpCPCLSDK.zpCPCLSDK.zp_cpcl_BluetoothPrinter;
@@ -42,31 +45,37 @@ public class BluePrint {
         //获取设备蓝牙地址
         BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        @SuppressLint("MissingPermission") Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
+        @SuppressLint("MissingPermission")
+        Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
         Iterator it = devices.iterator();
         while (it.hasNext()) {
             Object device = it.next();
             mAddress = device.toString();
         }
         int printResult = Print1(context, mAddress, printText);
-        if (printResult == 0) {
-            Toast toast = Toast.makeText(BaseApplication.instance(), "ok", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        } else if (printResult == -1) {
-            Toast toast = Toast.makeText(BaseApplication.instance(), "蓝牙未连接", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        } else if (printResult == -2) {
-            Toast toast = Toast.makeText(BaseApplication.instance(), "路段名称过长...", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+        ActivityCacheManager.Companion.instance().getCurrentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (printResult == 0) {
+                    Toast toast = Toast.makeText(BaseApplication.instance(), "ok", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                } else if (printResult == -1) {
+                    Toast toast = Toast.makeText(BaseApplication.instance(), "蓝牙未连接", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                } else if (printResult == -2) {
+                    Toast toast = Toast.makeText(BaseApplication.instance(), "路段名称过长...", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
 
-        } else {
-            Toast toast = Toast.makeText(BaseApplication.instance(), "打印失败", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
-        }
+                } else {
+                    Toast toast = Toast.makeText(BaseApplication.instance(), "打印失败", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+        });
 
     }
 
@@ -82,6 +91,7 @@ public class BluePrint {
 
         if (!zpSDK.connect(BDAddress)) {
             //Toast.makeText(this,"连接失败------", Toast.LENGTH_LONG).show();
+            ToastUtils.showShort("连接失败");
             return -1;
         }
 
@@ -127,23 +137,15 @@ public class BluePrint {
                     zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "③ 欠费订单数:             " + arr[5].replace("unclearedTotal", "") + " 笔", 0, 0, 0);
                     ystart = ystart + 40;
                 }
-                if (printText.contains("artTotal")) {
-                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "④ 人工下单数:             " + arr[6].replace("artTotal", "") + " 笔", 0, 0, 0);
+                if (printText.contains("payMoneyTotal")) {
+                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "④ 总收入:                 " + arr[6].replace("payMoneyTotal", "") + " 元", 0, 0, 0);
                     ystart = ystart + 40;
                 }
-                if (printText.contains("geoTotal")) {
-                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "⑤ 地磁下单数:             " + arr[7].replace("geoTotal", "") + " 笔", 0, 0, 0);
+                if (printText.contains("orderTotal")) {
+                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "⑤ 已下单:                 " + arr[7].replace("orderTotal", "") + " 笔", 0, 0, 0);
                     ystart = ystart + 40;
                 }
-                if (printText.contains("autonomousPayCount")) {
-                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "⑥ 自主缴费:               " + arr[8].replace("autonomousPayCount", "") + " 元", 0, 0, 0);
-                    ystart = ystart + 40;
-                }
-                if (printText.contains("totalAmount")) {
-                    zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "⑦ 总营收(不含⑥):         " + arr[9].replace("totalAmount", "") + " 元", 0, 0, 0);
-                    ystart = ystart + 40;
-                }
-                zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "打印时间:           " + arr[2], 0, 0, 0);
+                zpSDK.DrawSpecialText(20, ystart + 40, PrinterInterface.Textfont.siyuanheiti, 27, "打印时间:                  " + arr[2], 0, 0, 0);
                 zpSDK.DrawSpecialText(20, ystart + 40 + 40, PrinterInterface.Textfont.siyuanheiti, 20, "--------------------------------------------------", 0, 1, 0);
                 zpSDK.print(0, 0);
                 zpSDK.printerStatus();

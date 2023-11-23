@@ -1,14 +1,10 @@
 package com.rt.ipms_video.ui.activity.abnormal
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
-import android.content.DialogInterface.OnDismissListener
 import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.CompoundButton
-import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -189,7 +185,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                 jsonobject["carLicense"] = binding.etPlate.text.toString()
                 jsonobject["carColor"] = checkedColor
                 param["attr"] = jsonobject
-                showProgressDialog()
+                showProgressDialog(20000)
                 mViewModel.abnormalReport(param)
             }
 

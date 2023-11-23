@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
@@ -36,6 +37,8 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     var datePop: DatePop? = null
     var pageIndex = 1
     var pageSize = 10
+    var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+    var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -98,7 +101,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
+                datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
 
                     }

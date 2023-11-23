@@ -105,6 +105,8 @@ object PreferencesKeys {
 
     val name by stringPreferencesKey()
 
+    val loginName by stringPreferencesKey()
+
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }
 

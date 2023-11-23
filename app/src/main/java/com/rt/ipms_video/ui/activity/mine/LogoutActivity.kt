@@ -106,8 +106,8 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                 }
                             })
                         }
+                        showProgressDialog(20000)
                         runBlocking {
-                            showProgressDialog()
                             val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()

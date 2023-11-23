@@ -63,6 +63,15 @@ class RealmUtil {
         }
     }
 
+    fun updateCurrentStreet(new: Street, old: Street?) {
+        realm.executeTransaction {
+            if (old != null) {
+                old.isCurrent = false
+            }
+            new.isCurrent = true
+        }
+    }
+
     fun deleteRealmAsync(realmObject: RealmObject) {
         transaction = realm.executeTransactionAsync { realm ->
             realmObject.deleteFromRealm()
@@ -82,6 +91,10 @@ class RealmUtil {
 
     fun findCheckedStreetList(): List<Street> {
         return realm.where(Street::class.java).equalTo("ischeck", true).findAll()
+    }
+
+    fun findCurrentStreet(): Street? {
+        return realm.where(Street::class.java).equalTo("isCurrent", true).findAll().first()
     }
 
     /**

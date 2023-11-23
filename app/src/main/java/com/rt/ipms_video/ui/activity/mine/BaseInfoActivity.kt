@@ -28,6 +28,7 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
     }
 
     override fun initData() {
+        mViewModel.getBaseInfo()
     }
 
     override fun onClick(v: View?) {
@@ -36,6 +37,22 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
                 onBackPressedSupport()
             }
         }
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            baseInfoLiveData.observe(this@BaseInfoActivity) {
+                binding.tvName.text = it[0]
+                binding.tvAccount.text = it[1]
+                binding.tvPhoneNum.text = it[2]
+                binding.tvStreet.text = it[3]
+            }
+        }
+    }
+
+    override fun providerVMClass(): Class<BaseInfoViewModel>? {
+        return BaseInfoViewModel::class.java
     }
 
     override fun getVbBindingView(): ViewBinding {

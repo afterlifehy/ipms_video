@@ -41,50 +41,56 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_video)
         binding.layoutToolbar.ivRight.show()
 
-        order = intent.getParcelableExtra(ARouterMap.ORDER, OrderBean::class.java)
+        order = intent.getParcelableExtra(ARouterMap.ORDER) as? OrderBean
         binding.tvPlate.text = order?.carLicense
-        when (order?.amount?.toDouble() == order?.paidAmount?.toDouble()) {
-            true -> {
-                val strings = arrayOf(i18n(com.rt.base.R.string.已付), order?.paidAmount.toString(), i18n(com.rt.base.R.string.元))
-                binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
-                binding.rtvTransactionRecord.delegate.setBackgroundColor(
-                    ContextCompat.getColor(
-                        BaseApplication.instance(),
-                        com.rt.base.R.color.color_ff0371f4
-                    )
+        if (order?.paidAmount?.toDouble()!! > 0.0) {
+            val strings = arrayOf(i18n(com.rt.base.R.string.已付), order?.paidAmount.toString(), i18n(com.rt.base.R.string.元))
+            binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
+            binding.rtvTransactionRecord.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(), com.rt.base.R.color.color_ff0371f4
                 )
-            }
-
-            false -> {
-                val strings = arrayOf(
-                    i18n(com.rt.base.R.string.欠),
-                    BigDecimalManager.subtractionDoubleToString(order?.amount!!.toDouble(), order?.paidAmount!!.toDouble()),
-                    i18n(com.rt.base.R.string.元)
+            )
+            binding.rtvTransactionRecord.setOnClickListener(this)
+        } else if (order!!.paidAmount.toDouble() == 0.0 && order!!.amount.toDouble() == 0.0) {
+            val strings = arrayOf(i18n(com.rt.base.R.string.已付), order?.paidAmount.toString(), i18n(com.rt.base.R.string.元))
+            binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
+            binding.rtvTransactionRecord.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(), com.rt.base.R.color.color_ffbac8d8
                 )
-                binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors1, styles)
-                binding.rtvTransactionRecord.delegate.setBackgroundColor(
-                    ContextCompat.getColor(
-                        BaseApplication.instance(),
-                        com.rt.base.R.color.color_ffbac8d8
-                    )
+            )
+//            TODO("null")
+            binding.rtvTransactionRecord.setOnClickListener(this)
+        } else {
+            val strings = arrayOf(
+                i18n(com.rt.base.R.string.欠),
+                BigDecimalManager.subtractionDoubleToString(order?.amount!!.toDouble(), order?.paidAmount!!.toDouble()),
+                i18n(com.rt.base.R.string.元)
+            )
+            binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors1, styles)
+            binding.rtvTransactionRecord.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(), com.rt.base.R.color.color_ffbac8d8
                 )
-            }
+            )
+            binding.rtvTransactionRecord.setOnClickListener(null)
         }
         binding.rtvTransactionRecord.delegate.init()
 
-        val strings1 = arrayOf(i18N(com.rt.base.R.string.订单) + ":", order?.orderNo.toString())
+        val strings1 = arrayOf(i18N(com.rt.base.R.string.订单) + ": ", order?.orderNo.toString())
         binding.tvOrderNo.text = AppUtil.getSpan(strings1, sizes2, colors2)
-        val strings2 = arrayOf(i18N(com.rt.base.R.string.泊位) + ":", order?.parkingNo.toString())
+        val strings2 = arrayOf(i18N(com.rt.base.R.string.泊位) + ": ", order?.parkingNo.toString())
         binding.tvBerth.text = AppUtil.getSpan(strings2, sizes2, colors2)
-        val strings3 = arrayOf(i18N(com.rt.base.R.string.路段) + ":", order?.streetName.toString())
+        val strings3 = arrayOf(i18N(com.rt.base.R.string.路段) + ": ", order?.streetName.toString())
         binding.tvStreet.text = AppUtil.getSpan(strings3, sizes2, colors2)
-        val strings4 = arrayOf(i18N(com.rt.base.R.string.入场) + ":", order?.startTime.toString())
+        val strings4 = arrayOf(i18N(com.rt.base.R.string.入场) + ": ", order?.startTime.toString())
         binding.tvStartTime.text = AppUtil.getSpan(strings4, sizes2, colors2)
-        val strings5 = arrayOf(i18N(com.rt.base.R.string.出场) + ":", order?.endTime.toString())
+        val strings5 = arrayOf(i18N(com.rt.base.R.string.出场) + ": ", order?.endTime.toString())
         binding.tvEndTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.rt.base.R.string.时长) + ":", mintoString(order?.duration!!.toInt()))
+        val strings6 = arrayOf(i18N(com.rt.base.R.string.时长) + ": ", mintoString(order?.duration!!.toInt()))
         binding.tvTotalTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
-        val strings7 = arrayOf(i18N(com.rt.base.R.string.总额) + ":", order?.amount.toString())
+        val strings7 = arrayOf(i18N(com.rt.base.R.string.总额) + ": ", order?.amount.toString() + "元")
         binding.tvAmount.text = AppUtil.getSpan(strings7, sizes2, colors2)
     }
 
@@ -92,7 +98,6 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.rtvDebtCollection.setOnClickListener(this)
-        binding.rtvTransactionRecord.setOnClickListener(this)
     }
 
     override fun initData() {

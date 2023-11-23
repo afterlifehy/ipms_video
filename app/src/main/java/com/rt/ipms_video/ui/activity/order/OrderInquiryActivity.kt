@@ -1,8 +1,7 @@
 package com.rt.ipms_video.ui.activity.order
 
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
+import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -17,6 +16,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.OrderBean
+import com.rt.base.bean.Street
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
@@ -24,6 +24,7 @@ import com.rt.base.ext.i18N
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyOnTouchListener
@@ -45,6 +46,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     var pageSize = 10
     var startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     var endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+    var street: Street? = null
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -96,30 +98,29 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
     }
 
     override fun initData() {
-        showProgressDialog()
+        street = RealmUtil.instance?.findCurrentStreet()
         query()
+        showProgressDialog(20000)
     }
 
     private fun query() {
         keyboardUtil.hideKeyboard()
         val searchContent = binding.etSearch.text.toString()
-        if (searchContent.isNotEmpty() && (searchContent.length != 7 || searchContent.length != 8)) {
+        if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
+            dismissProgressDialog()
             ToastUtil.showToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
             return
         }
-        runBlocking {
-            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.name)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["loginName"] = loginName
-            jsonobject["carLicense"] = searchContent
-            jsonobject["startDate"] = startDate
-            jsonobject["endDate"] = endDate
-            jsonobject["page"] = pageIndex
-            jsonobject["size"] = pageSize
-            param["attr"] = jsonobject
-            mViewModel.orderInquiry(param)
-        }
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["streetNo"] = street?.streetNo
+        jsonobject["carLicense"] = searchContent
+        jsonobject["startDate"] = startDate
+        jsonobject["endDate"] = endDate
+        jsonobject["page"] = pageIndex
+        jsonobject["size"] = pageSize
+        param["attr"] = jsonobject
+        mViewModel.orderInquiry(param)
     }
 
     override fun onClick(v: View?) {
@@ -129,16 +130,18 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
 
             R.id.tv_search -> {
-
+                pageIndex = 1
+                showProgressDialog(20000)
+                query()
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), object : DatePop.DateCallBack {
+                datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
                         startDate = startTime
                         endDate = endTime
                         pageIndex = 1
-                        showProgressDialog()
+                        showProgressDialog(20000)
                         query()
                     }
 
@@ -175,6 +178,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         orderList.addAll(tempList)
                         orderInquiryAdapter?.setList(orderList)
                         binding.srlOrder.finishRefresh()
+                        binding.rvOrders.show()
+                        binding.layoutNoData.root.gone()
                     }
                 } else {
                     if (tempList.isEmpty()) {
@@ -188,6 +193,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 }
             }
             errMsg.observe(this@OrderInquiryActivity) {
+                dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }

@@ -117,5 +117,5 @@ interface Api {
      * 版本更新查询
      */
     @POST("S_VO2_19")
-    suspend fun S_VO2_19(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun checkUpdate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean>
 }

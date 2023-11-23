@@ -4,6 +4,8 @@ package com.rt.base.viewbase
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -138,8 +140,9 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
         }
     }
 
-    fun showProgressDialog() {
+    fun showProgressDialog(i: Long) {
         mProgressDialog.show()
+        Handler(Looper.getMainLooper()).postDelayed({ dismissProgressDialog() }, i)
     }
 
     fun dismissProgressDialog() {
