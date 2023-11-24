@@ -4,7 +4,7 @@ import com.rt.base.base.mvvm.BaseRepository
 import com.rt.base.bean.HttpWrapper
 import com.rt.base.bean.ParkingLotResultBean
 import com.rt.base.bean.ParkingSpaceBean
-import com.rt.base.bean.PayResultResultBean
+import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.QRPayBean
 import retrofit2.http.Body
 
@@ -34,7 +34,7 @@ class ParkingRepository : BaseRepository() {
     /**
      *  支付结果
      */
-    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultResultBean> {
+    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return mServer.payResult(param)
     }
 }

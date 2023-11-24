@@ -84,6 +84,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.flBaseInfo.setOnClickListener(this)
         binding.flVersion.setOnClickListener(this)
+        binding.flFeeRate.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
     }
 
@@ -122,6 +123,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
                         }).build(this@MineActivity).showDailog()
                 }
+            }
+
+            R.id.fl_feeRate -> {
+                ARouter.getInstance().build(ARouterMap.FEE_RATE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rtv_logout -> {
@@ -223,8 +228,12 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             checkUpdateLiveDate.observe(this@MineActivity) {
                 updateBean = it
                 if (updateBean?.state == "0" && updateBean?.force == "1") {
+
+
                     ToastUtil.showToast("后台下载更新中...")
                     requestionPermission()
+                } else if (updateBean?.state == "1") {
+                    ToastUtil.showToast("当前已是最新版本")
                 }
             }
             logoutLiveData.observe(this@MineActivity) {

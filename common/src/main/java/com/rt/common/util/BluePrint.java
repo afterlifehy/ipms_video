@@ -57,7 +57,7 @@ public class BluePrint {
             @Override
             public void run() {
                 if (printResult == 0) {
-                    Toast toast = Toast.makeText(BaseApplication.instance(), "ok", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(BaseApplication.instance(), "打印完成", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 } else if (printResult == -1) {

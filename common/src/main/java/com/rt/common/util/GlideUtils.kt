@@ -2,12 +2,13 @@ package com.rt.common.util
 
 import android.graphics.Bitmap
 import android.widget.ImageView
-import com.bumptech.glide.request.RequestOptions
-import com.rt.common.R
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.rt.base.BaseApplication
+import com.rt.common.R
+import java.io.File
 
 class GlideUtils private constructor() {
     /**
@@ -61,6 +62,18 @@ class GlideUtils private constructor() {
         val options = RequestOptions.noAnimation().transform(CropRoundRadiusTransformation(iv.context, mRadius))
             .error(placeholder).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
+    }
+
+    /*
+     *加载图片(默认)File，centerCrop，有占位图
+     */
+    fun loadImageFile(imageView: ImageView, file: File?) {
+        imageView.tag = null
+        val options: RequestOptions = RequestOptions()
+            .centerCrop()
+            .format(DecodeFormat.PREFER_RGB_565)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        Glide.with(BaseApplication.instance()).asBitmap().load(file).apply(options).into(imageView)
     }
 
     fun loadImagePreview(imageView: ImageView, url: String?) {

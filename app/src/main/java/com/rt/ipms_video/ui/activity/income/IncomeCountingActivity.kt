@@ -103,7 +103,9 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                     "receipt," + loginName + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
                             ",orderTotalToday" + incomeCountingBean?.orderTotalToday + ",unclearedTotal" + incomeCountingBean?.unclearedTotal +
                             ",payMoneyTotal" + incomeCountingBean?.payMoneyTotal + ",orderTotal" + incomeCountingBean?.orderTotal
-                print.zkblueprint(str)
+                Thread {
+                    print.zkblueprint(str)
+                }.start()
             }
         }
     }

@@ -78,19 +78,19 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         }
         binding.rtvTransactionRecord.delegate.init()
 
-        val strings1 = arrayOf(i18N(com.rt.base.R.string.订单) + ": ", order?.orderNo.toString())
+        val strings1 = arrayOf(i18N(com.rt.base.R.string.订单) + "：", order?.orderNo.toString())
         binding.tvOrderNo.text = AppUtil.getSpan(strings1, sizes2, colors2)
-        val strings2 = arrayOf(i18N(com.rt.base.R.string.泊位) + ": ", order?.parkingNo.toString())
+        val strings2 = arrayOf(i18N(com.rt.base.R.string.泊位) + "：", order?.parkingNo.toString())
         binding.tvBerth.text = AppUtil.getSpan(strings2, sizes2, colors2)
-        val strings3 = arrayOf(i18N(com.rt.base.R.string.路段) + ": ", order?.streetName.toString())
+        val strings3 = arrayOf(i18N(com.rt.base.R.string.路段) + "：", order?.streetName.toString())
         binding.tvStreet.text = AppUtil.getSpan(strings3, sizes2, colors2)
-        val strings4 = arrayOf(i18N(com.rt.base.R.string.入场) + ": ", order?.startTime.toString())
+        val strings4 = arrayOf(i18N(com.rt.base.R.string.入场) + "：", order?.startTime.toString())
         binding.tvStartTime.text = AppUtil.getSpan(strings4, sizes2, colors2)
-        val strings5 = arrayOf(i18N(com.rt.base.R.string.出场) + ": ", order?.endTime.toString())
+        val strings5 = arrayOf(i18N(com.rt.base.R.string.出场) + "：", order?.endTime.toString())
         binding.tvEndTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.rt.base.R.string.时长) + ": ", mintoString(order?.duration!!.toInt()))
+        val strings6 = arrayOf(i18N(com.rt.base.R.string.时长) + "：", mintoString(order?.duration!!.toInt()))
         binding.tvTotalTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
-        val strings7 = arrayOf(i18N(com.rt.base.R.string.总额) + ": ", order?.amount.toString() + "元")
+        val strings7 = arrayOf(i18N(com.rt.base.R.string.总额) + "：", order?.amount.toString() + "元")
         binding.tvAmount.text = AppUtil.getSpan(strings7, sizes2, colors2)
     }
 

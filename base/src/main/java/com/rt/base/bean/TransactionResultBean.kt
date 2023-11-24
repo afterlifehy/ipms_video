@@ -7,11 +7,11 @@ data class TransactionResultBean(
 data class TransactionBean(
     val carLicense: String,
     val endTime: String,
-    val hasPayed: String,
+    var hasPayed: String,
     val orderNo: String,
     val oweMoney: String,
     val parkingNo: String,
-    val payedAmount: String,
+    var payedAmount: String,
     val startTime: String,
-    val tradeNo: String
+    val tradeNo: String,
 )

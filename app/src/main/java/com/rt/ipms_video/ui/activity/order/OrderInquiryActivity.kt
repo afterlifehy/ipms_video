@@ -17,8 +17,6 @@ import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.OrderBean
 import com.rt.base.bean.Street
-import com.rt.base.ds.PreferencesDataStore
-import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
@@ -99,8 +97,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
 
     override fun initData() {
         street = RealmUtil.instance?.findCurrentStreet()
-        query()
         showProgressDialog(20000)
+        query()
     }
 
     private fun query() {
@@ -213,7 +211,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         return OrderInquiryViewModel::class.java
     }
 
-    override fun marginStatusBarView(): View? {
+    override fun marginStatusBarView(): View {
         return binding.layoutToolbar.ablToolbar
     }
 

@@ -1,6 +1,9 @@
 package com.rt.ipms_video.ui.activity.parking
 
+import android.content.DialogInterface
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -10,6 +13,9 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.ParkingSpaceBean
+import com.rt.base.bean.PayResultBean
+import com.rt.base.bean.PrintInfoBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
@@ -17,6 +23,8 @@ import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.util.AppUtil
+import com.rt.common.util.BigDecimalManager
+import com.rt.common.util.BluePrint
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityParkingSpaceBinding
@@ -46,10 +54,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var carColor = ""
     var parkingNo = ""
     var token = ""
+    var parkingSpaceBean: ParkingSpaceBean? = null
 
     var qr = ""
     var tradeNo = ""
     var amountPending = 0
+
+    var count = 0
+    var handler = Handler(Looper.getMainLooper())
+    val print = BluePrint(this)
 
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
@@ -105,6 +118,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePayment -> {
+                showProgressDialog(20000)
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["token"] = token
@@ -118,18 +132,34 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_abnormalReport -> {
-                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, parkingSpaceBean?.streetNo)
+                    .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
+                    .withString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
     }
 
     fun checkPayResult() {
+//        TODO("测试入参")
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["token"] = token
-        jsonobject["tradeNo"] = tradeNo
+        jsonobject["token"] = "746a8c3eeb974709b9075b4cfc139977"
+//            token
+        jsonobject["tradeNo"] = "20230831JAZ03850133112"
+//            tradeNo
         param["attr"] = jsonobject
         mViewModel.payResult(param)
+    }
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count < 60) {
+                checkPayResult()
+                count++
+                handler.postDelayed(this, 3000)
+            }
+        }
     }
 
     override fun startObserve() {
@@ -137,61 +167,76 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         mViewModel.apply {
             parkingSpaceFeeLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
+                parkingSpaceBean = it
                 binding.tvPlate.text = it.carLicense
 
                 val strings = arrayOf(i18N(com.rt.base.R.string.开始时间), it.startTime)
-                binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors2)
+                binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
                 val strings2 = arrayOf(i18N(com.rt.base.R.string.在停时间), "${it.parkingTime / 60}分钟")
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
-                val strings3 = arrayOf(i18N(com.rt.base.R.string.已付金额), "${it.amountPayed / 100.00}元")
+                val strings3 = arrayOf(i18N(com.rt.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
                 binding.tvPaidAmount.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                val strings4 = arrayOf(i18N(com.rt.base.R.string.待缴费用), "${it.amountPending / 100.00}元")
+                val strings4 = arrayOf(i18N(com.rt.base.R.string.待缴费用), "${AppUtil.keepNDecimal(it.amountPending / 100.00, 2)}元")
                 binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
 
-                val strings5 = arrayOf(i18N(com.rt.base.R.string.订单总额), "${it.amountTotal / 100.00}元")
+                val strings5 = arrayOf(i18N(com.rt.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.amountTotal / 100.00, 2)}元")
                 binding.tvOrderAmount.text = AppUtil.getSpan(strings5, sizes, colors)
 
                 binding.tvArrearsNum.text = "${it.historyCount}笔"
 
-                binding.tvArrearsAmount.text = "${it.historySum}元"
+                binding.tvArrearsAmount.text =
+                    "${AppUtil.keepNDecimal(BigDecimalManager.divisionDoubleToString(it.historySum, 100.00), 2)}元"
 
                 tradeNo = it.tradeNo
                 amountPending = it.amountPending
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
+                tradeNo = it.tradeNo
                 qr = it.payUrl
-                GlobalScope.launch(Dispatchers.IO) {
-                    if (job != null) {
-                        job?.cancelAndJoin()
-                    }
-                }
                 paymentQrDialog = PaymentQrDialog(qr)
                 paymentQrDialog?.show()
-                job = GlobalScope.launch(Dispatchers.IO) {
-                    repeat(60) {
-                        checkPayResult()
-                        delay(3000L)
+                paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
+                    override fun onDismiss(p0: DialogInterface?) {
+                        handler.removeCallbacks(runnable)
                     }
-                }
+                })
+                count = 0
+                handler.post(runnable)
             }
             payResultLiveData.observe(this@ParkingSpaceActivity) {
-                GlobalScope.launch(Dispatchers.IO) {
-                    if (job != null) {
-                        job?.cancelAndJoin()
-                    }
-                }
+                dismissProgressDialog()
+                handler.removeCallbacks(runnable)
                 ToastUtil.showToast(i18N(com.rt.base.R.string.支付成功))
-                paymentQrDialog?.dismiss()
+                startPrint(it)
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 ToastUtil.showToast(it.msg)
             }
         }
+    }
+
+    fun startPrint(it: PayResultBean) {
+        val payMoney = it.payMoney
+        val printInfo = PrintInfoBean(
+            roadId = it.roadName,
+            plateId = it.carLicense,
+            payMoney = String.format("%.2f", payMoney.toFloat()),
+            orderId = orderNo,
+            phone = it.phone,
+            startTime = it.startTime,
+            leftTime = it.endTime,
+            remark = it.remark,
+            company = it.businessCname,
+            oweCount = 0
+        )
+        Thread {
+            print.zkblueprint(printInfo.toString())
+        }.start()
     }
 
     override fun getVbBindingView(): ViewBinding {

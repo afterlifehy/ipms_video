@@ -47,6 +47,9 @@ object ARouterMap {
     const val PARKING_NO = "parkingNo"
 
     const val BERTH_ABNORMAL = "/ipms_app/berthAbnormal"
+    const val ABNORMAL_STREET_NO = "streetNo"
+    const val ABNORMAL_PARKING_NO = "parkingNo"
+    const val ABNORMAL_ORDER_NO = "orderNo"
 
     const val ABNORMAL_HELP = "/ipms_app/abnormalHelp"
 
@@ -59,6 +62,8 @@ object ARouterMap {
     const val INCOME_COUNTING = "/ipms_app/incomeCounting"
 
     const val COLLECTION_MANAGEMENT = "/ipms_app/collectionManagement"
+
+    const val FEE_RATE = "/ipms_app/feeRate"
 
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"

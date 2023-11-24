@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONObject
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18n
 import com.rt.base.ext.show
@@ -30,6 +32,7 @@ import com.rt.ipms_video.databinding.ActivityBerthAbnormalBinding
 import com.rt.ipms_video.dialog.AbnormalClassificationDialog
 import com.rt.ipms_video.dialog.AbnormalStreetListDialog
 import com.rt.ipms_video.mvvm.viewmodel.BerthAbnormalViewModel
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.BERTH_ABNORMAL)
 class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
@@ -46,10 +49,21 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     var classificationList: MutableList<String> = ArrayList()
     var currentStreet: Street? = null
 
+    var parkingNo = ""
+    var streetNo = ""
+    var orderNo = ""
+
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18n(com.rt.base.R.string.泊位异常上报)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_help)
         binding.layoutToolbar.ivRight.show()
+
+        if (intent.getStringExtra(ARouterMap.ABNORMAL_STREET_NO) != null) {
+            streetNo = intent.getStringExtra(ARouterMap.ABNORMAL_STREET_NO)!!
+            parkingNo = intent.getStringExtra(ARouterMap.ABNORMAL_PARKING_NO)!!
+            orderNo = intent.getStringExtra(ARouterMap.ABNORMAL_ORDER_NO)!!
+            binding.retParkingNo.setText(parkingNo.replaceFirst(streetNo + "-", ""))
+        }
 
         collectioPlateColorList.add(0)
         collectioPlateColorList.add(1)
@@ -82,13 +96,23 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
     override fun initData() {
         RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
-        currentStreet = streetList[0]
+        if (streetNo.isNotEmpty()) {
+            for (i in streetList) {
+                if (i.streetNo == streetNo) {
+                    currentStreet = i
+                }
+            }
+        } else {
+            currentStreet = RealmUtil.instance?.findCurrentStreet()
+        }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
 
         classificationList.add(i18n(com.rt.base.R.string.泊位有车POS无订单))
         classificationList.add(i18n(com.rt.base.R.string.泊位无车POS有订单))
         classificationList.add(i18n(com.rt.base.R.string.在停车牌与POS不一致))
+
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -175,22 +199,26 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     ToastUtil.showToast(i18n(com.rt.base.R.string.请填写泊位号))
                     return
                 }
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["streetNo"] = currentStreet?.streetNo
-                jsonobject["parkingNo"] = binding.retParkingNo.text.toString()
-                jsonobject["type"] =
-                    AppUtil.fillZero(classificationList.indexOf(binding.tvAbnormalClassification.text.toString()).toString())
-                jsonobject["remark"] = binding.retRemarks.text.toString()
-                jsonobject["carLicense"] = binding.etPlate.text.toString()
-                jsonobject["carColor"] = checkedColor
-                param["attr"] = jsonobject
-                showProgressDialog(20000)
-                mViewModel.abnormalReport(param)
+                runBlocking {
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["loginName"] = loginName
+                    jsonobject["streetNo"] = currentStreet?.streetNo
+                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + binding.retParkingNo.text.toString()
+                    jsonobject["type"] =
+                        AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
+                    jsonobject["remark"] = binding.retRemarks.text.toString()
+                    jsonobject["carLicense"] = binding.etPlate.text.toString()
+                    jsonobject["carColor"] = checkedColor
+                    jsonobject["orderNo"] = orderNo
+                    param["attr"] = jsonobject
+                    showProgressDialog(20000)
+                    mViewModel.abnormalReport(param)
+                }
             }
 
-            R.id.ll_berthAbnormal2,
-            binding.root.id -> {
+            R.id.ll_berthAbnormal2, binding.root.id -> {
 
             }
 
@@ -202,10 +230,8 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     fun showAbnormalStreetListDialog() {
-        abnormalStreetListDialog = AbnormalStreetListDialog(
-            streetList,
-            currentStreet!!,
-            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
+        abnormalStreetListDialog =
+            AbnormalStreetListDialog(streetList, currentStreet!!, object : AbnormalStreetListDialog.AbnormalStreetCallBack {
                 override fun chooseStreet(street: Street) {
                     currentStreet = street
                     binding.tvLotName.text = currentStreet?.streetName
@@ -219,22 +245,20 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     }
 
     fun showAbnormalClassificationDialog() {
-        abnormalClassificationDialog =
-            AbnormalClassificationDialog(
-                classificationList,
-                binding.tvAbnormalClassification.text.toString(),
-                object : AbnormalClassificationDialog.AbnormalClassificationCallBack {
-                    override fun chooseClassification(classification: String) {
-                        binding.tvAbnormalClassification.text = classification
-                        if (classification == i18n(com.rt.base.R.string.在停车牌与POS不一致)) {
-                            binding.llPlate.show()
-                            binding.rvPlateColor.show()
-                        } else {
-                            binding.llPlate.gone()
-                            binding.rvPlateColor.gone()
-                        }
+        abnormalClassificationDialog = AbnormalClassificationDialog(classificationList,
+            binding.tvAbnormalClassification.text.toString(),
+            object : AbnormalClassificationDialog.AbnormalClassificationCallBack {
+                override fun chooseClassification(classification: String) {
+                    binding.tvAbnormalClassification.text = classification
+                    if (classification == i18n(com.rt.base.R.string.在停车牌与POS不一致)) {
+                        binding.llPlate.show()
+                        binding.rvPlateColor.show()
+                    } else {
+                        binding.llPlate.gone()
+                        binding.rvPlateColor.gone()
                     }
-                })
+                }
+            })
         abnormalClassificationDialog?.show()
         abnormalClassificationDialog?.setOnDismissListener {
             binding.cbAbnormalClassification.isChecked = false

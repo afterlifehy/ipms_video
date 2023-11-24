@@ -111,11 +111,20 @@
     <string name="填写泊位号">填写泊位号</string>
     <string name="请填写泊位号">请填写泊位号</string>
     <string name="上报成功">上报成功</string>
-    <string name="已付">已付:</string>
+    <string name="已付">已付：</string>
     <string name="元">元</string>
-    <string name="欠">欠:</string>
+    <string name="欠">欠：</string>
     <string name="时长">时长</string>
     <string name="总额">总额</string>
     <string name="发现新版本是否下载安装更新">发现新版本，是否下载安装更新</string>
     <string name="开始打印">开始打印</string>
+    <string name="支付失败">支付失败</string>
+    <string name="拍照">拍照：</string>
+    <string name="拍摄照片">拍摄照片</string>
+    <string name="相册">相册</string>
+    <string name="费率">费率</string>
+    <string name="工作日标准">工作日标准</string>
+    <string name="周末标准">周末标准</string>
+    <string name="节假日标准">节假日标准</string>
+    <string name="费率列表">费率列表</string>
 </resources>

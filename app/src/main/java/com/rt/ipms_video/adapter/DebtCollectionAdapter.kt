@@ -22,7 +22,7 @@ class DebtCollectionAdapter(data: MutableList<DebtCollectionBean>? = null, val o
     override fun convert(holder: VBViewHolder<ItemDebtCollectionBinding>, item: DebtCollectionBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = item.carLicense
-        val strings = arrayOf("欠：", "${item.oweMoney / 100.00}", "元")
+        val strings = arrayOf("欠：", "${AppUtil.keepNDecimal(item.oweMoney / 100.00,2)}", "元")
         holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
         val strings2 = arrayOf("入场：", item.startTime)
         holder.vb.tvStartTime.text = AppUtil.getSpan(strings2, sizes2, colors2)

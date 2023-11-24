@@ -104,6 +104,31 @@
             android:layout_below="@+id/fl_version"
             android:background="@color/color_ffcccccc" />
 
+        <RelativeLayout
+            android:id="@+id/fl_feeRate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_72"
+            android:layout_below="@+id/fl_version">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:drawableStart="@mipmap/ic_fee_rate"
+                android:drawablePadding="@dimen/dp_13"
+                android:text="@string/费率"
+                android:textColor="@color/color_ff1a1a1a"
+                android:textSize="@dimen/sp_19" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_7"
+                android:layout_height="@dimen/dp_12"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end|center_vertical"
+                android:src="@mipmap/ic_arrow_right" />
+        </RelativeLayout>
+
         <com.aries.ui.view.radius.RadiusTextView
             android:id="@+id/rtv_logout"
             android:layout_width="match_parent"

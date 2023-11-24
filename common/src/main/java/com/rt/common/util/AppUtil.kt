@@ -4,14 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.text.Spannable
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import androidx.core.content.FileProvider
 import com.rt.base.BaseApplication
 import com.rt.base.help.ActivityCacheManager
 import com.zrq.spanbuilder.Spans
 import com.zrq.spanbuilder.TextStyle
+import java.io.File
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.ParseException
@@ -209,5 +212,24 @@ object AppUtil {
             }
         }
         return builder.build()
+    }
+
+    /**
+     * 获取资源文件Uri
+     *
+     * @param file
+     * @param intent
+     * @return
+     */
+    fun getUri(file: File?, intent: Intent): Uri {
+        return if (Build.VERSION.SDK_INT >= 24) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            FileProvider.getUriForFile(
+                BaseApplication.instance(), "com.rt.ipms_video.fileprovider",
+                file!!
+            )
+        } else {
+            Uri.fromFile(file)
+        }
     }
 }

@@ -45,19 +45,19 @@ interface Api {
      * 主动查询支付结果
      */
     @POST("S_VO2_07")
-    suspend fun payResult(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultResultBean>
+    suspend fun payResult(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
 
     /**
      * 欠费催缴单查询
      */
     @POST("S_VO2_08")
-    suspend fun S_VO2_08(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun callInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 
     /**
      * 催缴单催缴
      */
     @POST("S_VO2_09")
-    suspend fun S_VO2_09(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun callSubmit(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 异常上报

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ffe8eef6"
-    android:orientation="vertical">
+    android:background="@color/color_ffe8eef6">
 
     <ImageView
         android:layout_width="match_parent"
@@ -134,6 +133,76 @@
                 android:button="@drawable/selector_lot_arrow"
                 android:checked="false" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_13">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/拍照"
+                android:textColor="@color/color_ff1a1a1a"
+                android:textSize="@dimen/sp_19" />
+
+            <com.aries.ui.view.radius.RadiusRelativeLayout
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_100"
+                android:layout_marginStart="@dimen/dp_20"
+                app:rv_backgroundColor="@color/transparent"
+                app:rv_radius="@dimen/dp_7"
+                app:rv_strokeColor="@color/color_ff999999"
+                app:rv_strokeWidth="@dimen/dp_1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_pic1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawableTop="@mipmap/ic_camera_2"
+                    android:gravity="center"
+                    android:text="@string/拍摄照片"
+                    android:textColor="@color/color_ff666666"
+                    android:textSize="@dimen/sp_16" />
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/riv_pic1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:riv_corner_radius="@dimen/dp_7" />
+            </com.aries.ui.view.radius.RadiusRelativeLayout>
+
+            <com.aries.ui.view.radius.RadiusRelativeLayout
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_100"
+                android:layout_marginStart="@dimen/dp_20"
+                app:rv_backgroundColor="@color/transparent"
+                app:rv_radius="@dimen/dp_7"
+                app:rv_strokeColor="@color/color_ff999999"
+                app:rv_strokeWidth="@dimen/dp_1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_pic2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawableTop="@mipmap/ic_camera_2"
+                    android:gravity="center"
+                    android:text="@string/拍摄照片"
+                    android:textColor="@color/color_ff666666"
+                    android:textSize="@dimen/sp_16" />
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/riv_pic2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:riv_corner_radius="@dimen/dp_7" />
+            </com.aries.ui.view.radius.RadiusRelativeLayout>
+        </LinearLayout>
     </com.aries.ui.view.radius.RadiusLinearLayout>
 
     <com.aries.ui.view.radius.RadiusFrameLayout

@@ -4,11 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.BarUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.rt.base.BaseApplication
@@ -21,6 +18,12 @@ import com.rt.common.util.AppUtil
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityMainBinding
 import com.rt.ipms_video.mvvm.viewmodel.MainViewModel
+import com.rt.ipms_video.ui.activity.abnormal.BerthAbnormalActivity
+import com.rt.ipms_video.ui.activity.income.IncomeCountingActivity
+import com.rt.ipms_video.ui.activity.mine.LogoutActivity
+import com.rt.ipms_video.ui.activity.mine.MineActivity
+import com.rt.ipms_video.ui.activity.order.OrderMainActivity
+import com.rt.ipms_video.ui.activity.parking.ParkingLotActivity
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
@@ -49,27 +52,33 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
-                ARouter.getInstance().build(ARouterMap.MINE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, MineActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.ll_parkingLot -> {
-                ARouter.getInstance().build(ARouterMap.PARKING_LOT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.fl_incomeCounting -> {
-                ARouter.getInstance().build(ARouterMap.INCOME_COUNTING).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, IncomeCountingActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.fl_order -> {
-                ARouter.getInstance().build(ARouterMap.ORDER_MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, OrderMainActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.fl_berthAbnormal -> {
-                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, BerthAbnormalActivity::class.java)
+                startActivity(intent)
             }
 
             R.id.fl_logout -> {
-                ARouter.getInstance().build(ARouterMap.LOGOUT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                val intent = Intent(this@MainActivity, LogoutActivity::class.java)
+                startActivity(intent)
             }
         }
     }

@@ -3,6 +3,7 @@ package com.rt.base
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.http.OnAddOkhttpInterceptor
 import com.rt.base.proxy.OnAppBaseProxyLinsener
@@ -35,10 +36,23 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
 //            .setSkinWindowBackgroundEnable(false) // 关闭windowBackground换肤，默认打开[可选]
 //            .loadSkin()
         initClient()
+        initArouter()
+    }
+
+    fun initArouter() {
+        Thread {
+            if (com.rt.base.BuildConfig.is_debug) {
+                ARouter.openLog()
+                ARouter.openDebug()
+            }
+            ARouter.init(BaseApplication.instance())
+        }.start()
     }
 
     private fun initClient() {
-        client = OkHttpClient.Builder().build()
+        Thread {
+            client = OkHttpClient.Builder().build()
+        }.start()
     }
 
     /**

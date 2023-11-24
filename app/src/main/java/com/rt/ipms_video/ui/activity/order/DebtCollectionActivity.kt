@@ -120,6 +120,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                     ToastUtil.showToast(i18n(com.rt.base.R.string.请输入车牌号))
                     return
                 }
+                if (carLicense.length != 7 && carLicense.length != 8) {
+                    ToastUtil.showToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
+                    return
+                }
                 query()
             }
 

@@ -1,10 +1,16 @@
 package com.rt.ipms_video
 
+import android.app.Application
 import android.content.Context
+import android.net.http.HttpResponseCache
 import com.rt.base.BaseApplication
 import com.rt.base.http.interceptor.*
+import com.rt.base.network.NetWorkMonitorManager
+import com.rt.common.help.SmartRefreshHelp
+import com.rt.ipms_video.startup.OnAppBaseProxyManager
 import io.realm.Realm
 import okhttp3.Interceptor
+import java.io.File
 
 class AppApplication : BaseApplication() {
     companion object {
@@ -18,25 +24,24 @@ class AppApplication : BaseApplication() {
         super.onCreate()
         _context = this
         //realm
-        Realm.init(this)
-
-        //初始化数据库
-        //支付宝沙箱环境
-//        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
-        //初始化数据库
-//        val mAppDatabase = Room.databaseBuilder(
-//            applicationContext,
-//            AppRoomDatabase::class.java, "android_room_xdj.db"
-//        )
-//            .allowMainThreadQueries()
-//            .addMigrations(MIGRATION_2_3)
-//            .build()
+        Thread {
+            Realm.init(this)
+            val cacheDir = File(BaseApplication.instance().cacheDir, "http")
+            HttpResponseCache.install(cacheDir, 1024 * 1024 * 128)
+            BaseApplication.instance().setOnAppBaseProxyLinsener(OnAppBaseProxyManager())        //初始化全局的刷新
+            SmartRefreshHelp.initRefHead()
+            //初始化网络状态监听
+            regNetWorkState(this)
+        }.start()
     }
 
-//    val MIGRATION_2_3: Migration = object : Migration(2, 3) {
-//        override fun migrate(database: SupportSQLiteDatabase) {
-//        }
-//    }
+
+    /**
+     * 注册全局的网络状态广播
+     */
+    private fun regNetWorkState(application: Application) {
+        NetWorkMonitorManager.getInstance().init(application)
+    }
 
     override fun onAddOkHttpInterceptor(): List<Interceptor> {
         val list = ArrayList<Interceptor>()

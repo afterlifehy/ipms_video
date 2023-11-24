@@ -2,21 +2,36 @@ package com.rt.ipms_video.ui.activity.order
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.EncodeUtils
+import com.blankj.utilcode.util.ImageUtils
+import com.blankj.utilcode.util.UriUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
+import com.rt.base.ext.show
+import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.common.util.GlideUtils
 import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyTextWatcher
@@ -24,8 +39,11 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.CollectionPlateColorAdapter
 import com.rt.ipms_video.databinding.ActivityCollectionManagementBinding
 import com.rt.ipms_video.dialog.AbnormalStreetListDialog
+import com.rt.ipms_video.dialog.SelectPicDialog
 import com.rt.ipms_video.mvvm.viewmodel.CollectionManagementViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.runBlocking
+import java.io.File
 
 @Route(path = ARouterMap.COLLECTION_MANAGEMENT)
 class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(), OnClickListener {
@@ -36,6 +54,12 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     val widthType = 3
     var streetList: MutableList<Street> = ArrayList()
     var abnormalStreetListDialog: AbnormalStreetListDialog? = null
+    var streetNo = ""
+    var currentStreet: Street? = null
+    var selectPicDialog: SelectPicDialog? = null
+    var currentPic = 1
+    var pic1Base64 = ""
+    var pic2Base64 = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -61,16 +85,30 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
+        binding.cbStreetName.setOnClickListener(this)
         binding.rflStreetName.setOnClickListener(this)
         binding.rflSubmit.setOnClickListener(this)
+        binding.tvPic1.setOnClickListener(this)
+        binding.tvPic2.setOnClickListener(this)
+        binding.rivPic1.setOnClickListener(this)
+        binding.rivPic2.setOnClickListener(this)
+        binding.root.setOnClickListener(this)
+        binding.layoutToolbar.toolbar.setOnClickListener(this)
     }
 
     override fun initData() {
-//        streetList.add(1)
-//        streetList.add(2)
-//        streetList.add(3)
-//        streetList.add(4)
-//        streetList.add(5)
+        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
+        if (streetNo.isNotEmpty()) {
+            for (i in streetList) {
+                if (i.streetNo == streetNo) {
+                    currentStreet = i
+                }
+            }
+        } else {
+            currentStreet = RealmUtil.instance?.findCurrentStreet()
+            streetNo = currentStreet!!.streetNo
+        }
+        binding.tvStreetName.text = currentStreet?.streetName
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -116,6 +154,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         return false
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         if (keyboardUtil.isShow()) {
             binding.rllManagement.translationY = 0f
@@ -130,39 +169,184 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                 ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CollectionManagementActivity, 1)
             }
 
+            R.id.cb_streetName -> {
+                showAbnormalStreetListDialog()
+            }
+
             R.id.rfl_streetName -> {
+                binding.cbStreetName.isChecked = true
                 showAbnormalStreetListDialog()
             }
 
             R.id.rfl_submit -> {
-
+                submit()
             }
 
             R.id.fl_color -> {
                 checkedColor = v.tag as Int
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
+
+            R.id.toolbar,
+            binding.root.id -> {
+            }
+
+            R.id.tv_pic1,
+            R.id.riv_pic1 -> {
+                var rxPermissions = RxPermissions(this@CollectionManagementActivity)
+                rxPermissions.request(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).subscribe {
+                    if (it) {
+                        selectPicDialog = null
+                        if (selectPicDialog == null) {
+                            selectPicDialog = SelectPicDialog(object : SelectPicDialog.Callback {
+                                override fun onTakePhoto() {
+                                    currentPic = 1
+                                    takePhoto()
+                                }
+
+                                override fun onPickPhoto() {
+                                    currentPic = 1
+                                    selectPhoto()
+                                }
+                            })
+                        }
+                        selectPicDialog?.show()
+                    }
+                }
+            }
+
+            R.id.tv_pic2,
+            R.id.riv_pic2 -> {
+                var rxPermissions = RxPermissions(this@CollectionManagementActivity)
+                rxPermissions.request(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ).subscribe {
+                    if (it) {
+                        selectPicDialog = null
+                        if (selectPicDialog == null) {
+                            selectPicDialog = SelectPicDialog(object : SelectPicDialog.Callback {
+                                override fun onTakePhoto() {
+                                    currentPic = 2
+                                    takePhoto()
+                                }
+
+                                override fun onPickPhoto() {
+                                    currentPic = 2
+                                    selectPhoto()
+                                }
+                            })
+                        }
+                        selectPicDialog?.show()
+                    }
+                }
+            }
         }
     }
 
     fun showAbnormalStreetListDialog() {
-//        val currentStreet = if (binding.tvStreetName.text.toString().isEmpty()) {
-//            0
-//        } else {
-//            binding.tvStreetName.text.toString().toInt()
-//        }
-//        abnormalStreetListDialog = AbnormalStreetListDialog(
-//            streetList,
-//            currentStreet,
-//            object : AbnormalStreetListDialog.AbnormalStreetCallBack {
-//                override fun chooseStreet(currentStreet: Street) {
-//                    binding.tvStreetName.text = currentStreet.toString()
-//                }
-//            })
-//        abnormalStreetListDialog?.show()
-//        abnormalStreetListDialog?.setOnDismissListener {
-//            binding.cbStreetName.isChecked = false
-//        }
+        abnormalStreetListDialog =
+            AbnormalStreetListDialog(streetList, currentStreet!!, object : AbnormalStreetListDialog.AbnormalStreetCallBack {
+                override fun chooseStreet(street: Street) {
+                    currentStreet = street
+                    streetNo = currentStreet!!.streetNo
+                    binding.tvStreetName.text = street.streetName.toString()
+                }
+            })
+        abnormalStreetListDialog?.show()
+        abnormalStreetListDialog?.setOnDismissListener {
+            binding.cbStreetName.isChecked = false
+        }
+    }
+
+    fun takePhoto() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        takePictureLauncher.launch(takePictureIntent)
+    }
+
+    fun selectPhoto() {
+        selectImageLauncher.launch("image/*")
+    }
+
+    val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+            when (currentPic) {
+                1 -> {
+                    binding.rivPic1.show()
+                    GlideUtils.instance?.loadImage(binding.rivPic1, imageBitmap)
+                    val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
+                    val bytes = file?.readBytes()
+                    pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+                }
+
+                2 -> {
+                    binding.rivPic2.show()
+                    GlideUtils.instance?.loadImage(binding.rivPic2, imageBitmap)
+                    val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
+                    val bytes = file?.readBytes()
+                    pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+                }
+            }
+        }
+    }
+
+    val selectImageLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            when (currentPic) {
+                1 -> {
+                    binding.rivPic1.show()
+                    val file = UriUtils.uri2File(it)
+                    GlideUtils.instance?.loadImageFile(binding.rivPic1, file)
+                    val bytes = file?.readBytes()
+                    pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+                }
+
+                2 -> {
+                    binding.rivPic2.show()
+                    val file = UriUtils.uri2File(it)
+                    GlideUtils.instance?.loadImageFile(binding.rivPic2, file)
+                    val bytes = file?.readBytes()
+                    pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+                }
+            }
+        }
+    }
+
+    fun submit() {
+        showProgressDialog(20000)
+        runBlocking {
+            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["streetNo"] = streetNo
+            jsonobject["photo1"] = pic1Base64
+            jsonobject["photo2"] = pic2Base64
+            jsonobject["photoType"] = "jpg"
+            param["attr"] = jsonobject
+            mViewModel.callSubmit(param)
+        }
+    }
+
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            callSubmitLiveData.observe(this@CollectionManagementActivity) {
+                dismissProgressDialog()
+            }
+            errMsg.observe(this@CollectionManagementActivity) {
+                dismissProgressDialog()
+                ToastUtil.showToast(it.msg)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

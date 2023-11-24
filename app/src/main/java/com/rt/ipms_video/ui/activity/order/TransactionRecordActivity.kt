@@ -12,6 +12,8 @@ import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.PrintInfoBean
 import com.rt.base.bean.TransactionBean
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.i18n
@@ -24,6 +26,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.TransactionRecordAdapter
 import com.rt.ipms_video.databinding.ActivityTransactionRecordBinding
 import com.rt.ipms_video.mvvm.viewmodel.TransactionRecordViewModel
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_RECORD)
 class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, ActivityTransactionRecordBinding>(), OnClickListener {
@@ -31,6 +34,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     var transactionRecordList: MutableList<TransactionBean> = ArrayList()
     var orderNo = ""
     val print = BluePrint(this)
+    var token = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -50,6 +54,9 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     }
 
     override fun initData() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+        }
         query()
     }
 
@@ -75,6 +82,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["tradeNo"] = "20230825JAZ03850048412"
+                jsonobject["token"] = token
 //                    transactionBean.tradeNo
                 param["attr"] = jsonobject
                 mViewModel.notificationInquiry(param)

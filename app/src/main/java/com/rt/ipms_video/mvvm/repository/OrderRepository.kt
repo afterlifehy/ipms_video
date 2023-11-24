@@ -5,7 +5,7 @@ import com.rt.base.bean.DebtCollectionResultBean
 import com.rt.base.bean.HttpWrapper
 import com.rt.base.bean.NotificationBean
 import com.rt.base.bean.OrderResultBean
-import com.rt.base.bean.PayResultResultBean
+import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.QRPayBean
 import com.rt.base.bean.TransactionResultBean
 import com.rt.base.bean.VideoPicBean
@@ -36,7 +36,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 查询支付结果
      */
-    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultResultBean> {
+    suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return mServer.payResult(param)
     }
 
@@ -61,4 +61,24 @@ class OrderRepository : BaseRepository() {
         return mServer.notificationInquiry(param)
     }
 
+    /**
+     * 交易查询
+     */
+    suspend fun transactionInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean> {
+        return mServer.transactionInquiry(param)
+    }
+
+    /**
+     * 催缴单催缴
+     */
+    suspend fun callSubmit(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.callSubmit(param)
+    }
+
+    /**
+     * 欠费催缴单查询
+     */
+    suspend fun callInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.callInquiry(param)
+    }
 }

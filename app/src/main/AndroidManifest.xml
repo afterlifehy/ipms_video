@@ -228,5 +228,9 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".ui.activity.mine.FeeRateActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

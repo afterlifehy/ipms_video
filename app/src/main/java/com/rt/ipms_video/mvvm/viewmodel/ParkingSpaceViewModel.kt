@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.rt.base.base.mvvm.BaseViewModel
 import com.rt.base.base.mvvm.ErrorMessage
 import com.rt.base.bean.ParkingSpaceBean
-import com.rt.base.bean.PayResultResultBean
+import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.QRPayBean
 import com.rt.ipms_video.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
 
     val parkingSpaceFeeLiveData = MutableLiveData<ParkingSpaceBean>()
     val insidePayLiveData = MutableLiveData<QRPayBean>()
-    val payResultLiveData = MutableLiveData<PayResultResultBean>()
+    val payResultLiveData = MutableLiveData<PayResultBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
