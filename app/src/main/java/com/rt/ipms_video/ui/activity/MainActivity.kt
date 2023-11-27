@@ -1,15 +1,35 @@
 package com.rt.ipms_video.ui.activity
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PathUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloadListener
+import com.liulishuo.filedownloader.FileDownloader
+import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.UpdateBean
+import com.rt.base.dialog.DialogHelp
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.util.ToastUtil
@@ -24,9 +44,15 @@ import com.rt.ipms_video.ui.activity.mine.LogoutActivity
 import com.rt.ipms_video.ui.activity.mine.MineActivity
 import com.rt.ipms_video.ui.activity.order.OrderMainActivity
 import com.rt.ipms_video.ui.activity.parking.ParkingLotActivity
+import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
+    var updateBean: UpdateBean? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -47,6 +73,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     override fun initData() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["version"] = AppUtils.getAppVersionCode()
+        param["attr"] = jsonobject
+        mViewModel.checkUpdate(param)
     }
 
     override fun onClick(v: View?) {
@@ -91,6 +122,119 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             .setRecConfidenceThreshold(0.85f)
         // 初始化(仅执行一次生效)
         HyperLPR3.getInstance().init(BaseApplication.instance(), parameter)
+    }
+
+    @SuppressLint("NewApi")
+    override fun startObserve() {
+        super.startObserve()
+        mViewModel.apply {
+            checkUpdateLiveDate.observe(this@MainActivity) {
+                updateBean = it
+                if (updateBean?.state == "0" && updateBean?.force == "1") {
+                    DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.发现新版本是否下载安装更新))
+                        .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(false)
+                        .isAloneButton(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                requestionPermission()
+                            }
+
+                        }).build(this@MainActivity).showDailog()
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putLong(
+                            PreferencesKeys.lastCheckUpdateTime,
+                            System.currentTimeMillis()
+                        )
+                    }
+                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
+                    runBlocking {
+                        val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
+                        if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
+                            DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.发现新版本是否下载安装更新))
+                                .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(true)
+                                .setLeftMsg(i18N(com.rt.base.R.string.取消)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
+
+                                    override fun onRightClickLinsener(msg: String) {
+                                        requestionPermission()
+                                    }
+
+                                }).build(this@MainActivity).showDailog()
+                            PreferencesDataStore(BaseApplication.instance()).putLong(
+                                PreferencesKeys.lastCheckUpdateTime,
+                                System.currentTimeMillis()
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("CheckResult")
+    fun requestionPermission() {
+        var rxPermissions = RxPermissions(this@MainActivity)
+        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
+            if (it) {
+                if (packageManager.canRequestPackageInstalls()) {
+                    downloadFileAndInstall()
+                } else {
+                    val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
+                    val intent =
+                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
+                    requestInstallPackageLauncher.launch(intent)
+                }
+            } else {
+
+            }
+        }
+    }
+
+    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            downloadFileAndInstall()
+        } else {
+
+        }
+    }
+
+    fun downloadFileAndInstall() {
+        ToastUtil.showToast(i18N(com.rt.base.R.string.开始下载更新))
+        GlobalScope.launch(Dispatchers.IO) {
+            FileDownloader.setup(this@MainActivity)
+            val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
+            FileDownloader.getImpl().create(updateBean?.url)
+                .setPath(path)
+                .setListener(object : FileDownloadListener() {
+                    override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                        Log.v("123", "${(soFarBytes * 100f / totalBytes.toFloat()).toInt()}")
+                    }
+
+                    override fun completed(task: BaseDownloadTask?) {
+                        AppUtils.installApp(path)
+                    }
+
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        Log.v("123", e.toString())
+                    }
+
+                    override fun warn(task: BaseDownloadTask?) {
+                    }
+
+                }).start()
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {

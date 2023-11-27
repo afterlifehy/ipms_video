@@ -49,18 +49,11 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
 
     override fun initData() {
         tabList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
-        for (i in tabList.indices) {
+        for (i in tabList) {
             val bundle = Bundle()
             val feeRateFragment = FeeRateFragment()
-//            if (i == 0) {
-//                bundle.putString("inPicture", it.inPicture)
-//                bundle.putString("inVideo", it.inVideo)
-//            } else {
-//                bundle.putString("outPicture", it.outPicture)
-//                bundle.putString("outVideo", it.outVideo)
-//            }
-//            bundle.putInt("followType", i)
-//            feeRateFragment.arguments = bundle
+            bundle.putString("streetNo", i.streetNo)
+            feeRateFragment.arguments = bundle
             fragmentList.add(feeRateFragment)
         }
         binding.vpFeeRate.adapter = FeeRatePagerAdapter(this@FeeRateActivity, fragmentList, tabList)

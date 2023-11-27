@@ -19,17 +19,20 @@ import org.json.JSONException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Handler;
 
 import zpCPCLSDK.zpCPCLSDK.PrinterInterface;
 import zpCPCLSDK.zpCPCLSDK.zp_cpcl_BluetoothPrinter;
 
 public class BluePrint {
     private Context context;
+    public zp_cpcl_BluetoothPrinter zpSDK;
+    private int printResult;
 
     public BluePrint(Activity context) {
         this.context = context;
     }
+
+    String mAddress = null;
 
     public void zkblueprint(String content) throws JSONException {
 
@@ -40,19 +43,7 @@ public class BluePrint {
         //打印文本
         String printText = content;
 
-
-        String mAddress = null;
-        //获取设备蓝牙地址
-        BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        @SuppressLint("MissingPermission")
-        Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
-        Iterator it = devices.iterator();
-        while (it.hasNext()) {
-            Object device = it.next();
-            mAddress = device.toString();
-        }
-        int printResult = Print1(context, mAddress, printText);
+        printResult = Print1(context, mAddress, printText);
         ActivityCacheManager.Companion.instance().getCurrentActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +70,25 @@ public class BluePrint {
 
     }
 
+    public void connet() {
+        //获取设备蓝牙地址
+        BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        @SuppressLint("MissingPermission")
+        Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
+        Iterator it = devices.iterator();
+        while (it.hasNext()) {
+            Object device = it.next();
+            mAddress = device.toString();
+        }
+        zpSDK = new zp_cpcl_BluetoothPrinter(context);
+        if (!zpSDK.connect(mAddress)) {
+            //Toast.makeText(this,"连接失败------", Toast.LENGTH_LONG).show();
+            ToastUtils.showShort("连接失败");
+            printResult = -1;
+        }
+    }
+
     /**
      * 打印
      *
@@ -87,14 +97,6 @@ public class BluePrint {
      * @return
      */
     public int Print1(Context context, String BDAddress, String printText) {
-        zp_cpcl_BluetoothPrinter zpSDK = new zp_cpcl_BluetoothPrinter(context);
-
-        if (!zpSDK.connect(BDAddress)) {
-            //Toast.makeText(this,"连接失败------", Toast.LENGTH_LONG).show();
-            ToastUtils.showShort("连接失败");
-            return -1;
-        }
-
         int yLocation = 182;
         int yLocation1 = 0;
         Calendar now = Calendar.getInstance();
@@ -150,7 +152,7 @@ public class BluePrint {
                 zpSDK.print(0, 0);
                 zpSDK.printerStatus();
                 int a = zpSDK.GetStatus();
-                zpSDK.disconnect();
+//                zpSDK.disconnect();
                 return 0;
             }
             //-----------------------------------------------------------------自定义打印内容----------------------------------------------------------------------
@@ -233,7 +235,7 @@ public class BluePrint {
         zpSDK.printerStatus();
         int a = zpSDK.GetStatus();
 
-        zpSDK.disconnect();
+//        zpSDK.disconnect();
 
         return 0;
     }

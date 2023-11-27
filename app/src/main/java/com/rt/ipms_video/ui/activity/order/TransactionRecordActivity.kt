@@ -1,5 +1,8 @@
 package com.rt.ipms_video.ui.activity.order
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
@@ -26,6 +29,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.TransactionRecordAdapter
 import com.rt.ipms_video.databinding.ActivityTransactionRecordBinding
 import com.rt.ipms_video.mvvm.viewmodel.TransactionRecordViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_RECORD)
@@ -70,6 +74,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         mViewModel.transactionInquiryByOrder(param)
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -77,15 +82,34 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
 
             R.id.fl_notification -> {
-                showProgressDialog(20000)
-                val transactionBean = v.tag as TransactionBean
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["tradeNo"] = "20230825JAZ03850048412"
-                jsonobject["token"] = token
+                var rxPermissions = RxPermissions(this@TransactionRecordActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            showProgressDialog(20000)
+                            val transactionBean = v.tag as TransactionBean
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            //TODO(测试数据)
+                            jsonobject["tradeNo"] = "20230825JAZ03850048412"
+                            jsonobject["token"] = token
 //                    transactionBean.tradeNo
-                param["attr"] = jsonobject
-                mViewModel.notificationInquiry(param)
+                            param["attr"] = jsonobject
+                            mViewModel.notificationInquiry(param)
+                        }
+                    }
+                } else {
+                    showProgressDialog(20000)
+                    val transactionBean = v.tag as TransactionBean
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    //TODO(测试数据)
+                    jsonobject["tradeNo"] = "20230825JAZ03850048412"
+                    jsonobject["token"] = token
+//                    transactionBean.tradeNo
+                    param["attr"] = jsonobject
+                    mViewModel.notificationInquiry(param)
+                }
             }
         }
     }
@@ -123,6 +147,9 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     oweCount = 0
                 )
                 Thread {
+                    if (print.zpSDK == null) {
+                        print.connet()
+                    }
                     print.zkblueprint(printInfo.toString())
                 }.start()
             }

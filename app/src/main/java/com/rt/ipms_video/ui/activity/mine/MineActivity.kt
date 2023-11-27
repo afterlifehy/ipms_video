@@ -89,11 +89,16 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     }
 
     override fun initData() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
-        param["attr"] = jsonobject
-        mViewModel.checkUpdate(param)
+        runBlocking {
+            val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
+            if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
+                param["attr"] = jsonobject
+                mViewModel.checkUpdate(param)
+            }
+        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -109,20 +114,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.fl_version -> {
-                if (updateBean?.state == "0" && updateBean?.force == "0") {
-                    DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(true)
-                        .setLeftMsg(i18N(com.rt.base.R.string.取消)).setCancelable(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@MineActivity).showDailog()
-                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
+                param["attr"] = jsonobject
+                mViewModel.checkUpdate(param)
             }
 
             R.id.fl_feeRate -> {
@@ -130,32 +126,25 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.rtv_logout -> {
-                var rxPermissions = RxPermissions(this@MineActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-                    if (it) {
-                        if (locationManager == null) {
-                            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                            val provider = LocationManager.NETWORK_PROVIDER
-                            locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                                override fun onLocationChanged(location: Location) {
-                                    lat = location.latitude
-                                    lon = location.longitude
-                                }
-                            })
+                DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.是否确定进行不签退退出))
+                    .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(true)
+                    .setLeftMsg(i18N(com.rt.base.R.string.取消)).setCancelable(true)
+                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                        override fun onLeftClickLinsener(msg: String) {
                         }
-                        showProgressDialog(20000)
-                        runBlocking {
-                            val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["token"] = token
-                            jsonobject["longitude"] = lon
-                            jsonobject["latitude"] = lat
-                            param["attr"] = jsonobject
-                            mViewModel.logout(param)
+
+                        override fun onRightClickLinsener(msg: String) {
+                            ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                            ActivityCacheManager.instance().getCurrentActivity()?.finish()
+                            runBlocking {
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                            }
+                            RealmUtil.instance?.deleteAllStreet()
                         }
-                    }
-                }
+
+                    }).build(this@MineActivity).showDailog()
             }
         }
     }
@@ -228,25 +217,46 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             checkUpdateLiveDate.observe(this@MineActivity) {
                 updateBean = it
                 if (updateBean?.state == "0" && updateBean?.force == "1") {
+                    DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.发现新版本是否下载安装更新))
+                        .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(false)
+                        .isAloneButton(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
 
+                            override fun onRightClickLinsener(msg: String) {
+                                requestionPermission()
+                            }
 
-                    ToastUtil.showToast("后台下载更新中...")
-                    requestionPermission()
+                        }).build(this@MineActivity).showDailog()
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putLong(
+                            PreferencesKeys.lastCheckUpdateTime,
+                            System.currentTimeMillis()
+                        )
+                    }
+                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
+                    DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.发现新版本是否下载安装更新))
+                        .setRightMsg(i18N(com.rt.base.R.string.确定))
+                        .setLeftMsg(i18N(com.rt.base.R.string.取消)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                requestionPermission()
+                            }
+
+                        }).build(this@MineActivity).showDailog()
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putLong(
+                            PreferencesKeys.lastCheckUpdateTime,
+                            System.currentTimeMillis()
+                        )
+                    }
                 } else if (updateBean?.state == "1") {
                     ToastUtil.showToast("当前已是最新版本")
                 }
-            }
-            logoutLiveData.observe(this@MineActivity) {
-                dismissProgressDialog()
-                ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                ActivityCacheManager.instance().getCurrentActivity()?.finish()
-                ToastUtil.showToast(i18N(com.rt.base.R.string.签退成功))
-                runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                }
-                RealmUtil.instance?.deleteAllStreet()
             }
             errMsg.observe(this@MineActivity) {
                 ToastUtil.showToast(it.msg)

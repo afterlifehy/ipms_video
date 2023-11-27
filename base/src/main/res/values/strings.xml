@@ -122,9 +122,14 @@
     <string name="拍照">拍照：</string>
     <string name="拍摄照片">拍摄照片</string>
     <string name="相册">相册</string>
-    <string name="费率">费率</string>
+    <string name="费率信息">费率信息</string>
     <string name="工作日标准">工作日标准</string>
     <string name="周末标准">周末标准</string>
     <string name="节假日标准">节假日标准</string>
     <string name="费率列表">费率列表</string>
+    <string name="重新登录">重新登录</string>
+    <string name="是否确定进行不签退退出">是否确定进行不签退退出</string>
+    <string name="first15">首15分钟</string>
+    <string name="second15">后15分钟</string>
+    <string name="third30">后30分钟</string>
 </resources>

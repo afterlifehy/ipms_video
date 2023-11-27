@@ -1,7 +1,10 @@
 package com.rt.ipms_video.ui.activity.parking
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -30,13 +33,9 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityParkingSpaceBinding
 import com.rt.ipms_video.dialog.PaymentQrDialog
 import com.rt.ipms_video.mvvm.viewmodel.ParkingSpaceViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.PARKING_SPACE)
@@ -162,6 +161,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -211,7 +211,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showToast(i18N(com.rt.base.R.string.支付成功))
-                startPrint(it)
+                val payResultBean = it
+                var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            startPrint(payResultBean)
+                        }
+                    }
+                } else {
+                    startPrint(it)
+                }
+
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -235,6 +246,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             oweCount = 0
         )
         Thread {
+            if (print.zpSDK == null) {
+                print.connet()
+            }
             print.zkblueprint(printInfo.toString())
         }.start()
     }

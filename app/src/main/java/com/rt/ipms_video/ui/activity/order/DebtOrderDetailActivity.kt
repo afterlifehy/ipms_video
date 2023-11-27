@@ -1,8 +1,10 @@
 package com.rt.ipms_video.ui.activity.order
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -30,6 +32,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityDebtOrderDetailBinding
 import com.rt.ipms_video.dialog.PaymentQrDialog
 import com.rt.ipms_video.mvvm.viewmodel.DebtOrderDetailViewModel
+import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.DEBT_ORDER_DETAIL)
@@ -132,6 +135,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -153,7 +157,18 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showToast(i18N(com.rt.base.R.string.支付成功))
-                startPrint(it)
+                val payResultBean = it
+                var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            startPrint(payResultBean)
+                        }
+                    }
+                }else{
+                    startPrint(it)
+                }
+
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
@@ -177,6 +192,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             oweCount = 0
         )
         Thread {
+            if (print.zpSDK == null) {
+                print.connet()
+            }
             print.zkblueprint(printInfo.toString())
         }.start()
     }

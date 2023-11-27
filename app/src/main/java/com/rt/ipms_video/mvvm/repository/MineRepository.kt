@@ -1,9 +1,9 @@
 package com.rt.ipms_video.mvvm.repository
 
 import com.rt.base.base.mvvm.BaseRepository
+import com.rt.base.bean.FeeRateResultBean
 import com.rt.base.bean.HttpWrapper
 import com.rt.base.bean.UpdateBean
-import com.rt.base.bean.VideoPicBean
 
 class MineRepository : BaseRepository() {
     /**
@@ -18,5 +18,12 @@ class MineRepository : BaseRepository() {
      */
     suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.logout(param)
+    }
+
+    /**
+     * 费率
+     */
+    suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
+        return mServer.feeRate(param)
     }
 }

@@ -111,7 +111,7 @@ interface Api {
      * 费率查询
      */
     @POST("S_VO2_18")
-    suspend fun S_VO2_18(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+    suspend fun feeRate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean>
 
     /**
      * 版本更新查询

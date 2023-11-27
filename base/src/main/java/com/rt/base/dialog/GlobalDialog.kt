@@ -53,12 +53,17 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
         when (v?.id) {
             R.id.rtv_left -> {
                 mDialogHelp?.mOnButtonClickLinsener?.onLeftClickLinsener()
-                dismiss()
+                if (mDialogHelp!!.cancelable) {
+                    dismiss()
+                }
 
             }
+
             R.id.rtv_right -> {
                 mDialogHelp?.mOnButtonClickLinsener?.onRightClickLinsener()
-                dismiss()
+                if (mDialogHelp!!.cancelable) {
+                    dismiss()
+                }
             }
         }
     }

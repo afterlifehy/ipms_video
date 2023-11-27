@@ -116,7 +116,7 @@
                 android:layout_centerVertical="true"
                 android:drawableStart="@mipmap/ic_fee_rate"
                 android:drawablePadding="@dimen/dp_13"
-                android:text="@string/费率"
+                android:text="@string/费率信息"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_19" />
 
@@ -136,7 +136,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dp_12"
             android:gravity="center"
-            android:text="@string/签退"
+            android:text="@string/重新登录"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_17"
             app:rv_backgroundColor="@color/color_ff0371f4"

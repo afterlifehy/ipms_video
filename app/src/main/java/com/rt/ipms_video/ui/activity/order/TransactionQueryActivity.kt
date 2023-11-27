@@ -1,6 +1,8 @@
 package com.rt.ipms_video.ui.activity.order
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -34,6 +36,7 @@ import com.rt.ipms_video.adapter.TransactionQueryAdapter
 import com.rt.ipms_video.databinding.ActivityTransactionQueryBinding
 import com.rt.ipms_video.mvvm.viewmodel.TransactionQueryViewModel
 import com.rt.ipms_video.pop.DatePop
+import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.TRANSACTION_QUERY)
@@ -159,14 +162,31 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             }
 
             R.id.fl_notification -> {
-                showProgressDialog(20000)
-                currentTransactionBean = v.tag as TransactionBean
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                jsonobject["token"] = token
-                param["attr"] = jsonobject
-                mViewModel.notificationInquiry(param)
+                var rxPermissions = RxPermissions(this@TransactionQueryActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            showProgressDialog(20000)
+                            currentTransactionBean = v.tag as TransactionBean
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+                            jsonobject["token"] = token
+                            param["attr"] = jsonobject
+                            mViewModel.notificationInquiry(param)
+                        }
+                    }
+                } else {
+                    showProgressDialog(20000)
+                    currentTransactionBean = v.tag as TransactionBean
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+                    jsonobject["token"] = token
+                    param["attr"] = jsonobject
+                    mViewModel.notificationInquiry(param)
+                }
+
             }
 
             R.id.fl_paymentInquiry -> {
@@ -233,6 +253,9 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     oweCount = 0
                 )
                 Thread {
+                    if (print.zpSDK == null) {
+                        print.connet()
+                    }
                     print.zkblueprint(printInfo.toString())
                 }.start()
             }

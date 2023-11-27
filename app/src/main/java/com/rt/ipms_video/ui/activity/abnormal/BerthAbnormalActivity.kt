@@ -250,7 +250,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             object : AbnormalClassificationDialog.AbnormalClassificationCallBack {
                 override fun chooseClassification(classification: String) {
                     binding.tvAbnormalClassification.text = classification
-                    if (classification == i18n(com.rt.base.R.string.在停车牌与POS不一致)) {
+                    if (classification == i18n(com.rt.base.R.string.在停车牌与POS不一致) || classification == i18n(com.rt.base.R.string.泊位有车POS无订单)) {
                         binding.llPlate.show()
                         binding.rvPlateColor.show()
                     } else {

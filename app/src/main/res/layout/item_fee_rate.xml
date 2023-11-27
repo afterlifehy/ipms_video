@@ -69,11 +69,11 @@
                 android:layout_height="@dimen/dp_46"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:text="@string/first15"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_19"
                 app:rv_backgroundColor="@color/color_ffefefef"
-                app:rv_topLeftRadius="@dimen/dp_3"
-                tools:text="首15分钟" />
+                app:rv_topLeftRadius="@dimen/dp_3" />
 
             <TextView
                 android:id="@+id/tv_centerTime"
@@ -84,9 +84,9 @@
                 android:layout_weight="1"
                 android:background="@color/color_ffefefef"
                 android:gravity="center"
+                android:text="@string/second15"
                 android:textColor="@color/color_ff1a1a1a"
-                android:textSize="@dimen/sp_19"
-                tools:text="后15分钟" />
+                android:textSize="@dimen/sp_19" />
 
             <com.aries.ui.view.radius.RadiusTextView
                 android:id="@+id/rtv_endTime"
@@ -94,11 +94,11 @@
                 android:layout_height="@dimen/dp_46"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:text="@string/third30"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_19"
                 app:rv_backgroundColor="@color/color_ffefefef"
-                app:rv_topRightRadius="@dimen/dp_3"
-                tools:text="后30分钟" />
+                app:rv_topRightRadius="@dimen/dp_3" />
         </LinearLayout>
 
         <LinearLayout

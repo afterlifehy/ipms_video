@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.LoginBean
 import com.rt.base.bean.Street
+import com.rt.base.ds.PreferencesDataStore
+import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.realm.RealmUtil
@@ -19,6 +23,7 @@ import com.rt.ipms_video.adapter.StreetChoosedAdapter
 import com.rt.ipms_video.databinding.ActivityStreetChooseBinding
 import com.rt.ipms_video.dialog.StreetChooseListDialog
 import com.rt.ipms_video.mvvm.viewmodel.StreetChooseViewModel
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.STREET_CHOOSE)
 class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStreetChooseBinding>(),
@@ -27,10 +32,13 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     var streetChooseListDialog: StreetChooseListDialog? = null
     var streetChoosedAdapter: StreetChoosedAdapter? = null
     var streetChoosedList: MutableList<Street> = ArrayList()
+    var loginInfo: LoginBean? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.路段选择)
+
+        loginInfo = intent.getParcelableExtra(ARouterMap.LOGIN_INFO) as? LoginBean
 
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(this)
@@ -45,7 +53,8 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     }
 
     override fun initData() {
-        streetChoosedAdapter?.setList(streetChoosedList)
+        streetList.clear()
+        streetList = loginInfo?.result as MutableList<Street>
     }
 
     override fun onClick(v: View?) {
@@ -55,8 +64,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_addStreet -> {
-                streetList.clear()
-                RealmUtil.instance?.findAllStreetList()?.let { streetList.addAll(it) }
                 streetChooseListDialog =
                     StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
                         override fun chooseStreets() {
@@ -72,6 +79,15 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     for (i in streetChoosedList) {
                         RealmUtil.instance?.updateStreetChoosed(i)
                     }
+                    val streetList = loginInfo?.result as ArrayList<Street>
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, loginInfo!!.token)
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone)
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name)
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName)
+                    }
+                    RealmUtil.instance?.deleteAllStreet()
+                    RealmUtil.instance?.addRealmAsyncList(streetList)
                     RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
                     ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }

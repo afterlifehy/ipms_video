@@ -2,6 +2,7 @@ package com.rt.ipms_video.ui.activity.income
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.widget.Toolbar
@@ -103,9 +104,26 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                     "receipt," + loginName + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
                             ",orderTotalToday" + incomeCountingBean?.orderTotalToday + ",unclearedTotal" + incomeCountingBean?.unclearedTotal +
                             ",payMoneyTotal" + incomeCountingBean?.payMoneyTotal + ",orderTotal" + incomeCountingBean?.orderTotal
-                Thread {
-                    print.zkblueprint(str)
-                }.start()
+                var rxPermissions = RxPermissions(this@IncomeCountingActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            Thread {
+                                if (print.zpSDK == null) {
+                                    print.connet()
+                                }
+                                print.zkblueprint(str)
+                            }.start()
+                        }
+                    }
+                } else {
+                    Thread {
+                        if (print.zpSDK == null) {
+                            print.connet()
+                        }
+                        print.zkblueprint(str)
+                    }.start()
+                }
             }
         }
     }
