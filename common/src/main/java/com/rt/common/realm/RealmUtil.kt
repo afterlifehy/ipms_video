@@ -1,5 +1,6 @@
 package com.rt.common.realm
 
+import com.rt.base.bean.BlueToothDeviceBean
 import com.rt.base.bean.Street
 import io.realm.*
 
@@ -97,12 +98,25 @@ class RealmUtil {
         return realm.where(Street::class.java).equalTo("isCurrent", true).findAll().first()
     }
 
+    fun findCurrentDeviceList(): List<BlueToothDeviceBean>? {
+        return realm.where(BlueToothDeviceBean::class.java).findAll()
+    }
+
     /**
      *删除所有street
      */
     fun deleteAllStreet() {
         realm.executeTransaction {
             it.delete(Street::class.java)
+        }
+    }
+
+    /**
+     *删除所有device
+     */
+    fun deleteAllDevice() {
+        realm.executeTransaction {
+            it.delete(BlueToothDeviceBean::class.java)
         }
     }
 }

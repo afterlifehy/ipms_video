@@ -20,6 +20,7 @@ import com.rt.base.ext.i18N
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.common.util.AppUtil
 import com.rt.common.util.BluePrint
 import com.rt.common.util.GlideUtils
@@ -36,11 +37,10 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     val sizes = intArrayOf(19, 16)
     val colors = intArrayOf(com.rt.base.R.color.color_ff0371f4, com.rt.base.R.color.color_ff0371f4)
     val styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
-    private val print = BluePrint(this)
     var datePop: DatePop? = null
-    var loginName = ""
     var startDate = ""
     var endDate = ""
+    var streetNo = ""
     var incomeCountingBean: IncomeCountingBean? = null
 
     override fun initView() {
@@ -48,9 +48,6 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_calendar)
         binding.layoutToolbar.ivRight.show()
 
-        runBlocking {
-            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
-        }
     }
 
     override fun initListener() {
@@ -63,6 +60,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     override fun initData() {
         endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
         startDate = endDate.substring(0, 8) + "01"
+        streetNo = RealmUtil.instance?.findCurrentStreet()!!.streetNo
         getIncomeCounting()
     }
 
@@ -101,7 +99,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
 
             R.id.rtv_print -> {
                 var str =
-                    "receipt," + loginName + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
+                    "receipt," + streetNo + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
                             ",orderTotalToday" + incomeCountingBean?.orderTotalToday + ",unclearedTotal" + incomeCountingBean?.unclearedTotal +
                             ",payMoneyTotal" + incomeCountingBean?.payMoneyTotal + ",orderTotal" + incomeCountingBean?.orderTotal
                 var rxPermissions = RxPermissions(this@IncomeCountingActivity)
@@ -109,19 +107,13 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
                             Thread {
-                                if (print.zpSDK == null) {
-                                    print.connet()
-                                }
-                                print.zkblueprint(str)
+                                BluePrint.instance?.zkblueprint(str)
                             }.start()
                         }
                     }
                 } else {
                     Thread {
-                        if (print.zpSDK == null) {
-                            print.connet()
-                        }
-                        print.zkblueprint(str)
+                        BluePrint.instance?.zkblueprint(str)
                     }.start()
                 }
             }
@@ -132,7 +124,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["loginName"] = loginName
+        jsonobject["streetNo"] = streetNo
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
         param["attr"] = jsonobject

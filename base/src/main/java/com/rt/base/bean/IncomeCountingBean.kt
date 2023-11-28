@@ -1,9 +1,9 @@
 package com.rt.base.bean
 
 data class IncomeCountingBean(
-    val payMoneyToday: Double,
+    val payMoneyToday: String,
     val orderTotalToday: Int,
     val unclearedTotal: Int,
-    val payMoneyTotal: Double,
+    val payMoneyTotal: String,
     val orderTotal: Int
 )

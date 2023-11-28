@@ -132,4 +132,8 @@
     <string name="first15">首15分钟</string>
     <string name="second15">后15分钟</string>
     <string name="third30">后30分钟</string>
+    <string name="停车场">停车场</string>
+    <string name="确认签退">确认签退</string>
+    <string name="选择打印机">选择打印机</string>
+    <string name="打印管理">打印管理</string>
 </resources>

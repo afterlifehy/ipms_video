@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.aries.ui.view.radius.RadiusRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_13"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingEnd="@dimen/dp_13"
+    android:paddingBottom="@dimen/dp_17"
+    app:rv_topLeftRadius="@dimen/dp_10"
+    app:rv_topRightRadius="@dimen/dp_10">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.aries.ui.view.radius.RadiusTextView
+        android:id="@+id/rtv_ok"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_47"
+        android:layout_below="@+id/rv_device"
+        android:layout_marginTop="@dimen/dp_112"
+        android:gravity="center"
+        android:text="@string/确定"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_19"
+        app:rv_backgroundColor="@color/color_ff0371f4"
+        app:rv_radius="@dimen/dp_7" />
+
+</com.aries.ui.view.radius.RadiusRelativeLayout>

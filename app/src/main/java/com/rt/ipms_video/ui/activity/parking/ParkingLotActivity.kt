@@ -1,20 +1,26 @@
 package com.rt.ipms_video.ui.activity.parking
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.ParkingLotBean
 import com.rt.base.bean.Street
+import com.rt.base.ext.i18N
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.realm.RealmUtil
+import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.ParkingLotAdapter
 import com.rt.ipms_video.databinding.ActivityParkingLotBinding
@@ -25,11 +31,15 @@ import com.rt.ipms_video.pop.StreetPop
 class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {
     var parkingLotAdapter: ParkingLotAdapter? = null
     var parkingLotList: MutableList<ParkingLotBean> = ArrayList()
-    var streetPop: StreetPop? = null
-    var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
+    var count = 0
+    var handler = Handler(Looper.getMainLooper())
 
     override fun initView() {
+        GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
+        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.停车场)
+        binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
+
         binding.rvParkingLot.setHasFixedSize(true)
         binding.rvParkingLot.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         parkingLotAdapter = ParkingLotAdapter(parkingLotList, this)
@@ -37,17 +47,31 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     override fun initListener() {
-        binding.flBack.setOnClickListener(this)
-        binding.llTitle.setOnClickListener(this)
+        binding.layoutToolbar.flBack.setOnClickListener(this)
     }
 
     override fun initData() {
         currentStreet = RealmUtil.instance?.findCurrentStreet()
-        RealmUtil.instance?.findCheckedStreetList()?.let { streetList.addAll(it) }
-        binding.tvTitle.text = currentStreet?.streetName
-        if (streetList.size > 0) {
-            getParkingLotList()
+    }
+
+    val runnable = object : Runnable {
+        override fun run() {
+            if (count < 600) {
+                getParkingLotList()
+                count++
+                handler.postDelayed(this, 10000)
+            }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(runnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handler.post(runnable)
     }
 
     fun getParkingLotList() {
@@ -63,19 +87,6 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         when (v?.id) {
             R.id.fl_back -> {
                 onBackPressedSupport()
-            }
-
-            R.id.ll_title -> {
-                streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
-                    override fun selectStreet(street: Street) {
-                        currentStreet = street
-                        binding.tvTitle.text = currentStreet!!.streetName
-                        val old = RealmUtil.instance?.findCurrentStreet()
-                        RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
-                        getParkingLotList()
-                    }
-                })
-                streetPop?.showAsDropDown((v.parent) as Toolbar)
             }
 
             R.id.rfl_parking -> {
@@ -116,10 +127,17 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         get() = true
 
     override fun marginStatusBarView(): View {
-        return binding.ablToolbar
+        return binding.layoutToolbar.ablToolbar
     }
 
     override fun providerVMClass(): Class<ParkingLotViewModel> {
         return ParkingLotViewModel::class.java
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
     }
 }

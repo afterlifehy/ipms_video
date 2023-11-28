@@ -12,7 +12,6 @@ import com.rt.base.bean.ParkingLotBean
 import com.rt.base.ext.hide
 import com.rt.base.ext.i18n
 import com.rt.base.ext.show
-import com.rt.common.util.AppUtil
 import com.rt.ipms_video.databinding.ItemParkingLotBinding
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
@@ -76,7 +75,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.rflParking.tag = item
             holder.vb.rflParking.setOnClickListener(onClickListener)
         }
-        holder.vb.tvParkingLotNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
+        holder.vb.tvParkingLotNum.text = item.parkingNo.substring(item.parkingNo.length - 3, item.parkingNo.length)
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemParkingLotBinding {

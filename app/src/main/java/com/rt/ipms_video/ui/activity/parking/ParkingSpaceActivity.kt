@@ -61,7 +61,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var count = 0
     var handler = Handler(Looper.getMainLooper())
-    val print = BluePrint(this)
 
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
@@ -140,13 +139,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     }
 
     fun checkPayResult() {
-//        TODO("测试入参")
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["token"] = "746a8c3eeb974709b9075b4cfc139977"
-//            token
-        jsonobject["tradeNo"] = "20230831JAZ03850133112"
-//            tradeNo
+        jsonobject["token"] = token
+        jsonobject["tradeNo"] = tradeNo
         param["attr"] = jsonobject
         mViewModel.payResult(param)
     }
@@ -246,10 +242,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             oweCount = 0
         )
         Thread {
-            if (print.zpSDK == null) {
-                print.connet()
-            }
-            print.zkblueprint(printInfo.toString())
+            BluePrint.instance?.zkblueprint(printInfo.toString())
         }.start()
     }
 

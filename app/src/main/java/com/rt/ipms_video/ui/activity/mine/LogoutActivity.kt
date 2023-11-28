@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.dialog.DialogHelp
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
@@ -96,27 +97,38 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 var rxPermissions = RxPermissions(this@LogoutActivity)
                 rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                     if (it) {
-                        if (locationManager == null) {
-                            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                            val provider = LocationManager.NETWORK_PROVIDER
-                            locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                                override fun onLocationChanged(location: Location) {
-                                    lat = location.latitude
-                                    lon = location.longitude
+                        DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.确认签退))
+                            .setLeftMsg(i18N(com.rt.base.R.string.取消))
+                            .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(true)
+                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                override fun onLeftClickLinsener(msg: String) {
                                 }
-                            })
-                        }
-                        showProgressDialog(20000)
-                        runBlocking {
-                            val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["token"] = token
-                            jsonobject["longitude"] = lon
-                            jsonobject["latitude"] = lat
-                            param["attr"] = jsonobject
-                            mViewModel.logout(param)
-                        }
+
+                                override fun onRightClickLinsener(msg: String) {
+                                    if (locationManager == null) {
+                                        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                                        val provider = LocationManager.NETWORK_PROVIDER
+                                        locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
+                                            override fun onLocationChanged(location: Location) {
+                                                lat = location.latitude
+                                                lon = location.longitude
+                                            }
+                                        })
+                                    }
+                                    showProgressDialog(20000)
+                                    runBlocking {
+                                        val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                                        val param = HashMap<String, Any>()
+                                        val jsonobject = JSONObject()
+                                        jsonobject["token"] = token
+                                        jsonobject["longitude"] = lon
+                                        jsonobject["latitude"] = lat
+                                        param["attr"] = jsonobject
+                                        mViewModel.logout(param)
+                                    }
+                                }
+
+                            }).build(this@LogoutActivity).showDailog()
                     }
                 }
             }

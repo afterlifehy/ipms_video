@@ -37,7 +37,6 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     var transactionRecordAdapter: TransactionRecordAdapter? = null
     var transactionRecordList: MutableList<TransactionBean> = ArrayList()
     var orderNo = ""
-    val print = BluePrint(this)
     var token = ""
 
     override fun initView() {
@@ -147,10 +146,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     oweCount = 0
                 )
                 Thread {
-                    if (print.zpSDK == null) {
-                        print.connet()
-                    }
-                    print.zkblueprint(printInfo.toString())
+                    BluePrint.instance?.zkblueprint(printInfo.toString())
                 }.start()
             }
             errMsg.observe(this@TransactionRecordActivity) {

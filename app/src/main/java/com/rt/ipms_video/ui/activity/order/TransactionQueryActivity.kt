@@ -45,7 +45,6 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
     var transactionQueryAdapter: TransactionQueryAdapter? = null
     var transactionQueryList: MutableList<TransactionBean> = ArrayList()
-    private val print = BluePrint(this)
     var datePop: DatePop? = null
     var pageIndex = 1
     var pageSize = 10
@@ -217,6 +216,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                         transactionQueryAdapter?.setNewInstance(null)
                         binding.rvTransaction.gone()
                         binding.layoutNoData.root.show()
+                        binding.srlTransaction.finishRefresh()
                     } else {
                         transactionQueryList.clear()
                         transactionQueryList.addAll(tempList)
@@ -253,10 +253,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     oweCount = 0
                 )
                 Thread {
-                    if (print.zpSDK == null) {
-                        print.connet()
-                    }
-                    print.zkblueprint(printInfo.toString())
+                    BluePrint.instance?.zkblueprint(printInfo.toString())
                 }.start()
             }
             payResultLiveData.observe(this@TransactionQueryActivity) {

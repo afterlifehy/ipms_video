@@ -171,6 +171,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         orderInquiryAdapter?.setNewInstance(null)
                         binding.rvOrders.gone()
                         binding.layoutNoData.root.show()
+                        binding.srlOrder.finishRefresh()
                     } else {
                         orderList.clear()
                         orderList.addAll(tempList)

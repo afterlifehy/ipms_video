@@ -179,17 +179,17 @@ dependencies {
     api(ThirdPart.flycoTabLayout)
 
     //svga
-    api(ThirdPart.SVGAPlayer)
+//    api(ThirdPart.SVGAPlayer)
 
-    //Antifake
-    api(ThirdPart.Antifake)
+    //模拟器检测
+//    api(ThirdPart.Antifake)
 
     //lottie动画
     api(ThirdPart.lottie)
     //流式布局
 //    api(ThirdPart.flowlayout)
 
-    api(ThirdPart.constraintlayout)
+//    api(ThirdPart.constraintlayout)
 
     //span
     api(ThirdPart.spanBuilder)

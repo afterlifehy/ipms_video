@@ -41,11 +41,11 @@ abstract class BaseApplication : Application(), Application.ActivityLifecycleCal
 
     fun initArouter() {
         Thread {
-            if (com.rt.base.BuildConfig.is_debug) {
+            if (BuildConfig.is_debug) {
                 ARouter.openLog()
                 ARouter.openDebug()
             }
-            ARouter.init(BaseApplication.instance())
+            ARouter.init(instance())
         }.start()
     }
 

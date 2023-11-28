@@ -31,13 +31,8 @@
         <RelativeLayout
             android:id="@+id/rl_homeTop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_23">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_home_top_logo" />
+            android:gravity="center_vertical"
+            android:layout_height="?attr/actionBarSize">
 
             <ImageView
                 android:id="@+id/iv_head"
@@ -45,6 +40,31 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:src="@mipmap/ic_home_head_logo" />
+
+            <ImageView
+                android:id="@+id/iv_g2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_g2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_toStartOf="@+id/iv_head"
+                android:layout_toEndOf="@+id/iv_g2"
+                android:drawableEnd="@mipmap/ic_arrow_down"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxEms="8"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_23"
+                android:textStyle="bold"
+                tools:text="CN007定西路(愚园CN007定西路(愚园" />
         </RelativeLayout>
 
         <LinearLayout
@@ -82,7 +102,7 @@
                             android:drawableTop="@mipmap/ic_parking_lot_logo"
                             android:drawablePadding="@dimen/dp_24"
                             android:gravity="center"
-                            android:text="停车场"
+                            android:text="@string/停车场"
                             android:textColor="@color/color_ff1a1a1a"
                             android:textSize="@dimen/sp_20"
                             android:textStyle="bold" />

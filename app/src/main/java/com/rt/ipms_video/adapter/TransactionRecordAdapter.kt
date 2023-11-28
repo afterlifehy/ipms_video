@@ -12,7 +12,7 @@ class TransactionRecordAdapter(data: MutableList<TransactionBean>? = null, val o
     BaseBindingAdapter<TransactionBean, ItemTransactionRecordBinding>(data) {
     override fun convert(holder: VBViewHolder<ItemTransactionRecordBinding>, item: TransactionBean) {
         holder.vb.tvOrderNo.text = item.tradeNo
-        holder.vb.tvAmount.text = item.payedAmount
+        holder.vb.tvAmount.text = "${item.payedAmount}元"
         holder.vb.tvStartTime.text = item.startTime
         holder.vb.tvEndTime.text = item.endTime
         holder.vb.flNotification.tag = item

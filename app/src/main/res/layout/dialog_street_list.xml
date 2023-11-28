@@ -10,17 +10,29 @@
     app:rv_topLeftRadius="@dimen/dp_10"
     app:rv_topRightRadius="@dimen/dp_10">
 
+    <TextView
+        android:id="@+id/tv_dialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_13"
+        android:text="@string/选择打印机"
+        android:textColor="@color/color_ff1a1a1a"
+        android:textSize="@dimen/sp_19" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_street"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_dialogTitle"
+        android:layout_marginTop="@dimen/dp_10" />
 
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_ok"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
         android:layout_below="@+id/rv_street"
-        android:layout_marginTop="@dimen/dp_112"
+        android:layout_marginTop="@dimen/dp_100"
         android:gravity="center"
         android:text="@string/确定"
         android:textColor="@color/white"

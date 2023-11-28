@@ -3,6 +3,7 @@ package com.rt.ipms_video.ui.activity.mine
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -29,6 +30,7 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.BlueToothDeviceBean
 import com.rt.base.bean.UpdateBean
 import com.rt.base.dialog.DialogHelp
 import com.rt.base.ds.PreferencesDataStore
@@ -38,9 +40,11 @@ import com.rt.base.help.ActivityCacheManager
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.realm.RealmUtil
+import com.rt.common.util.BluePrint
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityMineBinding
+import com.rt.ipms_video.dialog.BlueToothDeviceListDialog
 import com.rt.ipms_video.mvvm.viewmodel.MineViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +58,8 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     var locationManager: LocationManager? = null
     var lat = 121.123212
     var lon = 31.434312
+    var blueToothDeviceListDialog: BlueToothDeviceListDialog? = null
+    var currentDevice: BlueToothDeviceBean? = null
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -79,16 +85,22 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         }
     }
 
-
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.flBaseInfo.setOnClickListener(this)
         binding.flVersion.setOnClickListener(this)
         binding.flFeeRate.setOnClickListener(this)
+        binding.flBlueToothPrint.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
     }
 
     override fun initData() {
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
+            if (currentDevice != null) {
+                binding.tvDeviceName.text = currentDevice?.name
+            }
+        }
         runBlocking {
             val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
             if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
@@ -125,6 +137,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 ARouter.getInstance().build(ARouterMap.FEE_RATE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
+            R.id.fl_blueToothPrint -> {
+                showBlueToothDeviceListDialog()
+            }
+
             R.id.rtv_logout -> {
                 DialogHelp.Builder().setTitle(i18N(com.rt.base.R.string.是否确定进行不签退退出))
                     .setRightMsg(i18N(com.rt.base.R.string.确定)).setCancelable(true)
@@ -147,6 +163,29 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     }).build(this@MineActivity).showDailog()
             }
         }
+    }
+
+    fun showBlueToothDeviceListDialog() {
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
+        }
+        blueToothDeviceListDialog = BlueToothDeviceListDialog(
+            BluePrint.instance?.blueToothDevice!!, currentDevice,
+            object : BlueToothDeviceListDialog.BlueToothDeviceCallBack {
+                @SuppressLint("MissingPermission")
+                override fun chooseDevice(device: BluetoothDevice) {
+                    BluePrint.instance?.disConnect()
+                    var connectResult = BluePrint.instance?.connet(device.address)
+                    if (connectResult == 0) {
+                        RealmUtil.instance?.deleteAllDevice()
+                        RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                        binding.tvDeviceName.text = device.name
+                    } else {
+                        return
+                    }
+                }
+            })
+        blueToothDeviceListDialog?.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -3,6 +3,7 @@ package com.rt.ipms_video.ui.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -11,8 +12,10 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -26,6 +29,7 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
+import com.rt.base.bean.Street
 import com.rt.base.bean.UpdateBean
 import com.rt.base.dialog.DialogHelp
 import com.rt.base.ds.PreferencesDataStore
@@ -34,10 +38,14 @@ import com.rt.base.ext.i18N
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
+import com.rt.common.realm.RealmUtil
 import com.rt.common.util.AppUtil
+import com.rt.common.util.BluePrint
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityMainBinding
+import com.rt.ipms_video.dialog.BlueToothDeviceListDialog
 import com.rt.ipms_video.mvvm.viewmodel.MainViewModel
+import com.rt.ipms_video.pop.StreetPop
 import com.rt.ipms_video.ui.activity.abnormal.BerthAbnormalActivity
 import com.rt.ipms_video.ui.activity.income.IncomeCountingActivity
 import com.rt.ipms_video.ui.activity.mine.LogoutActivity
@@ -53,6 +61,9 @@ import kotlinx.coroutines.runBlocking
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
     var updateBean: UpdateBean? = null
+    var streetPop: StreetPop? = null
+    var streetList: MutableList<Street> = ArrayList()
+    var currentStreet: Street? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -65,6 +76,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initListener() {
         binding.ivHead.setOnClickListener(this)
+        binding.tvTitle.setOnClickListener(this)
         binding.llParkingLot.setOnClickListener(this)
         binding.flIncomeCounting.setOnClickListener(this)
         binding.flOrder.setOnClickListener(this)
@@ -72,10 +84,24 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         binding.flLogout.setOnClickListener(this)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initData() {
+        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
+
+        Thread {
+            if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+                val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
+                if (device != null) {
+                    BluePrint.instance?.connet(device.address)
+                }
+            }
+        }.start()
+
+        binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
+        jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject
         mViewModel.checkUpdate(param)
     }
@@ -85,6 +111,19 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             R.id.iv_head -> {
                 val intent = Intent(this@MainActivity, MineActivity::class.java)
                 startActivity(intent)
+            }
+
+            R.id.tv_title -> {
+                streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
+                    override fun selectStreet(street: Street) {
+                        currentStreet = street
+                        val old = RealmUtil.instance?.findCurrentStreet()
+                        RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
+                        binding.tvTitle.text =
+                            currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                    }
+                })
+                streetPop?.showAsDropDown((v.parent) as RelativeLayout)
             }
 
             R.id.ll_parkingLot -> {

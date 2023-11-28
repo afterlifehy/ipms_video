@@ -48,7 +48,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     var token = ""
     var count = 0
     var handler = Handler(Looper.getMainLooper())
-    val print = BluePrint(this)
 
     @SuppressLint("NewApi")
     override fun initView() {
@@ -117,8 +116,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
 //        TODO("测试入参")
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["token"] = "746a8c3eeb974709b9075b4cfc139977"
-//            token
+        jsonobject["token"] = token
         jsonobject["tradeNo"] = "20230831JAZ03850133112"
 //            tradeNo
         param["attr"] = jsonobject
@@ -165,7 +163,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                             startPrint(payResultBean)
                         }
                     }
-                }else{
+                } else {
                     startPrint(it)
                 }
 
@@ -192,10 +190,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             oweCount = 0
         )
         Thread {
-            if (print.zpSDK == null) {
-                print.connet()
-            }
-            print.zkblueprint(printInfo.toString())
+            BluePrint.instance?.zkblueprint(printInfo.toString())
         }.start()
     }
 
