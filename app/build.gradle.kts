@@ -8,6 +8,7 @@ plugins {
 }
 
 android {
+
     compileSdk = BuildConfig.compileSdk
 
     defaultConfig {
@@ -52,16 +53,16 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("ipmsVideo.jks")
-            storePassword = "ipmsvideo231102"
-            keyAlias = "key0"
-            keyPassword = "ipmsvideo231102"
+            storeFile = file("inspectorapp.jks")
+            storePassword = "D0ub1e"
+            keyAlias = "inspector"
+            keyPassword = "D0ub1e"
         }
         getByName("debug") {
-            storeFile = file("ipmsVideo.jks")
-            storePassword = "ipmsvideo231102"
-            keyAlias = "key0"
-            keyPassword = "ipmsvideo231102"
+            storeFile = file("inspectorapp.jks")
+            storePassword = "D0ub1e"
+            keyAlias = "inspector"
+            keyPassword = "D0ub1e"
         }
     }
 
@@ -104,7 +105,7 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 this.outputFileName =
-                    "ipms_video_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
+                    "ja.insepector_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
             }
         }
     }

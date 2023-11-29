@@ -1,4 +1,4 @@
-# ipms_video
+# ja.insepector
 
 #### Description
 G2高位巡检员APP

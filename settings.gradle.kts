@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ipms_video"
+rootProject.name = "ja.insepector"
 
 include(":app")
 include(":base")

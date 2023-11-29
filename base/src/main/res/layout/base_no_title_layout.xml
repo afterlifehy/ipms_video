@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.rt.base.widget.PagerStatesView
+        <ja.insepector.base.widget.PagerStatesView
             android:id="@+id/fl_other_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
