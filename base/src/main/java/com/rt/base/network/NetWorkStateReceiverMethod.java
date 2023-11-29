@@ -1,4 +1,5 @@
 package com.rt.base.network;
+import com.rt.base.network.NetWorkState;
 
 import java.lang.reflect.Method;
 

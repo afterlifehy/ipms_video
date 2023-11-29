@@ -1,5 +1,6 @@
 package com.rt.base.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.viewbinding.ViewBinding
@@ -9,7 +10,7 @@ import com.rt.base.R
  * Created by huy  on 2022/8/13.
  */
 abstract class VBBaseLibDialog<vb : ViewBinding>(context: Context, themeResId: Int) :
-    com.rt.base.dialog.BaseLibDialog(context, themeResId) {
+    BaseLibDialog(context, themeResId) {
 
     constructor(context: Context) : this(context, R.style.alertdialog)
 

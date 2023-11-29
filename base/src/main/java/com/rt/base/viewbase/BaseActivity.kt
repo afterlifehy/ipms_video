@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.blankj.utilcode.util.BarUtils
 import com.rt.base.R
-import com.rt.base.bean.NetWorkRequestData
-import com.rt.base.event.BaseEvent
 import com.rt.base.base.mvvm.BaseViewModel
 import com.rt.base.base.mvvm.OnNetWorkCallLinsener
+import com.rt.base.bean.NetWorkRequestData
+import com.rt.base.dialog.IOSLoadingDialog
+import com.rt.base.event.BaseEvent
+import com.rt.base.network.NetWorkMonitorManager
 import com.rt.base.network.NetWorkState
 import com.rt.base.network.ViewNetWorkStateManager
 import com.rt.base.viewbase.inter.NetWorkRequestLinsener
@@ -36,7 +38,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
 
     //用来存储需要监听的网络错误
     private var networkErrorTagList = ArrayList<String>()
-    private lateinit var mProgressDialog: com.rt.base.dialog.IOSLoadingDialog
+    private lateinit var mProgressDialog: IOSLoadingDialog
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(baseEvent: BaseEvent) {
@@ -53,7 +55,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
         }
         super.onCreate(savedInstanceState)
 
-        val loadBuilder = com.rt.base.dialog.IOSLoadingDialog.Builder(this)
+        val loadBuilder = IOSLoadingDialog.Builder(this)
             .setMessage("Loading")
             .setShowMessage(false)
             .setCancelable(true)
@@ -168,7 +170,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     override fun onNewWorkErrorCall(tag: String, ext: java.lang.Exception?) {
         if (networkErrorTagList.contains(tag)) {
             val info = NetWorkRequestData(1, ext?.message!!, tag)
-            if (com.rt.base.network.NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
+            if (NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
                 onNoNetWorkErrror(info)
             } else {
                 onNetWorkRequestError(info)

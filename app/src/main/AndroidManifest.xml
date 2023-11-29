@@ -60,7 +60,7 @@
         android:required="false" />
 
     <application
-        android:name="com.rt.ipms_video.AppApplication"
+        android:name=".AppApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_app_logo"

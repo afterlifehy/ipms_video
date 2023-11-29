@@ -225,7 +225,7 @@ object AppUtil {
         return if (Build.VERSION.SDK_INT >= 24) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             FileProvider.getUriForFile(
-                BaseApplication.instance(), "com.peakinfo.plateid.fileprovider",
+                BaseApplication.instance(), "com.rt.ipms_video.fileprovider",
                 file!!
             )
         } else {

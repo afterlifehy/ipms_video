@@ -6,6 +6,7 @@ import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.dialog.VBBaseLibDialog
 import com.rt.base.help.ActivityCacheManager
+import com.rt.common.util.CodeUtils
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.databinding.DialogPaymentQrBinding
 
@@ -19,7 +20,7 @@ class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
     }
 
     private fun initView() {
-        val qrBitmap = com.rt.common.util.CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
+        val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
 
         binding.ivClose.setOnClickListener {

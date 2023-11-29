@@ -13,6 +13,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 
 import com.rt.base.BaseApplication;
+import com.rt.base.network.NetWorkState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

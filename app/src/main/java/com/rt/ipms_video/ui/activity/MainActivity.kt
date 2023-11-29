@@ -68,7 +68,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initView() {
         initHyperLPR()
-//        setStatusBarColor(com.peakinfo.base.R.color.black, false)
+//        setStatusBarColor(com.rt.base.R.color.black, false)
     }
 
     override fun initListener() {

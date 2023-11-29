@@ -1,13 +1,14 @@
 package com.rt.base.base.mvvm
 
 import com.rt.base.bean.ResResponse
+import com.rt.base.http.RetrofitUtils
 import com.rt.base.request.Api
 
 
 open class BaseRepository {
 
     val mServer by lazy {
-        com.rt.base.http.RetrofitUtils.getInstance().createCoroutineRetrofit(
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
             Api::class.java,
             UrlManager.getServerUrl()
         )

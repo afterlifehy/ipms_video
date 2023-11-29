@@ -3,6 +3,7 @@ package com.rt.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
 import com.blankj.utilcode.util.ToastUtils

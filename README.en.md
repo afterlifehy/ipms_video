@@ -1,4 +1,4 @@
-#com.peakinfo
+# ipms_video
 
 #### Description
 G2高位巡检员APP

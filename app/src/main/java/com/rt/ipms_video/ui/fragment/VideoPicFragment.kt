@@ -73,8 +73,8 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
 //        binding.llVideo.gone()
 //        binding.layoutNoData.root.show()
 //
-//        binding.layoutNoData.tvNoDataTitle.text = i18n(com.peakinfo.base.R.string.无车辆进出图片)
-//        GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData,com.peakinfo.common.R.mipmap.ic_no_data_3)
+//        binding.layoutNoData.tvNoDataTitle.text = i18n(com.rt.base.R.string.无车辆进出图片)
+//        GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.rt.common.R.mipmap.ic_no_data_3)
     }
 
     fun loadCover(imageView: ImageView, url: String, res: String) {

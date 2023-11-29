@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "com.peakinfo"
+rootProject.name = "ipms_video"
 
 include(":app")
 include(":base")

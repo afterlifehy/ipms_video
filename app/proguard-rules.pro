@@ -41,7 +41,7 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.rt.common.bean.**{*;}
 -keep class com.rt.common.event.**{*;}
 #--数据库实体类不被混淆
-#-keep classcom.peakinfo.plateid.roomdao.**{*;}
+#-keep class com.rt.ipms_video.roomdao.**{*;}
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------

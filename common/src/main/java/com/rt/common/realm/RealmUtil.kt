@@ -12,7 +12,7 @@ class RealmUtil {
         .schemaVersion(versionCode.toLong())
         .allowWritesOnUiThread(true)
         .allowQueriesOnUiThread(true)
-        .migration(com.rt.common.realm.MyMigration())
+        .migration(MyMigration())
         .build()
     val realm: Realm
         get() = Realm.getDefaultInstance()

@@ -1,7 +1,9 @@
 package com.rt.common.realm;
 
 import io.realm.DynamicRealm;
+import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**

@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.http.HttpResponseCache
 import com.rt.base.BaseApplication
 import com.rt.base.http.interceptor.*
+import com.rt.base.network.NetWorkMonitorManager
 import com.rt.common.help.SmartRefreshHelp
 import com.rt.ipms_video.startup.OnAppBaseProxyManager
 import io.realm.Realm
@@ -15,13 +16,13 @@ class AppApplication : BaseApplication() {
     companion object {
         var _context: BaseApplication? = null
         fun instance(): BaseApplication {
-            return com.rt.ipms_video.AppApplication.Companion._context!!
+            return _context!!
         }
     }
 
     override fun onCreate() {
         super.onCreate()
-        com.rt.ipms_video.AppApplication.Companion._context = this
+        _context = this
         //realm
         Thread {
             Realm.init(this)
@@ -39,19 +40,19 @@ class AppApplication : BaseApplication() {
      * 注册全局的网络状态广播
      */
     private fun regNetWorkState(application: Application) {
-        com.rt.base.network.NetWorkMonitorManager.getInstance().init(application)
+        NetWorkMonitorManager.getInstance().init(application)
     }
 
     override fun onAddOkHttpInterceptor(): List<Interceptor> {
         val list = ArrayList<Interceptor>()
         list.add(HeaderInterceptor())
         list.add(LoginExpiredInterceptor())
-        list.add(com.rt.base.http.interceptor.HostInterceptor())
+        list.add(HostInterceptor())
         list.add(TokenInterceptor())
-        if (com.rt.ipms_video.BuildConfig.is_debug) {
-            list.add(com.rt.base.http.interceptor.LogInterceptor(com.rt.ipms_video.BuildConfig.is_debug))
-            val mHttpLoggingInterceptor = com.rt.base.http.interceptor.HttpLoggingInterceptor("rt_http")
-            mHttpLoggingInterceptor.setPrintLevel(com.rt.base.http.interceptor.HttpLoggingInterceptor.Level.BODY)
+        if (BuildConfig.is_debug) {
+            list.add(LogInterceptor(BuildConfig.is_debug))
+            val mHttpLoggingInterceptor = HttpLoggingInterceptor("rt_http")
+            mHttpLoggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY)
             list.add(mHttpLoggingInterceptor)
         }
         return list

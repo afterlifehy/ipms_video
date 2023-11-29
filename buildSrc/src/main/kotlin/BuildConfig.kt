@@ -1,5 +1,5 @@
 object BuildConfig {
-    const val applicationId = "com.peakinfo.plateid"
+    const val applicationId = "com.rt.ipms_video"
 
     const val compileSdk = 33
     const val minSdk = 23

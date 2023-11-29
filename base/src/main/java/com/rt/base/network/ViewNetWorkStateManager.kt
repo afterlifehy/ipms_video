@@ -30,7 +30,7 @@ class ViewNetWorkStateManager(
     }
 
     fun onCraete() {
-        com.rt.base.network.NetWorkMonitorManager.getInstance().register(this)
+        NetWorkMonitorManager.getInstance().register(this)
     }
 
     fun onResume() {
@@ -41,7 +41,7 @@ class ViewNetWorkStateManager(
     }
 
     fun onDestroy() {
-        com.rt.base.network.NetWorkMonitorManager.getInstance().unregister(this)
+        NetWorkMonitorManager.getInstance().unregister(this)
         mHandler = null
     }
 

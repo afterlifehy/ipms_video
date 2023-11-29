@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.rt.base.BaseApplication
+import com.rt.base.http.interceptor.HttpLoggingInterceptor
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -36,9 +37,9 @@ object HttpBuilder {
      * @return
      */
     @JvmStatic
-    fun getHttplogger(): com.rt.base.http.interceptor.HttpLoggingInterceptor {
-        val logInterceptor = com.rt.base.http.interceptor.HttpLoggingInterceptor("okhttp3")
-        logInterceptor.setPrintLevel(com.rt.base.http.interceptor.HttpLoggingInterceptor.Level.BODY)
+    fun getHttplogger(): HttpLoggingInterceptor {
+        val logInterceptor = HttpLoggingInterceptor("okhttp3")
+        logInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.BODY)
         return logInterceptor
     }
 
@@ -64,7 +65,7 @@ object HttpBuilder {
     fun getOkhttpBuilder(
         list: List<Interceptor>
     ): OkHttpClient.Builder {
-        val sslParams = com.rt.base.http.RetrofitUtils.getSSLParams()
+        val sslParams = RetrofitUtils.getSSLParams()
         val mBuilder = OkHttpClient.Builder()
             .connectTimeout(5L, TimeUnit.SECONDS)
             .readTimeout(60L, TimeUnit.SECONDS)

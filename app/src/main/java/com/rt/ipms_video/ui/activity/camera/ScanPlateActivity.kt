@@ -12,6 +12,7 @@ import com.hyperai.hyperlpr3.bean.Plate
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.R
+import com.rt.ipms_video.databinding.ActivityScanPlateBinding
 import com.rt.ipms_video.mvvm.viewmodel.ScanPlateViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import org.greenrobot.eventbus.Subscribe
@@ -40,7 +41,7 @@ class ScanPlateActivity : VbBaseActivity<ScanPlateViewModel, ActivityScanPlateBi
     }
 
     private fun initCamera() {
-        cameraPreview = com.rt.ipms_video.ui.activity.camera.CameraPreviews(this)
+        cameraPreview = CameraPreviews(this)
         binding.flPreview.addView(cameraPreview)
     }
 

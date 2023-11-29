@@ -7,7 +7,7 @@ import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
 import com.rt.ipms_video.databinding.ItemParkingChooseStreetBinding
 
-class AbnormalClassificationAdapter(data: MutableList<String>? = null, var currentClassification: String, val callback: com.rt.ipms_video.adapter.AbnormalClassificationAdapter.ChooseClassificationAdapterCallBack) :
+class AbnormalClassificationAdapter(data: MutableList<String>? = null, var currentClassification: String, val callback: ChooseClassificationAdapterCallBack) :
     BaseBindingAdapter<String, ItemParkingChooseStreetBinding>(data) {
     var lastClassificationCB: CheckBox? = null
     var currentClassificationCB: CheckBox? = null

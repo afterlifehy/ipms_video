@@ -121,7 +121,7 @@ class DWebView : WebView {
             try {
                 method = cls.getMethod(
                     methodName,
-                    *arrayOf(Any::class.java, com.rt.common.view.dsbridge.CompletionHandler::class.java)
+                    *arrayOf(Any::class.java, CompletionHandler::class.java)
                 )
                 asyn = true
             } catch (e: Exception) {
@@ -152,7 +152,7 @@ class DWebView : WebView {
             try {
                 if (asyn) {
                     val cb = callback
-                    method.invoke(jsb, arg, object : com.rt.common.view.dsbridge.CompletionHandler<Any?> {
+                    method.invoke(jsb, arg, object : CompletionHandler<Any?> {
                         override fun complete(retValue: Any?) {
                             complete(retValue, true)
                         }
@@ -204,7 +204,7 @@ class DWebView : WebView {
         }
     }
 
-    var handlerMap: MutableMap<Int, com.rt.common.view.dsbridge.OnReturnValue<*>> = HashMap()
+    var handlerMap: MutableMap<Int, OnReturnValue<*>> = HashMap()
 
     interface JavascriptCloseWindowListener {
         /**
@@ -305,7 +305,7 @@ class DWebView : WebView {
                     try {
                         method = cls.getMethod(
                             nameStr[1],
-                            *arrayOf(Any::class.java, com.rt.common.view.dsbridge.CompletionHandler::class.java)
+                            *arrayOf(Any::class.java, CompletionHandler::class.java)
                         )
                         asyn = true
                     } catch (e: Exception) {
@@ -509,7 +509,7 @@ class DWebView : WebView {
     }
 
     @Synchronized
-    fun <T> callHandler(method: String, args: Array<Any?>?, handler: com.rt.common.view.dsbridge.OnReturnValue<T>?) {
+    fun <T> callHandler(method: String, args: Array<Any?>?, handler: OnReturnValue<T>?) {
         val callInfo = CallInfo(method, ++callID, args)
         if (handler != null) {
             handlerMap[callInfo.callbackId] = handler
@@ -525,7 +525,7 @@ class DWebView : WebView {
         callHandler<Any>(method, args, null)
     }
 
-    fun <T> callHandler(method: String, handler: com.rt.common.view.dsbridge.OnReturnValue<T>?) {
+    fun <T> callHandler(method: String, handler: OnReturnValue<T>?) {
         callHandler(method, null, handler)
     }
 
@@ -535,7 +535,7 @@ class DWebView : WebView {
      * @param handlerName
      * @param existCallback
      */
-    fun hasJavascriptMethod(handlerName: String?, existCallback: com.rt.common.view.dsbridge.OnReturnValue<Boolean>?) {
+    fun hasJavascriptMethod(handlerName: String?, existCallback: OnReturnValue<Boolean>?) {
         callHandler("_hasJavascriptMethod", arrayOf(handlerName), existCallback)
     }
 

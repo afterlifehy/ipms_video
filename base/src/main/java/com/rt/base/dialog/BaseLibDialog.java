@@ -16,6 +16,7 @@ import android.widget.EditText;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import androidx.viewbinding.ViewBinding;
 
 import com.rt.base.viewbase.BaseViewAddManagers;
 import com.rt.base.viewbase.BaseViewAddManagersImpl;

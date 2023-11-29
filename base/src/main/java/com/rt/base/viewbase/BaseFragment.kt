@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.rt.base.bean.NetWorkRequestData
 import com.rt.base.base.mvvm.BaseViewModel
 import com.rt.base.base.mvvm.OnNetWorkCallLinsener
+import com.rt.base.bean.NetWorkRequestData
+import com.rt.base.dialog.IOSLoadingDialog
+import com.rt.base.network.NetWorkMonitorManager
 import com.rt.base.network.NetWorkState
 import com.rt.base.network.ViewNetWorkStateManager
 import com.rt.base.viewbase.inter.NetWorkRequestLinsener
@@ -27,13 +29,13 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
 
     //用来存储需要监听的网络错误
     private var networkErrorTagList = ArrayList<String>()
-    private lateinit var mProgressDialog: com.rt.base.dialog.IOSLoadingDialog
+    private lateinit var mProgressDialog: IOSLoadingDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val loadBuilder =
-            com.rt.base.dialog.IOSLoadingDialog.Builder(activity)
+            IOSLoadingDialog.Builder(activity)
                 .setMessage("")
                 .setShowMessage(false)
                 .setCancelable(true)
@@ -139,7 +141,7 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
     override fun onNewWorkErrorCall(tag: String, ext: Exception?) {
         if (networkErrorTagList.contains(tag)) {
             val info = NetWorkRequestData(1, ext?.message!!, tag)
-            if (com.rt.base.network.NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
+            if (NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
                 onNoNetWorkErrror(info)
             } else {
                 onNetWorkRequestError(info)

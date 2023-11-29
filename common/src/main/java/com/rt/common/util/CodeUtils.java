@@ -3,15 +3,19 @@ package com.rt.common.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.Camera;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
