@@ -105,7 +105,7 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 this.outputFileName =
-                    "ja.insepector_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
+                    "com.peakinfo_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
             }
         }
     }

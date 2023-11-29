@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ja.insepector"
+rootProject.name = "com.peakinfo"
 
 include(":app")
 include(":base")

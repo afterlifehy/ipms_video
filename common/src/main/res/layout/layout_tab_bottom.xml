@@ -27,7 +27,7 @@
 
     </LinearLayout>
 
-    <ja.insepector.common.view.flycotablayout.widget.MsgView
+    <com.rt.common.view.flycotablayout.widget.MsgView
         android:id="@+id/rtv_msg_tip"
         xmlns:mv="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"

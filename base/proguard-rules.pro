@@ -34,10 +34,10 @@ public void *(android.webkit.WebView, java.lang.String);
 }
 
 #---------------------------------1.实体类---------------------------------
--keep class ja.insepector.base.bean.**{*;}
--keep class ja.insepector.base.event.**{*;}
+-keep class com.rt.base.bean.**{*;}
+-keep class com.rt.base.event.**{*;}
 #--数据库实体类不被混淆
--keep class ja.insepector.base.roomdao.**{*;}
+-keep class com.rt.base.roomdao.**{*;}
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
@@ -147,8 +147,8 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.google.protobuf.** {*;}
 
 #---------------------------------自定义view-----------------------
--keep class ja.insepector.base.view.**{*;}
--keep class ja.insepector.base.widget.**{*;}
+-keep class com.rt.base.view.**{*;}
+-keep class com.rt.base.widget.**{*;}
 
 #---------------------------------反射相关的类和方法-----------------------
  -keepclassmembers class androidx.viewpager.widget.ViewPager.** {

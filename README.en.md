@@ -1,4 +1,4 @@
-# ja.insepector
+#com.peakinfo
 
 #### Description
 G2高位巡检员APP
