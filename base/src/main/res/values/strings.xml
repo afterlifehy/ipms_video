@@ -136,4 +136,5 @@
     <string name="确认签退">确认签退</string>
     <string name="选择打印机">选择打印机</string>
     <string name="打印管理">打印管理</string>
+    <string name="请打开位置信息">请打开位置信息</string>
 </resources>

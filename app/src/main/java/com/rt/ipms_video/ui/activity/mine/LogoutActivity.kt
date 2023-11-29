@@ -44,6 +44,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     var locationManager: LocationManager? = null
     var lat = 121.123212
     var lon = 31.434312
+    var locationEnable = false
 
     @SuppressLint("MissingPermission", "CheckResult")
     override fun initView() {
@@ -72,7 +73,18 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
+                        locationEnable = true
                     }
+
+                    override fun onProviderDisabled(provider: String) {
+                        locationEnable = false
+                        ToastUtil.showToast(i18N(com.rt.base.R.string.请打开位置信息))
+                    }
+
+                    override fun onProviderEnabled(provider: String) {
+                        locationEnable = true
+                    }
+
                 })
             }
         }
@@ -112,19 +124,34 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             override fun onLocationChanged(location: Location) {
                                                 lat = location.latitude
                                                 lon = location.longitude
+                                                locationEnable = true
+                                            }
+
+                                            override fun onProviderDisabled(provider: String) {
+                                                locationEnable = false
+                                                ToastUtil.showToast(i18N(com.rt.base.R.string.请打开位置信息))
+                                            }
+
+                                            override fun onProviderEnabled(provider: String) {
+                                                locationEnable = true
                                             }
                                         })
                                     }
-                                    showProgressDialog(20000)
-                                    runBlocking {
-                                        val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                                        val param = HashMap<String, Any>()
-                                        val jsonobject = JSONObject()
-                                        jsonobject["token"] = token
-                                        jsonobject["longitude"] = lon
-                                        jsonobject["latitude"] = lat
-                                        param["attr"] = jsonobject
-                                        mViewModel.logout(param)
+                                    if (locationEnable) {
+                                        showProgressDialog(20000)
+                                        runBlocking {
+                                            val token =
+                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                                            val param = HashMap<String, Any>()
+                                            val jsonobject = JSONObject()
+                                            jsonobject["token"] = token
+                                            jsonobject["longitude"] = lon
+                                            jsonobject["latitude"] = lat
+                                            param["attr"] = jsonobject
+                                            mViewModel.logout(param)
+                                        }
+                                    } else {
+                                        ToastUtil.showToast(i18N(com.rt.base.R.string.请打开位置信息))
                                     }
                                 }
 

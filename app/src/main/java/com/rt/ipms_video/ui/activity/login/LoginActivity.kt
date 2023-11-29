@@ -59,6 +59,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lat = 121.123212
     var lon = 31.434312
     var updateBean: UpdateBean? = null
+    var locationEnable = false
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -71,6 +72,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
+                        locationEnable = true
+                    }
+
+                    override fun onProviderDisabled(provider: String) {
+                        locationEnable = false
+                        ToastUtil.showToast(i18N(com.rt.base.R.string.请打开位置信息))
+                    }
+
+                    override fun onProviderEnabled(provider: String) {
+                        locationEnable = true
                     }
                 })
             }
@@ -171,18 +182,32 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 override fun onLocationChanged(location: Location) {
                                     lat = location.latitude
                                     lon = location.longitude
+                                    locationEnable = true
+                                }
+
+                                override fun onProviderDisabled(provider: String) {
+                                    locationEnable = false
+                                    ToastUtil.showToast("请打开位置信息")
+                                }
+
+                                override fun onProviderEnabled(provider: String) {
+                                    locationEnable = true
                                 }
                             })
                         }
-                        dismissProgressDialog()
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["loginName"] = binding.etAccount.text.toString()
-                        jsonobject["password"] = binding.etPw.text.toString()
-                        jsonobject["longitude"] = lon
-                        jsonobject["latitude"] = lat
-                        param["attr"] = jsonobject
-                        mViewModel.login(param)
+                        if (locationEnable) {
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["loginName"] = binding.etAccount.text.toString()
+                            jsonobject["password"] = binding.etPw.text.toString()
+                            jsonobject["longitude"] = lon
+                            jsonobject["latitude"] = lat
+                            param["attr"] = jsonobject
+                            mViewModel.login(param)
+                        } else {
+                            ToastUtil.showToast(i18N(com.rt.base.R.string.请打开位置信息))
+                        }
                     }
                 }
             }

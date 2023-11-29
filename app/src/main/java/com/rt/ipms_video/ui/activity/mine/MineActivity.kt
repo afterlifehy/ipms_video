@@ -55,9 +55,6 @@ import kotlinx.coroutines.runBlocking
 @Route(path = ARouterMap.MINE)
 class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnClickListener {
     var updateBean: UpdateBean? = null
-    var locationManager: LocationManager? = null
-    var lat = 121.123212
-    var lon = 31.434312
     var blueToothDeviceListDialog: BlueToothDeviceListDialog? = null
     var currentDevice: BlueToothDeviceBean? = null
 
@@ -68,21 +65,6 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
 
         binding.tvVersion.text = AppUtils.getAppVersionName()
-
-        var rxPermissions = RxPermissions(this@MineActivity)
-        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-            if (it) {
-                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val provider = LocationManager.NETWORK_PROVIDER
-                locationManager?.requestLocationUpdates(provider, 1000, 1f, @SuppressLint("MissingPermission")
-                object : LocationListener {
-                    override fun onLocationChanged(location: Location) {
-                        lat = location.latitude
-                        lon = location.longitude
-                    }
-                })
-            }
-        }
     }
 
     override fun initListener() {
