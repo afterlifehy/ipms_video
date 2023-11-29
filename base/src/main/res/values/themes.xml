@@ -14,7 +14,7 @@
     </style>
 
     <style name="startTheme" parent="AppTheme">
-        <item name="android:windowBackground">@color/color_ff0371f4</item>
+        <item name="android:windowBackground">@drawable/layerlist_splash_bg</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowDisablePreview">false</item>
         <item name="android:windowNoTitle">true</item>
