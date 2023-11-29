@@ -3,7 +3,6 @@ package com.rt.ipms_video.ui.activity.order
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat

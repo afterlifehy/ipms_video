@@ -8,7 +8,6 @@ import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
 import com.rt.base.bean.BlueToothDeviceBean
 import com.rt.ipms_video.databinding.ItemBluetoothDeviceBinding
-import kotlinx.coroutines.runBlocking
 
 class BlueToothDeviceAdapter(data: MutableList<BluetoothDevice>? = null, var currentDevice: BlueToothDeviceBean?) :
     BaseBindingAdapter<BluetoothDevice, ItemBluetoothDeviceBinding>(data) {

@@ -7,7 +7,6 @@ import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ScreenUtils
 import com.rt.base.BaseApplication
 import com.rt.base.dialog.VBBaseLibDialog
-import com.rt.base.ext.i18n
 import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.adapter.AbnormalClassificationAdapter
 import com.rt.ipms_video.databinding.DialogAbnormalClassificationBinding

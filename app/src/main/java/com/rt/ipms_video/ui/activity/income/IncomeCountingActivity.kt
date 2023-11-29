@@ -14,8 +14,6 @@ import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.IncomeCountingBean
 import com.rt.base.dialog.DialogHelp
-import com.rt.base.ds.PreferencesDataStore
-import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
@@ -30,7 +28,6 @@ import com.rt.ipms_video.mvvm.viewmodel.IncomeCountingViewModel
 import com.rt.ipms_video.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
-import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.INCOME_COUNTING)
 class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityIncomeCountingBinding>(), OnClickListener {

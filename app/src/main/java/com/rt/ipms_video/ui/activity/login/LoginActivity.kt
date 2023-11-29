@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -32,9 +31,6 @@ import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
-import com.rt.base.bean.HttpWrapper
-import com.rt.base.bean.LoginBean
-import com.rt.base.bean.Street
 import com.rt.base.bean.UpdateBean
 import com.rt.base.dialog.DialogHelp
 import com.rt.base.ds.PreferencesDataStore
@@ -42,7 +38,6 @@ import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
-import com.rt.common.realm.RealmUtil
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityLoginBinding
 import com.rt.ipms_video.mvvm.viewmodel.LoginViewModel

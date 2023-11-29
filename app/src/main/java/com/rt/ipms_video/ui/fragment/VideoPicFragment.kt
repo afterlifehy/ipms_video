@@ -11,8 +11,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
-import com.rt.base.ext.i18n
-import com.rt.base.ext.show
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.viewbase.VbBaseFragment
 import com.rt.common.util.GlideUtils

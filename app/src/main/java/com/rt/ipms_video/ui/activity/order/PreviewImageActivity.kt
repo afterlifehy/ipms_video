@@ -7,7 +7,6 @@ import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.ipms_video.adapter.SamplePagerAdapter

@@ -3,13 +3,10 @@ package com.rt.ipms_video.ui.activity.camera
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.blankj.utilcode.util.AppUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.Plate
 import com.rt.base.arouter.ARouterMap

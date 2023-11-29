@@ -3,7 +3,6 @@ package com.rt.ipms_video.adapter
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.adapter.BaseBindingAdapter
 import com.rt.base.adapter.VBViewHolder
 import com.rt.base.bean.DebtCollectionBean

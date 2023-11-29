@@ -7,14 +7,12 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.blankj.utilcode.util.SizeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
 import com.rt.base.viewbase.VbBaseActivity
-import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityOrderMainBinding
 import com.rt.ipms_video.mvvm.viewmodel.OrderMainViewmodel

@@ -6,7 +6,6 @@ import android.os.Looper
 import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.BarUtils
 import com.rt.base.BaseApplication
 import com.rt.base.ds.PreferencesDataStore

@@ -1,6 +1,5 @@
 package com.rt.ipms_video.adapter
 
-import android.Manifest
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -9,17 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.viewpager.widget.PagerAdapter
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.ImageUtils
 import com.github.chrisbanes.photoview.PhotoView
 import com.rt.base.BaseApplication
-import com.rt.base.arouter.ARouterMap
 import com.rt.base.ext.i18n
 import com.rt.base.help.ActivityCacheManager
 import com.rt.base.util.ToastUtil
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
-import com.tbruyelle.rxpermissions3.RxPermissions
 import java.util.ArrayList
 
 class SamplePagerAdapter(

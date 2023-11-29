@@ -1,7 +1,6 @@
 package com.rt.ipms_video.ui.activity.order
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -32,7 +31,6 @@ import com.rt.ipms_video.adapter.OrderInquiryAdapter
 import com.rt.ipms_video.databinding.ActivityOrderInquiryBinding
 import com.rt.ipms_video.mvvm.viewmodel.OrderInquiryViewModel
 import com.rt.ipms_video.pop.DatePop
-import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.ORDER_INQUIRY)
 class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrderInquiryBinding>(), OnClickListener {

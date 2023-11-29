@@ -1,10 +1,8 @@
 package com.rt.ipms_video.ui.activity.mine
 
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.OnTouchListener
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -23,7 +21,6 @@ import com.rt.common.realm.RealmUtil
 import com.rt.common.util.GlideUtils
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.FeeRatePagerAdapter
-import com.rt.ipms_video.adapter.VideoPicPagerAdapter
 import com.rt.ipms_video.databinding.ActivityFeeRateBinding
 import com.rt.ipms_video.mvvm.viewmodel.FeeRateViewModel
 import com.rt.ipms_video.ui.fragment.FeeRateFragment

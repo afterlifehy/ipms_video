@@ -5,7 +5,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -25,7 +24,6 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.ParkingLotAdapter
 import com.rt.ipms_video.databinding.ActivityParkingLotBinding
 import com.rt.ipms_video.mvvm.viewmodel.ParkingLotViewModel
-import com.rt.ipms_video.pop.StreetPop
 
 @Route(path = ARouterMap.PARKING_LOT)
 class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {

@@ -7,7 +7,6 @@ import com.rt.base.BaseApplication
 import com.rt.base.bean.FeeRateBean
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseFragment
-import com.rt.common.util.AppUtil
 import com.rt.ipms_video.adapter.FeeRateAdapter
 import com.rt.ipms_video.databinding.FragmentFeeRateBinding
 import com.rt.ipms_video.mvvm.viewmodel.FeeRateFragmentViewModel

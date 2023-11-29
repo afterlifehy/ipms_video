@@ -6,7 +6,6 @@ import com.rt.base.bean.ParkingLotResultBean
 import com.rt.base.bean.ParkingSpaceBean
 import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.QRPayBean
-import retrofit2.http.Body
 
 class ParkingRepository : BaseRepository() {
 

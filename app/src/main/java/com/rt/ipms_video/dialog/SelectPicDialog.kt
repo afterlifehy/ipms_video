@@ -1,16 +1,13 @@
 package com.rt.ipms_video.dialog
 
-import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.ScreenUtils
-import com.rt.base.dialog.BaseLibDialog
 import com.rt.base.dialog.VBBaseLibDialog
 import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.R
-import com.rt.ipms_video.databinding.DialogPaymentQrBinding
 import com.rt.ipms_video.databinding.DialogSelectPicBinding
 
 class SelectPicDialog(val callback: Callback) : VBBaseLibDialog<DialogSelectPicBinding>(

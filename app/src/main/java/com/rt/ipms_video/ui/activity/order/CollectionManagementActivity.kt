@@ -5,8 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
@@ -43,7 +41,6 @@ import com.rt.ipms_video.dialog.SelectPicDialog
 import com.rt.ipms_video.mvvm.viewmodel.CollectionManagementViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
-import java.io.File
 
 @Route(path = ARouterMap.COLLECTION_MANAGEMENT)
 class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(), OnClickListener {

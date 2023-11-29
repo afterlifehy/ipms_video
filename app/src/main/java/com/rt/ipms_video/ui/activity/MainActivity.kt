@@ -3,7 +3,6 @@ package com.rt.ipms_video.ui.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -15,7 +14,6 @@ import android.view.View.OnClickListener
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -43,7 +41,6 @@ import com.rt.common.util.AppUtil
 import com.rt.common.util.BluePrint
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityMainBinding
-import com.rt.ipms_video.dialog.BlueToothDeviceListDialog
 import com.rt.ipms_video.mvvm.viewmodel.MainViewModel
 import com.rt.ipms_video.pop.StreetPop
 import com.rt.ipms_video.ui.activity.abnormal.BerthAbnormalActivity
