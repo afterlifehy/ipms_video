@@ -28,6 +28,7 @@ import com.rt.common.realm.RealmUtil
 import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityLogOutBinding
 import com.rt.ipms_video.mvvm.viewmodel.LogoutViewModel
+import com.rt.ipms_video.ui.activity.login.LoginActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -168,7 +169,11 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             logoutLiveData.observe(this@LogoutActivity) {
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                ActivityCacheManager.instance().getCurrentActivity()?.finish()
+                for (i in ActivityCacheManager.instance().getAllActivity()) {
+                    if (i != LoginActivity::class.java) {
+                        i.finish()
+                    }
+                }
                 ToastUtil.showToast(i18N(com.rt.base.R.string.签退成功))
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")

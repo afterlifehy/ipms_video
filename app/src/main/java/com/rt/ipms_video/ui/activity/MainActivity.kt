@@ -95,7 +95,12 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
         }.start()
 
-        binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        if (currentStreet!!.streetName.indexOf("(") < 0) {
+            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+        } else {
+            binding.tvTitle.text =
+                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        }
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["version"] = AppUtils.getAppVersionName()
@@ -116,8 +121,12 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
-                        binding.tvTitle.text =
-                            currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                        if (currentStreet!!.streetName.indexOf("(") < 0) {
+                            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+                        } else {
+                            binding.tvTitle.text =
+                                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                        }
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as RelativeLayout)

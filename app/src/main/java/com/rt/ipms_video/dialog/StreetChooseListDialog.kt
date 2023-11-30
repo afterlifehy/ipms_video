@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
 import com.rt.base.BaseApplication
 import com.rt.base.bean.Street
 import com.rt.base.dialog.VBBaseLibDialog
+import com.rt.base.ext.gone
 import com.rt.base.help.ActivityCacheManager
 import com.rt.ipms_video.R
 import com.rt.ipms_video.adapter.ChooseStreetAdapter
@@ -31,9 +32,10 @@ class StreetChooseListDialog(
     }
 
     private fun initView() {
+        binding.tvDialogTitle.gone()
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
-        chooseStreetAdapter = ChooseStreetAdapter(streetList,streetChoosedList)
+        chooseStreetAdapter = ChooseStreetAdapter(streetList, streetChoosedList)
         binding.rvStreet.adapter = chooseStreetAdapter
 
         binding.rtvOk.setOnClickListener(this)

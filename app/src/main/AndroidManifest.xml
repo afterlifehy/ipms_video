@@ -101,7 +101,7 @@
             android:value="2.1" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.SplashActivity"
+            android:name=".ui.activity.SplashActivity"
             android:exported="true"
             android:theme="@style/startTheme"
             android:windowSoftInputMode="adjustResize"
@@ -114,122 +114,122 @@
         </activity>
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.login.LoginActivity"
+            android:name=".ui.activity.login.LoginActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.login.StreetChooseActivity"
+            android:name=".ui.activity.login.StreetChooseActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.OrderMainActivity"
+            android:name=".ui.activity.order.OrderMainActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.TransactionQueryActivity"
+            android:name=".ui.activity.order.TransactionQueryActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.camera.ScanPlateActivity"
+            android:name=".ui.activity.camera.ScanPlateActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.DebtCollectionActivity"
+            android:name=".ui.activity.order.DebtCollectionActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.DebtOrderDetailActivity"
+            android:name=".ui.activity.order.DebtOrderDetailActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.VideoPicActivity"
+            android:name=".ui.activity.order.VideoPicActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.OrderInquiryActivity"
+            android:name=".ui.activity.order.OrderInquiryActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.OrderDetailActivity"
+            android:name=".ui.activity.order.OrderDetailActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.TransactionRecordActivity"
+            android:name=".ui.activity.order.TransactionRecordActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.PreviewImageActivity"
+            android:name=".ui.activity.order.PreviewImageActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.order.CollectionManagementActivity"
+            android:name=".ui.activity.order.CollectionManagementActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.parking.ParkingLotActivity"
+            android:name=".ui.activity.parking.ParkingLotActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.parking.ParkingSpaceActivity"
+            android:name=".ui.activity.parking.ParkingSpaceActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.abnormal.BerthAbnormalActivity"
+            android:name=".ui.activity.abnormal.BerthAbnormalActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.abnormal.AbnormalHelpActivity"
+            android:name=".ui.activity.abnormal.AbnormalHelpActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.mine.LogoutActivity"
+            android:name=".ui.activity.mine.LogoutActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.mine.MineActivity"
+            android:name=".ui.activity.mine.MineActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.mine.BaseInfoActivity"
+            android:name=".ui.activity.mine.BaseInfoActivity"
             android:exported="false"
             android:launchMode="singleTask" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.income.IncomeCountingActivity"
+            android:name=".ui.activity.income.IncomeCountingActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name="com.rt.ipms_video.ui.activity.mine.FeeRateActivity"
+            android:name=".ui.activity.mine.FeeRateActivity"
             android:exported="false"
             android:launchMode="singleTask" />
     </application>
