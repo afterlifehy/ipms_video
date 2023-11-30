@@ -1,4 +1,4 @@
-# ipms_video
+# plateid
 
 #### Description
 G2高位巡检员APP

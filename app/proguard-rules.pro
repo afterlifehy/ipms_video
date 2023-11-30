@@ -34,14 +34,14 @@ public void *(android.webkit.WebView, java.lang.String);
 }
 
 #---------------------------------1.实体类---------------------------------
--keep class com.rt.ipms_video.bean.**{*;}
--keep class com.rt.ipms_video.event.**{*;}
--keep class com.rt.base.bean.**{*;}
--keep class com.rt.base.event.**{*;}
--keep class com.rt.common.bean.**{*;}
--keep class com.rt.common.event.**{*;}
+-keep class com.peakinfo.plateid.bean.**{*;}
+-keep class com.peakinfo.plateid.event.**{*;}
+-keep class com.peakinfo.base.bean.**{*;}
+-keep class com.peakinfo.base.event.**{*;}
+-keep class com.peakinfo.common.bean.**{*;}
+-keep class com.peakinfo.common.event.**{*;}
 #--数据库实体类不被混淆
-#-keep class com.rt.ipms_video.roomdao.**{*;}
+#-keep class com.peakinfo.plateid.roomdao.**{*;}
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
@@ -152,11 +152,11 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.google.protobuf.** {*;}
 
 #---------------------------------自定义view-----------------------
--keep class com.rt.ipms_video.view.**{*;}
--keep class com.rt.common.view.**{*;}
--keep class com.rt.common.widget.**{*;}
--keep class com.rt.base.view.**{*;}
--keep class com.rt.base.widget.**{*;}
+-keep class com.peakinfo.plateid.view.**{*;}
+-keep class com.peakinfo.common.view.**{*;}
+-keep class com.peakinfo.common.widget.**{*;}
+-keep class com.peakinfo.base.view.**{*;}
+-keep class com.peakinfo.base.widget.**{*;}
 #---------------------------------反射相关的类和方法-----------------------
  -keepclassmembers class androidx.viewpager.widget.ViewPager.** {
    public *;

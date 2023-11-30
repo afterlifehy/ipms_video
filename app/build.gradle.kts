@@ -52,16 +52,16 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("ipmsVideo.jks")
-            storePassword = "ipmsvideo231102"
-            keyAlias = "key0"
-            keyPassword = "ipmsvideo231102"
+            storeFile = file("demo.jks")
+            storePassword = "1q2w3e4r5t"
+            keyAlias = "mykey"
+            keyPassword = "1q2w3e4r5t"
         }
         getByName("debug") {
-            storeFile = file("ipmsVideo.jks")
-            storePassword = "ipmsvideo231102"
-            keyAlias = "key0"
-            keyPassword = "ipmsvideo231102"
+            storeFile = file("demo.jks")
+            storePassword = "1q2w3e4r5t"
+            keyAlias = "mykey"
+            keyPassword = "1q2w3e4r5t"
         }
     }
 
@@ -104,7 +104,7 @@ android {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
                 this.outputFileName =
-                    "ipms_video_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
+                    "plateid_${versionName}_${Time.getDate()}_${buildType.name}_${BuildConfig.debug_is_dev}.apk"
             }
         }
     }

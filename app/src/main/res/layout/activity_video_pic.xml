@@ -29,7 +29,7 @@
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_10">
 
-        <com.rt.common.view.flycotablayout.SlidingTabLayout2
+        <com.peakinfo.common.view.flycotablayout.SlidingTabLayout2
             android:id="@+id/stl_videoPic"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_32"

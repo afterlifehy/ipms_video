@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.rt.common.view.HackyViewPager
+    <com.peakinfo.common.view.HackyViewPager
         android:id="@+id/hvp_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

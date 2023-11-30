@@ -1,12 +1,12 @@
 object BuildConfig {
-    const val applicationId = "com.rt.ipms_video"
+    const val applicationId = "com.peakinfo.plateid"
 
     const val compileSdk = 33
     const val minSdk = 23
     const val targetSdk = 33
 
-    const val versionCode = 1000
-    const val versionName = "3.0.1"
+    const val versionCode = 30000
+    const val versionName = "3.0.0"
 
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
