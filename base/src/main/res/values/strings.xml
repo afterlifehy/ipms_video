@@ -87,15 +87,9 @@
     <string name="开始下载更新">开始下载更新</string>
     <string name="营收盘点">营收盘点</string>
     <string name="打印">打印</string>
-    <string name="今日汇总">今日汇总</string>
-    <string name="总收费">总收费</string>
     <string name="今日订单数">今日订单数</string>
-    <string name="欠费订单笔数">欠费订单笔数</string>
-    <string name="本月累计">本月累计</string>
     <string name="总收入">总收入</string>
     <string name="已下单">已下单</string>
-    <string name="提示">提示</string>
-    <string name="今日总收费介绍">今日总收费和本月总收入均包含自主缴费和被追缴费金额，且不包含追缴他人金额</string>
     <string name="路段名称">路段名称：</string>
     <string name="提交">提交</string>
     <string name="催缴管理">催缴管理</string>
@@ -137,4 +131,9 @@
     <string name="选择打印机">选择打印机</string>
     <string name="打印管理">打印管理</string>
     <string name="请打开位置信息">请打开位置信息</string>
+    <string name="请修改车牌">请修改车牌</string>
+    <string name="今日汇总">今日汇总</string>
+    <string name="本月累计">本月累计</string>
+    <string name="交易笔数">交易笔数</string>
+    <string name="交易金额">交易金额</string>
 </resources>

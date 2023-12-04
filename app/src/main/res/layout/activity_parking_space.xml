@@ -142,7 +142,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/tv_arrearsNum"
-                    android:drawableEnd="@mipmap/ic_double_arrow_right"
+                    android:drawableEnd="@mipmap/ic_arrow_right_small"
                     android:drawablePadding="@dimen/dp_11"
                     android:ellipsize="end"
                     android:gravity="center|end"
@@ -207,4 +207,5 @@
                 android:textStyle="bold" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
     </LinearLayout>
+
 </RelativeLayout>

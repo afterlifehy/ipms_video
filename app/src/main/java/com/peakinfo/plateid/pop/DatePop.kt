@@ -22,8 +22,8 @@ import com.peakinfo.plateid.databinding.PopDateBinding
 class DatePop(val context: Context?, val startDate: String, val endDate: String, var callback: DateCallBack) :
     PopupWindow(context), View.OnClickListener {
 
-    private var startTime: String = ""
-    private var endTime: String = ""
+    private var startTime: String = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+    private var endTime: String = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
     private lateinit var binding: PopDateBinding
     var datePickerDialog: DatePickerDialog? = null
 

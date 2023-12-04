@@ -48,7 +48,7 @@ class SamplePagerAdapter(
         saveBuilder!!.setPositiveButton(i18n(com.peakinfo.base.R.string.确定)) { dialog, _ ->
             dialog.dismiss()
             ImageUtils.save2Album(bitmap, Bitmap.CompressFormat.JPEG)
-            i18n(com.peakinfo.base.R.string.保存成功).let { ToastUtil.showToast(it) }
+            i18n(com.peakinfo.base.R.string.保存成功).let { ToastUtil.showMiddleToast(it) }
         }
         saveBuilder!!.setOnDismissListener(onDismissListener)
     }

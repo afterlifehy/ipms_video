@@ -154,7 +154,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             payResultLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
-                ToastUtil.showToast(i18N(com.peakinfo.base.R.string.支付成功))
+                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
                 val payResultBean = it
                 var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -170,7 +170,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

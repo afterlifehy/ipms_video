@@ -104,7 +104,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
             dismissProgressDialog()
-            ToastUtil.showToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
+            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
             return
         }
         val param = HashMap<String, Any>()
@@ -191,7 +191,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
             errMsg.observe(this@OrderInquiryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

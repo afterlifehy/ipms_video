@@ -250,7 +250,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     }
 
     fun downloadFileAndInstall() {
-        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.开始下载更新))
+        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.开始下载更新))
         GlobalScope.launch(Dispatchers.IO) {
             FileDownloader.setup(this@MainActivity)
             val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
@@ -305,7 +305,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             }
         } else {
-            ToastUtil.showToast(i18N(com.peakinfo.base.R.string.再按一次退出程序))
+            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.再按一次退出程序))
         }
     }
 }

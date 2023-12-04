@@ -83,10 +83,11 @@ object ToastUtil {
             }
             val view = RadiusTextView(BaseApplication.instance())
             view.delegate.radius = 12f
-            view.delegate.setBackgroundColor(ContextCompat.getColor(BaseApplication.instance(), R.color.black))
-            view.delegate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), R.color.white_90_color))
+            view.delegate.setBackgroundColor(ContextCompat.getColor(BaseApplication.instance(), R.color.white))
+            view.delegate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), R.color.black))
+            view.textSize = 19f
             view.text = text
-            view.setPadding(18, 18, 18, 18)
+            view.setPadding(20, 20, 20, 20)
             toast!!.setGravity(Gravity.CENTER, 0, 0)
             toast!!.setView(view)
             toast!!.show()

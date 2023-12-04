@@ -16,208 +16,74 @@
         android:id="@+id/layout_toolbar"
         layout="@layout/layout_comment_toolbar" />
 
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:id="@+id/rll_todaySummary"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_toolbar"
-        android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_13"
-        android:orientation="vertical"
-        app:rv_backgroundColor="@color/white"
-        app:rv_radius="@dimen/dp_10">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rtv_print"
+        android:layout_below="@+id/layout_toolbar">
 
-        <com.aries.ui.view.radius.RadiusTextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_47"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dp_13"
-            android:text="@string/今日汇总"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_19"
-            app:rv_backgroundColor="@color/color_ff0371f4"
-            app:rv_radius="@dimen/dp_10" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
-            android:paddingStart="@dimen/dp_13"
-            android:paddingEnd="@dimen/dp_13">
-
-            <TextView
-                android:id="@+id/tv_totalChargeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:drawableEnd="@mipmap/ic_question"
-                android:drawablePadding="@dimen/dp_5"
-                android:gravity="center"
-                android:text="@string/总收费"
-                android:textColor="@color/color_ff0371f4"
-                android:textSize="@dimen/sp_19"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_totalCharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                tools:text="531.00元" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/color_ffcccccc" />
-
-        <com.aries.ui.view.radius.RadiusLinearLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/dp_13"
-            android:paddingEnd="@dimen/dp_13"
-            app:rv_bottomLeftRadius="@dimen/dp_10"
-            app:rv_bottomRightRadius="@dimen/dp_10">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="@dimen/dp_0"
+            <com.aries.ui.view.radius.RadiusLinearLayout
+                android:id="@+id/rll_todaySummary"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginBottom="13dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginEnd="@dimen/dp_13"
+                android:orientation="vertical"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_10">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/今日订单数"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_16" />
-
-                <TextView
-                    android:id="@+id/tv_todayOrderNum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/color_ff666666"
+                <com.aries.ui.view.radius.RadiusTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_47"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_13"
+                    android:text="@string/今日汇总"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/sp_19"
-                    tools:text="3笔" />
-            </LinearLayout>
+                    app:rv_backgroundColor="@color/color_ff0371f4"
+                    app:rv_radius="@dimen/dp_10" />
 
-            <View
-                android:layout_width="@dimen/dp_1"
-                android:layout_height="match_parent"
-                android:background="@color/color_ffcccccc" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_todaySummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.aries.ui.view.radius.RadiusLinearLayout>
 
-            <LinearLayout
-                android:layout_width="@dimen/dp_0"
+            <com.aries.ui.view.radius.RadiusLinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginBottom="13dp"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_13"
+                android:orientation="vertical"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_10">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/欠费订单笔数"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_16" />
-
-                <TextView
-                    android:id="@+id/tv_arrearsOrderNum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/color_ff666666"
+                <com.aries.ui.view.radius.RadiusTextView
+                    android:id="@+id/rtv_dateRange"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_47"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp_13"
+                    android:text="@string/本月累计"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/sp_19"
-                    tools:text="3笔" />
-            </LinearLayout>
-        </com.aries.ui.view.radius.RadiusLinearLayout>
-    </com.aries.ui.view.radius.RadiusLinearLayout>
+                    app:rv_backgroundColor="@color/color_ff0371f4"
+                    app:rv_radius="@dimen/dp_10" />
 
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rll_todaySummary"
-        android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_13"
-        android:orientation="vertical"
-        app:rv_backgroundColor="@color/white"
-        app:rv_radius="@dimen/dp_10">
-
-        <com.aries.ui.view.radius.RadiusTextView
-            android:id="@+id/rtv_dateRange"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_47"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/dp_13"
-            android:text="@string/本月累计"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_19"
-            app:rv_backgroundColor="@color/color_ff0371f4"
-            app:rv_radius="@dimen/dp_10" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/dp_13"
-            android:paddingEnd="@dimen/dp_13">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginBottom="@dimen/dp_13"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/总收入"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19" />
-
-                <TextView
-                    android:id="@+id/tv_totalIncome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19"
-                    tools:text="7,645.00" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginBottom="@dimen/dp_13"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="@string/已下单"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19" />
-
-                <TextView
-                    android:id="@+id/tv_orderPlaced"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="@dimen/dp_5"
-                    android:textColor="@color/color_ff1a1a1a"
-                    android:textSize="@dimen/sp_19"
-                    tools:text="500笔" />
-            </LinearLayout>
-        </FrameLayout>
-    </com.aries.ui.view.radius.RadiusLinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_monthSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.aries.ui.view.radius.RadiusLinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_print"
@@ -225,6 +91,7 @@
         android:layout_height="@dimen/dp_47"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
         android:gravity="center"

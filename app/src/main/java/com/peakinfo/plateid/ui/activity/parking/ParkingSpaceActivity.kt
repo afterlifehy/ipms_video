@@ -116,17 +116,21 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_onSitePayment -> {
-                showProgressDialog(20000)
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["token"] = token
-                jsonobject["tradeNo"] = tradeNo
-                jsonobject["carLicense"] = carLicense
-                jsonobject["carColor"] = carColor
-                jsonobject["amountPending"] = amountPending
-                jsonobject["orderNo"] = orderNo
-                param["attr"] = jsonobject
-                mViewModel.insidePay(param)
+                if (carLicense == "默00000") {
+                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请修改车牌))
+                } else {
+                    showProgressDialog(20000)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["token"] = token
+                    jsonobject["tradeNo"] = tradeNo
+                    jsonobject["carLicense"] = carLicense
+                    jsonobject["carColor"] = carColor
+                    jsonobject["amountPending"] = amountPending
+                    jsonobject["orderNo"] = orderNo
+                    param["attr"] = jsonobject
+                    mViewModel.insidePay(param)
+                }
             }
 
             R.id.rfl_abnormalReport -> {
@@ -191,7 +195,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                tradeNo = it.tradeNo
                 qr = it.payUrl
                 paymentQrDialog = PaymentQrDialog(qr)
                 paymentQrDialog?.show()
@@ -206,7 +209,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             payResultLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
-                ToastUtil.showToast(i18N(com.peakinfo.base.R.string.支付成功))
+                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
                 val payResultBean = it
                 var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -222,7 +225,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

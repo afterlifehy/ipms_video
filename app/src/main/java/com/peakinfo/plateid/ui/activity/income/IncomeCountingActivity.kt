@@ -6,6 +6,7 @@ import android.os.Build
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -13,7 +14,10 @@ import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.IncomeCountingBean
+import com.peakinfo.base.bean.Summary
 import com.peakinfo.base.dialog.DialogHelp
+import com.peakinfo.base.ds.PreferencesDataStore
+import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
@@ -23,41 +27,60 @@ import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
+import com.peakinfo.plateid.adapter.MonthSummaryAdapter
+import com.peakinfo.plateid.adapter.TodaySummaryAdapter
 import com.peakinfo.plateid.databinding.ActivityIncomeCountingBinding
 import com.peakinfo.plateid.mvvm.viewmodel.IncomeCountingViewModel
 import com.peakinfo.plateid.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
+import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.INCOME_COUNTING)
 class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityIncomeCountingBinding>(), OnClickListener {
-    val sizes = intArrayOf(19, 16)
-    val colors = intArrayOf(com.peakinfo.base.R.color.color_ff0371f4, com.peakinfo.base.R.color.color_ff0371f4)
-    val styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
     var datePop: DatePop? = null
     var startDate = ""
     var endDate = ""
-    var streetNo = ""
+    var streetNos = ""
     var incomeCountingBean: IncomeCountingBean? = null
+    var todaySummaryAdapter: TodaySummaryAdapter? = null
+    var todaySummaryList: MutableList<Summary> = ArrayList()
+    var monthSummaryAdapter: MonthSummaryAdapter? = null
+    var monthSummaryList: MutableList<Summary> = ArrayList()
+    var loginName = ""
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.营收盘点)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.peakinfo.common.R.mipmap.ic_calendar)
         binding.layoutToolbar.ivRight.show()
 
+        binding.rvTodaySummary.setHasFixedSize(true)
+        binding.rvTodaySummary.layoutManager = LinearLayoutManager(this)
+        todaySummaryAdapter = TodaySummaryAdapter(todaySummaryList)
+        binding.rvTodaySummary.adapter = todaySummaryAdapter
+
+        binding.rvMonthSummary.setHasFixedSize(true)
+        binding.rvMonthSummary.layoutManager = LinearLayoutManager(this)
+        monthSummaryAdapter = MonthSummaryAdapter(monthSummaryList)
+        binding.rvMonthSummary.adapter = monthSummaryAdapter
     }
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
-        binding.tvTotalChargeTitle.setOnClickListener(this)
         binding.rtvPrint.setOnClickListener(this)
     }
 
     override fun initData() {
+        runBlocking {
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+        }
         endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
         startDate = endDate.substring(0, 8) + "01"
-        streetNo = RealmUtil.instance?.findCurrentStreet()!!.streetNo
+        val streetList = RealmUtil.instance?.findCheckedStreetList()
+        if (streetList != null) {
+            streetNos = streetList.joinToString(separator = ",") { it.streetNo }
+        }
         getIncomeCounting()
     }
 
@@ -69,48 +92,38 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
-                    override fun selectDate(startTime: String, endTime: String) {
-                        startDate = startTime
-                        endDate = endTime
-                        binding.rtvDateRange.text = "${startDate}~${endDate}"
-                        getIncomeCounting()
-                    }
+                if (datePop == null) {
+                    datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
+                        override fun selectDate(startTime: String, endTime: String) {
+                            startDate = startTime
+                            endDate = endTime
+                            binding.rtvDateRange.text = "统计时间：${startDate}~${endDate}"
+                            getIncomeCounting()
+                        }
 
-                })
+                    })
+                }
                 datePop?.showAsDropDown((v.parent) as Toolbar)
             }
 
-            R.id.tv_totalChargeTitle -> {
-                DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.提示)).setContentMsg(i18N(com.peakinfo.base.R.string.今日总收费介绍))
-                    .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
-                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                        override fun onLeftClickLinsener(msg: String) {
-                        }
-
-                        override fun onRightClickLinsener(msg: String) {
-                        }
-
-                    }).isAloneButton(true).build(this@IncomeCountingActivity).showDailog()
-            }
-
             R.id.rtv_print -> {
-                var str =
-                    "receipt," + streetNo + "," + startDate + "," + endDate + ",payMoneyToday" + incomeCountingBean?.payMoneyToday +
-                            ",orderTotalToday" + incomeCountingBean?.orderTotalToday + ",unclearedTotal" + incomeCountingBean?.unclearedTotal +
-                            ",payMoneyTotal" + incomeCountingBean?.payMoneyTotal + ",orderTotal" + incomeCountingBean?.orderTotal
+                incomeCountingBean?.loginName = loginName
+                incomeCountingBean?.range = startDate + "~" + endDate
+                incomeCountingBean?.list1 = todaySummaryList as ArrayList<Summary>
+                incomeCountingBean?.list2 = monthSummaryList as ArrayList<Summary>
+                var str = "receipt,"
                 var rxPermissions = RxPermissions(this@IncomeCountingActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
                             Thread {
-                                BluePrint.instance?.zkblueprint(str)
+                                BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                             }.start()
                         }
                     }
                 } else {
                     Thread {
-                        BluePrint.instance?.zkblueprint(str)
+                        BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                     }.start()
                 }
             }
@@ -121,9 +134,10 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["streetNo"] = streetNo
+        jsonobject["streetNos"] = streetNos
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
+        jsonobject["loginName"] = loginName
         param["attr"] = jsonobject
         mViewModel.incomeCounting(param)
     }
@@ -131,18 +145,18 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     override fun startObserve() {
         mViewModel.apply {
             incomeCountingLiveData.observe(this@IncomeCountingActivity) {
-                dismissProgressDialog()
                 incomeCountingBean = it
-                val strings = arrayOf(it.payMoneyToday.toString(), "元")
-                binding.tvTotalCharge.text = AppUtil.getSpan(strings, sizes, colors, styles)
-                binding.tvTodayOrderNum.text = "${it.orderTotalToday}笔"
-                binding.tvArrearsOrderNum.text = "${it.unclearedTotal}笔"
-                binding.tvTotalIncome.text = "${it.payMoneyTotal}元"
-                binding.tvOrderPlaced.text = "${it.orderTotal}笔"
+                dismissProgressDialog()
+                todaySummaryList.clear()
+                monthSummaryList.clear()
+                todaySummaryList.addAll(incomeCountingBean!!.list1)
+                monthSummaryList.addAll(incomeCountingBean!!.list2)
+                todaySummaryAdapter?.setList(todaySummaryList)
+                monthSummaryAdapter?.setList(monthSummaryList)
             }
             errMsg.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

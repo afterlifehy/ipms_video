@@ -79,7 +79,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
                     override fun onProviderDisabled(provider: String) {
                         locationEnable = false
-                        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
@@ -130,7 +130,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
                                             override fun onProviderDisabled(provider: String) {
                                                 locationEnable = false
-                                                ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                             }
 
                                             override fun onProviderEnabled(provider: String) {
@@ -152,7 +152,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             mViewModel.logout(param)
                                         }
                                     } else {
-                                        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                     }
                                 }
 
@@ -174,7 +174,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                         i.finish()
                     }
                 }
-                ToastUtil.showToast(i18N(com.peakinfo.base.R.string.签退成功))
+                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.签退成功))
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
@@ -184,7 +184,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
             errMsg.observe(this@LogoutActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

@@ -116,7 +116,16 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.fl_blueToothPrint -> {
-                showBlueToothDeviceListDialog()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    var rxPermissions = RxPermissions(this@MineActivity)
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            showBlueToothDeviceListDialog()
+                        }
+                    }
+                } else {
+                    showBlueToothDeviceListDialog()
+                }
             }
 
             R.id.rtv_logout -> {
@@ -195,7 +204,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     }
 
     fun downloadFileAndInstall() {
-        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.开始下载更新))
+        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.开始下载更新))
         GlobalScope.launch(Dispatchers.IO) {
             FileDownloader.setup(this@MineActivity)
             val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
@@ -272,11 +281,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         )
                     }
                 } else if (updateBean?.state == "1") {
-                    ToastUtil.showToast("当前已是最新版本")
+                    ToastUtil.showMiddleToast("当前已是最新版本")
                 }
             }
             errMsg.observe(this@MineActivity) {
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

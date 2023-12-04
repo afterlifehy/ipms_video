@@ -196,7 +196,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
             R.id.rfl_report -> {
                 if (binding.retParkingNo.text.toString().isEmpty()) {
-                    ToastUtil.showToast(i18n(com.peakinfo.base.R.string.请填写泊位号))
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写泊位号))
                     return
                 }
                 runBlocking {
@@ -302,12 +302,12 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         mViewModel.apply {
             abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(i18n(com.peakinfo.base.R.string.上报成功))
+                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.上报成功))
                 onBackPressedSupport()
             }
             errMsg.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }

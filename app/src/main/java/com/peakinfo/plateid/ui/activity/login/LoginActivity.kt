@@ -72,7 +72,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                     override fun onProviderDisabled(provider: String) {
                         locationEnable = false
-                        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
@@ -85,7 +85,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun initListener() {
         binding.tvForgetPw.setOnClickListener(this)
-        binding.rtvLogin.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -102,6 +101,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.peakinfo.base.R.color.color_ff0371f4
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -109,11 +109,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.peakinfo.base.R.color.color_990371f4
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
             }
 
         })
+        binding.etAccount.setOnEditorActionListener { textView, i, keyEvent ->
+            binding.etPw.requestFocus()
+        }
         binding.etPw.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -129,6 +133,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.peakinfo.base.R.color.color_ff0371f4
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
                     binding.rtvLogin.delegate.setBackgroundColor(
                         ContextCompat.getColor(
@@ -136,6 +141,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             com.peakinfo.base.R.color.color_990371f4
                         )
                     )
+                    binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
             }
@@ -159,14 +165,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
-                if (binding.etAccount.text.isEmpty()) {
-                    ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请输入账号))
-                    return
-                }
-                if (binding.etPw.text.isEmpty()) {
-                    i18N(com.peakinfo.base.R.string.请输入密码)
-                    return
-                }
                 var rxPermissions = RxPermissions(this@LoginActivity)
                 rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                     if (it) {
@@ -182,7 +180,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                                 override fun onProviderDisabled(provider: String) {
                                     locationEnable = false
-                                    ToastUtil.showToast("请打开位置信息")
+                                    ToastUtil.showMiddleToast("请打开位置信息")
                                 }
 
                                 override fun onProviderEnabled(provider: String) {
@@ -201,7 +199,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             param["attr"] = jsonobject
                             mViewModel.login(param)
                         } else {
-                            ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                         }
                     }
                 }
@@ -265,7 +263,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                ToastUtil.showToast(it.msg)
+                ToastUtil.showMiddleToast(it.msg)
             }
         }
     }
@@ -299,7 +297,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     fun downloadFileAndInstall() {
-        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.开始下载更新))
+        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.开始下载更新))
         GlobalScope.launch(Dispatchers.IO) {
             FileDownloader.setup(this@LoginActivity)
             val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"

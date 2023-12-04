@@ -54,7 +54,7 @@ class LoginExpiredInterceptor : Interceptor {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 503 -> {//登录失效
-                    ToastUtil.showToast(i18n(R.string.tokenExpired))
+                    ToastUtil.showMiddleToast(i18n(R.string.tokenExpired))
                     runBlocking {
 //                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.wallet_address,"")
 //                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.ticketCode,"")

@@ -5,8 +5,10 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.view.Gravity
 import android.widget.Toast
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ToastUtils
 import com.peakinfo.base.BaseApplication
+import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.help.ActivityCacheManager
 import org.json.JSONArray
 import org.json.JSONException
@@ -39,9 +41,6 @@ class BluePrint() {
 
     @Throws(JSONException::class)
     fun zkblueprint(content: String) {
-        val json: JSONArray? = null
-        //连接结果
-        val conn_result: String? = null
         //打印文本
         printResult = Print1(content)
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
@@ -116,25 +115,14 @@ class BluePrint() {
             if (receipt) {
                 printText = printText.substring(8)
             }
-            val arr = printText.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            var ystart = 10 + 60 + 40 + 40
+            var ystart = 10 + 60 + 40
+            if (zpSDK == null) {
+                return -1
+            }
             if (receipt) {
-                if (arr.size >= 10 && "totalAmountundefined" == arr[9]) {
-                    arr[9] = "0"
-                }
-                if (arr.size >= 7 && "beRecoveredMoneyundefined" == arr[6]) {
-                    arr[6] = "0"
-                }
-                if (arr.size >= 8 && "totalRecoveredMoneyundefined" == arr[7]) {
-                    arr[7] = "0"
-                }
-                if (arr.size >= 9 && "autonomousPayCountundefined" == arr[8]) {
-                    arr[8] = "0"
-                }
-                if (zpSDK == null) {
-                    return -1
-                }
-                zpSDK!!.pageSetup(800, 700)
+                val incomeCountingBean = JSONObject.parseObject(printText, IncomeCountingBean::class.java)
+                var height = 300 + 300 * incomeCountingBean.list1.size
+                zpSDK!!.pageSetup(800, height)
                 zpSDK!!.DrawSpecialText(230, 10, PrinterInterface.Textfont.siyuanheiti, 30, "数据打印", 0, 1, 0) //3
                 zpSDK!!.DrawSpecialText(
                     20,
@@ -146,92 +134,52 @@ class BluePrint() {
                     1,
                     0
                 )
-                zpSDK!!.DrawSpecialText(
-                    20,
-                    10 + 60 + 40,
-                    PrinterInterface.Textfont.siyuanheiti,
-                    27,
-                    "登录账号:                  " + arr[0],
-                    0,
-                    0,
-                    0
-                ) //3
-                //zpSDK.DrawSpecialText(20, 10+60+40+40, PrinterInterface.Textfont.siyuanheiti,27, "签到时间:                   " + arr[1], 0, 0, 0);//3
-                if (printText.contains("payMoneyToday")) {
+
+                printDrawText("登录账号:", incomeCountingBean.loginName, ystart, 9)
+                ystart += 40
+
+                for (i in incomeCountingBean.list1) {
                     zpSDK!!.DrawSpecialText(
                         20,
                         ystart,
                         PrinterInterface.Textfont.siyuanheiti,
                         27,
-                        "① 今日总收费:             " + arr[3].replace("payMoneyToday", "") + " 元",
+                        i.streetName,
                         0,
                         0,
                         0
                     )
-                    //ystart = ystart;
+                    ystart += 40
+
+                    printDrawText("① 交易笔数:", i.number.toString() + " 笔", ystart, 12)
+                    ystart += 40
+
+                    printDrawText("② 交易金额:", i.amount + " 元", ystart, 12)
+                    ystart += 40
                 }
-                if (printText.contains("orderTotalToday")) {
+                ystart += 40
+                printDrawText("统计时间:", incomeCountingBean.range, ystart, 8)
+                ystart += 40
+
+                for (i in incomeCountingBean.list2) {
                     zpSDK!!.DrawSpecialText(
                         20,
-                        ystart + 40,
+                        ystart,
                         PrinterInterface.Textfont.siyuanheiti,
                         27,
-                        "② 今日订单数:             " + arr[4].replace("orderTotalToday", "") + " 笔",
+                        i.streetName,
                         0,
                         0,
                         0
                     )
-                    ystart = ystart + 40
+                    ystart += 40
+
+                    printDrawText("① 交易笔数:", i.number.toString() + " 笔", ystart, 12)
+                    ystart += 40
+
+                    printDrawText("② 交易金额:", i.amount + " 元", ystart, 12)
+                    ystart += 40
                 }
-                if (printText.contains("unclearedTotal")) {
-                    zpSDK!!.DrawSpecialText(
-                        20,
-                        ystart + 40,
-                        PrinterInterface.Textfont.siyuanheiti,
-                        27,
-                        "③ 欠费订单数:             " + arr[5].replace("unclearedTotal", "") + " 笔",
-                        0,
-                        0,
-                        0
-                    )
-                    ystart = ystart + 40
-                }
-                if (printText.contains("payMoneyTotal")) {
-                    zpSDK!!.DrawSpecialText(
-                        20,
-                        ystart + 40,
-                        PrinterInterface.Textfont.siyuanheiti,
-                        27,
-                        "④ 总收入:                 " + arr[6].replace("payMoneyTotal", "") + " 元",
-                        0,
-                        0,
-                        0
-                    )
-                    ystart = ystart + 40
-                }
-                if (printText.contains("orderTotal")) {
-                    zpSDK!!.DrawSpecialText(
-                        20,
-                        ystart + 40,
-                        PrinterInterface.Textfont.siyuanheiti,
-                        27,
-                        "⑤ 已下单:                 " + arr[7].replace("orderTotal", "") + " 笔",
-                        0,
-                        0,
-                        0
-                    )
-                    ystart = ystart + 40
-                }
-                zpSDK!!.DrawSpecialText(
-                    20,
-                    ystart + 40,
-                    PrinterInterface.Textfont.siyuanheiti,
-                    27,
-                    "打印时间:                  " + arr[2],
-                    0,
-                    0,
-                    0
-                )
                 zpSDK!!.DrawSpecialText(
                     20,
                     ystart + 40 + 40,
@@ -249,6 +197,7 @@ class BluePrint() {
                 return 0
             }
             //-----------------------------------------------------------------自定义打印内容----------------------------------------------------------------------
+            val arr = printText.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if ("undefined" == arr[6]) {
                 arr[6] = "**"
             } else if ("undefined" == arr[7]) {
@@ -617,5 +566,23 @@ class BluePrint() {
 
 //        zpSDK.disconnect();
         return 0
+    }
+
+    fun printDrawText(text1: String, text2: String, ystart: Int, spaceOffset: Int) {
+        var space = ""
+        var count = 35 - text2.length - spaceOffset
+        for (i in 0..count) {
+            space += " "
+        }
+        zpSDK!!.DrawSpecialText(
+            20,
+            ystart,
+            PrinterInterface.Textfont.siyuanheiti,
+            27,
+            text1 + space + text2,
+            0,
+            0,
+            0
+        )
     }
 }

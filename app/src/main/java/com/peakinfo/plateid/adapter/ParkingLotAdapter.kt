@@ -60,8 +60,13 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.tvPlate.background = null
             holder.vb.rflParking.setOnClickListener(null)
         } else {
-            holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_red)
-            holder.vb.tvParkingLotNum.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_num_bg_red)
+            if (item.deadLine > System.currentTimeMillis()) {
+                holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_green)
+                holder.vb.tvParkingLotNum.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_num_bg_green)
+            } else {
+                holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_red)
+                holder.vb.tvParkingLotNum.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_num_bg_red)
+            }
             holder.vb.tvPlate.text = item.carLicense
             if (item.carColor == "20") {
                 holder.vb.llPlate.show()
