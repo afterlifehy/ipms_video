@@ -113,12 +113,11 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     }
 
     fun checkPayResult() {
-//        TODO("测试入参")
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["token"] = token
-        jsonobject["tradeNo"] = "20230831JAZ03850133112"
-//            tradeNo
+        jsonobject["tradeNo"] = tradeNo
+//        20230831JAZ03850133112
         param["attr"] = jsonobject
         mViewModel.payResult(param)
     }

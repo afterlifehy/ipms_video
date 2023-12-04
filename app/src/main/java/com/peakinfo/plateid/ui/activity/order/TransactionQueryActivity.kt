@@ -2,15 +2,18 @@ package com.peakinfo.plateid.ui.activity.order
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
@@ -55,6 +58,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     var currentTransactionBean: TransactionBean? = null
 
     override fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.交易查询)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
@@ -91,6 +95,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)
+        binding.ivCamera.setOnClickListener(this)
         binding.srlTransaction.setOnRefreshListener {
             pageIndex = 1
             binding.srlTransaction.finishRefresh(5000)
@@ -152,6 +157,10 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
 
                 })
                 datePop?.showAsDropDown((v.parent) as Toolbar)
+            }
+
+            R.id.iv_camera -> {
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@TransactionQueryActivity, 1)
             }
 
             R.id.tv_search -> {
@@ -266,6 +275,24 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             errMsg.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                val plate = data?.getStringExtra("plate")
+                if (!plate.isNullOrEmpty()) {
+                    val plateId = if (plate.contains("新能源")) {
+                        plate.substring(plate.length - 8, plate.length)
+                    } else {
+                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
+                    }
+                    binding.etSearch.setText(plateId)
+                    binding.etSearch.setSelection(plateId.length)
+                }
             }
         }
     }

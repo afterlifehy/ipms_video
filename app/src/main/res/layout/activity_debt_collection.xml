@@ -22,7 +22,6 @@
         android:layout_height="@dimen/dp_47"
         android:layout_below="@+id/layout_toolbar">
 
-
         <com.aries.ui.view.radius.RadiusRelativeLayout
             android:id="@+id/rrl_search"
             android:layout_width="match_parent"

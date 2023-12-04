@@ -20,6 +20,7 @@ class SelectPicDialog(val callback: Callback) : VBBaseLibDialog<DialogSelectPicB
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.rtvSelectFromAlbum.setOnClickListener(this)
         binding.rtvCancel.setOnClickListener(this)
         binding.tvTakePhoto.setOnClickListener(this)

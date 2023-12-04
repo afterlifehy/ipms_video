@@ -97,6 +97,13 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     }
 
     override fun initData() {
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            val workingHour = RealmUtil.instance?.findCurrentWorkingHour(loginName)
+            if (workingHour != null) {
+                binding.tvWorkingHours.text = TimeUtils.millis2String(workingHour.time, "yyyy-MM-dd HH:mm:ss")
+            }
+        }
     }
 
     @SuppressLint("MissingPermission", "CheckResult")
@@ -170,7 +177,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 for (i in ActivityCacheManager.instance().getAllActivity()) {
-                    if (i != LoginActivity::class.java) {
+                    if (i is LoginActivity) {
                         i.finish()
                     }
                 }

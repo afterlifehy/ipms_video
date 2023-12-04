@@ -20,6 +20,7 @@ class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
 

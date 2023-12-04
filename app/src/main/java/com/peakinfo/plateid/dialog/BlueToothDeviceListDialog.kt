@@ -32,6 +32,8 @@ class BlueToothDeviceListDialog(
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         blueToothDeviceAdapter = BlueToothDeviceAdapter(deviceList, currentDevice)
@@ -45,8 +47,8 @@ class BlueToothDeviceListDialog(
             R.id.rtv_ok -> {
                 if (blueToothDeviceAdapter?.checkedDevice != null) {
                     callback.chooseDevice(blueToothDeviceAdapter?.checkedDevice!!)
-                    dismiss()
                 }
+                dismiss()
             }
         }
     }

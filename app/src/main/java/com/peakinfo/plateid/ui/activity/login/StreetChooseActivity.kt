@@ -9,13 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
+import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.Street
+import com.peakinfo.base.bean.WorkingHoursBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.plateid.R
@@ -89,7 +92,20 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     RealmUtil.instance?.deleteAllStreet()
                     RealmUtil.instance?.addRealmAsyncList(streetList)
                     RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
+
+                    val workingHoursBean = RealmUtil.instance?.findCurrentWorkingHour(loginInfo!!.loginName)
+                    if (workingHoursBean != null) {
+                        val lastDay = TimeUtils.millis2String(workingHoursBean.time, "yyyy-MM-dd")
+                        val currentDay = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+                        if (lastDay != currentDay) {
+                            RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                        }
+                    } else {
+                        RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                    }
                     ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                } else {
+                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
                 }
             }
 

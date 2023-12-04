@@ -24,6 +24,7 @@ class AbnormalClassificationDialog(
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.rvClassification.setHasFixedSize(true)
         binding.rvClassification.layoutManager = LinearLayoutManager(BaseApplication.instance())
         abnormalClassificationAdapter =

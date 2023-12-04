@@ -62,12 +62,12 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         query()
     }
 
-    //    TODO("测试参数")
     private fun query() {
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["orderNo"] = "20230904JAZ038001P7A32A"
+        jsonobject["orderNo"] = orderNo
+//        20230904JAZ038001P7A32A
         param["attr"] = jsonobject
         mViewModel.transactionInquiryByOrder(param)
     }
@@ -88,10 +88,9 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                             val transactionBean = v.tag as TransactionBean
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
-                            //TODO(测试数据)
-                            jsonobject["tradeNo"] = "20230825JAZ03850048412"
+//                            jsonobject["tradeNo"] = "20230825JAZ03850048412"
+                            jsonobject["tradeNo"] = transactionBean.tradeNo
                             jsonobject["token"] = token
-//                    transactionBean.tradeNo
                             param["attr"] = jsonobject
                             mViewModel.notificationInquiry(param)
                         }
@@ -101,10 +100,9 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     val transactionBean = v.tag as TransactionBean
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    //TODO(测试数据)
-                    jsonobject["tradeNo"] = "20230825JAZ03850048412"
+                    jsonobject["tradeNo"] = transactionBean.tradeNo
+//                    jsonobject["tradeNo"] = "20230825JAZ03850048412"
                     jsonobject["token"] = token
-//                    transactionBean.tradeNo
                     param["attr"] = jsonobject
                     mViewModel.notificationInquiry(param)
                 }

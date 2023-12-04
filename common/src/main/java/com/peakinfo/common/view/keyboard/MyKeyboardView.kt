@@ -30,7 +30,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
             //此处进行特殊按键的背景色处理
             for (key in keys) {
                 if (key.codes[0] == -2) {
-
+                    paint.setColor(getContext().getResources().getColor(com.peakinfo.base.R.color.color_ff0371f4));
                     val rect = RectF(
                         key.x.toFloat(),
                         key.y.toFloat() + SizeUtils.dp2px(10f),
@@ -57,6 +57,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
 
                 if (key.codes[0] == -1) {
+                    paint.setColor(getContext().getResources().getColor(com.peakinfo.base.R.color.color_ff0371f4));
                     val rect = RectF(
                         key.x.toFloat(),
                         key.y.toFloat() + SizeUtils.dp2px(10f),
@@ -76,7 +77,7 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     canvas.drawText(
                         "返回",
                         key.x.toFloat() + key.width / 2,
-                        key.y.toFloat() + key.height / 2 + key.height / 4+ SizeUtils.dp2px(5f),
+                        key.y.toFloat() + key.height / 2 + key.height / 4 + SizeUtils.dp2px(5f),
                         paint
                     )
                 }
@@ -109,7 +110,30 @@ class MyKeyboardView @JvmOverloads constructor(context: Context, attrs: Attribut
                     )
                     dr.draw(canvas)
                 }
-
+                if (key.codes[0] == -4) {
+                    paint.setColor(getContext().getResources().getColor(com.peakinfo.base.R.color.white));
+                    val rect = RectF(
+                        key.x.toFloat(),
+                        key.y.toFloat() + SizeUtils.dp2px(10f),
+                        (
+                                key.x + key.width).toFloat(),
+                        key.y + key.height + SizeUtils.dp2px(10f).toFloat()
+                    )
+                    canvas.drawRoundRect(
+                        rect,
+                        SizeUtils.dp2px(4f).toFloat(),
+                        SizeUtils.dp2px(4f).toFloat(),
+                        paint
+                    )
+                    paint.setColor(getContext().getResources().getColor(com.peakinfo.base.R.color.black));
+                    paint.textSize = SizeUtils.dp2px(30f).toFloat()
+                    canvas.drawText(
+                        key.label.toString(),
+                        key.x.toFloat() + key.width / 2,
+                        key.y.toFloat() + key.height / 2 + key.height / 4 + SizeUtils.dp2px(5f),
+                        paint
+                    )
+                }
             }
         }
     }

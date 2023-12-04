@@ -36,6 +36,8 @@ class CollectionDialog(val callback: CollecteCallBack) :
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+
         collectioPlateColorList.add(0)
         collectioPlateColorList.add(1)
         collectioPlateColorList.add(2)
@@ -82,6 +84,8 @@ class CollectionDialog(val callback: CollecteCallBack) :
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
                     binding.rllCollect.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
+            },hide = {
+                binding.rllCollect.translationY = 0f
             })
             keyboardUtil.changeKeyboard(true)
             keyboardUtil.setEditText(v)
@@ -89,7 +93,6 @@ class CollectionDialog(val callback: CollecteCallBack) :
         }
         binding.root.setOnClickListener {
             if (keyboardUtil.isShow()) {
-                binding.rllCollect.translationY = 0f
                 keyboardUtil.hideKeyboard()
             } else {
                 dismiss()
@@ -99,7 +102,6 @@ class CollectionDialog(val callback: CollecteCallBack) :
             override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
                 if (p1 == KeyEvent.KEYCODE_BACK && p2?.action == KeyEvent.ACTION_UP) {
                     if (keyboardUtil.isShow()) {
-                        binding.rllCollect.translationY = 0f
                         keyboardUtil.hideKeyboard()
                         return true // 表明已处理返回键事件
                     }
@@ -158,6 +160,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
 
     fun setPlate(plateId: String) {
         binding.retPlate.setText(plateId)
+        binding.retPlate.setSelection(plateId.length)
     }
 
     interface CollecteCallBack {

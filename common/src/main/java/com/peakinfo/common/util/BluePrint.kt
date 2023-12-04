@@ -107,7 +107,6 @@ class BluePrint() {
     fun Print1(printText: String?): Int {
         var printText = printText
         var yLocation = 182
-        var yLocation1 = 0
         val now = Calendar.getInstance()
         val today = now[Calendar.YEAR].toString() + "年" + (now[Calendar.MONTH] + 1) + "月" + now[Calendar.DAY_OF_MONTH] + "日"
         if (printText !== "" && printText != null) {
@@ -207,7 +206,7 @@ class BluePrint() {
             } else if ("undefined" == arr[9]) {
                 arr[9] = "**"
             }
-            zpSDK!!.pageSetup(800, 1600)
+            zpSDK!!.pageSetup(800, 1700)
             //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
             zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
             zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
@@ -236,9 +235,10 @@ class BluePrint() {
                     0,
                     0
                 )
+                yLocation += 32
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 32,
+                    yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     20,
                     "           " + arr[2].substring(20),
@@ -246,7 +246,6 @@ class BluePrint() {
                     0,
                     0
                 )
-                yLocation = yLocation + 32
             } else if (arr[2].length > 40 && arr[2].length <= 60) {
                 zpSDK!!.DrawSpecialText(
                     25,
@@ -258,9 +257,10 @@ class BluePrint() {
                     0,
                     0
                 )
+                yLocation += 32
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 32,
+                    yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     20,
                     "           " + arr[2].substring(20, 40),
@@ -268,9 +268,10 @@ class BluePrint() {
                     0,
                     0
                 )
+                yLocation += 32
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 64,
+                    yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     20,
                     "           " + arr[2].substring(40),
@@ -278,17 +279,18 @@ class BluePrint() {
                     0,
                     0
                 )
-                yLocation = yLocation + 64
             } else {
                 return -2
             }
             zpSDK!!.DrawSpecialText(25, yLocation + 48, PrinterInterface.Textfont.siyuanheiti, 20, "停放时段  ", 0, 0, 0)
             zpSDK!!.DrawSpecialText(25, yLocation + 32, PrinterInterface.Textfont.siyuanheiti, 20, "           " + arr[3], 0, 0, 0)
             zpSDK!!.DrawSpecialText(25, yLocation + 64, PrinterInterface.Textfont.siyuanheiti, 20, "           " + arr[4], 0, 0, 0)
-            zpSDK!!.DrawSpecialText(25, yLocation + 64 + 32, PrinterInterface.Textfont.siyuanheiti, 20, "缴费金额   " + arr[5], 0, 0, 0)
+            yLocation += 96
+            zpSDK!!.DrawSpecialText(25, yLocation, PrinterInterface.Textfont.siyuanheiti, 20, "缴费金额   " + arr[5], 0, 0, 0)
+            yLocation += 32
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "-----------------------------------------------",
@@ -296,9 +298,10 @@ class BluePrint() {
                 1,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "----------------电子票据开具方式----------------",
@@ -306,9 +309,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)",
@@ -316,10 +320,12 @@ class BluePrint() {
                 0,
                 0
             )
-            zpSDK!!.drawQrCode(65 + 60, yLocation + 64 + 32 + 32 + 36 + 36 + 36, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
+            yLocation += 36
+            zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
+            yLocation += (300 + 18)
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "2、注册您的“上海停车”账号,绑定车牌。",
@@ -327,9 +333,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "3、在停车缴费---“我要开票”---“道路电子票据”---下",
@@ -337,9 +344,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "载您的道路停车票据",
@@ -347,9 +355,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "提示:",
@@ -357,9 +366,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 arr[1] + "的车主(单位)",
@@ -367,9 +377,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "您(单位)在" + today + "之前，累计有 " + arr[6] + " 笔道路停车欠费记",
@@ -377,29 +388,43 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
-                "录，请您(单位)登录“上海停车”官方APP、小程序(微信、",
+                "录，请您尽快在本市任一道路停车场补缴。（其中，属智慧道",
                 0,
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
-                "支付宝)尽快补缴。",
+                "路停车场的欠费，可在智慧道路停车场或者登录“上海停车”",
                 0,
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
+                PrinterInterface.Textfont.siyuanheiti,
+                20,
+                "官方APP、小程序查询补缴。）",
+                0,
+                0,
+                0
+            )
+            yLocation += 36
+            zpSDK!!.DrawSpecialText(
+                25,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 24,
                 "--------------- 注意事项 ----------------",
@@ -407,9 +432,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "1、本告知书仅为您(单位)本次停车付费的凭证，不作为电子",
@@ -417,9 +443,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "   票据。",
@@ -427,9 +454,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "2、如需要核实有关停车收费情况请致电 " + arr[7] + " 。",
@@ -437,9 +465,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "3、如您需要电子票据的,请在即日起30天内，通过“上海停",
@@ -447,9 +476,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "   车”官方APP、小程序(微信、支付宝)下载。如您(单位)",
@@ -457,9 +487,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "   在下载电子票据过程中遇到问题，请将问题描述和您的",
@@ -467,9 +498,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "   姓名、电话等有效的联系方式反馈至邮箱service@shtc",
@@ -477,9 +509,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "   xx.com",
@@ -487,9 +520,10 @@ class BluePrint() {
                 0,
                 0
             )
+            yLocation += 36
             zpSDK!!.DrawSpecialText(
                 25,
-                yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                yLocation,
                 PrinterInterface.Textfont.siyuanheiti,
                 20,
                 "-----------------------------------------------",
@@ -497,10 +531,11 @@ class BluePrint() {
                 1,
                 0
             )
-            yLocation1 = if (arr[8].length <= 22) {
+            yLocation += 36
+            if (arr[8].length <= 22) {
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                    yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     24,
                     arr[8],
@@ -508,11 +543,11 @@ class BluePrint() {
                     0,
                     0
                 )
-                64 + 32 + 32 + 36 + 36 + 36 + 300 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36
+                yLocation += 36
             } else {
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                    yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     24,
                     arr[8].substring(0, 22),
@@ -522,7 +557,7 @@ class BluePrint() {
                 )
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + 64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36,
+                    yLocation + 36,
                     PrinterInterface.Textfont.siyuanheiti,
                     24,
                     arr[8].substring(22),
@@ -530,14 +565,14 @@ class BluePrint() {
                     0,
                     0
                 )
-                64 + 32 + 32 + 36 + 36 + 36 + 300 + 18 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36 + 36
+                yLocation += 72
             }
             if (arr[9].length <= 22) {
-                zpSDK!!.DrawSpecialText(25, yLocation + yLocation1 + 36, PrinterInterface.Textfont.siyuanheiti, 24, arr[9], 0, 0, 0)
+                zpSDK!!.DrawSpecialText(25, yLocation + yLocation + 36, PrinterInterface.Textfont.siyuanheiti, 24, arr[9], 0, 0, 0)
             } else {
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + yLocation1 + 36,
+                    yLocation + yLocation,
                     PrinterInterface.Textfont.siyuanheiti,
                     24,
                     arr[9].substring(0, 22),
@@ -547,7 +582,7 @@ class BluePrint() {
                 )
                 zpSDK!!.DrawSpecialText(
                     25,
-                    yLocation + yLocation1 + 36 + 36,
+                    yLocation + yLocation + 36,
                     PrinterInterface.Textfont.siyuanheiti,
                     24,
                     arr[9].substring(22),

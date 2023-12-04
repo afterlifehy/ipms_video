@@ -86,14 +86,12 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         currentStreet = RealmUtil.instance?.findCurrentStreet()
 
-        Thread {
-            if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-                val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
-                if (device != null) {
-                    BluePrint.instance?.connet(device.address)
-                }
+        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+            val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
+            if (device != null) {
+                BluePrint.instance?.connet(device.address)
             }
-        }.start()
+        }
 
         if (currentStreet!!.streetName.indexOf("(") < 0) {
             binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName

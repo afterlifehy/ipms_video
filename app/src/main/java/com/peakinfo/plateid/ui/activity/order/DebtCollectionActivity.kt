@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -43,6 +44,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     var token = ""
 
     override fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.欠费追缴)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
@@ -52,6 +54,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         if (intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE) != null) {
             carLicense = intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE).toString()
             binding.etSearch.setText(carLicense)
+            binding.etSearch.setSelection(carLicense.length)
         }
         binding.rvDebt.setHasFixedSize(true)
         binding.rvDebt.layoutManager = LinearLayoutManager(this)
@@ -193,6 +196,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     binding.etSearch.setText(plateId)
+                    binding.etSearch.setSelection(plateId.length)
                 }
             } else if (requestCode == 2) {
                 val plate = data?.getStringExtra("plate")

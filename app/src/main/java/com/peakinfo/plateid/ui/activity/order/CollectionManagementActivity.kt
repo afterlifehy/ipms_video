@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -59,6 +60,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     var pic2Base64 = ""
 
     override fun initView() {
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.催缴管理)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
@@ -132,6 +134,8 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
                     binding.rllManagement.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
+            }, hide = {
+                binding.rllManagement.translationY = 0f
             })
             keyboardUtil.changeKeyboard(true)
             keyboardUtil.setEditText(v)
@@ -142,7 +146,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (keyboardUtil.isShow()) {
-                binding.rllManagement.translationY = 0f
                 keyboardUtil.hideKeyboard()
             } else {
                 return super.onKeyDown(keyCode, event)
@@ -154,7 +157,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         if (keyboardUtil.isShow()) {
-            binding.rllManagement.translationY = 0f
             keyboardUtil.hideKeyboard()
         }
         when (v?.id) {
@@ -373,6 +375,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                         collectionPlateColorAdapter?.updateColor(6, 6)
                     }
                     binding.retPlate.setText(plateId)
+                    binding.retPlate.setSelection(plateId.length)
                 }
             }
         }

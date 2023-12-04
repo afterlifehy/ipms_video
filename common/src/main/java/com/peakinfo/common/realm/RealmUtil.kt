@@ -2,6 +2,7 @@ package com.peakinfo.common.realm
 
 import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.Street
+import com.peakinfo.base.bean.WorkingHoursBean
 import io.realm.*
 
 class RealmUtil {
@@ -100,6 +101,14 @@ class RealmUtil {
 
     fun findCurrentDeviceList(): List<BlueToothDeviceBean>? {
         return realm.where(BlueToothDeviceBean::class.java).findAll()
+    }
+
+    fun findCurrentWorkingHour(loginName: String): WorkingHoursBean? {
+        val list = realm.where(WorkingHoursBean::class.java).equalTo("loginName", loginName).findAll()
+        if (list != null && list.size > 0) {
+            return list.first()
+        }
+        return null
     }
 
     /**

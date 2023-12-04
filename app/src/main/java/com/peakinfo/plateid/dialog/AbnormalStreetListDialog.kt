@@ -21,6 +21,7 @@ class AbnormalStreetListDialog(val streetList: MutableList<Street>, var currentS
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         parkingChooseStreetAdapter =

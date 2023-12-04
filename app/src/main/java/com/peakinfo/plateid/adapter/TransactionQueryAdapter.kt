@@ -25,7 +25,7 @@ class TransactionQueryAdapter(data: MutableList<TransactionBean>? = null, val on
         holder.vb.tvStartTime.text = item.startTime
         holder.vb.tvEndTime.text = item.endTime
         holder.vb.tvNo.text = item.parkingNo
-        if (item.hasPayed == "0") {
+        if (item.hasPayed == "1") {
             val strings = arrayOf("已付：", item.payedAmount, "元")
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
             holder.vb.flNotification.show()
@@ -33,7 +33,7 @@ class TransactionQueryAdapter(data: MutableList<TransactionBean>? = null, val on
             holder.vb.flNotification.tag = item
             holder.vb.flNotification.setOnClickListener(onClickListener)
         } else {
-            val strings = arrayOf("欠：", item.oweMoney, "元")
+            val strings = arrayOf("未付：", item.oweMoney, "元")
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors2, styles)
             holder.vb.flNotification.gone()
             holder.vb.flPaymentInquiry.show()

@@ -139,6 +139,8 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
                     binding.llBerthAbnormal.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
+            },hide = {
+                binding.llBerthAbnormal.translationY = 0f
             })
             keyboardUtil.changeKeyboard(true)
             keyboardUtil.setEditText(v)
@@ -149,7 +151,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (keyboardUtil.isShow()) {
-                binding.llBerthAbnormal.translationY = 0f
                 keyboardUtil.hideKeyboard()
             } else {
                 return super.onKeyDown(keyCode, event)
@@ -160,7 +161,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
 
     override fun onClick(v: View?) {
         if (keyboardUtil.isShow()) {
-            binding.llBerthAbnormal.translationY = 0f
             keyboardUtil.hideKeyboard()
         }
         when (v?.id) {
@@ -277,6 +277,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     binding.etPlate.setText(plateId)
+                    binding.etPlate.setSelection(plateId.length)
                     if (plate.startsWith("蓝")) {
                         collectionPlateColorAdapter?.updateColor(0, 0)
                     } else if (plate.startsWith("绿")) {

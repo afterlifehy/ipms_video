@@ -42,6 +42,7 @@ import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMineBinding
 import com.peakinfo.plateid.dialog.BlueToothDeviceListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.MineViewModel
+import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -138,7 +139,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
                         override fun onRightClickLinsener(msg: String) {
                             ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                            ActivityCacheManager.instance().getCurrentActivity()?.finish()
+                            for (i in ActivityCacheManager.instance().getAllActivity()) {
+                                if (i is LoginActivity) {
+                                    i.finish()
+                                }
+                            }
                             runBlocking {
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")

@@ -60,8 +60,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                     BaseApplication.instance(), com.peakinfo.base.R.color.color_ffbac8d8
                 )
             )
-//            TODO("null")
-            binding.rtvTransactionRecord.setOnClickListener(this)
+            binding.rtvTransactionRecord.setOnClickListener(null)
         } else {
             val strings = arrayOf(
                 i18n(com.peakinfo.base.R.string.欠),
