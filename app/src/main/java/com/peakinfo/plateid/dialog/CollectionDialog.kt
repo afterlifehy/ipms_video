@@ -26,8 +26,8 @@ class CollectionDialog(val callback: CollecteCallBack) :
     VBBaseLibDialog<DialogCollectionBinding>(ActivityCacheManager.instance().getCurrentActivity()!!),
     OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
-    var collectioPlateColorList: MutableList<Int> = ArrayList()
-    var checkedColor = 0
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
     private lateinit var keyboardUtil: KeyboardUtil
     val widthType = 2
 
@@ -38,13 +38,13 @@ class CollectionDialog(val callback: CollecteCallBack) :
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
-        collectioPlateColorList.add(0)
-        collectioPlateColorList.add(1)
-        collectioPlateColorList.add(2)
-        collectioPlateColorList.add(3)
-        collectioPlateColorList.add(4)
-        collectioPlateColorList.add(5)
-        collectioPlateColorList.add(6)
+        collectioPlateColorList.add("5")
+        collectioPlateColorList.add("9")
+        collectioPlateColorList.add("6")
+        collectioPlateColorList.add("20")
+        collectioPlateColorList.add("2")
+        collectioPlateColorList.add("1")
+        collectioPlateColorList.add("99")
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -84,7 +84,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
                     binding.rllCollect.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
-            },hide = {
+            }, hide = {
                 binding.rllCollect.translationY = 0f
             })
             keyboardUtil.changeKeyboard(true)
@@ -128,7 +128,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
             }
 
             R.id.fl_color -> {
-                checkedColor = v.tag as Int
+                checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
         }
@@ -164,7 +164,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
     }
 
     interface CollecteCallBack {
-        fun collect(plate: String, color: Int)
+        fun collect(plate: String, color: String)
     }
 
 }

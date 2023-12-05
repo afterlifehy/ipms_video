@@ -259,10 +259,10 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = 0
+                    oweCount = it.oweCount
                 )
                 Thread {
-                    BluePrint.instance?.zkblueprint(printInfo.toString())
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
                 }.start()
             }
             payResultLiveData.observe(this@TransactionQueryActivity) {

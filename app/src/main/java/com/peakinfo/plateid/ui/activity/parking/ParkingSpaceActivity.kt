@@ -152,6 +152,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, parkingSpaceBean?.streetNo)
                     .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
                     .withString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
+                    .withString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
+                    .withString(ARouterMap.ABNORMAL_CAR_COLOR, parkingSpaceBean?.carColor.toString())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
@@ -260,10 +262,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0
+            oweCount = it.oweCount
         )
         Thread {
-            BluePrint.instance?.zkblueprint(printInfo.toString())
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()
     }
 

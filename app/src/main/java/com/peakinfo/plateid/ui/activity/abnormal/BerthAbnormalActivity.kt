@@ -39,8 +39,8 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.BERTH_ABNORMAL)
 class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
-    var collectioPlateColorList: MutableList<Int> = ArrayList()
-    var checkedColor = 0
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
     private lateinit var keyboardUtil: KeyboardUtil
     val widthType = 1
 
@@ -54,6 +54,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     var parkingNo = ""
     var streetNo = ""
     var orderNo = ""
+    var carColor = ""
+    var carLicense = ""
+    var type = ""
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18n(com.peakinfo.base.R.string.泊位异常上报)
@@ -65,15 +68,17 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             parkingNo = intent.getStringExtra(ARouterMap.ABNORMAL_PARKING_NO)!!
             orderNo = intent.getStringExtra(ARouterMap.ABNORMAL_ORDER_NO)!!
             binding.retParkingNo.setText(parkingNo.replaceFirst(streetNo + "-", ""))
+            carLicense = intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE)!!
+            carColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
         }
 
-        collectioPlateColorList.add(5)
-        collectioPlateColorList.add(9)
-        collectioPlateColorList.add(6)
-        collectioPlateColorList.add(20)
-        collectioPlateColorList.add(2)
-        collectioPlateColorList.add(1)
-        collectioPlateColorList.add(99)
+        collectioPlateColorList.add("5")
+        collectioPlateColorList.add("9")
+        collectioPlateColorList.add("6")
+        collectioPlateColorList.add("20")
+        collectioPlateColorList.add("2")
+        collectioPlateColorList.add("1")
+        collectioPlateColorList.add("99")
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -197,8 +202,17 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             }
 
             R.id.rfl_report -> {
+                type = AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
                 if (binding.retParkingNo.text.toString().isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写泊位号))
+                    return
+                }
+                if (type.isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择异常分类))
+                    return
+                }
+                if (type != "02" && checkedColor.isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))
                     return
                 }
                 runBlocking {
@@ -208,11 +222,16 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = currentStreet?.streetNo
                     jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + binding.retParkingNo.text.toString()
-                    jsonobject["type"] =
-                        AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
+
+                    jsonobject["type"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
-                    jsonobject["carLicense"] = binding.etPlate.text.toString()
-                    jsonobject["carColor"] = checkedColor
+                    if (type == "02") {
+                        jsonobject["carLicense"] = carLicense
+                        jsonobject["carColor"] = carColor
+                    } else {
+                        jsonobject["carLicense"] = binding.etPlate.text.toString()
+                        jsonobject["carColor"] = checkedColor
+                    }
                     jsonobject["orderNo"] = orderNo
                     param["attr"] = jsonobject
                     showProgressDialog(20000)
@@ -225,7 +244,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             }
 
             R.id.fl_color -> {
-                checkedColor = v.tag as Int
+                checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
         }
@@ -281,19 +300,19 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     binding.etPlate.setText(plateId)
                     binding.etPlate.setSelection(plateId.length)
                     if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor(0, 0)
+                        collectionPlateColorAdapter?.updateColor("5", 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor(1, 1)
+                        collectionPlateColorAdapter?.updateColor("9", 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor(2, 2)
+                        collectionPlateColorAdapter?.updateColor("6", 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor(3, 3)
+                        collectionPlateColorAdapter?.updateColor("20", 3)
                     } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor(4, 4)
+                        collectionPlateColorAdapter?.updateColor("2", 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor(5, 5)
+                        collectionPlateColorAdapter?.updateColor("1", 5)
                     } else {
-                        collectionPlateColorAdapter?.updateColor(6, 6)
+                        collectionPlateColorAdapter?.updateColor("99", 6)
                     }
                 }
             }
@@ -306,7 +325,11 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.上报成功))
-                EventBus.getDefault().post(RefreshParkingSpaceEvent(binding.etPlate.text.toString(),checkedColor))
+                if (type == "02") {
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent(carLicense, carColor))
+                } else {
+                    EventBus.getDefault().post(RefreshParkingSpaceEvent(binding.etPlate.text.toString(), checkedColor))
+                }
                 onBackPressedSupport()
             }
             errMsg.observe(this@BerthAbnormalActivity) {

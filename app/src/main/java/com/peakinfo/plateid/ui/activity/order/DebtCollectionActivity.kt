@@ -109,7 +109,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
 
             R.id.tv_collect -> {
                 collectionDialog = CollectionDialog(object : CollectionDialog.CollecteCallBack {
-                    override fun collect(plate: String, color: Int) {
+                    override fun collect(plate: String, color: String) {
 
                     }
 
@@ -208,19 +208,19 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                     }
                     collectionDialog?.setPlate(plateId)
                     if (plate.startsWith("蓝")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(0, 0)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("5", 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(1, 1)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("9", 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(2, 2)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("6", 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(3, 3)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("20", 3)
                     } else if (plate.startsWith("白")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(4, 4)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("2", 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(5, 5)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("1", 5)
                     } else {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(6, 6)
+                        collectionDialog?.collectionPlateColorAdapter?.updateColor("99", 6)
                     }
                 }
             }

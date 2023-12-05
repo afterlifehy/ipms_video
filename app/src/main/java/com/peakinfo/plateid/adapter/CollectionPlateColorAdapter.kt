@@ -13,24 +13,24 @@ import com.peakinfo.base.ext.show
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.databinding.ItemCollectionPlateColorBinding
 
-class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = null, val onClickListener: OnClickListener) :
-    BaseBindingAdapter<Int, ItemCollectionPlateColorBinding>(data) {
+class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<String>? = null, val onClickListener: OnClickListener) :
+    BaseBindingAdapter<String, ItemCollectionPlateColorBinding>(data) {
     var lastColorPosition = 0
     var checkedColorPosition = 0
-    var checkedColor = 0
-    var collectioPlateColorMap: MutableMap<Int, Int> = ArrayMap()
+    var checkedColor = ""
+    var collectioPlateColorMap: MutableMap<String, Int> = ArrayMap()
 
     init {
-        collectioPlateColorMap[5] = com.peakinfo.common.R.mipmap.ic_plate_blue
-        collectioPlateColorMap[9] = com.peakinfo.common.R.mipmap.ic_plate_green
-        collectioPlateColorMap[6] = com.peakinfo.common.R.mipmap.ic_plate_yellow
-        collectioPlateColorMap[20] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
-        collectioPlateColorMap[2] = com.peakinfo.common.R.mipmap.ic_plate_white
-        collectioPlateColorMap[1] = com.peakinfo.common.R.mipmap.ic_plate_black
-        collectioPlateColorMap[99] = com.peakinfo.common.R.mipmap.ic_plate_other
+        collectioPlateColorMap["5"] = com.peakinfo.common.R.mipmap.ic_plate_blue
+        collectioPlateColorMap["9"] = com.peakinfo.common.R.mipmap.ic_plate_green
+        collectioPlateColorMap["6"] = com.peakinfo.common.R.mipmap.ic_plate_yellow
+        collectioPlateColorMap["20"] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
+        collectioPlateColorMap["2"] = com.peakinfo.common.R.mipmap.ic_plate_white
+        collectioPlateColorMap["1"] = com.peakinfo.common.R.mipmap.ic_plate_black
+        collectioPlateColorMap["99"] = com.peakinfo.common.R.mipmap.ic_plate_other
     }
 
-    override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: Int) {
+    override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: String) {
         GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorMap[item]!!)
         if (checkedColor == item) {
             holder.vb.rflStroke.show()
@@ -66,7 +66,7 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = 
         return binding
     }
 
-    fun updateColor(color: Int, position: Int) {
+    fun updateColor(color: String, position: Int) {
         lastColorPosition = checkedColorPosition
         checkedColorPosition = position
         checkedColor = color

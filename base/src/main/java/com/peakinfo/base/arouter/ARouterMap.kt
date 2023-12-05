@@ -51,6 +51,8 @@ object ARouterMap {
     const val ABNORMAL_STREET_NO = "streetNo"
     const val ABNORMAL_PARKING_NO = "parkingNo"
     const val ABNORMAL_ORDER_NO = "orderNo"
+    const val ABNORMAL_CARLICENSE = "carLicense"
+    const val ABNORMAL_CAR_COLOR = "carColor"
 
     const val ABNORMAL_HELP = "/ipms_app/abnormalHelp"
 

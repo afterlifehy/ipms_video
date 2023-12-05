@@ -9,5 +9,6 @@ data class NotificationBean(
     val remark: String,
     val roadName: String,
     val startTime: String,
-    val tradeNo: String
+    val tradeNo: String,
+    val oweCount: Int
 )

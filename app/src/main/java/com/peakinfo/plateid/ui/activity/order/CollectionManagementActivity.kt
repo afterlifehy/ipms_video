@@ -46,8 +46,8 @@ import kotlinx.coroutines.runBlocking
 @Route(path = ARouterMap.COLLECTION_MANAGEMENT)
 class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(), OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
-    var collectioPlateColorList: MutableList<Int> = ArrayList()
-    var checkedColor = 0
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
     private lateinit var keyboardUtil: KeyboardUtil
     val widthType = 3
     var streetList: MutableList<Street> = ArrayList()
@@ -65,13 +65,13 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.催缴管理)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
-        collectioPlateColorList.add(0)
-        collectioPlateColorList.add(1)
-        collectioPlateColorList.add(2)
-        collectioPlateColorList.add(3)
-        collectioPlateColorList.add(4)
-        collectioPlateColorList.add(5)
-        collectioPlateColorList.add(6)
+        collectioPlateColorList.add("5")
+        collectioPlateColorList.add("9")
+        collectioPlateColorList.add("6")
+        collectioPlateColorList.add("20")
+        collectioPlateColorList.add("2")
+        collectioPlateColorList.add("1")
+        collectioPlateColorList.add("99")
 
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
@@ -182,7 +182,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
             }
 
             R.id.fl_color -> {
-                checkedColor = v.tag as Int
+                checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
 
@@ -360,19 +360,19 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor(0, 0)
+                        collectionPlateColorAdapter?.updateColor("5", 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor(1, 1)
+                        collectionPlateColorAdapter?.updateColor("9", 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor(2, 2)
+                        collectionPlateColorAdapter?.updateColor("6", 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor(3, 3)
+                        collectionPlateColorAdapter?.updateColor("20", 3)
                     } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor(4, 4)
+                        collectionPlateColorAdapter?.updateColor("2", 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor(5, 5)
+                        collectionPlateColorAdapter?.updateColor("1", 5)
                     } else {
-                        collectionPlateColorAdapter?.updateColor(6, 6)
+                        collectionPlateColorAdapter?.updateColor("99", 6)
                     }
                     binding.retPlate.setText(plateId)
                     binding.retPlate.setSelection(plateId.length)
