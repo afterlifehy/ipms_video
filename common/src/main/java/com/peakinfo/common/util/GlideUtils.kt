@@ -16,7 +16,7 @@ class GlideUtils private constructor() {
      */
     private fun initOption() {
         defaultOption = RequestOptions()
-        defaultOption!!.error(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher)
+        defaultOption!!.error(R.mipmap.ic_launcher).placeholder(com.peakinfo.common.R.mipmap.ic_launcher)
         /*
             DiskCacheStrategy.NONE： 表示不缓存任何内容。
             DiskCacheStrategy.DATA： 表示只缓存原始图片。
@@ -82,6 +82,16 @@ class GlideUtils private constructor() {
             .format(DecodeFormat.PREFER_RGB_565)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
         Glide.with(BaseApplication.instance()).asBitmap().fitCenter().load(url).apply(options).into(imageView)
+    }
+
+    fun loadLongImage(iv: ImageView, url: String?) {
+        iv.tag = null
+        val options: RequestOptions = RequestOptions()
+            .format(DecodeFormat.PREFER_RGB_565)
+            .error(R.mipmap.ic_placeholder)
+            .placeholder(R.mipmap.ic_placeholder)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+        Glide.with(BaseApplication.instance()).load(url).apply(options).into(iv)
     }
 
     companion object {

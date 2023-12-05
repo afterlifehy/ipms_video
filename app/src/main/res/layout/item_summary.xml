@@ -30,6 +30,7 @@
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_13"
         android:paddingEnd="@dimen/dp_13"
+        android:paddingBottom="@dimen/dp_4"
         app:rv_bottomLeftRadius="@dimen/dp_10"
         app:rv_bottomRightRadius="@dimen/dp_10">
 

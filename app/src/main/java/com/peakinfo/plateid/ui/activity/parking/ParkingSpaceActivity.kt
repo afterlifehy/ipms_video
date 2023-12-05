@@ -173,7 +173,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), "${it.parkingTime / 60}分钟")
+                val hour = it.parkingTime / 3600
+                val minute = it.parkingTime / 60 - hour * 60
+                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), "${hour}小时${minute}分钟")
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
@@ -210,6 +212,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                if (paymentQrDialog != null) {
+                    paymentQrDialog?.dismiss()
+                }
                 val payResultBean = it
                 var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

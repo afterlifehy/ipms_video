@@ -41,8 +41,10 @@ import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMineBinding
 import com.peakinfo.plateid.dialog.BlueToothDeviceListDialog
+import com.peakinfo.plateid.dialog.UpdateDialog
 import com.peakinfo.plateid.mvvm.viewmodel.MineViewModel
 import com.peakinfo.plateid.ui.activity.login.LoginActivity
+import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -54,6 +56,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     var updateBean: UpdateBean? = null
     var blueToothDeviceListDialog: BlueToothDeviceListDialog? = null
     var currentDevice: BlueToothDeviceBean? = null
+    var updateDialog: UpdateDialog? = null
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -182,17 +185,21 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
-    fun requestionPermission() {
+    fun requestPermissions() {
         var rxPermissions = RxPermissions(this@MineActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (packageManager.canRequestPackageInstalls()) {
-                    downloadFileAndInstall()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (packageManager.canRequestPackageInstalls()) {
+                        UpdateUtil.instance?.downloadFileAndInstall()
+                    } else {
+                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
+                        requestInstallPackageLauncher.launch(intent)
+                    }
                 } else {
-                    val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                    val intent =
-                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                    requestInstallPackageLauncher.launch(intent)
+                    UpdateUtil.instance?.downloadFileAndInstall()
                 }
             } else {
 
@@ -202,42 +209,9 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall()
         } else {
 
-        }
-    }
-
-    fun downloadFileAndInstall() {
-        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.开始下载更新))
-        GlobalScope.launch(Dispatchers.IO) {
-            FileDownloader.setup(this@MineActivity)
-            val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
-            FileDownloader.getImpl().create(updateBean?.url)
-                .setPath(path)
-                .setListener(object : FileDownloadListener() {
-                    override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        Log.v("123", "${(soFarBytes * 100f / totalBytes.toFloat()).toInt()}")
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
-                    }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        Log.v("123", e.toString())
-                    }
-
-                    override fun warn(task: BaseDownloadTask?) {
-                    }
-
-                }).start()
         }
     }
 
@@ -247,45 +221,13 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         mViewModel.apply {
             checkUpdateLiveDate.observe(this@MineActivity) {
                 updateBean = it
-                if (updateBean?.state == "0" && updateBean?.force == "1") {
-                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(false)
-                        .isAloneButton(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@MineActivity).showDailog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putLong(
-                            PreferencesKeys.lastCheckUpdateTime,
-                            System.currentTimeMillis()
-                        )
-                    }
-                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
-                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(com.peakinfo.base.R.string.确定))
-                        .setLeftMsg(i18N(com.peakinfo.base.R.string.取消)).setCancelable(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@MineActivity).showDailog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putLong(
-                            PreferencesKeys.lastCheckUpdateTime,
-                            System.currentTimeMillis()
-                        )
-                    }
-                } else if (updateBean?.state == "1") {
+                if (updateBean?.state == "0") {
+                    UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+                            requestPermissions()
+                        }
+                    })
+                } else {
                     ToastUtil.showMiddleToast("当前已是最新版本")
                 }
             }

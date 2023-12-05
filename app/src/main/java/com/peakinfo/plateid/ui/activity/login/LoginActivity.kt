@@ -40,7 +40,9 @@ import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityLoginBinding
+import com.peakinfo.plateid.dialog.UpdateDialog
 import com.peakinfo.plateid.mvvm.viewmodel.LoginViewModel
+import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -55,6 +57,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lon = 31.434312
     var updateBean: UpdateBean? = null
     var locationEnable = false
+    var updateDialog: UpdateDialog? = null
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -150,11 +153,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initData() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
-        param["attr"] = jsonobject
-        mViewModel.checkUpdate(param)
+        runBlocking {
+            val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
+            if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
+                param["attr"] = jsonobject
+                mViewModel.checkUpdate(param)
+            }
+        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -218,47 +226,12 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
-                if (updateBean?.state == "0" && updateBean?.force == "1") {
-                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.发现新版本是否下载安装更新))
-                        .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(false)
-                        .isAloneButton(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                requestionPermission()
-                            }
-
-                        }).build(this@LoginActivity).showDailog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putLong(
-                            PreferencesKeys.lastCheckUpdateTime,
-                            System.currentTimeMillis()
-                        )
-                    }
-                } else if (updateBean?.state == "0" && updateBean?.force == "0") {
-                    runBlocking {
-                        val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-                        if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.发现新版本是否下载安装更新))
-                                .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
-                                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消)).setCancelable(true)
-                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
-                                    }
-
-                                    override fun onRightClickLinsener(msg: String) {
-                                        requestionPermission()
-                                    }
-
-                                }).build(this@LoginActivity).showDailog()
-                            PreferencesDataStore(BaseApplication.instance()).putLong(
-                                PreferencesKeys.lastCheckUpdateTime,
-                                System.currentTimeMillis()
-                            )
+                if (updateBean?.state == "0") {
+                    UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
+                        override fun requestionPermission() {
+                            requestPermissions()
                         }
-                    }
+                    })
                 }
             }
             errMsg.observe(this@LoginActivity) {
@@ -270,17 +243,21 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
-    fun requestionPermission() {
+    fun requestPermissions() {
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (packageManager.canRequestPackageInstalls()) {
-                    downloadFileAndInstall()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (packageManager.canRequestPackageInstalls()) {
+                        UpdateUtil.instance?.downloadFileAndInstall()
+                    } else {
+                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
+                        requestInstallPackageLauncher.launch(intent)
+                    }
                 } else {
-                    val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                    val intent =
-                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                    requestInstallPackageLauncher.launch(intent)
+                    UpdateUtil.instance?.downloadFileAndInstall()
                 }
             } else {
 
@@ -290,42 +267,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            downloadFileAndInstall()
+            UpdateUtil.instance?.downloadFileAndInstall()
         } else {
 
-        }
-    }
-
-    fun downloadFileAndInstall() {
-        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.开始下载更新))
-        GlobalScope.launch(Dispatchers.IO) {
-            FileDownloader.setup(this@LoginActivity)
-            val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"
-            FileDownloader.getImpl().create(updateBean?.url)
-                .setPath(path)
-                .setListener(object : FileDownloadListener() {
-                    override fun pending(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                        Log.v("123", "${(soFarBytes * 100f / totalBytes.toFloat()).toInt()}")
-                    }
-
-                    override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
-                    }
-
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        Log.v("123", e.toString())
-                    }
-
-                    override fun warn(task: BaseDownloadTask?) {
-                    }
-
-                }).start()
         }
     }
 

@@ -32,8 +32,8 @@
         <RelativeLayout
             android:id="@+id/rl_homeTop"
             android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/iv_head"

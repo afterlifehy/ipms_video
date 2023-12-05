@@ -145,8 +145,8 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     override fun startObserve() {
         mViewModel.apply {
             incomeCountingLiveData.observe(this@IncomeCountingActivity) {
-                incomeCountingBean = it
                 dismissProgressDialog()
+                incomeCountingBean = it
                 todaySummaryList.clear()
                 monthSummaryList.clear()
                 todaySummaryList.addAll(incomeCountingBean!!.list1)

@@ -68,7 +68,7 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         binding.sgvpVideo.backButton.gone()
         binding.sgvpVideo.fullscreenButton.gone()
 
-        GlideUtils.instance?.loadImage(binding.rivPic, pic)
+        GlideUtils.instance?.loadLongImage(binding.rivPic, pic)
 
 //        binding.llVideo.gone()
 //        binding.layoutNoData.root.show()

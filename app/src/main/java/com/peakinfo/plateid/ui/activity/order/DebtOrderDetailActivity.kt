@@ -105,6 +105,16 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     jsonobject["oweOrderId"] = debtCollectionBean!!.oweOrderId
                     jsonobject["oweMoney"] = debtCollectionBean!!.oweMoney
                     jsonobject["orderNo"] = debtCollectionBean!!.orderNo
+                    jsonobject["startTime"] = debtCollectionBean!!.startTime
+                    jsonobject["endTime"] = debtCollectionBean!!.endTime
+                    jsonobject["streetName"] = debtCollectionBean!!.streetName
+                    jsonobject["streetNo"] = debtCollectionBean!!.streetNo
+                    jsonobject["districtId"] = debtCollectionBean!!.districtId
+                    jsonobject["carLicense"] = debtCollectionBean!!.carLicense
+                    jsonobject["parkingNo"] = debtCollectionBean!!.parkingNo
+                    jsonobject["parkingTime"] = debtCollectionBean!!.parkingTime
+                    jsonobject["companyName"] = debtCollectionBean!!.companyName
+                    jsonobject["companyPhone"] = debtCollectionBean!!.companyPhone
                     param["attr"] = jsonobject
                     mViewModel.debtPay(param)
                 }
@@ -154,6 +164,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                if (paymentQrDialog != null) {
+                    paymentQrDialog?.dismiss()
+                }
                 val payResultBean = it
                 var rxPermissions = RxPermissions(this@DebtOrderDetailActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
