@@ -1,5 +1,6 @@
 package com.peakinfo.plateid.adapter
 
+import android.util.ArrayMap
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
@@ -17,20 +18,20 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<Int>? = 
     var lastColorPosition = 0
     var checkedColorPosition = 0
     var checkedColor = 0
-    var collectioPlateColorList: MutableList<Int> = ArrayList()
+    var collectioPlateColorMap: MutableMap<Int, Int> = ArrayMap()
 
     init {
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_blue)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_green)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_yellow)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_yellow_green)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_white)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_black)
-        collectioPlateColorList.add(com.peakinfo.common.R.mipmap.ic_plate_other)
+        collectioPlateColorMap[5] = com.peakinfo.common.R.mipmap.ic_plate_blue
+        collectioPlateColorMap[9] = com.peakinfo.common.R.mipmap.ic_plate_green
+        collectioPlateColorMap[6] = com.peakinfo.common.R.mipmap.ic_plate_yellow
+        collectioPlateColorMap[20] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
+        collectioPlateColorMap[2] = com.peakinfo.common.R.mipmap.ic_plate_white
+        collectioPlateColorMap[1] = com.peakinfo.common.R.mipmap.ic_plate_black
+        collectioPlateColorMap[99] = com.peakinfo.common.R.mipmap.ic_plate_other
     }
 
     override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: Int) {
-        GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorList[item])
+        GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorMap[item]!!)
         if (checkedColor == item) {
             holder.vb.rflStroke.show()
             holder.vb.ivHook.show()

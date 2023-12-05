@@ -25,6 +25,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BigDecimalManager
 import com.peakinfo.common.util.BluePrint
@@ -37,6 +38,8 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
@@ -62,6 +65,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var count = 0
     var handler = Handler(Looper.getMainLooper())
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
+        carLicense = refreshParkingSpaceEvent.carLicense
+        carColor = refreshParkingSpaceEvent.carColor.toString()
+        requestParkingSpaceFee()
+    }
+
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
         carLicense = intent.getStringExtra(ARouterMap.CAR_LICENSE).toString()
@@ -73,7 +83,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.peakinfo.common.R.mipmap.ic_video)
         binding.layoutToolbar.ivRight.show()
-
     }
 
     override fun initListener() {
@@ -88,15 +97,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         showProgressDialog(20000)
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["orderNo"] = orderNo
-            jsonobject["carLicense"] = carLicense
-            jsonobject["carColor"] = carColor
-            param["attr"] = jsonobject
-            mViewModel.parkingSpaceFee(param)
+            requestParkingSpaceFee()
         }
+    }
+
+    fun requestParkingSpaceFee() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["token"] = token
+        jsonobject["orderNo"] = orderNo
+        jsonobject["carLicense"] = carLicense
+        jsonobject["carColor"] = carColor
+        param["attr"] = jsonobject
+        mViewModel.parkingSpaceFee(param)
     }
 
     override fun onClick(v: View?) {
@@ -212,6 +225,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                requestParkingSpaceFee()
                 if (paymentQrDialog != null) {
                     paymentQrDialog?.dismiss()
                 }
@@ -251,6 +265,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         Thread {
             BluePrint.instance?.zkblueprint(printInfo.toString())
         }.start()
+    }
+
+    override fun isRegEventBus(): Boolean {
+        return true
     }
 
     override fun getVbBindingView(): ViewBinding {

@@ -21,6 +21,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.GlideUtils
@@ -33,6 +34,7 @@ import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.BERTH_ABNORMAL)
 class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
@@ -65,13 +67,13 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             binding.retParkingNo.setText(parkingNo.replaceFirst(streetNo + "-", ""))
         }
 
-        collectioPlateColorList.add(0)
-        collectioPlateColorList.add(1)
-        collectioPlateColorList.add(2)
-        collectioPlateColorList.add(3)
-        collectioPlateColorList.add(4)
         collectioPlateColorList.add(5)
+        collectioPlateColorList.add(9)
         collectioPlateColorList.add(6)
+        collectioPlateColorList.add(20)
+        collectioPlateColorList.add(2)
+        collectioPlateColorList.add(1)
+        collectioPlateColorList.add(99)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -139,7 +141,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
                     binding.llBerthAbnormal.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
                 }
-            },hide = {
+            }, hide = {
                 binding.llBerthAbnormal.translationY = 0f
             })
             keyboardUtil.changeKeyboard(true)
@@ -304,6 +306,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.上报成功))
+                EventBus.getDefault().post(RefreshParkingSpaceEvent(binding.etPlate.text.toString(),checkedColor))
                 onBackPressedSupport()
             }
             errMsg.observe(this@BerthAbnormalActivity) {
