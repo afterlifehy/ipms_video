@@ -16,10 +16,6 @@ class MonthSummaryAdapter(data: MutableList<Summary>? = null) : BaseBindingAdapt
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemSummaryBinding {
-        val binding = ItemSummaryBinding.inflate(inflater)
-        val lp = binding.rllTrade.layoutParams as LinearLayout.LayoutParams
-        lp.width = LinearLayout.LayoutParams.MATCH_PARENT
-        binding.rllTrade.layoutParams = lp
-        return binding
+        return ItemSummaryBinding.inflate(inflater)
     }
 }

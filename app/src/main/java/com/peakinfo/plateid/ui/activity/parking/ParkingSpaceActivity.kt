@@ -111,8 +111,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rrl_arrears -> {
-                ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (parkingSpaceBean?.historyCount != 0) {
+                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
 
             R.id.rfl_onSitePayment -> {
@@ -173,9 +175,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val hour = it.parkingTime / 3600
-                val minute = it.parkingTime / 60 - hour * 60
-                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), "${hour}小时${minute}分钟")
+                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.dayHourMin(it.parkingTime))
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")

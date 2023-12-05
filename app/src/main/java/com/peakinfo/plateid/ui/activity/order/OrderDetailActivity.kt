@@ -87,7 +87,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         binding.tvStartTime.text = AppUtil.getSpan(strings4, sizes2, colors2)
         val strings5 = arrayOf(i18N(com.peakinfo.base.R.string.出场) + "：", order?.endTime.toString())
         binding.tvEndTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.peakinfo.base.R.string.时长) + "：", mintoString(order?.duration!!.toInt()))
+        val strings6 = arrayOf(i18N(com.peakinfo.base.R.string.时长) + "：", AppUtil.dayHourMin(order?.duration!!.toInt()))
         binding.tvTotalTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
         val strings7 = arrayOf(i18N(com.peakinfo.base.R.string.总额) + "：", order?.amount.toString() + "元")
         binding.tvAmount.text = AppUtil.getSpan(strings7, sizes2, colors2)
@@ -123,12 +123,6 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                     .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
-    }
-
-    fun mintoString(min: Int): String {
-        val hour = min / 60
-        val minute = min - hour * 60
-        return "${hour}小时${minute}分钟"
     }
 
     override fun getVbBindingView(): ViewBinding {
