@@ -18,11 +18,17 @@ import com.peakinfo.plateid.adapter.ParkingChooseStreetAdapter
 /**
  * Created by huy  on 2022/12/7.
  */
-class StreetPop(val context: Context?, var currentStreet: Street?, val streetList: MutableList<Street>, var callback: StreetSelectCallBack) :
+class StreetPop(
+    val context: Context?,
+    var currentStreet: Street?,
+    val streetList: MutableList<Street>,
+    var callback: StreetSelectCallBack
+) :
     PopupWindow(context), View.OnClickListener {
 
     private lateinit var binding: PopStreetBinding
     var parkingChooseStreetAdapter: ParkingChooseStreetAdapter? = null
+    var selectedStreet: Street? = null
 
     init {
         initView()
@@ -33,9 +39,9 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(BaseApplication.instance())
         parkingChooseStreetAdapter =
-            ParkingChooseStreetAdapter(streetList, currentStreet!!, object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
+            ParkingChooseStreetAdapter(streetList, currentStreet!!.copy(), object : ParkingChooseStreetAdapter.ChooseStreetAdapterCallBack {
                 override fun chooseStreet(street: Street) {
-                    currentStreet = street
+                    selectedStreet = street
                 }
             })
         binding.rvStreet.adapter = parkingChooseStreetAdapter
@@ -62,7 +68,9 @@ class StreetPop(val context: Context?, var currentStreet: Street?, val streetLis
             }
 
             R.id.rtv_ok -> {
-                callback.selectStreet(currentStreet!!)
+                if (selectedStreet != null) {
+                    callback.selectStreet(selectedStreet!!)
+                }
                 dismiss()
             }
         }

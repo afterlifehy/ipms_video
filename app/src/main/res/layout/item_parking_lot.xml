@@ -52,7 +52,7 @@
                     android:visibility="invisible">
 
                     <TextView
-                        android:id="@+id/plateId_1"
+                        android:id="@+id/tv_plate1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -64,7 +64,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/plateId_2"
+                        android:id="@+id/tv_plate2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

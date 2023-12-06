@@ -3,15 +3,18 @@ package com.peakinfo.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.widget.Toast
 import com.alibaba.fastjson.JSONObject
-import com.blankj.utilcode.util.ToastUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.bean.PrintInfoBean
 import com.peakinfo.base.help.ActivityCacheManager
-import org.json.JSONArray
+import com.peakinfo.base.util.ToastUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import zpCPCLSDK.zpCPCLSDK.PrinterInterface
 import zpCPCLSDK.zpCPCLSDK.zp_cpcl_BluetoothPrinter
@@ -69,13 +72,20 @@ class BluePrint() {
         //获取设备蓝牙地址
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
-        ToastUtils.showShort("开始连接")
+        Handler(Looper.getMainLooper()).post {
+            ToastUtil.showMiddleToast("开始连接")
+        }
+
         if (!zpSDK!!.connect(mAddress)) {
-            ToastUtils.showShort("连接失败")
+            Handler(Looper.getMainLooper()).post {
+                ToastUtil.showMiddleToast("连接失败")
+            }
             printResult = -1
             return printResult
         }
-        ToastUtils.showShort("连接成功")
+        Handler(Looper.getMainLooper()).post {
+            ToastUtil.showMiddleToast("连接成功")
+        }
         return 0
     }
 

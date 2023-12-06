@@ -89,11 +89,21 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 
             R.id.rfl_parking -> {
                 val parkingLotBean = v.tag as ParkingLotBean
-                ARouter.getInstance().build(ARouterMap.PARKING_SPACE).withString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)
-                    .withString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
-                    .withString(ARouterMap.CAR_COLOR, parkingLotBean.carColor)
-                    .withString(ARouterMap.PARKING_NO, parkingLotBean.parkingNo)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (parkingLotBean.state == "01") {
+                    ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL)
+                        .withString(ARouterMap.ABNORMAL_STREET_NO, currentStreet!!.streetNo)
+                        .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingLotBean.parkingNo)
+                        .withString(ARouterMap.ABNORMAL_ORDER_NO, "")
+                        .withString(ARouterMap.ABNORMAL_CARLICENSE, "")
+                        .withString(ARouterMap.ABNORMAL_CAR_COLOR, "")
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                } else {
+                    ARouter.getInstance().build(ARouterMap.PARKING_SPACE).withString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)
+                        .withString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
+                        .withString(ARouterMap.CAR_COLOR, parkingLotBean.carColor)
+                        .withString(ARouterMap.PARKING_NO, parkingLotBean.parkingNo)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
         }
     }

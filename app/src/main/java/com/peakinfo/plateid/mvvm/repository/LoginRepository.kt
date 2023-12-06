@@ -21,4 +21,10 @@ class LoginRepository : BaseRepository() {
         return mServer.checkUpdate(param)
     }
 
+    /**
+     * 考勤排班
+     */
+    suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.checkOnWork(param)
+    }
 }

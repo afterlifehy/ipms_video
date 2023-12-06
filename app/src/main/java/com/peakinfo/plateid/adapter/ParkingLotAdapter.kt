@@ -12,12 +12,16 @@ import com.peakinfo.base.bean.ParkingLotBean
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
+import com.peakinfo.common.util.AppUtil
 import com.peakinfo.plateid.databinding.ItemParkingLotBinding
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<ParkingLotBean, ItemParkingLotBinding>(data) {
     var plateBgMap: MutableMap<String, Int> = ArrayMap()
     var plateTxtColorMap: MutableMap<String, Int> = ArrayMap()
+    var colors = intArrayOf(com.peakinfo.base.R.color.color_ffeb0000, com.peakinfo.base.R.color.black)
+    var colors2 = intArrayOf(com.peakinfo.base.R.color.black, com.peakinfo.base.R.color.color_ffeb0000)
+    var sizes = intArrayOf(24, 24)
 
     init {
         plateBgMap["1"] = com.peakinfo.common.R.mipmap.ic_plate_bg_black
@@ -58,7 +62,8 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             holder.vb.tvPlate.text = i18n(com.peakinfo.base.R.string.空闲)
             holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.black))
             holder.vb.tvPlate.background = null
-            holder.vb.rflParking.setOnClickListener(null)
+            holder.vb.rflParking.tag = item
+            holder.vb.rflParking.setOnClickListener(onClickListener)
         } else {
             if (item.deadLine > System.currentTimeMillis()) {
                 holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_green)
@@ -67,12 +72,22 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_red)
                 holder.vb.tvParkingLotNum.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_num_bg_red)
             }
-            holder.vb.tvPlate.text = item.carLicense
             if (item.carColor == "20") {
                 holder.vb.llPlate.show()
+                holder.vb.tvPlate1.text = item.carLicense.substring(0, 2)
+                holder.vb.tvPlate.text = item.carLicense.substring(2, item.carLicense.length)
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.black))
                 holder.vb.tvPlate.background = null
             } else {
+                if (item.carLicense.contains("WJ")) {
+                    val strings = arrayOf("WJ", item.carLicense.substring(2, item.carLicense.length))
+                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors)
+                } else if (item.carLicense.contains("警")) {
+                    val strings = arrayOf(item.carLicense.substring(0, item.carLicense.length - 1), "警")
+                    holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors2)
+                } else {
+                    holder.vb.tvPlate.text = item.carLicense
+                }
                 holder.vb.llPlate.hide()
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))
                 holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }

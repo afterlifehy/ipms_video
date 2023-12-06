@@ -53,11 +53,10 @@ import kotlinx.coroutines.runBlocking
 @Route(path = ARouterMap.LOGIN)
 class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), OnClickListener {
     var locationManager: LocationManager? = null
-    var lat = 121.123212
-    var lon = 31.434312
+    var lat = 0.00
+    var lon = 0.00
     var updateBean: UpdateBean? = null
     var locationEnable = false
-    var updateDialog: UpdateDialog? = null
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {

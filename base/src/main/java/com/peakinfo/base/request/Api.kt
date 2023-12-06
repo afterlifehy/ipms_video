@@ -118,4 +118,10 @@ interface Api {
      */
     @POST("S_VO2_19")
     suspend fun checkUpdate(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean>
+
+    /**
+     * 考勤排班
+     */
+    @POST("S_VO2_20")
+    suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }

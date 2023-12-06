@@ -43,8 +43,8 @@ import kotlinx.coroutines.withContext
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
     var locationManager: LocationManager? = null
-    var lat = 121.123212
-    var lon = 31.434312
+    var lat = 0.00
+    var lon = 0.00
     var locationEnable = false
 
     @SuppressLint("MissingPermission", "CheckResult")

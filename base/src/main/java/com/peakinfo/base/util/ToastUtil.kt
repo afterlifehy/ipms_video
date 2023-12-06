@@ -78,9 +78,7 @@ object ToastUtil {
 
     fun showMiddleToast(text: String?) {
         if (!TextUtils.isEmpty(text)) {
-            if (toast == null) {
-                toast = Toast(BaseApplication.instance())
-            }
+            toast = Toast(BaseApplication.instance())
             val view = RadiusTextView(BaseApplication.instance())
             view.delegate.radius = 12f
             view.delegate.setBackgroundColor(ContextCompat.getColor(BaseApplication.instance(), R.color.black))

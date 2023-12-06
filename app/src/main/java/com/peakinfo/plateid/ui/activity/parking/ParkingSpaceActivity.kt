@@ -21,6 +21,7 @@ import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.PrintInfoBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
@@ -184,6 +185,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         mViewModel.apply {
             parkingSpaceFeeLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
+                binding.rflPlate.show()
+                binding.rllParking.show()
+                binding.llOperation.show()
+                binding.tvNoData.gone()
+
                 parkingSpaceBean = it
                 binding.tvPlate.text = it.carLicense
 

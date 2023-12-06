@@ -25,6 +25,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_13"
+        android:visibility="gone"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
 
@@ -44,6 +45,7 @@
     </com.aries.ui.view.radius.RadiusFrameLayout>
 
     <com.aries.ui.view.radius.RadiusLinearLayout
+        android:id="@+id/rll_parking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rfl_plate"
@@ -55,6 +57,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_13"
         android:paddingBottom="@dimen/dp_20"
+        android:visibility="gone"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
 
@@ -155,13 +158,15 @@
     </com.aries.ui.view.radius.RadiusLinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_operation"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_47"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <com.aries.ui.view.radius.RadiusFrameLayout
             android:id="@+id/rfl_onSitePayment"
@@ -208,4 +213,18 @@
         </com.aries.ui.view.radius.RadiusFrameLayout>
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_noData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_196"
+        android:drawableTop="@mipmap/ic_no_data"
+        android:drawablePadding="@dimen/dp_31"
+        android:gravity="center_horizontal"
+        android:src="@mipmap/ic_no_data"
+        android:text="@string/无内容"
+        android:textColor="@color/color_ff999999"
+        android:textSize="@dimen/dp_19"
+        android:textStyle="bold" />
 </RelativeLayout>

@@ -11,9 +11,11 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.PopupWindow.OnDismissListener
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -161,20 +163,40 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.tv_title -> {
+                currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
-                        currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
-                        RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
-                        if (currentStreet!!.streetName.indexOf("(") < 0) {
-                            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+                        RealmUtil.instance?.updateCurrentStreet(street, old)
+                        if (street.streetName.indexOf("(") < 0) {
+                            binding.tvTitle.text = street.streetNo + street.streetName
                         } else {
                             binding.tvTitle.text =
-                                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
                         }
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as RelativeLayout)
+                val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), com.peakinfo.common.R.mipmap.ic_arrow_up)
+                upDrawable?.setBounds(0,0,upDrawable.intrinsicWidth,upDrawable.intrinsicHeight)
+                binding.tvTitle.setCompoundDrawables(
+                    null,
+                    null,
+                    upDrawable,
+                    null
+                )
+                streetPop?.setOnDismissListener(object : OnDismissListener {
+                    override fun onDismiss() {
+                        val downDrawable = ContextCompat.getDrawable(BaseApplication.instance(), com.peakinfo.common.R.mipmap.ic_arrow_down)
+                        downDrawable?.setBounds(0,0,downDrawable.intrinsicWidth,downDrawable.intrinsicHeight)
+                        binding.tvTitle.setCompoundDrawables(
+                            null,
+                            null,
+                            downDrawable,
+                            null
+                        )
+                    }
+                })
             }
 
             R.id.ll_parkingLot -> {
