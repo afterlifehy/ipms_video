@@ -108,6 +108,15 @@ object AppUtil {
         }
     }
 
+    fun keepNDecimals(value: String, N: Int): String {
+        val number = value.toDoubleOrNull()
+        return if (number != null) {
+            String.format("%.2f", number)
+        } else {
+            "Invalid Input"
+        }
+    }
+
     /**
      * 保留N位小数，最多maxLength位数
      */

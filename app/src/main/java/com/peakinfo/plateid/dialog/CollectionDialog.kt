@@ -67,7 +67,7 @@ class CollectionDialog(val callback: CollecteCallBack) :
             keyboardUtil.changeKeyboard(true)
             keyboardUtil.setEditText(binding.retPlate)
         }
-
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.retPlate.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
 
         binding.retPlate.setOnTouchListener { v, p1 ->

@@ -28,6 +28,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
+import com.peakinfo.common.util.AppUtil
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.StreetChoosedAdapter
 import com.peakinfo.plateid.databinding.ActivityStreetChooseBinding
@@ -133,10 +134,12 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rfl_delete -> {
-                val item = v.tag as Street
-                val position = streetChoosedList.indexOf(item)
-                streetChoosedList.remove(item)
-                streetChoosedAdapter?.removeAt(position)
+                if(!AppUtil.isFastClick(500)){
+                    val item = v.tag as Street
+                    val position = streetChoosedList.indexOf(item)
+                    streetChoosedList.remove(item)
+                    streetChoosedAdapter?.removeAt(position)
+                }
             }
         }
     }

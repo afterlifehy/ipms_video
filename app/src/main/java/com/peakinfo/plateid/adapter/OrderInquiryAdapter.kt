@@ -14,8 +14,16 @@ import com.zrq.spanbuilder.TextStyle
 
 class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListener: OnClickListener) :
     BaseBindingAdapter<OrderBean, ItemOrderBinding>(data) {
-    val colorsBlue = intArrayOf(com.peakinfo.base.R.color.color_ff0371f4, com.peakinfo.base.R.color.color_ff0371f4, com.peakinfo.base.R.color.color_ff0371f4)
-    val colorsRed = intArrayOf(com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404)
+    val colorsBlue = intArrayOf(
+        com.peakinfo.base.R.color.color_ff0371f4,
+        com.peakinfo.base.R.color.color_ff0371f4,
+        com.peakinfo.base.R.color.color_ff0371f4
+    )
+    val colorsRed = intArrayOf(
+        com.peakinfo.base.R.color.color_ffe92404,
+        com.peakinfo.base.R.color.color_ffe92404,
+        com.peakinfo.base.R.color.color_ffe92404
+    )
     val sizes = intArrayOf(16, 20, 16)
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
@@ -25,15 +33,23 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = item.carLicense
         if (item.paidAmount.toDouble() > 0.0) {
-            val strings = arrayOf(i18n(com.peakinfo.base.R.string.已付), item.paidAmount, i18n(com.peakinfo.base.R.string.元))
+            val strings = arrayOf(
+                i18n(com.peakinfo.base.R.string.已付),
+                AppUtil.keepNDecimals(item.paidAmount, 2),
+                i18n(com.peakinfo.base.R.string.元)
+            )
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
         } else if (item.paidAmount.toDouble() == 0.0 && item.amount.toDouble() == 0.0) {
-            val strings = arrayOf(i18n(com.peakinfo.base.R.string.已付), item.paidAmount, i18n(com.peakinfo.base.R.string.元))
+            val strings = arrayOf(
+                i18n(com.peakinfo.base.R.string.已付),
+                AppUtil.keepNDecimals(item.paidAmount, 2),
+                i18n(com.peakinfo.base.R.string.元)
+            )
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsBlue, styles)
         } else {
             val strings = arrayOf(
                 i18n(com.peakinfo.base.R.string.欠),
-                BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()),
+                AppUtil.keepNDecimals(BigDecimalManager.subtractionDoubleToString(item.amount.toDouble(), item.paidAmount.toDouble()), 2),
                 i18n(com.peakinfo.base.R.string.元)
             )
             holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colorsRed, styles)

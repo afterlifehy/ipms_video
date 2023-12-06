@@ -12,6 +12,7 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.start.StartUpKey
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.plateid.databinding.ActivitySplashBinding
 import com.peakinfo.plateid.mvvm.viewmodel.SplashViewModel
 import com.peakinfo.plateid.startup.ApplicationAnchorTaskCreator
@@ -78,6 +79,13 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     }
 
     override fun onProjectFinish() {
+//        runBlocking {
+//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+//        }
+//        RealmUtil.instance?.deleteAllStreet()
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
                 if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {

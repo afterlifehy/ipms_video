@@ -31,12 +31,11 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
         orderNo = intent.getStringExtra(ARouterMap.VIDEO_PIC_ORDER_NO).toString()
 
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.欠费订单详情)
+        binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.视频图片)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
         tabList.add(i18n(com.peakinfo.base.R.string.车辆入场))
         tabList.add(i18n(com.peakinfo.base.R.string.车辆出场))
-
     }
 
     override fun initListener() {

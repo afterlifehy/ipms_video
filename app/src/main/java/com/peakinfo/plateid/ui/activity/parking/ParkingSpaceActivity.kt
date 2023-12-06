@@ -37,14 +37,12 @@ import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
-    var job: Job? = null
     val sizes = intArrayOf(19, 19)
     val colors = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_fff70f0f)
@@ -211,7 +209,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 binding.tvArrearsNum.text = "${it.historyCount}笔"
 
                 binding.tvArrearsAmount.text =
-                    "${AppUtil.keepNDecimal(BigDecimalManager.divisionDoubleToString(it.historySum, 100.00), 2)}元"
+                    "${AppUtil.keepNDecimals(BigDecimalManager.divisionDoubleToString(it.historySum, 100.00), 2)}元"
 
                 tradeNo = it.tradeNo
                 amountPending = it.amountPending

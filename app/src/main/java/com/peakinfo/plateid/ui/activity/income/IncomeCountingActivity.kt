@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.constant.TimeConstants
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
@@ -97,6 +98,11 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                         override fun selectDate(startTime: String, endTime: String) {
                             startDate = startTime
                             endDate = endTime
+                            val difference = TimeUtils.getTimeSpan(endTime,startTime,TimeConstants.DAY)
+                            if(difference>90){
+                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.查询时间间隔不得超过90天))
+                                return
+                            }
                             binding.rtvDateRange.text = "统计时间：${startDate}~${endDate}"
                             getIncomeCounting()
                         }

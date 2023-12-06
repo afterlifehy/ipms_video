@@ -139,4 +139,7 @@
     <string name="请添加路段">请添加路段</string>
     <string name="请选择车牌颜色">请选择车牌颜色</string>
     <string name="请选择异常分类">请选择异常分类</string>
+    <string name="视频图片">视频/图片</string>
+    <string name="查询时间间隔不得超过90天">查询时间间隔不得超过90天</string>
+    <string name="请填写车牌">请填写车牌</string>
 </resources>

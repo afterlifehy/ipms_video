@@ -3,6 +3,7 @@ package com.peakinfo.common.help
 import android.content.Context
 import com.peakinfo.base.view.MyRefreshHeader
 import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshFooter
 import com.scwang.smart.refresh.layout.api.RefreshHeader
@@ -20,7 +21,12 @@ object SmartRefreshHelp {
                 context: Context,
                 layout: RefreshLayout
             ): RefreshHeader {
-                return MyRefreshHeader(context)
+//                return MyRefreshHeader(context)
+                //指定为经典Footer，默认是 BallPulseFooter
+                val header = ClassicsHeader(context).setDrawableSize(15f)
+                header.setTextSizeTitle(12f)
+                header.setFinishDuration(0)
+                return header
             }
         })
         SmartRefreshLayout.setDefaultRefreshFooterCreator(object : DefaultRefreshFooterCreator {

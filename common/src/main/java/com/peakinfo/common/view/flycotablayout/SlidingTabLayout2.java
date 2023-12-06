@@ -179,8 +179,8 @@ public class SlidingTabLayout2 extends HorizontalScrollView {
         mDividerWidth = ta.getDimension(R.styleable.SlidingTabLayout_tl_divider_width, dp2px(0));
         mDividerPadding = ta.getDimension(R.styleable.SlidingTabLayout_tl_divider_padding, dp2px(12));
 
-        mTextsize = ta.getDimension(R.styleable.SlidingTabLayout_tl_textsize, dp2px(14));
-        mSelectTextSize = ta.getDimension(R.styleable.SlidingTabLayout_tl_textSelectSize, dp2px(14));
+        mTextsize = ta.getDimension(R.styleable.SlidingTabLayout_tl_textsize, dp2px(19));
+        mSelectTextSize = ta.getDimension(R.styleable.SlidingTabLayout_tl_textSelectSize, dp2px(19));
         mTextSelectColor = ta.getColor(R.styleable.SlidingTabLayout_tl_textSelectColor, Color.parseColor("#2E2E2E"));
         mTextUnselectColor = ta.getColor(R.styleable.SlidingTabLayout_tl_textUnselectColor, Color.parseColor("#666666"));
         mTextBold = ta.getInt(R.styleable.SlidingTabLayout_tl_textBold, TEXT_BOLD_NONE);

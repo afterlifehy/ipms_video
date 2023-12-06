@@ -18,7 +18,7 @@
 
     <com.aries.ui.view.radius.RadiusLinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_380"
         android:layout_below="@+id/layout_toolbar"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
@@ -31,7 +31,7 @@
 
         <com.peakinfo.common.view.flycotablayout.SlidingTabLayout2
             android:id="@+id/stl_videoPic"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_14"
@@ -39,8 +39,10 @@
             app:tl_indicator_color="@color/color_ff0371f4"
             app:tl_indicator_corner_radius="@dimen/dp_2"
             app:tl_indicator_height="@dimen/dp_4"
+            app:tl_indicator_margin_top="@dimen/dp_5"
             app:tl_indicator_width="@dimen/dp_37"
-            app:tl_tab_padding="@dimen/dp_12"
+            app:tl_tab_padding="@dimen/dp_24"
+            app:tl_tab_space_equal="true"
             app:tl_textBold="SELECT"
             app:tl_textSelectColor="@color/color_ff0371f4"
             app:tl_textSelectSize="@dimen/sp_19"
@@ -50,7 +52,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_videoPic"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_15" />
     </com.aries.ui.view.radius.RadiusLinearLayout>

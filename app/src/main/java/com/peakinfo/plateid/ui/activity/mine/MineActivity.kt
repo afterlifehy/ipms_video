@@ -143,7 +143,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         override fun onRightClickLinsener(msg: String) {
                             ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                             for (i in ActivityCacheManager.instance().getAllActivity()) {
-                                if (i is LoginActivity) {
+                                if (i !is LoginActivity) {
                                     i.finish()
                                 }
                             }
@@ -151,6 +151,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                             }
                             RealmUtil.instance?.deleteAllStreet()
                         }

@@ -211,6 +211,10 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择异常分类))
                     return
                 }
+                if (type != "02" && binding.etPlate.text.toString().isEmpty()) {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写车牌))
+                    return
+                }
                 if (type != "02" && checkedColor.isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))
                     return
@@ -221,8 +225,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = currentStreet?.streetNo
-                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + binding.retParkingNo.text.toString()
-
+                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
                     jsonobject["type"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
                     if (type == "02") {
@@ -247,6 +250,16 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                 checkedColor = v.tag as String
                 collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
+        }
+    }
+
+    fun fillZero(value: String): String {
+        if (value.length == 2) {
+            return "0" + value
+        } else if (value.length == 1) {
+            return "00" + value
+        } else {
+            return value
         }
     }
 

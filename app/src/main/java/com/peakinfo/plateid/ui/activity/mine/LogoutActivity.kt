@@ -177,7 +177,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 for (i in ActivityCacheManager.instance().getAllActivity()) {
-                    if (i is LoginActivity) {
+                    if (i !is LoginActivity) {
                         i.finish()
                     }
                 }
@@ -186,6 +186,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
             }

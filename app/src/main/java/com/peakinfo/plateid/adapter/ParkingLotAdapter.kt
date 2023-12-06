@@ -9,6 +9,7 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
 import com.peakinfo.base.bean.ParkingLotBean
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
@@ -74,11 +75,14 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             }
             if (item.carColor == "20") {
                 holder.vb.llPlate.show()
+                holder.vb.tvPlate.gone()
                 holder.vb.tvPlate1.text = item.carLicense.substring(0, 2)
-                holder.vb.tvPlate.text = item.carLicense.substring(2, item.carLicense.length)
-                holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.black))
-                holder.vb.tvPlate.background = null
+                holder.vb.tvPlate2.text = item.carLicense.substring(2, item.carLicense.length)
+                holder.vb.tvPlate1.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.black))
+                holder.vb.tvPlate2.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.black))
             } else {
+                holder.vb.llPlate.hide()
+                holder.vb.tvPlate.show()
                 if (item.carLicense.contains("WJ")) {
                     val strings = arrayOf("WJ", item.carLicense.substring(2, item.carLicense.length))
                     holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors)
@@ -88,7 +92,6 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 } else {
                     holder.vb.tvPlate.text = item.carLicense
                 }
-                holder.vb.llPlate.hide()
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))
                 holder.vb.tvPlate.background = plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
             }

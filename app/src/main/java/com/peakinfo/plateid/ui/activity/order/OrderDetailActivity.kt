@@ -25,8 +25,16 @@ import com.zrq.spanbuilder.TextStyle
 
 @Route(path = ARouterMap.ORDER_DETAIL)
 class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDetailBinding>(), OnClickListener {
-    val colors = intArrayOf(com.peakinfo.base.R.color.color_ff0371f4, com.peakinfo.base.R.color.color_ff0371f4, com.peakinfo.base.R.color.color_ff0371f4)
-    val colors1 = intArrayOf(com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404)
+    val colors = intArrayOf(
+        com.peakinfo.base.R.color.color_ff0371f4,
+        com.peakinfo.base.R.color.color_ff0371f4,
+        com.peakinfo.base.R.color.color_ff0371f4
+    )
+    val colors1 = intArrayOf(
+        com.peakinfo.base.R.color.color_ffe92404,
+        com.peakinfo.base.R.color.color_ffe92404,
+        com.peakinfo.base.R.color.color_ffe92404
+    )
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val sizes = intArrayOf(16, 24, 16)
     val sizes2 = intArrayOf(19, 19)
@@ -53,7 +61,11 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             )
             binding.rtvTransactionRecord.setOnClickListener(this)
         } else if (order!!.paidAmount.toDouble() == 0.0 && order!!.amount.toDouble() == 0.0) {
-            val strings = arrayOf(i18n(com.peakinfo.base.R.string.已付), order?.paidAmount.toString(), i18n(com.peakinfo.base.R.string.元))
+            val strings = arrayOf(
+                i18n(com.peakinfo.base.R.string.已付),
+                AppUtil.keepNDecimals(order?.paidAmount.toString(), 2),
+                i18n(com.peakinfo.base.R.string.元)
+            )
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors, styles)
             binding.rtvTransactionRecord.delegate.setBackgroundColor(
                 ContextCompat.getColor(
@@ -64,7 +76,12 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
         } else {
             val strings = arrayOf(
                 i18n(com.peakinfo.base.R.string.欠),
-                BigDecimalManager.subtractionDoubleToString(order?.amount!!.toDouble(), order?.paidAmount!!.toDouble()),
+                AppUtil.keepNDecimals(
+                    BigDecimalManager.subtractionDoubleToString(
+                        order?.amount!!.toDouble(),
+                        order?.paidAmount!!.toDouble()
+                    ), 2
+                ),
                 i18n(com.peakinfo.base.R.string.元)
             )
             binding.tvPayment.text = AppUtil.getSpan(strings, sizes, colors1, styles)

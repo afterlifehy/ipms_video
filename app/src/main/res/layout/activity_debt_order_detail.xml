@@ -61,7 +61,6 @@
         android:orientation="vertical"
         android:paddingStart="@dimen/dp_13"
         android:paddingTop="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_13"
         android:paddingBottom="@dimen/dp_10"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
