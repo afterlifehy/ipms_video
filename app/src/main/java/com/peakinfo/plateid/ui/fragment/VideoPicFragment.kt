@@ -17,9 +17,13 @@ import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.FragmentVideoPicBinding
 import com.peakinfo.plateid.mvvm.viewmodel.VideoPicFragmentViewModel
+import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.listener.LockClickListener
+import com.shuyu.gsyvideoplayer.model.VideoOptionModel
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
+
 
 class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideoPicBinding>(), OnClickListener {
     var video = ""
@@ -46,9 +50,9 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
             .setThumbImageView(imageView)
             .setIsTouchWiget(true)
             .setRotateViewAuto(false)
-            .setLockLand(false)
+            .setLockLand(true)
             .setAutoFullWithSize(true)
-            .setShowFullAnimation(false)
+            .setShowFullAnimation(true)
             .setNeedLockFull(true)
             .setUrl(video)
             .setCacheWithPlay(false)
@@ -66,7 +70,13 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
                 }
             }).build(binding.sgvpVideo);
         binding.sgvpVideo.backButton.gone()
-        binding.sgvpVideo.fullscreenButton.gone()
+        binding.sgvpVideo.fullscreenButton.setOnClickListener {
+            binding.sgvpVideo.startWindowFullscreen(ActivityCacheManager.instance().getCurrentActivity(), false, true)
+        }
+        val videoOptionModel = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
+        val list: MutableList<VideoOptionModel> = ArrayList()
+        list.add(videoOptionModel)
+        GSYVideoManager.instance().optionModelList = list
 
         GlideUtils.instance?.loadLongImage(binding.rivPic, pic)
 

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,11 +18,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PathUtils
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.BlueToothDeviceBean
@@ -41,14 +35,10 @@ import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMineBinding
 import com.peakinfo.plateid.dialog.BlueToothDeviceListDialog
-import com.peakinfo.plateid.dialog.UpdateDialog
 import com.peakinfo.plateid.mvvm.viewmodel.MineViewModel
 import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MINE)
@@ -56,7 +46,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     var updateBean: UpdateBean? = null
     var blueToothDeviceListDialog: BlueToothDeviceListDialog? = null
     var currentDevice: BlueToothDeviceBean? = null
-    var updateDialog: UpdateDialog? = null
+    var bluePrintStatus = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -93,6 +83,48 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 mViewModel.checkUpdate(param)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Thread {
+            if (BluePrint.instance != null && BluePrint.instance!!.zpSDK != null) {
+                try {
+                    when (BluePrint.instance!!.zpSDK?.GetStatus()) {
+                        -1 -> {
+                            bluePrintStatus = -1
+                            runOnUiThread {
+                                BluePrint.instance!!.zpSDK?.disconnect()
+                                binding.tvDeviceName.text = ""
+                            }
+                        }
+
+                        0 -> {
+                            bluePrintStatus = 0
+                        }
+
+                        1 -> {
+                            bluePrintStatus = 1
+                            runOnUiThread {
+                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.打印机缺纸))
+                            }
+                        }
+
+                        2 -> {
+                            bluePrintStatus = 2
+                            runOnUiThread {
+                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.打印机开盖))
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        BluePrint.instance!!.zpSDK?.disconnect()
+                        binding.tvDeviceName.text = ""
+                    }
+                }
+            }
+        }.start()
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -165,19 +197,28 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
             currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
         }
+
         blueToothDeviceListDialog = BlueToothDeviceListDialog(
-            BluePrint.instance?.blueToothDevice!!, currentDevice,
+            BluePrint.instance?.blueToothDevice!!, if (bluePrintStatus == 0) currentDevice else null,
             object : BlueToothDeviceListDialog.BlueToothDeviceCallBack {
                 @SuppressLint("MissingPermission")
-                override fun chooseDevice(device: BluetoothDevice) {
+                override fun chooseDevice(device: BluetoothDevice?) {
                     BluePrint.instance?.disConnect()
-                    var connectResult = BluePrint.instance?.connet(device.address)
-                    if (connectResult == 0) {
-                        RealmUtil.instance?.deleteAllDevice()
-                        RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
-                        binding.tvDeviceName.text = device.name
+                    if (device != null) {
+                        var connectResult = BluePrint.instance?.connet(device.address)
+                        if (connectResult == 0) {
+                            RealmUtil.instance?.deleteAllDevice()
+                            RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                            binding.tvDeviceName.text = device.name
+                            bluePrintStatus = 0
+                        } else {
+                            bluePrintStatus = -1
+                            return
+                        }
                     } else {
-                        return
+                        bluePrintStatus = -1
+                        binding.tvDeviceName.text = ""
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.无打印机连接))
                     }
                 }
             })

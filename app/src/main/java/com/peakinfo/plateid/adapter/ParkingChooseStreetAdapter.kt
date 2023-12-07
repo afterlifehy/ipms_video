@@ -14,10 +14,10 @@ class ParkingChooseStreetAdapter(data: MutableList<Street>? = null, var currentS
     var currentStreetCB: CheckBox? = null
     override fun convert(holder: VBViewHolder<ItemParkingChooseStreetBinding>, item: Street) {
         holder.vb.tvStreet.text = item.streetName
-        if (currentStreet == item) {
+        if (currentStreet.streetNo == item.streetNo) {
             holder.vb.cbStreet.isChecked = true
             currentStreetCB = holder.vb.cbStreet
-        }else{
+        } else {
             holder.vb.cbStreet.isChecked = false
         }
         holder.vb.rlStreet.setOnClickListener {

@@ -11,10 +11,9 @@ import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.bean.PrintInfoBean
+import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.json.JSONException
 import zpCPCLSDK.zpCPCLSDK.PrinterInterface
 import zpCPCLSDK.zpCPCLSDK.zp_cpcl_BluetoothPrinter
@@ -45,13 +44,39 @@ class BluePrint() {
 
     @Throws(JSONException::class)
     fun zkblueprint(content: String) {
+        Thread {
+            when (zpSDK?.GetStatus()) {
+                -1 -> {
+                    Handler(Looper.getMainLooper()).post {
+                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                    }
+                    return@Thread
+                }
+
+                0 -> {
+
+                }
+
+                1 -> {
+                    Handler(Looper.getMainLooper()).post {
+                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
+                    }
+                    return@Thread
+                }
+
+                2 -> {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                    return@Thread
+                }
+            }
+        }.start()
         //打印文本
         printResult = Print1(content)
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
-                val toast = Toast.makeText(BaseApplication.instance(), "打印完成", Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+//                val toast = Toast.makeText(BaseApplication.instance(), "打印完成", Toast.LENGTH_LONG)
+//                toast.setGravity(Gravity.CENTER, 0, 0)
+//                toast.show()
             } else if (printResult == -1) {
                 val toast = Toast.makeText(BaseApplication.instance(), "蓝牙未连接", Toast.LENGTH_LONG)
                 toast.setGravity(Gravity.CENTER, 0, 0)

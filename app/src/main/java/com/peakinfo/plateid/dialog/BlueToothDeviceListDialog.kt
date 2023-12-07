@@ -14,6 +14,7 @@ import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.BlueToothDeviceAdapter
 import com.peakinfo.plateid.databinding.DialogStreetListBinding
+import javax.annotation.Nullable
 
 class BlueToothDeviceListDialog(
     val deviceList: MutableList<BluetoothDevice>,
@@ -46,7 +47,9 @@ class BlueToothDeviceListDialog(
         when (v?.id) {
             R.id.rtv_ok -> {
                 if (blueToothDeviceAdapter?.checkedDevice != null) {
-                    callback.chooseDevice(blueToothDeviceAdapter?.checkedDevice!!)
+                    callback.chooseDevice(blueToothDeviceAdapter?.checkedDevice)
+                } else {
+                    callback.chooseDevice(null)
                 }
                 dismiss()
             }
@@ -78,6 +81,6 @@ class BlueToothDeviceListDialog(
     }
 
     interface BlueToothDeviceCallBack {
-        fun chooseDevice(device: BluetoothDevice)
+        fun chooseDevice(device: BluetoothDevice?)
     }
 }
