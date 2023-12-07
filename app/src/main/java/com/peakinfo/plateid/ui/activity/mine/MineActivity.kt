@@ -47,6 +47,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     var blueToothDeviceListDialog: BlueToothDeviceListDialog? = null
     var currentDevice: BlueToothDeviceBean? = null
     var bluePrintStatus = 0
+    var mineBluePrint = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -54,6 +55,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.我的)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
+        mineBluePrint = intent.getIntExtra(ARouterMap.MINE_BLUE_PRINT, 0)
         binding.tvVersion.text = AppUtils.getAppVersionName()
     }
 
@@ -85,6 +87,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
         Thread {
@@ -125,6 +128,19 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 }
             }
         }.start()
+        if (mineBluePrint == 1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                var rxPermissions = RxPermissions(this@MineActivity)
+                rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                    if (it) {
+                        showBlueToothDeviceListDialog()
+                    }
+                }
+            } else {
+                showBlueToothDeviceListDialog()
+            }
+            mineBluePrint = 0
+        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -194,35 +210,51 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
     }
 
     fun showBlueToothDeviceListDialog() {
-        if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
-            currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
-        }
+        if (BluePrint.instance?.blueToothDevice!!.size > 0) {
+            if (RealmUtil.instance?.findCurrentDeviceList()!!.isNotEmpty()) {
+                currentDevice = RealmUtil.instance?.findCurrentDeviceList()!![0]
+            }
 
-        blueToothDeviceListDialog = BlueToothDeviceListDialog(
-            BluePrint.instance?.blueToothDevice!!, if (bluePrintStatus == 0) currentDevice else null,
-            object : BlueToothDeviceListDialog.BlueToothDeviceCallBack {
-                @SuppressLint("MissingPermission")
-                override fun chooseDevice(device: BluetoothDevice?) {
-                    BluePrint.instance?.disConnect()
-                    if (device != null) {
-                        var connectResult = BluePrint.instance?.connet(device.address)
-                        if (connectResult == 0) {
-                            RealmUtil.instance?.deleteAllDevice()
-                            RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
-                            binding.tvDeviceName.text = device.name
-                            bluePrintStatus = 0
+            blueToothDeviceListDialog = BlueToothDeviceListDialog(
+                BluePrint.instance?.blueToothDevice!!, if (bluePrintStatus == 0) currentDevice else null,
+                object : BlueToothDeviceListDialog.BlueToothDeviceCallBack {
+                    @SuppressLint("MissingPermission")
+                    override fun chooseDevice(device: BluetoothDevice?) {
+                        BluePrint.instance?.disConnect()
+                        if (device != null) {
+                            var connectResult = BluePrint.instance?.connet(device.address)
+                            if (connectResult == 0) {
+                                RealmUtil.instance?.deleteAllDevice()
+                                RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
+                                binding.tvDeviceName.text = device.name
+                                bluePrintStatus = 0
+                            } else {
+                                bluePrintStatus = -1
+                                return
+                            }
                         } else {
                             bluePrintStatus = -1
-                            return
+                            binding.tvDeviceName.text = ""
+                            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.无打印机连接))
                         }
-                    } else {
-                        bluePrintStatus = -1
-                        binding.tvDeviceName.text = ""
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.无打印机连接))
                     }
-                }
-            })
-        blueToothDeviceListDialog?.show()
+                })
+            blueToothDeviceListDialog?.show()
+        }else{
+            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
+                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
+                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                    override fun onLeftClickLinsener(msg: String) {
+                    }
+
+                    override fun onRightClickLinsener(msg: String) {
+                        val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                        startActivity(intent)
+                    }
+
+                }).build(this@MineActivity).showDailog()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

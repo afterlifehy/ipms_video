@@ -146,4 +146,8 @@
     <string name="打印机开盖">打印机开盖</string>
     <string name="打印机状态异常">打印机状态异常</string>
     <string name="无打印机连接">无打印机连接</string>
+    <string name="去连接">去连接</string>
+    <string name="检测到存在多台打印设备需手动连接">检测到存在多台打印设备，需手动连接</string>
+    <string name="未检测到已配对的打印设备">未检测到已配对的打印设备</string>
+    <string name="去配对">去配对</string>
 </resources>

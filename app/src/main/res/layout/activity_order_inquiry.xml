@@ -63,27 +63,28 @@
         android:id="@+id/srl_order"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rrl_search">
+        android:layout_below="@+id/rrl_search"
+        app:srlEnableNestedScrolling="true">
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_orders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_13"
+                android:layout_marginEnd="@dimen/dp_13" />
 
             <include
                 android:id="@+id/layout_noData"
                 layout="@layout/layout_no_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_orders"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_13"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginEnd="@dimen/dp_13" />
-
+                android:layout_gravity="center"
+                android:visibility="gone" />
         </FrameLayout>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 

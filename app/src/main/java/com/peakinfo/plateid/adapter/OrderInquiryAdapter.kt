@@ -3,7 +3,6 @@ package com.peakinfo.plateid.adapter
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
 import com.peakinfo.base.bean.OrderBean
@@ -62,19 +61,12 @@ class OrderInquiryAdapter(data: MutableList<OrderBean>? = null, val onClickListe
         holder.vb.tvEndTime.text = AppUtil.getSpan(strings3, sizes2, colors2)
         holder.vb.tvNo.text = item.parkingNo
 
-        holder.vb.rllOrder.tag = item
-        holder.vb.rllOrder.setOnClickListener(onClickListener)
+        holder.vb.flOrder.tag = item
+        holder.vb.flOrder.setOnClickListener(onClickListener)
     }
 
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemOrderBinding {
-//        val lp = ViewGroup.MarginLayoutParams(
-//            ViewGroup.LayoutParams.MATCH_PARENT,
-//            ViewGroup.LayoutParams.WRAP_CONTENT
-//        )
-//        lp.bottomMargin = SizeUtils.dp2px(20f)
-        val binding = ItemOrderBinding.inflate(inflater)
-//        binding.rllOrder.layoutParams = lp
-        return binding
+        return ItemOrderBinding.inflate(inflater)
     }
 }

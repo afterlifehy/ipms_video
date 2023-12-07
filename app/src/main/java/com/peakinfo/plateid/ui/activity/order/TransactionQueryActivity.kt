@@ -81,9 +81,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         }
 
         binding.etSearch.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
-
         binding.etSearch.setOnTouchListener(MyOnTouchListener(true, binding.etSearch, keyboardUtil))
-
         binding.root.setOnClickListener {
             keyboardUtil.hideKeyboard()
         }

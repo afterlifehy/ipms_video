@@ -45,29 +45,33 @@ class BluePrint() {
     @Throws(JSONException::class)
     fun zkblueprint(content: String) {
         Thread {
-            when (zpSDK?.GetStatus()) {
-                -1 -> {
-                    Handler(Looper.getMainLooper()).post {
-                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+            try {
+                when (zpSDK?.GetStatus()) {
+                    -1 -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                        }
+                        return@Thread
                     }
-                    return@Thread
-                }
 
-                0 -> {
+                    0 -> {
 
-                }
-
-                1 -> {
-                    Handler(Looper.getMainLooper()).post {
-                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
                     }
-                    return@Thread
-                }
 
-                2 -> {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
-                    return@Thread
+                    1 -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
+                        }
+                        return@Thread
+                    }
+
+                    2 -> {
+                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                        return@Thread
+                    }
                 }
+            } catch (e: Exception) {
+                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
             }
         }.start()
         //打印文本
@@ -78,17 +82,11 @@ class BluePrint() {
 //                toast.setGravity(Gravity.CENTER, 0, 0)
 //                toast.show()
             } else if (printResult == -1) {
-                val toast = Toast.makeText(BaseApplication.instance(), "蓝牙未连接", Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                ToastUtil.showMiddleToast("蓝牙未连接")
             } else if (printResult == -2) {
-                val toast = Toast.makeText(BaseApplication.instance(), "路段名称过长...", Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                ToastUtil.showMiddleToast("路段名称过长...")
             } else {
-                val toast = Toast.makeText(BaseApplication.instance(), "打印失败", Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
+                ToastUtil.showMiddleToast("打印失败")
             }
         }
     }
@@ -313,15 +311,9 @@ class BluePrint() {
                 }
             }
         }
-        //-----------------------------------------------------------------自定义打印内容----------------------------------------------------------------------
-
-
-        //--------------------------------------------------------------------------------------------------------------------------------------------------
         zpSDK!!.print(0, 0)
         zpSDK!!.printerStatus()
         val a = zpSDK!!.GetStatus()
-
-//        zpSDK.disconnect();
         return 0
     }
 

@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow.OnDismissListener
@@ -20,18 +19,14 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PathUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.bean.UpdateBean
+import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
@@ -54,9 +49,6 @@ import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MAIN)
@@ -135,6 +127,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                     RealmUtil.instance?.deleteAllDevice()
                                     RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                                 }
+                            } else if (printList.size > 1) {
+                                multipleDevice()
                             }
                         }.start()
                     }
@@ -150,15 +144,34 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                             RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                         }
                     }.start()
+                } else if (printList.size > 1) {
+                    multipleDevice()
                 }
             }
         }
     }
 
+    fun multipleDevice(){
+        DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.检测到存在多台打印设备需手动连接))
+            .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+            .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
+            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                override fun onLeftClickLinsener(msg: String) {
+                }
+
+                override fun onRightClickLinsener(msg: String) {
+                    val intent = Intent(this@MainActivity, MineActivity::class.java)
+                    intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+                    startActivity(intent)
+                }
+
+            }).build(this@MainActivity).showDailog()
+    }
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
                 val intent = Intent(this@MainActivity, MineActivity::class.java)
+                intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 0)
                 startActivity(intent)
             }
 
@@ -178,7 +191,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 })
                 streetPop?.showAsDropDown((v.parent) as RelativeLayout)
                 val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), com.peakinfo.common.R.mipmap.ic_arrow_up)
-                upDrawable?.setBounds(0,0,upDrawable.intrinsicWidth,upDrawable.intrinsicHeight)
+                upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
                 binding.tvTitle.setCompoundDrawables(
                     null,
                     null,
@@ -188,7 +201,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 streetPop?.setOnDismissListener(object : OnDismissListener {
                     override fun onDismiss() {
                         val downDrawable = ContextCompat.getDrawable(BaseApplication.instance(), com.peakinfo.common.R.mipmap.ic_arrow_down)
-                        downDrawable?.setBounds(0,0,downDrawable.intrinsicWidth,downDrawable.intrinsicHeight)
+                        downDrawable?.setBounds(0, 0, downDrawable.intrinsicWidth, downDrawable.intrinsicHeight)
                         binding.tvTitle.setCompoundDrawables(
                             null,
                             null,

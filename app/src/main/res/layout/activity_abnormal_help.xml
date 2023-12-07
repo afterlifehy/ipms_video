@@ -26,7 +26,8 @@
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginEnd="@dimen/dp_6">
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginBottom="@dimen/dp_10">
 
             <com.aries.ui.view.radius.RadiusFrameLayout
                 android:layout_width="match_parent"
@@ -49,7 +50,8 @@
                     android:background="@mipmap/ic_help_title_bg"
                     android:paddingStart="@dimen/dp_17"
                     android:paddingTop="@dimen/dp_2"
-                    android:text="1.车位无车"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:text="1.泊位有车POS无订单"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold" />
@@ -61,7 +63,8 @@
                     android:layout_marginTop="@dimen/dp_14"
                     android:layout_marginEnd="@dimen/dp_24"
                     android:lineHeight="@dimen/dp_30"
-                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:text="1、车辆已入场，但POS该泊位还显示空闲；\n
+2、车辆已入场，但POS该泊位还显示上一辆已离场车的订单；\n3、车辆未离场，被错误结束订单了。"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19" />
 
@@ -72,7 +75,8 @@
                     android:background="@mipmap/ic_help_title_bg"
                     android:paddingStart="@dimen/dp_17"
                     android:paddingTop="@dimen/dp_2"
-                    android:text="2.订单丢失"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:text="2.泊位无车POS有订单"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold" />
@@ -84,7 +88,9 @@
                     android:layout_marginTop="@dimen/dp_14"
                     android:layout_marginEnd="@dimen/dp_24"
                     android:lineHeight="@dimen/dp_30"
-                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:text="1、车辆已离场，但POS还显示上一辆已离场车辆订单（泊位无车或误报）；\n
+2、同一辆车，在连续两个泊位里都有订单；\n
+3、车辆在其它泊位已有入场订单。"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19" />
 
@@ -95,7 +101,8 @@
                     android:background="@mipmap/ic_help_title_bg"
                     android:paddingStart="@dimen/dp_17"
                     android:paddingTop="@dimen/dp_2"
-                    android:text="3.订单丢失"
+                    android:paddingEnd="@dimen/dp_10"
+                    android:text="3.在停车牌与POS不一致"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_20"
                     android:textStyle="bold" />
@@ -107,7 +114,8 @@
                     android:layout_marginTop="@dimen/dp_14"
                     android:layout_marginEnd="@dimen/dp_24"
                     android:lineHeight="@dimen/dp_30"
-                    android:text="在你管的路段上某一个车位上没有车，但是机器上不是显示空闲。不管它目前显示待下单还是留着上—个订单的信息，你都可以上报的时候选择这个。"
+                    android:text="1、车辆未离场，被错误结束又再次进场了，需要系统恢复上笔订单继续计费；\n
+2、车辆已入场，没识别出来车牌号显示默00000或识别错误。"
                     android:textColor="@color/color_ff1a1a1a"
                     android:textSize="@dimen/sp_19" />
             </LinearLayout>

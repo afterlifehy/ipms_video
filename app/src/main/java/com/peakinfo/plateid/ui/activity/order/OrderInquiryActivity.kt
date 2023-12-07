@@ -4,10 +4,13 @@ import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.View.OnScrollChangeListener
 import android.view.WindowManager
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -59,6 +62,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.rvOrders.adapter = orderInquiryAdapter
 
         initKeyboard()
+
     }
 
     private fun initKeyboard() {
@@ -69,12 +73,28 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         }
 
         binding.etSearch.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
-
         binding.etSearch.setOnTouchListener(MyOnTouchListener(true, binding.etSearch, keyboardUtil))
-
         binding.root.setOnClickListener {
             keyboardUtil.hideKeyboard()
         }
+//        binding.rvOrders.addOnScrollListener(object : OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                when (newState) {
+//                    RecyclerView.SCROLL_STATE_IDLE -> {
+//                    }
+//
+//                    RecyclerView.SCROLL_STATE_DRAGGING -> {
+//                        val topRowVerticalPosition =
+//                            if (recyclerView.childCount === 0) 0 else recyclerView.getChildAt(0).top
+//                        binding.srlOrder.setEnableRefresh(topRowVerticalPosition == 0)
+//                    }
+//
+//                    RecyclerView.SCROLL_STATE_SETTLING -> {
+//                    }
+//                }
+//            }
+//        })
     }
 
     override fun initListener() {
@@ -85,8 +105,9 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         binding.layoutToolbar.toolbar.setOnClickListener(this)
         binding.srlOrder.setOnRefreshListener {
             pageIndex = 1
-            query()
             binding.srlOrder.finishRefresh(5000)
+            orderList.clear()
+            query()
         }
         binding.srlOrder.setOnLoadMoreListener {
             pageIndex++
@@ -152,7 +173,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 keyboardUtil.hideKeyboard()
             }
 
-            R.id.rll_order -> {
+            R.id.fl_order -> {
                 val orderBean = v.tag as OrderBean
                 ARouter.getInstance().build(ARouterMap.ORDER_DETAIL).withParcelable(ARouterMap.ORDER, orderBean)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
