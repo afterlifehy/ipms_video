@@ -1,42 +1,19 @@
 package com.peakinfo.plateid.util
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
-import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PathUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
 import com.liulishuo.filedownloader.FileDownloader
 import com.liulishuo.filedownloader.util.FileDownloadUtils
-import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.UpdateBean
-import com.peakinfo.base.ds.PreferencesDataStore
-import com.peakinfo.base.ds.PreferencesKeys
-import com.peakinfo.base.ext.gone
-import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.ext.show
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.plateid.dialog.UpdateDialog
-import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import rx.Observable
-import rx.Subscriber
-import rx.functions.Func1
-import rx.schedulers.Schedulers
-import java.io.File
 
 /**
  * Created by kxrt_android_03 on 2017/4/20.
@@ -66,12 +43,6 @@ class UpdateUtil {
 
             })
             updateDialog?.show()
-            runBlocking {
-                PreferencesDataStore(BaseApplication.instance()).putLong(
-                    PreferencesKeys.lastCheckUpdateTime,
-                    System.currentTimeMillis()
-                )
-            }
         }
     }
 

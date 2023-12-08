@@ -20,6 +20,7 @@
                 android:id="@+id/sgvp_video"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_140" />
+
         </com.aries.ui.view.radius.RadiusFrameLayout>
 
         <com.makeramen.roundedimageview.RoundedImageView

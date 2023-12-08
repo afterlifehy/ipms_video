@@ -17,7 +17,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
@@ -27,8 +26,6 @@ import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.dialog.DialogHelp
-import com.peakinfo.base.ds.PreferencesDataStore
-import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
@@ -49,7 +46,6 @@ import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
@@ -90,16 +86,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             binding.tvTitle.text =
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
         }
-        runBlocking {
-            val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-            if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionName()
-                param["attr"] = jsonobject
-                mViewModel.checkUpdate(param)
-            }
-        }
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -109,7 +95,25 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             Thread {
                 val device = RealmUtil.instance?.findCurrentDeviceList()!![0]
                 if (device != null) {
-                    BluePrint.instance?.connet(device.address)
+                    val printResult = BluePrint.instance?.connet(device.address)
+                    if (printResult != 0) {
+                        runOnUiThread {
+                            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.打印机连接失败需要手动连接))
+                                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                                .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
+
+                                    override fun onRightClickLinsener(msg: String) {
+                                        val intent = Intent(this@MainActivity, MineActivity::class.java)
+                                        intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+                                        startActivity(intent)
+                                    }
+
+                                }).build(this@MainActivity).showDailog()
+                        }
+                    }
                 }
             }.start()
         } else {
@@ -151,7 +155,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         }
     }
 
-    fun multipleDevice(){
+    fun multipleDevice() {
         DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.检测到存在多台打印设备需手动连接))
             .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
             .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
@@ -167,6 +171,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
             }).build(this@MainActivity).showDailog()
     }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.iv_head -> {
@@ -253,14 +258,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            checkUpdateLiveDate.observe(this@MainActivity) {
-                updateBean = it
-                UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
-                    override fun requestionPermission() {
-                        requestPermissions()
-                    }
-                })
-            }
         }
     }
 

@@ -66,16 +66,25 @@ class BluePrint() {
                     }
 
                     2 -> {
-                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                        }
                         return@Thread
                     }
                 }
             } catch (e: Exception) {
-                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                Handler(Looper.getMainLooper()).post {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                }
+                return@Thread
             }
         }.start()
         //打印文本
-        printResult = Print1(content)
+        try {
+            printResult = Print1(content)
+        } catch (e: Exception) {
+
+        }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
 //                val toast = Toast.makeText(BaseApplication.instance(), "打印完成", Toast.LENGTH_LONG)

@@ -13,7 +13,6 @@ import android.os.Build
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,29 +23,17 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PathUtils
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloadListener
-import com.liulishuo.filedownloader.FileDownloader
-import com.liulishuo.filedownloader.util.FileDownloadUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.UpdateBean
-import com.peakinfo.base.dialog.DialogHelp
-import com.peakinfo.base.ds.PreferencesDataStore
-import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityLoginBinding
-import com.peakinfo.plateid.dialog.UpdateDialog
 import com.peakinfo.plateid.mvvm.viewmodel.LoginViewModel
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
@@ -153,14 +140,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun initData() {
         runBlocking {
-            val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-            if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionCode()
-                param["attr"] = jsonobject
-                mViewModel.checkUpdate(param)
-            }
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["version"] = AppUtils.getAppVersionCode()
+            param["attr"] = jsonobject
+            mViewModel.checkUpdate(param)
         }
     }
 

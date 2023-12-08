@@ -22,8 +22,8 @@ import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.listener.LockClickListener
 import com.shuyu.gsyvideoplayer.model.VideoOptionModel
+import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
-
 
 class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideoPicBinding>(), OnClickListener {
     var video = ""
@@ -46,20 +46,24 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         //内置封面可参考SampleCoverVideo
         val imageView = ImageView(ActivityCacheManager.instance().getCurrentActivity())
         loadCover(imageView, video, pic)
+        val orientationUtils = OrientationUtils(ActivityCacheManager.instance().getCurrentActivity(), binding.sgvpVideo)
+        orientationUtils.setEnable(false)
         gsyVideoOption
             .setThumbImageView(imageView)
             .setIsTouchWiget(true)
             .setRotateViewAuto(false)
             .setLockLand(true)
-            .setAutoFullWithSize(true)
             .setShowFullAnimation(true)
             .setNeedLockFull(true)
+            .setSeekRatio(1f)
             .setUrl(video)
             .setCacheWithPlay(false)
             .setVideoTitle("")
             .setVideoAllCallBack(object : GSYSampleCallBack() {
                 override fun onPrepared(url: String?, vararg objects: Any?) {
                     super.onPrepared(url, *objects)
+                    //开始播放了才能旋转和全屏
+                    orientationUtils.setEnable(binding.sgvpVideo.isRotateWithSystem)
                 }
 
                 override fun onQuitFullscreen(url: String?, vararg objects: Any?) {
@@ -68,9 +72,10 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
             }).setLockClickListener(object : LockClickListener {
                 override fun onClick(view: View?, lock: Boolean) {
                 }
-            }).build(binding.sgvpVideo);
+            }).build(binding.sgvpVideo)
         binding.sgvpVideo.backButton.gone()
         binding.sgvpVideo.fullscreenButton.setOnClickListener {
+            orientationUtils.resolveByClick()
             binding.sgvpVideo.startWindowFullscreen(ActivityCacheManager.instance().getCurrentActivity(), false, true)
         }
         val videoOptionModel = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)

@@ -157,6 +157,7 @@
         <activity
             android:name="com.peakinfo.plateid.ui.activity.order.VideoPicActivity"
             android:exported="false"
+            android:screenOrientation="fullSensor"
             android:launchMode="singleTask" />
 
         <activity

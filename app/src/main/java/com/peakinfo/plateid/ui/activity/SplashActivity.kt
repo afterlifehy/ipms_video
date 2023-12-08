@@ -79,22 +79,22 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
     }
 
     override fun onProjectFinish() {
-//        runBlocking {
-//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
-//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
-//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-//            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
-//        }
-//        RealmUtil.instance?.deleteAllStreet()
+        runBlocking {
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+        }
+        RealmUtil.instance?.deleteAllStreet()
         Handler(Looper.getMainLooper()).postDelayed({
             runBlocking {
-                if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {
+//                if (PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token).isEmpty()) {
                     val intent = Intent(this@SplashActivity, LoginActivity::class.java)
                     startActivity(intent)
-                } else {
-                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
-                    startActivity(intent)
-                }
+//                } else {
+//                    val intent = Intent(this@SplashActivity, MainActivity::class.java)
+//                    startActivity(intent)
+//                }
                 finish()
             }
         }, 100)

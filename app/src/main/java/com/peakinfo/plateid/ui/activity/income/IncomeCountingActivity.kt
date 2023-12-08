@@ -36,6 +36,7 @@ import com.peakinfo.plateid.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
 
 @Route(path = ARouterMap.INCOME_COUNTING)
 class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityIncomeCountingBinding>(), OnClickListener {
@@ -98,8 +99,8 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                         override fun selectDate(startTime: String, endTime: String) {
                             startDate = startTime
                             endDate = endTime
-                            val difference = TimeUtils.getTimeSpan(endTime,startTime,TimeConstants.DAY)
-                            if(difference>90){
+                            val difference = TimeUtils.getTimeSpan(endTime, startTime, SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY)
+                            if (difference > 90) {
                                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.查询时间间隔不得超过90天))
                                 return
                             }

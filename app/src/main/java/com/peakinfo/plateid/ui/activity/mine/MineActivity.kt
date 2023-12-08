@@ -75,16 +75,6 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 binding.tvDeviceName.text = currentDevice?.name
             }
         }
-        runBlocking {
-            val lastTime = PreferencesDataStore(BaseApplication.instance()).getLong(PreferencesKeys.lastCheckUpdateTime)
-            if (System.currentTimeMillis() - lastTime > 12 * 60 * 60 * 1000) {
-                val param = HashMap<String, Any>()
-                val jsonobject = JSONObject()
-                jsonobject["version"] = AppUtils.getAppVersionCode()
-                param["attr"] = jsonobject
-                mViewModel.checkUpdate(param)
-            }
-        }
     }
 
     @SuppressLint("CheckResult")
@@ -240,7 +230,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     }
                 })
             blueToothDeviceListDialog?.show()
-        }else{
+        } else {
             DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
                 .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
                 .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
