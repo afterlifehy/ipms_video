@@ -17,6 +17,7 @@ import com.peakinfo.base.bean.Street
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
+import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
@@ -111,6 +112,11 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             }
         } else {
             currentStreet = RealmUtil.instance?.findCurrentStreet()
+        }
+        if (streetList.size == 1) {
+            binding.cbLotName.hide()
+        } else {
+            binding.cbLotName.show()
         }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo

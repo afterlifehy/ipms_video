@@ -26,6 +26,7 @@ import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
@@ -108,6 +109,11 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
             streetNo = currentStreet!!.streetNo
         }
         binding.tvStreetName.text = currentStreet?.streetName
+        if (streetList.size == 1) {
+            binding.cbStreetName.hide()
+        } else {
+            binding.cbStreetName.show()
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

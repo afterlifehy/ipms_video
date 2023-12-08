@@ -24,7 +24,6 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.Street
-import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
@@ -35,7 +34,6 @@ import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMainBinding
-import com.peakinfo.plateid.dialog.UpdateDialog
 import com.peakinfo.plateid.mvvm.viewmodel.MainViewModel
 import com.peakinfo.plateid.pop.StreetPop
 import com.peakinfo.plateid.ui.activity.abnormal.BerthAbnormalActivity
@@ -49,11 +47,9 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
-    var updateBean: UpdateBean? = null
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
-    var updateDialog: UpdateDialog? = null
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -66,7 +62,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun initListener() {
         binding.ivHead.setOnClickListener(this)
-        binding.tvTitle.setOnClickListener(this)
         binding.llParkingLot.setOnClickListener(this)
         binding.flIncomeCounting.setOnClickListener(this)
         binding.flOrder.setOnClickListener(this)
@@ -85,6 +80,17 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         } else {
             binding.tvTitle.text =
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        }
+        if (streetList.size == 1) {
+            binding.tvTitle.setCompoundDrawables(
+                null,
+                null,
+                null,
+                null
+            )
+            binding.tvTitle.setOnClickListener(null)
+        } else {
+            binding.tvTitle.setOnClickListener(this)
         }
     }
 

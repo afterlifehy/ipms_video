@@ -56,7 +56,7 @@ class BluePrint() {
 //                toast.setGravity(Gravity.CENTER, 0, 0)
 //                toast.show()
             } else if (printResult == -1) {
-                ToastUtil.showMiddleToast("蓝牙未连接")
+
             } else if (printResult == -2) {
                 ToastUtil.showMiddleToast("路段名称过长...")
             } else {

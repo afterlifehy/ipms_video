@@ -247,6 +247,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 } else {
                     startPrint(it)
                 }
+                onBackPressedSupport()
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

@@ -113,25 +113,19 @@
                 android:id="@+id/tv_streetTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/dp_28"
                 android:text="@string/路段名"
                 android:textColor="@color/color_ff666666"
                 android:textSize="@dimen/sp_19" />
 
-            <TextView
-                android:id="@+id/tv_street"
+            <LinearLayout
+                android:id="@+id/ll_street"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_13"
+                android:layout_marginTop="@dimen/dp_28"
                 android:layout_toEndOf="@+id/tv_streetTitle"
-                android:ellipsize="end"
-                android:gravity="end"
-                android:maxLines="1"
-                android:textColor="@color/color_ff1a1a1a"
-                android:textSize="@dimen/sp_19"
-                tools:text="定西路(愚园路～安化路)西侧" />
+                android:orientation="vertical" />
         </RelativeLayout>
 
         <View

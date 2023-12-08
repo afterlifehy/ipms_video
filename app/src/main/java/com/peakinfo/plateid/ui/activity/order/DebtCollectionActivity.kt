@@ -23,6 +23,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.RefreshDebtOrderListEvent
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.common.view.keyboard.KeyboardUtil
 import com.peakinfo.common.view.keyboard.MyOnTouchListener
@@ -33,6 +34,8 @@ import com.peakinfo.plateid.databinding.ActivityDebtCollectionBinding
 import com.peakinfo.plateid.dialog.CollectionDialog
 import com.peakinfo.plateid.mvvm.viewmodel.DebtCollectionViewModel
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.DEBT_COLLECTION)
 class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityDebtCollectionBinding>(), OnClickListener {
@@ -42,6 +45,14 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     var collectionDialog: CollectionDialog? = null
     var carLicense = ""
     var token = ""
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
+        if (carLicense.isEmpty()) {
+            return
+        }
+        query()
+    }
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -226,6 +237,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
 
         }
+    }
+
+    override fun isRegEventBus(): Boolean {
+        return true
     }
 
     override fun getVbBindingView(): ViewBinding {

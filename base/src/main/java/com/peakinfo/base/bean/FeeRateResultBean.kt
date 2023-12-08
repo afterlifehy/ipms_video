@@ -14,5 +14,6 @@ data class FeeRateBean(
     val third: String,
     val unitPrice: String,
     val whiteEnd: String,
-    val whiteStart: String
+    val whiteStart: String,
+    val period: String
 )

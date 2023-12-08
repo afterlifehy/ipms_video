@@ -26,6 +26,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.RefreshDebtOrderListEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
@@ -35,6 +36,7 @@ import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.DebtOrderDetailViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.DEBT_ORDER_DETAIL)
 class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, ActivityDebtOrderDetailBinding>(), OnClickListener {
@@ -179,7 +181,8 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 } else {
                     startPrint(it)
                 }
-
+                EventBus.getDefault().post(RefreshDebtOrderListEvent())
+                onBackPressedSupport()
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()

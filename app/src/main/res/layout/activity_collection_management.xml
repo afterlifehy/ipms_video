@@ -120,14 +120,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_19"
                 tools:text="定西路(愚园路～安化路)西侧" />
 
             <CheckBox
                 android:id="@+id/cb_streetName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
                 android:layout_gravity="end|center_vertical"
                 android:background="@color/transparent"
                 android:button="@drawable/selector_lot_arrow"

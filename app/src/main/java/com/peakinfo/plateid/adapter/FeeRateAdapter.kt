@@ -32,7 +32,7 @@ class FeeRateAdapter(data: MutableList<FeeRateBean>? = null) : BaseBindingAdapte
         holder.vb.rtvStartAmount.text = "${item.first}元"
         holder.vb.tvCenterAmount.text = "${item.second}元"
         holder.vb.rtvEndAmount.text = "${item.third}元"
-        holder.vb.tvRemark.text = "计次：${item.unitPrice}元/次"
+        holder.vb.tvRemark.text = "${item.unitPrice}。计次：${item.period}元/次"
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemFeeRateBinding {

@@ -113,7 +113,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     }
                 } catch (e: Exception) {
                     runOnUiThread {
-                        BluePrint.instance!!.zpSDK?.disconnect()
+//                        BluePrint.instance!!.zpSDK?.disconnect()
                         binding.tvDeviceName.text = ""
                     }
                 }
