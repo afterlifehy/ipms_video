@@ -215,9 +215,11 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写车牌))
                     return
                 }
-                if (binding.etPlate.text.toString().length != 7 || binding.etPlate.text.toString().length != 8) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
-                    return
+                if (type != "02") {
+                    if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
+                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
+                        return
+                    }
                 }
                 if (type != "02" && checkedColor.isEmpty()) {
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))

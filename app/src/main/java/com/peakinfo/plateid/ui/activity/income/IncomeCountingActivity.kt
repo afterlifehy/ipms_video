@@ -20,6 +20,7 @@ import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
@@ -123,12 +124,14 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
                             Thread {
                                 BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                             }.start()
                         }
                     }
                 } else {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
                     Thread {
                         BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                     }.start()

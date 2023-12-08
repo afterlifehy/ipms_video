@@ -7,6 +7,9 @@ import android.view.View.OnClickListener
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
+import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.dialog.VBBaseLibDialog
@@ -33,6 +36,11 @@ class BlueToothDeviceListDialog(
     }
 
     private fun initView() {
+        var height = (SizeUtils.dp2px(60f) * deviceList.size + SizeUtils.dp2px(217f)).toFloat()
+        if (height > ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()) {
+            height = (ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()).toFloat()
+        }
+        setLayout(getWidth(), height)
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
         binding.rvStreet.setHasFixedSize(true)

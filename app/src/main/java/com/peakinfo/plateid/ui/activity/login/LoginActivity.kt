@@ -34,7 +34,6 @@ import com.peakinfo.plateid.databinding.ActivityLoginBinding
 import com.peakinfo.plateid.mvvm.viewmodel.LoginViewModel
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
-import kotlinx.coroutines.runBlocking
 
 
 @Route(path = ARouterMap.LOGIN)
@@ -74,6 +73,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun initListener() {
         binding.tvForgetPw.setOnClickListener(this)
+        binding.rtvLogin.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -139,13 +139,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initData() {
-        runBlocking {
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["version"] = AppUtils.getAppVersionCode()
-            param["attr"] = jsonobject
-            mViewModel.checkUpdate(param)
-        }
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["version"] = AppUtils.getAppVersionCode()
+        param["attr"] = jsonobject
+        mViewModel.checkUpdate(param)
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -171,7 +169,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                                 override fun onProviderDisabled(provider: String) {
                                     locationEnable = false
-                                    ToastUtil.showMiddleToast("请打开位置信息")
+                                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                 }
 
                                 override fun onProviderEnabled(provider: String) {

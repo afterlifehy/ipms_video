@@ -44,41 +44,6 @@ class BluePrint() {
 
     @Throws(JSONException::class)
     fun zkblueprint(content: String) {
-        Thread {
-            try {
-                when (zpSDK?.GetStatus()) {
-                    -1 -> {
-                        Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
-                        }
-                        return@Thread
-                    }
-
-                    0 -> {
-
-                    }
-
-                    1 -> {
-                        Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
-                        }
-                        return@Thread
-                    }
-
-                    2 -> {
-                        Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
-                        }
-                        return@Thread
-                    }
-                }
-            } catch (e: Exception) {
-                Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
-                }
-                return@Thread
-            }
-        }.start()
         //打印文本
         try {
             printResult = Print1(content)
@@ -105,18 +70,18 @@ class BluePrint() {
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("开始连接")
+            ToastUtil.showMiddleToast("打印机开始连接")
         }
 
         if (!zpSDK!!.connect(mAddress)) {
             Handler(Looper.getMainLooper()).post {
-                ToastUtil.showMiddleToast("连接失败")
+                ToastUtil.showMiddleToast("打印机连接失败")
             }
             printResult = -1
             return printResult
         }
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("连接成功")
+            ToastUtil.showMiddleToast("打印机连接成功")
         }
         return 0
     }
@@ -225,6 +190,7 @@ class BluePrint() {
                 )
                 zpSDK!!.print(0, 0)
                 zpSDK!!.printerStatus()
+                printGetStatus()
                 return 0
             } else {
                 val now = Calendar.getInstance()
@@ -322,8 +288,46 @@ class BluePrint() {
         }
         zpSDK!!.print(0, 0)
         zpSDK!!.printerStatus()
-        val a = zpSDK!!.GetStatus()
+        printGetStatus()
         return 0
+    }
+
+    fun printGetStatus() {
+        Thread {
+            try {
+                when (zpSDK?.GetStatus()) {
+                    -1 -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                        }
+                        return@Thread
+                    }
+
+                    0 -> {
+
+                    }
+
+                    1 -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
+                        }
+                        return@Thread
+                    }
+
+                    2 -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                        }
+                        return@Thread
+                    }
+                }
+            } catch (e: Exception) {
+                Handler(Looper.getMainLooper()).post {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                }
+                return@Thread
+            }
+        }.start()
     }
 
     fun printDrawText(text1: String, text2: String, ystart: Int, spaceOffset: Int) {

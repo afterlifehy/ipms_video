@@ -83,6 +83,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         Thread {
             if (BluePrint.instance != null && BluePrint.instance!!.zpSDK != null) {
                 try {
+                    BluePrint.instance!!.zpSDK?.printerStatus()
                     when (BluePrint.instance!!.zpSDK?.GetStatus()) {
                         -1 -> {
                             bluePrintStatus = -1

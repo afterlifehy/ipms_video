@@ -133,6 +133,20 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                                 }
                             } else if (printList.size > 1) {
                                 multipleDevice()
+                            } else {
+                                DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
+                                    .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                                    .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
+                                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                        override fun onLeftClickLinsener(msg: String) {
+                                        }
+
+                                        override fun onRightClickLinsener(msg: String) {
+                                            val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                                            startActivity(intent)
+                                        }
+
+                                    }).build(this@MainActivity).showDailog()
                             }
                         }.start()
                     }
@@ -150,6 +164,20 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     }.start()
                 } else if (printList.size > 1) {
                     multipleDevice()
+                } else {
+                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
+                        .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                        .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                                startActivity(intent)
+                            }
+
+                        }).build(this@MainActivity).showDailog()
                 }
             }
         }

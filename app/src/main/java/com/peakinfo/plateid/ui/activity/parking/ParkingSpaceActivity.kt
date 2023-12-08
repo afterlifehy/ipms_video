@@ -23,6 +23,7 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
@@ -268,6 +269,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             company = it.businessCname,
             oweCount = it.oweCount
         )
+        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
         Thread {
             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()

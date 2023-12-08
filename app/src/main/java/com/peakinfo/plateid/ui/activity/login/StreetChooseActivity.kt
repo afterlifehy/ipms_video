@@ -110,7 +110,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 streetChooseListDialog =
                     StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
                         override fun chooseStreets() {
-                            streetChoosedAdapter?.setList(streetChoosedList)
+                            streetChoosedAdapter?.setList(streetChoosedList.distinct())
                         }
 
                     })

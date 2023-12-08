@@ -120,7 +120,7 @@ public abstract class BaseLibDialog extends BackgroundDarkDialog {
 //        setLayout(getWidth(), getHeight());
 //    }
 
-    private void setLayout(float width, float height) {
+    public void setLayout(float width, float height) {
         setCanceledOnTouchOutside(getCanceledOnTouchOutside());
         Window dialogWindow = getWindow();
         WindowManager.LayoutParams p = dialogWindow.getAttributes();

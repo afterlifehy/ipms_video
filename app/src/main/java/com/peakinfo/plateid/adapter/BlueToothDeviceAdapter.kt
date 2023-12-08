@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
+import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
 import com.peakinfo.base.bean.BlueToothDeviceBean
@@ -49,7 +51,10 @@ class BlueToothDeviceAdapter(data: MutableList<BluetoothDevice>? = null, var cur
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemBluetoothDeviceBinding {
-        return ItemBluetoothDeviceBinding.inflate(inflater)
+        val lp = ViewGroup.MarginLayoutParams(WindowManager.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(60f))
+        val binding = ItemBluetoothDeviceBinding.inflate(inflater)
+        binding.root.layoutParams = lp
+        return binding
     }
 
 //    fun getCheckedList(): MutableList<Int> {
