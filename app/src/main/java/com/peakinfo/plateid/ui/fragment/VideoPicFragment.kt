@@ -76,7 +76,7 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
         binding.sgvpVideo.backButton.gone()
         binding.sgvpVideo.fullscreenButton.setOnClickListener {
             orientationUtils.resolveByClick()
-            binding.sgvpVideo.startWindowFullscreen(ActivityCacheManager.instance().getCurrentActivity(), false, true)
+            binding.sgvpVideo.startWindowFullscreen(ActivityCacheManager.instance().getCurrentActivity(), true, true)
         }
         val videoOptionModel = VideoOptionModel(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
         val list: MutableList<VideoOptionModel> = ArrayList()

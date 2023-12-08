@@ -156,9 +156,10 @@
 
         <activity
             android:name="com.peakinfo.plateid.ui.activity.order.VideoPicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:exported="false"
-            android:screenOrientation="fullSensor"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="fullSensor" />
 
         <activity
             android:name="com.peakinfo.plateid.ui.activity.order.OrderInquiryActivity"

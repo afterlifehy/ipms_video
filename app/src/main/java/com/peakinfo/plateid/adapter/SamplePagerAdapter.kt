@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.viewpager.widget.PagerAdapter
 import com.blankj.utilcode.util.ImageUtils
 import com.github.chrisbanes.photoview.PhotoView
@@ -60,6 +61,7 @@ class SamplePagerAdapter(
             var url = ""
             url = list!![position]
             GlideUtils.instance?.loadImagePreview(convertView.findViewById(R.id.pv_img), url)
+            (convertView.findViewById(R.id.pv_img) as PhotoView).maximumScale = 10.0f
         }
         container.addView(
             convertView,

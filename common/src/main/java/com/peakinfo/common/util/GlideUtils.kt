@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.github.chrisbanes.photoview.PhotoView
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.common.R
 import java.io.File
@@ -76,7 +77,7 @@ class GlideUtils private constructor() {
         Glide.with(BaseApplication.instance()).asBitmap().load(file).apply(options).into(imageView)
     }
 
-    fun loadImagePreview(imageView: ImageView, url: String?) {
+    fun loadImagePreview(imageView: PhotoView, url: String?) {
         imageView.tag = null
         Glide.with(BaseApplication.instance()).load(url).dontTransform().override(-1).into(imageView)
     }
