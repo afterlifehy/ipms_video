@@ -10,6 +10,7 @@ import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.show
+import com.peakinfo.common.util.Constant
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.databinding.ItemCollectionPlateColorBinding
 
@@ -21,13 +22,13 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<String>?
     var collectioPlateColorMap: MutableMap<String, Int> = ArrayMap()
 
     init {
-        collectioPlateColorMap["5"] = com.peakinfo.common.R.mipmap.ic_plate_blue
-        collectioPlateColorMap["9"] = com.peakinfo.common.R.mipmap.ic_plate_green
-        collectioPlateColorMap["6"] = com.peakinfo.common.R.mipmap.ic_plate_yellow
-        collectioPlateColorMap["20"] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
-        collectioPlateColorMap["2"] = com.peakinfo.common.R.mipmap.ic_plate_white
-        collectioPlateColorMap["1"] = com.peakinfo.common.R.mipmap.ic_plate_black
-        collectioPlateColorMap["99"] = com.peakinfo.common.R.mipmap.ic_plate_other
+        collectioPlateColorMap[Constant.BLUE] = com.peakinfo.common.R.mipmap.ic_plate_blue
+        collectioPlateColorMap[Constant.GREEN] = com.peakinfo.common.R.mipmap.ic_plate_green
+        collectioPlateColorMap[Constant.YELLOW] = com.peakinfo.common.R.mipmap.ic_plate_yellow
+        collectioPlateColorMap[Constant.YELLOW_GREEN] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
+        collectioPlateColorMap[Constant.WHITE] = com.peakinfo.common.R.mipmap.ic_plate_white
+        collectioPlateColorMap[Constant.BLACK] = com.peakinfo.common.R.mipmap.ic_plate_black
+        collectioPlateColorMap[Constant.OTHERS] = com.peakinfo.common.R.mipmap.ic_plate_other
     }
 
     override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: String) {

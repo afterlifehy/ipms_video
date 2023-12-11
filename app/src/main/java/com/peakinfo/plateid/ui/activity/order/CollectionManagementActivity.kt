@@ -32,6 +32,7 @@ import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
+import com.peakinfo.common.util.Constant
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.common.view.keyboard.KeyboardUtil
 import com.peakinfo.common.view.keyboard.MyTextWatcher
@@ -66,13 +67,13 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.催缴管理)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
-        collectioPlateColorList.add("5")
-        collectioPlateColorList.add("9")
-        collectioPlateColorList.add("6")
-        collectioPlateColorList.add("20")
-        collectioPlateColorList.add("2")
-        collectioPlateColorList.add("1")
-        collectioPlateColorList.add("99")
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
 
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
@@ -367,19 +368,19 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
                     if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor("5", 0)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor("9", 1)
+                        collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor("6", 2)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor("20", 3)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
                     } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor("2", 4)
+                        collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor("1", 5)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
-                        collectionPlateColorAdapter?.updateColor("99", 6)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 6)
                     }
                     binding.retPlate.setText(plateId)
                     binding.retPlate.setSelection(plateId.length)

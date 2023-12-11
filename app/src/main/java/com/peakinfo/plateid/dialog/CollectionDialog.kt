@@ -15,6 +15,7 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.dialog.VBBaseLibDialog
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.common.util.Constant
 import com.peakinfo.common.view.keyboard.KeyboardUtil
 import com.peakinfo.common.view.keyboard.MyTextWatcher
 import com.peakinfo.plateid.R
@@ -38,13 +39,13 @@ class CollectionDialog(val callback: CollecteCallBack) :
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
-        collectioPlateColorList.add("5")
-        collectioPlateColorList.add("9")
-        collectioPlateColorList.add("6")
-        collectioPlateColorList.add("20")
-        collectioPlateColorList.add("2")
-        collectioPlateColorList.add("1")
-        collectioPlateColorList.add("99")
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)

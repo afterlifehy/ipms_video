@@ -26,6 +26,7 @@ class UpdateDialog(var updateBean: UpdateBean, val callback: updateCallBack) :
     }
 
     private fun initView() {
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.tvTitle.text = i18N(com.peakinfo.base.R.string.发现新版本是否下载安装更新)
         if (updateBean.force == "1") {
             binding.rtvLeft.gone()

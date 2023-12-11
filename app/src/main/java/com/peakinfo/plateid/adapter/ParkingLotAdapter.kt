@@ -14,6 +14,7 @@ import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.common.util.AppUtil
+import com.peakinfo.common.util.Constant
 import com.peakinfo.plateid.databinding.ItemParkingLotBinding
 
 class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickListener: OnClickListener) :
@@ -25,35 +26,35 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
     var sizes = intArrayOf(24, 24)
 
     init {
-        plateBgMap["1"] = com.peakinfo.common.R.mipmap.ic_plate_bg_black
-        plateBgMap["2"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["3"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["4"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["5"] = com.peakinfo.common.R.mipmap.ic_plate_bg_blue
-        plateBgMap["6"] = com.peakinfo.common.R.mipmap.ic_plate_bg_yellow
-        plateBgMap["7"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["8"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["9"] = com.peakinfo.common.R.mipmap.ic_plate_bg_green
-        plateBgMap["10"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["11"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["12"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["13"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
-        plateBgMap["99"] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BLACK] = com.peakinfo.common.R.mipmap.ic_plate_bg_black
+        plateBgMap[Constant.WHITE] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.GREY] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.RED] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BLUE] = com.peakinfo.common.R.mipmap.ic_plate_bg_blue
+        plateBgMap[Constant.YELLOW] = com.peakinfo.common.R.mipmap.ic_plate_bg_yellow
+        plateBgMap[Constant.ORANGE] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.BROWN] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.GREEN] = com.peakinfo.common.R.mipmap.ic_plate_bg_green
+        plateBgMap[Constant.PURPLE] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.CYAN] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.PINK] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.TRANSPARENT] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
+        plateBgMap[Constant.OTHERS] = com.peakinfo.common.R.mipmap.ic_plate_bg_white
 
-        plateTxtColorMap["1"] = com.peakinfo.base.R.color.white
-        plateTxtColorMap["2"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["3"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["4"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["5"] = com.peakinfo.base.R.color.white
-        plateTxtColorMap["6"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["7"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["8"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["9"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["10"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["11"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["12"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["13"] = com.peakinfo.base.R.color.black
-        plateTxtColorMap["99"] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.BLACK] = com.peakinfo.base.R.color.white
+        plateTxtColorMap[Constant.WHITE] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.GREY] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.RED] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.BLUE] = com.peakinfo.base.R.color.white
+        plateTxtColorMap[Constant.YELLOW] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.ORANGE] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.BROWN] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.GREEN] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.PURPLE] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.CYAN] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.PINK] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.TRANSPARENT] = com.peakinfo.base.R.color.black
+        plateTxtColorMap[Constant.OTHERS] = com.peakinfo.base.R.color.black
     }
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {

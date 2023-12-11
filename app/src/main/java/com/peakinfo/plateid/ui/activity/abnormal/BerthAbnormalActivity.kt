@@ -25,6 +25,7 @@ import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
+import com.peakinfo.common.util.Constant
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.common.view.keyboard.KeyboardUtil
 import com.peakinfo.common.view.keyboard.MyTextWatcher
@@ -73,13 +74,13 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             carColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
         }
 
-        collectioPlateColorList.add("5")
-        collectioPlateColorList.add("9")
-        collectioPlateColorList.add("6")
-        collectioPlateColorList.add("20")
-        collectioPlateColorList.add("2")
-        collectioPlateColorList.add("1")
-        collectioPlateColorList.add("99")
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
         binding.rvPlateColor.setHasFixedSize(true)
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
@@ -326,17 +327,17 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     binding.etPlate.setText(plateId)
                     binding.etPlate.setSelection(plateId.length)
                     if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor("5", 0)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
                     } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor("9", 1)
+                        collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
                     } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor("6", 2)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
                     } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor("20", 3)
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
                     } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor("2", 4)
+                        collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
                     } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor("1", 5)
+                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
                         collectionPlateColorAdapter?.updateColor("99", 6)
                     }
