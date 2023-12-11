@@ -144,7 +144,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
+                datePop = DatePop(BaseApplication.instance(), startDate, endDate, 0, object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
                         startDate = startTime
                         endDate = endTime

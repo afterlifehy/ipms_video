@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import com.blankj.utilcode.constant.TimeConstants
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.PopDateBinding
@@ -21,11 +22,13 @@ import java.util.Calendar
 /**
  * Created by huy  on 2022/12/7.
  */
-class DatePop(val context: Context?, var startDate: String, var endDate: String, var callback: DateCallBack) :
+class DatePop(val context: Context?, var startDate: String, var endDate: String, val resetType: Int, var callback: DateCallBack) :
     PopupWindow(context), View.OnClickListener {
 
     private lateinit var binding: PopDateBinding
     var datePickerDialog: DatePickerDialog? = null
+    var startMillis = 0L
+    var endMillis = 0L
 
     init {
         initView()
@@ -35,6 +38,8 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
         binding = PopDateBinding.inflate(LayoutInflater.from(context))
         binding.tvStartTime.text = startDate
         binding.tvEndTime.text = endDate
+        startMillis = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+        endMillis = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
 
         binding.ivClose.setOnClickListener(this)
         binding.cbSevenDay.setOnClickListener(this)
@@ -76,6 +81,8 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startDate
                 binding.tvEndTime.text = endDate
+                startMillis = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+                endMillis = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
             }
 
             R.id.cb_oneMonth -> {
@@ -86,6 +93,8 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startDate
                 binding.tvEndTime.text = endDate
+                startMillis = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+                endMillis = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
             }
 
             R.id.cb_threeMonth -> {
@@ -96,6 +105,8 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                 binding.tvStartTime.text = startDate
                 binding.tvEndTime.text = endDate
+                startMillis = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+                endMillis = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
             }
 
             R.id.tv_startTime -> {
@@ -107,7 +118,13 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 datePickerDialog?.show()
                 datePickerDialog?.setOnDateSetListener { datePicker, i, i2, i3 ->
                     startDate = "${i}-${AppUtil.fillZero((i2 + 1).toString())}-${AppUtil.fillZero(i3.toString())}"
-                    binding.tvStartTime.text = startDate
+                    val temp = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+                    if (temp > endMillis) {
+                        ToastUtil.showMiddleToast("开始时间不能晚于结束时间")
+                    } else {
+                        startMillis = temp
+                        binding.tvStartTime.text = startDate
+                    }
                 }
             }
 
@@ -117,10 +134,17 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 val month = TimeUtils.getValueByCalendarField(endDate, SimpleDateFormat("yyyy-MM-dd"), Calendar.MONTH)
                 val day = TimeUtils.getValueByCalendarField(endDate, SimpleDateFormat("yyyy-MM-dd"), Calendar.DAY_OF_MONTH)
                 datePickerDialog?.updateDate(year, month, day)
+
                 datePickerDialog?.show()
                 datePickerDialog?.setOnDateSetListener { datePicker, i, i2, i3 ->
                     endDate = "${i}-${AppUtil.fillZero((i2 + 1).toString())}-${AppUtil.fillZero(i3.toString())}"
-                    binding.tvEndTime.text = endDate
+                    val temp = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
+                    if (temp < startMillis) {
+                        ToastUtil.showMiddleToast("结束时间不能早于开始时间")
+                    } else {
+                        endMillis = temp
+                        binding.tvEndTime.text = endDate
+                    }
                 }
             }
 
@@ -129,9 +153,15 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                 binding.cbOneMonth.isChecked = false
                 binding.cbThreeMonth.isChecked = false
                 endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
-                startDate = endDate.substring(0, 8) + "01"
+                if (resetType == 0) {
+                    startDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
+                } else if (resetType == 1) {
+                    startDate = endDate.substring(0, 8) + "01"
+                }
                 binding.tvStartTime.text = startDate
                 binding.tvEndTime.text = endDate
+                startMillis = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
+                endMillis = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
             }
 
             R.id.rtv_ok -> {

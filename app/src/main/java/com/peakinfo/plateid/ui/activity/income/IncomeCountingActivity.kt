@@ -96,7 +96,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
 
             R.id.iv_right -> {
                 if (datePop == null) {
-                    datePop = DatePop(BaseApplication.instance(), startDate, endDate, object : DatePop.DateCallBack {
+                    datePop = DatePop(BaseApplication.instance(), startDate, endDate, 1, object : DatePop.DateCallBack {
                         override fun selectDate(startTime: String, endTime: String) {
                             startDate = startTime
                             endDate = endTime
