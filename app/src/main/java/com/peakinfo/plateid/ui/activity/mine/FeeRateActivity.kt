@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
@@ -75,6 +76,23 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
             lp.width = ScreenUtils.getScreenWidth() - SizeUtils.dp2px(72f)
             (binding.stlStreet.getChildAt(0) as LinearLayout).getChildAt(i).requestLayout()
         }
+        binding.vpFeeRate.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (tabList.size > 1) {
+                    if (position == 0) {
+                        binding.ivArrowLeft.hide()
+                        binding.ivArrowRight.show()
+                    } else if (position == tabList.size - 1) {
+                        binding.ivArrowRight.hide()
+                        binding.ivArrowLeft.show()
+                    } else {
+                        binding.ivArrowRight.show()
+                        binding.ivArrowLeft.show()
+                    }
+                }
+            }
+        })
     }
 
     override fun onClick(v: View?) {
@@ -85,7 +103,7 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
 
             R.id.iv_arrowLeft -> {
                 if (binding.vpFeeRate.currentItem > 0) {
-                    binding.ivArrowLeft.show()
+                    binding.ivArrowRight.show()
                     binding.vpFeeRate.setCurrentItem(binding.vpFeeRate.currentItem - 1, true)
                 } else {
                     binding.ivArrowLeft.hide()
@@ -94,7 +112,7 @@ class FeeRateActivity : VbBaseActivity<FeeRateViewModel, ActivityFeeRateBinding>
 
             R.id.iv_arrowRight -> {
                 if (binding.vpFeeRate.currentItem < tabList.size - 1) {
-                    binding.ivArrowRight.show()
+                    binding.ivArrowLeft.show()
                     binding.vpFeeRate.setCurrentItem(binding.vpFeeRate.currentItem + 1, true)
                 } else {
                     binding.ivArrowRight.hide()

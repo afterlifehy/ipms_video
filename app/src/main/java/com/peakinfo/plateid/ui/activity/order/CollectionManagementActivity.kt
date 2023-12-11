@@ -86,7 +86,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
         binding.cbStreetName.setOnClickListener(this)
-        binding.rflStreetName.setOnClickListener(this)
         binding.rflSubmit.setOnClickListener(this)
         binding.tvPic1.setOnClickListener(this)
         binding.tvPic2.setOnClickListener(this)
@@ -111,8 +110,10 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         binding.tvStreetName.text = currentStreet?.streetName
         if (streetList.size == 1) {
             binding.cbStreetName.hide()
+            binding.rflStreetName.setOnClickListener(null)
         } else {
             binding.cbStreetName.show()
+            binding.rflStreetName.setOnClickListener(this)
         }
     }
 

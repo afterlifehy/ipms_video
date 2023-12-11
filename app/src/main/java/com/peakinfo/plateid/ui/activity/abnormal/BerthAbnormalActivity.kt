@@ -92,7 +92,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.layoutToolbar.ivRight.setOnClickListener(this)
         binding.cbLotName.setOnClickListener(this)
-        binding.rflLotName.setOnClickListener(this)
         binding.cbAbnormalClassification.setOnClickListener(this)
         binding.rflAbnormalClassification.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
@@ -115,8 +114,10 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         }
         if (streetList.size == 1) {
             binding.cbLotName.hide()
+            binding.rflLotName.setOnClickListener(null)
         } else {
             binding.cbLotName.show()
+            binding.rflLotName.setOnClickListener(this)
         }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
