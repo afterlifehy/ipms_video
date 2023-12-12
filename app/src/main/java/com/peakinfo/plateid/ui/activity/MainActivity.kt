@@ -127,34 +127,34 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 var rxPermissions = RxPermissions(this@MainActivity)
                 rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                     if (it) {
-                        Thread {
-                            BluePrint.instance?.disConnect()
-                            val printList = BluePrint.instance?.blueToothDevice!!
-                            if (printList.size == 1) {
+                        BluePrint.instance?.disConnect()
+                        val printList = BluePrint.instance?.blueToothDevice!!
+                        if (printList.size == 1) {
+                            Thread {
                                 val device = printList[0]
                                 var connectResult = BluePrint.instance?.connet(device.address)
                                 if (connectResult == 0) {
                                     RealmUtil.instance?.deleteAllDevice()
                                     RealmUtil.instance?.addRealm(BlueToothDeviceBean(device.address, device.name))
                                 }
-                            } else if (printList.size > 1) {
-                                multipleDevice()
-                            } else {
-                                DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
-                                    .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
-                                    .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
-                                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                        override fun onLeftClickLinsener(msg: String) {
-                                        }
+                            }.start()
+                        } else if (printList.size > 1) {
+                            multipleDevice()
+                        } else {
+                            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.未检测到已配对的打印设备))
+                                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                                .setRightMsg(i18N(com.peakinfo.base.R.string.去配对)).setCancelable(true)
+                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                    override fun onLeftClickLinsener(msg: String) {
+                                    }
 
-                                        override fun onRightClickLinsener(msg: String) {
-                                            val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
-                                            startActivity(intent)
-                                        }
+                                    override fun onRightClickLinsener(msg: String) {
+                                        val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+                                        startActivity(intent)
+                                    }
 
-                                    }).build(this@MainActivity).showDailog()
-                            }
-                        }.start()
+                                }).build(this@MainActivity).showDailog()
+                        }
                     }
                 }
             } else {

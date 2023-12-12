@@ -5,7 +5,7 @@ data class ParkingLotResultBean(
 )
 
 data class ParkingLotBean(
-    val carColor: String,
+    var carColor: String,
     val carLicense: String,
     val cleared: String,
     val orderNo: String,

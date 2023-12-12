@@ -53,7 +53,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
             executeResponse(response, {
                 payResultLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+                traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
             })
         }
     }

@@ -339,7 +339,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     } else if (plate.startsWith("黑")) {
                         collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
-                        collectionPlateColorAdapter?.updateColor("99", 6)
+                        collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
                     }
                 }
             }

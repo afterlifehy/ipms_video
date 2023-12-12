@@ -43,9 +43,9 @@ import kotlinx.coroutines.withContext
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
     var locationManager: LocationManager? = null
-    var lat = 0.00
-    var lon = 0.00
-    var locationEnable = false
+    var lat = 121.445345
+    var lon = 31.238665
+    var locationEnable = 0
 
     @SuppressLint("MissingPermission", "CheckResult")
     override fun initView() {
@@ -74,16 +74,16 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                     override fun onProviderDisabled(provider: String) {
-                        locationEnable = false
+                        locationEnable = -1
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                 })
@@ -132,20 +132,20 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                             override fun onLocationChanged(location: Location) {
                                                 lat = location.latitude
                                                 lon = location.longitude
-                                                locationEnable = true
+                                                locationEnable = 1
                                             }
 
                                             override fun onProviderDisabled(provider: String) {
-                                                locationEnable = false
+                                                locationEnable = -1
                                                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                             }
 
                                             override fun onProviderEnabled(provider: String) {
-                                                locationEnable = true
+                                                locationEnable = 1
                                             }
                                         })
                                     }
-                                    if (locationEnable) {
+                                    if (locationEnable != -1) {
                                         showProgressDialog(20000)
                                         runBlocking {
                                             val token =
