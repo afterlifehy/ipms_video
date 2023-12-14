@@ -31,7 +31,10 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
             this,
             ContextCompat.getColor(this, com.peakinfo.base.R.color.transparent)
         )
-
+        if (intent.flags and Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT != 0) {
+            finish()
+            return
+        }
         setCustomDensity()
     }
 

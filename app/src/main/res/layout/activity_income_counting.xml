@@ -56,12 +56,14 @@
             </com.aries.ui.view.radius.RadiusLinearLayout>
 
             <com.aries.ui.view.radius.RadiusLinearLayout
+                android:id="@+id/rll_month"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_13"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_13"
                 android:orientation="vertical"
+                android:visibility="gone"
                 app:rv_backgroundColor="@color/white"
                 app:rv_radius="@dimen/dp_10">
 

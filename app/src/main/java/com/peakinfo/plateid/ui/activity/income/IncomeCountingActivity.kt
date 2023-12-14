@@ -51,6 +51,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
     var monthSummaryAdapter: MonthSummaryAdapter? = null
     var monthSummaryList: MutableList<Summary> = ArrayList()
     var loginName = ""
+    var searchRange = "0"
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.营收盘点)
@@ -148,6 +149,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
         jsonobject["loginName"] = loginName
+        jsonobject["searchRange"] = searchRange
         param["attr"] = jsonobject
         mViewModel.incomeCounting(param)
     }
@@ -158,11 +160,15 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                 dismissProgressDialog()
                 incomeCountingBean = it
                 todaySummaryList.clear()
-                monthSummaryList.clear()
                 todaySummaryList.addAll(incomeCountingBean!!.list1)
-                monthSummaryList.addAll(incomeCountingBean!!.list2)
                 todaySummaryAdapter?.setList(todaySummaryList)
-                monthSummaryAdapter?.setList(monthSummaryList)
+                if (searchRange == "1") {
+                    binding.rllMonth.show()
+                    monthSummaryList.clear()
+                    monthSummaryList.addAll(incomeCountingBean!!.list2)
+                    monthSummaryAdapter?.setList(monthSummaryList)
+                }
+                searchRange = "1"
             }
             errMsg.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
