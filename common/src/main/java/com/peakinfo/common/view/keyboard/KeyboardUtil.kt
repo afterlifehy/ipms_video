@@ -17,6 +17,7 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
     private var editText: EditText? = null
 
     private var hideAction: (() -> Unit)? = null
+    private var clickPosition = 0
 
     // private var hideEdit:(()->Unit)? = null
     init {
@@ -56,20 +57,19 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
 
                 override fun onKey(primaryCode: Int, keyCodes: IntArray?) {
                     val editable = editText?.text
-                    val start: Int = editText?.selectionStart ?: 0
                     when (primaryCode) {
                         -1 -> changeKeyboard(true)
                         -2 -> changeKeyboard(false)
                         -3 -> {
-                            if (start != null) {
-                                val etValue = editText?.text.toString()
-                                if (etValue.isEmpty()) {
-                                    editable?.delete(0, start)
-                                    requestEditAct?.invoke()
-                                } else {
-                                    val etValue = editText?.text.toString().substring(0, editText?.text.toString().length - 1)
-                                    editText?.setText(etValue)
-                                    editText?.text?.length?.let { editText?.setSelection(it) };
+                            val etValue = editText?.text.toString()
+                            if (etValue.isEmpty()) {
+
+                            } else {
+                                val stringBuilder: StringBuilder = StringBuilder(etValue)
+                                if (clickPosition > 0) {
+                                    editText?.setText(stringBuilder.deleteCharAt(clickPosition - 1))
+                                    clickPosition -= 1
+                                    editText?.setSelection(clickPosition)
                                 }
                             }
                         }
@@ -79,9 +79,10 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
                         }
 
                         else -> {
-                            // 清空之前数据
-                            //editText?.text?.clear()
-                            editable?.insert(editable.length, primaryCode.toChar().toString())
+                            if (editable!!.length < 8) {
+                                editable.insert(clickPosition, primaryCode.toChar().toString())
+                                clickPosition += 1
+                            }
                         }
                     }
                 }
@@ -90,8 +91,15 @@ class KeyboardUtil(val keyboardView: MyKeyboardView, var requestEditAct: (() -> 
         }
     }
 
-    fun setEditText(editText: EditText) {
+    fun setEditText(editText: EditText, clickPosition: Int = -1) {
         this.editText = editText
+        if (clickPosition == -1) {
+            this.editText!!.setSelection(this.editText!!.length())
+            this.clickPosition = this.editText!!.length()
+        } else {
+            this.editText!!.setSelection(clickPosition)
+            this.clickPosition = clickPosition
+        }
     }
 
     /**

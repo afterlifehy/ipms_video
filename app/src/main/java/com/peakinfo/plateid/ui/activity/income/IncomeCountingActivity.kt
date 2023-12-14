@@ -117,7 +117,9 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
 
             R.id.rtv_print -> {
                 incomeCountingBean?.loginName = loginName
-                incomeCountingBean?.range = startDate + "~" + endDate
+                if (searchRange == "1") {
+                    incomeCountingBean?.range = startDate + "~" + endDate
+                }
                 incomeCountingBean?.list1 = todaySummaryList as ArrayList<Summary>
                 incomeCountingBean?.list2 = monthSummaryList as ArrayList<Summary>
                 var str = "receipt,"

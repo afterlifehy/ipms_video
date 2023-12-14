@@ -17,7 +17,8 @@ class MyOnTouchListener(
         // 切换键盘
 //        keyboardUtil.hideSoftInputMethod(v as EditText)
         keyboardUtil.changeKeyboard(isNumber)
-        keyboardUtil.setEditText(v as EditText)
+        val clickPosition = (v as EditText).getOffsetForPosition(event!!.x, event.y)
+        keyboardUtil.setEditText(v,clickPosition)
 
         return true
     }
