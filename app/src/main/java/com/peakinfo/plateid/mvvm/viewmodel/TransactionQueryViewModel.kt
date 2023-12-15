@@ -10,7 +10,7 @@ import com.peakinfo.plateid.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TransactionQueryViewModel: BaseViewModel() {
+class TransactionQueryViewModel : BaseViewModel() {
     val mOrderRepository by lazy {
         OrderRepository()
     }
@@ -53,7 +53,7 @@ class TransactionQueryViewModel: BaseViewModel() {
             executeResponse(response, {
                 payResultLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }
