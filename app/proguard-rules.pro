@@ -45,7 +45,13 @@ public void *(android.webkit.WebView, java.lang.String);
 #-------------------------------------------------------------------------
 
 #---------------------------------2.第三方包-------------------------------
+# gsyvideoplayer
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+-keep class com.shuyu.gsyvideoplayer.** { *; }
+-dontwarn com.shuyu.gsyvideoplayer.**
 
+#车牌识别
 -keep class com.hyperai.hyperlpr3.** { *; }
 
 #umeng
