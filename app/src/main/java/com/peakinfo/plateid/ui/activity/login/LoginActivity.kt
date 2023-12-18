@@ -47,8 +47,14 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
         var rxPermissions = RxPermissions(this@LoginActivity)
-        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-            if (it) {
+        rxPermissions.request(
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.BLUETOOTH_SCAN,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        ).subscribe {
+            if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val provider = LocationManager.NETWORK_PROVIDER
                 locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {

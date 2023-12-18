@@ -48,7 +48,9 @@ class BluePrint() {
         try {
             printResult = Print1(content)
         } catch (e: Exception) {
-
+            Handler(Looper.getMainLooper()).post {
+                ToastUtil.showMiddleToast("打印机状态异常")
+            }
         }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
@@ -58,9 +60,13 @@ class BluePrint() {
             } else if (printResult == -1) {
 
             } else if (printResult == -2) {
-                ToastUtil.showMiddleToast("路段名称过长...")
+                Handler(Looper.getMainLooper()).post {
+                    ToastUtil.showMiddleToast("路段名称过长...")
+                }
             } else {
-                ToastUtil.showMiddleToast("打印失败")
+                Handler(Looper.getMainLooper()).post {
+                    ToastUtil.showMiddleToast("打印失败")
+                }
             }
         }
     }

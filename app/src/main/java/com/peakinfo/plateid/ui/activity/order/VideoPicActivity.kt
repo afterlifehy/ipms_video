@@ -26,16 +26,20 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
     var tabList: MutableList<String> = ArrayList()
     var fragmentList: MutableList<Fragment> = ArrayList()
     var orderNo = ""
+    var from = 0
 
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.VIDEO_PIC_ORDER_NO).toString()
+        from = intent.getIntExtra(ARouterMap.VIDEO_PIC_FROM, 0)
 
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.视频图片)
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
         tabList.add(i18n(com.peakinfo.base.R.string.车辆入场))
-        tabList.add(i18n(com.peakinfo.base.R.string.车辆出场))
+        if (from == 0) {
+            tabList.add(i18n(com.peakinfo.base.R.string.车辆出场))
+        }
     }
 
     override fun initListener() {

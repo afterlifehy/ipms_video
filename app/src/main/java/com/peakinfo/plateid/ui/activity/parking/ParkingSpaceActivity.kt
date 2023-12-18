@@ -120,6 +120,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
             R.id.iv_right -> {
                 ARouter.getInstance().build(ARouterMap.VIDEO_PIC).withString(ARouterMap.VIDEO_PIC_ORDER_NO, orderNo)
+                    .withInt(ARouterMap.VIDEO_PIC_FROM, 1)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
