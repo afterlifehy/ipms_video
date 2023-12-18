@@ -12,15 +12,52 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ic_parking_lot_top_bg" />
 
-    <include
-        android:id="@+id/layout_toolbar"
-        layout="@layout/layout_comment_toolbar" />
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical">
+
+        <FrameLayout
+            android:id="@+id/fl_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_13"
+            android:paddingEnd="@dimen/dp_50">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_25"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_back" />
+        </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:drawableEnd="@mipmap/ic_arrow_down"
+            android:drawablePadding="@dimen/dp_11"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="8"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_23"
+            android:textStyle="bold"
+            tools:text="CN007定西路(愚园CN007定西路(愚园" />
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_parkingLot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_toolbar"
+        android:layout_below="@+id/rl_toolbar"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_17" />

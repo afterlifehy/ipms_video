@@ -153,7 +153,7 @@ object ThirdPart {
 
     const val filedownloader = "com.liulishuo.filedownloader:library:1.7.7"
 
-    const val room_version = "2.5.0"
-    const val room_runtime = "androidx.room:room-runtime:$room_version"
-    const val room = "androidx.room:room-compiler:$room_version"
+    const val umsdk_common = "com.umeng.umsdk:common:9.4.4"
+    const val umsdk_asms =  "com.umeng.umsdk:asms:1.4.1"
+    const val umeng_apm = "com.umeng.umsdk:apm:1.5.2"
 }

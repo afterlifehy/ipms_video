@@ -29,6 +29,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.CurrentStreetUpdateEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
@@ -44,12 +45,25 @@ import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.MAIN)
 class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnClickListener {
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(currentStreetUpdateEvent: CurrentStreetUpdateEvent) {
+        currentStreet = currentStreetUpdateEvent.street
+        if (currentStreet!!.streetName.indexOf("(") < 0) {
+            binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+        } else {
+            binding.tvTitle.text =
+                currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+        }
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         // super.onSaveInstanceState(outState)
@@ -333,6 +347,10 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
     override fun onReloadData() {
 
+    }
+
+    override fun isRegEventBus(): Boolean {
+        return true
     }
 
     override fun providerVMClass(): Class<MainViewModel> {

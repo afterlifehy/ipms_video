@@ -209,6 +209,10 @@ dependencies {
     //filedownloader
     api(ThirdPart.filedownloader)
 
+    //umeng
+    api(ThirdPart.umsdk_common)
+    api(ThirdPart.umsdk_asms)
+    api(ThirdPart.umeng_apm)
 //    {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")

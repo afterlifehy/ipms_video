@@ -8,6 +8,8 @@ import com.peakinfo.base.http.interceptor.*
 import com.peakinfo.base.network.NetWorkMonitorManager
 import com.peakinfo.common.help.SmartRefreshHelp
 import com.peakinfo.plateid.startup.OnAppBaseProxyManager
+import com.umeng.analytics.MobclickAgent
+import com.umeng.commonsdk.UMConfigure
 import io.realm.Realm
 import okhttp3.Interceptor
 import java.io.File
@@ -33,6 +35,10 @@ class AppApplication : BaseApplication() {
             //初始化网络状态监听
             regNetWorkState(this)
         }.start()
+        UMConfigure.init(this, "657c1359a7208a5af1884f6c", "android", UMConfigure.DEVICE_TYPE_PHONE, null)
+        // 选用AUTO页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL)
+        UMConfigure.setProcessEvent(true)
     }
 
 
