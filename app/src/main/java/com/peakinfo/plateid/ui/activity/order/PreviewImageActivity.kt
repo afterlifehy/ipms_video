@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.SamplePagerAdapter
 import com.peakinfo.plateid.databinding.ActivityPreviewImageBinding
 import com.peakinfo.plateid.mvvm.viewmodel.PreviewImageViewModel
@@ -72,6 +73,11 @@ class PreviewImageActivity : VbBaseActivity<PreviewImageViewModel, ActivityPrevi
     }
 
     override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.pv_img -> {
+                onBackPressedSupport()
+            }
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {
