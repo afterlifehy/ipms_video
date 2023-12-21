@@ -21,6 +21,8 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
+import com.peakinfo.common.event.RefreshParkingLotEvent
+import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
@@ -29,6 +31,8 @@ import com.peakinfo.plateid.databinding.ActivityParkingLotBinding
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingLotViewModel
 import com.peakinfo.plateid.pop.StreetPop
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.PARKING_LOT)
 class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {
@@ -40,6 +44,11 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshParkingLotEvent: RefreshParkingLotEvent) {
+        getParkingLotList()
+    }
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)

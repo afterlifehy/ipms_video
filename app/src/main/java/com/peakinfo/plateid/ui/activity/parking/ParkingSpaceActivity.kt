@@ -27,6 +27,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.RefreshParkingLotEvent
 import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BigDecimalManager
@@ -39,6 +40,7 @@ import com.peakinfo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -248,6 +250,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 } else {
                     startPrint(it)
                 }
+                EventBus.getDefault().post(RefreshParkingLotEvent())
                 onBackPressedSupport()
             }
             errMsg.observe(this@ParkingSpaceActivity) {
