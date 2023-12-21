@@ -132,7 +132,12 @@ class BluePrint() {
             }
             if (receipt) {
                 val incomeCountingBean = JSONObject.parseObject(printText, IncomeCountingBean::class.java)
-                var height = 300 + 300 * incomeCountingBean.list1.size
+                var height = 300
+                if (incomeCountingBean.list2 != null && incomeCountingBean.list2.size > 0) {
+                    height += 300 * incomeCountingBean.list1.size
+                } else {
+                    height += 150 * incomeCountingBean.list1.size
+                }
                 zpSDK!!.pageSetup(800, height)
                 zpSDK!!.DrawSpecialText(230, 10, PrinterInterface.Textfont.siyuanheiti, 30, "数据打印", 0, 1, 0) //3
                 zpSDK!!.DrawSpecialText(
