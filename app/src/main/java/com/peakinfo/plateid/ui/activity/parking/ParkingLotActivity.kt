@@ -143,9 +143,9 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             }
 
             R.id.tv_title -> {
-                currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
+                        currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(street, old)
                         if (street.streetName.indexOf("(") < 0) {
@@ -215,6 +215,10 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 
     override fun providerVMClass(): Class<ParkingLotViewModel> {
         return ParkingLotViewModel::class.java
+    }
+
+    override fun isRegEventBus(): Boolean {
+        return true
     }
 
     override fun onDestroy() {

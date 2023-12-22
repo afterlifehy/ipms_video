@@ -251,7 +251,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     startPrint(it)
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
-                onBackPressedSupport()
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -300,5 +299,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     override fun providerVMClass(): Class<ParkingSpaceViewModel> {
         return ParkingSpaceViewModel::class.java
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (handler != null) {
+            handler.removeCallbacks(runnable)
+        }
     }
 }

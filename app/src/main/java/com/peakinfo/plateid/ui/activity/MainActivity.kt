@@ -229,9 +229,9 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.tv_title -> {
-                currentStreet = RealmUtil.instance?.findCurrentStreet()
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
+                        currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(street, old)
                         if (street.streetName.indexOf("(") < 0) {

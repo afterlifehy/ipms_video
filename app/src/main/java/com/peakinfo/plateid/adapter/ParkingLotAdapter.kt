@@ -84,7 +84,7 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
             } else {
                 holder.vb.llPlate.hide()
                 holder.vb.tvPlate.show()
-                if (item.carLicense.contains("WJ")) {
+                if (item.carLicense.startsWith("WJ")) {
                     val strings = arrayOf("WJ", item.carLicense.substring(2, item.carLicense.length))
                     holder.vb.tvPlate.text = AppUtil.getSpan(strings, sizes, colors)
                 } else if (item.carLicense.contains("警")) {
