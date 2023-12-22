@@ -49,7 +49,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     var locationManager: LocationManager? = null
     var lat = 0.00
     var lon = 0.00
-    var locationEnable = false
+    var locationEnable = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -73,16 +73,16 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     override fun onLocationChanged(location: Location) {
                         lat = location.latitude
                         lon = location.longitude
-                        locationEnable = true
+                        locationEnable = 1
                     }
 
                     override fun onProviderDisabled(provider: String) {
-                        locationEnable = false
+                        locationEnable = -1
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                     }
 
                     override fun onProviderEnabled(provider: String) {
-                        locationEnable = true
+                        locationEnable = 1
                     }
                 })
             }

@@ -35,11 +35,11 @@ class StreetChooseListDialog(
     }
 
     private fun initView() {
-        var height = (SizeUtils.dp2px(60f) * streetList.size + SizeUtils.dp2px(174f)).toFloat()
+        var height = SizeUtils.dp2px(60f) * (streetList.size + 1) + SizeUtils.dp2px(174f)
         if (height > ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()) {
-            height = (ScreenUtils.getAppScreenHeight()- BarUtils.getStatusBarHeight()).toFloat()
+            height = ScreenUtils.getAppScreenHeight() - BarUtils.getStatusBarHeight()
         }
-        setLayout(getWidth(), height)
+        setLayout(ScreenUtils.getAppScreenWidth().toFloat(), height.toFloat())
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         binding.tvDialogTitle.gone()
         binding.rvStreet.setHasFixedSize(true)

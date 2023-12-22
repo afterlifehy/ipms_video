@@ -11,12 +11,18 @@ data class OrderResultBean(
 data class OrderBean(
     val amount: String,
     val carLicense: String,
-    val duration: String,
+    var duration: String,
     val endTime: String,
     val hasPayed: String,
     val orderNo: String,
     val parkingNo: String,
     val startTime: String,
     val streetName: String,
-    val paidAmount:String
-) : Parcelable
+    val paidAmount: String
+) : Parcelable {
+    init {
+        if (duration == null) {
+            duration = "0"
+        }
+    }
+}
