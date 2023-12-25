@@ -93,9 +93,6 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
                 } else {
                     holder.vb.tvPlate.text = item.carLicense
                 }
-                if (item.carLicense.length == 8) {
-                    item.carColor = "9"
-                }
                 holder.vb.tvPlate.background =
                     plateBgMap[item.carColor]?.let { ContextCompat.getDrawable(BaseApplication.instance(), it) }
                 holder.vb.tvPlate.setTextColor(ContextCompat.getColor(BaseApplication.instance(), plateTxtColorMap[item.carColor]!!))

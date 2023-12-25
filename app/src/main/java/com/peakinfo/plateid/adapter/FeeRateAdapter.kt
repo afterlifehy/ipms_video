@@ -28,11 +28,11 @@ class FeeRateAdapter(data: MutableList<FeeRateBean>? = null) : BaseBindingAdapte
             }
         }
         holder.vb.tvDayTime.text = "${item.whiteStart}至${item.whiteEnd}"
-        holder.vb.tvNightTime.text = "${item.blackStart}至${item.blackEnd}"
+        holder.vb.tvNightTime.text = "${item.blackStart}至${item.blackEnd} ${item.period}元/次"
         holder.vb.rtvStartAmount.text = "${item.first}元"
         holder.vb.tvCenterAmount.text = "${item.second}元"
         holder.vb.rtvEndAmount.text = "${item.third}元"
-        holder.vb.tvRemark.text = "${item.unitPrice}。计次：${item.period}元/次"
+        holder.vb.tvRemark.text = "${item.unitPrice.replace("后续","超过1小时后，")}。"
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemFeeRateBinding {

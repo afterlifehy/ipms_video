@@ -33,29 +33,30 @@
         app:rv_strokeColor="@color/color_ffcccccc"
         app:rv_strokeWidth="@dimen/dp_1">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_dayTime"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_toStartOf="@+id/tv_nightTime"
                 android:drawableStart="@mipmap/ic_day"
                 android:drawablePadding="@dimen/dp_7"
                 tools:text="08:00至22:00" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_nightTime"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_5"
                 android:drawableStart="@mipmap/ic_night"
                 android:drawablePadding="@dimen/dp_7"
                 tools:text="08:00至22:00" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -153,6 +154,6 @@
             android:gravity="center"
             android:textColor="@color/color_ff666666"
             android:textSize="@dimen/sp_17"
-            tools:text="后续每30分钟10元。计次：10元/次" />
+            tools:text="超过1小时后，每30分钟10元。夜间计次：10元/次" />
     </com.aries.ui.view.radius.RadiusLinearLayout>
 </com.aries.ui.view.radius.RadiusLinearLayout>

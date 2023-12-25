@@ -123,9 +123,9 @@
     <string name="费率列表">费率列表</string>
     <string name="重新登录">重新登录</string>
     <string name="是否确定进行不签退退出">是否确定进行不签退退出</string>
-    <string name="first15">首15分钟</string>
-    <string name="second15">后15分钟</string>
-    <string name="third30">后30分钟</string>
+    <string name="first15">0-15分钟</string>
+    <string name="second15">15-30分钟</string>
+    <string name="third30">30-60分钟</string>
     <string name="停车场">停车场</string>
     <string name="确认签退">确认签退</string>
     <string name="选择打印机">选择打印机</string>
