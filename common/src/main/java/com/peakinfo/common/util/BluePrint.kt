@@ -3,10 +3,9 @@ package com.peakinfo.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
-import android.widget.Toast
 import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.IncomeCountingBean
@@ -207,61 +206,73 @@ class BluePrint() {
                 val now = Calendar.getInstance()
                 val today = now[Calendar.YEAR].toString() + "年" + (now[Calendar.MONTH] + 1) + "月" + now[Calendar.DAY_OF_MONTH] + "日"
                 val printInfo = JSONObject.parseObject(printText, PrintInfoBean::class.java)
-                zpSDK!!.pageSetup(800, 1700)
+                zpSDK!!.pageSetup(800, 1400)
                 //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
                 zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
                 drawText(10 + 36 + 40, 20, "-----------------------------------------------")
-                drawText(10 + 36 + 40 + 32, 20, "停车单号   " + printInfo.orderId)
-                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码   " + printInfo.plateId)
-                if (printInfo.roadId.length <= 20) {
-                    drawText(yLocation, 20, "路段名称   " + printInfo.roadId)
-                } else if (printInfo.roadId.length > 20 && printInfo.roadId.length <= 40) {
-                    drawText(yLocation, 20, "路段名称   " + printInfo.roadId.substring(0, 20))
+                drawText(10 + 36 + 40 + 32, 20, "停车单号:" + printInfo.orderId)
+                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码:" + printInfo.plateId)
+                if (printInfo.roadId.length <= 17) {
+                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId)
+                } else if (printInfo.roadId.length > 17 && printInfo.roadId.length <= 34) {
+                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId.substring(0, 17))
                     yLocation += 32
-                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(20))
-                } else if (printInfo.roadId.length > 40 && printInfo.roadId.length <= 60) {
-                    drawText(yLocation, 20, "路段名称   " + printInfo.roadId.substring(0, 20))
+                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(17))
+                } else if (printInfo.roadId.length > 34 && printInfo.roadId.length <= 51) {
+                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId.substring(0, 17))
                     yLocation += 32
-                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(20, 40))
+                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(17, 34))
                     yLocation += 32
-                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(40))
+                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(34))
                 } else {
                     return -2
                 }
-                drawText(yLocation + 48, 20, "停放时段  ")
-                drawText(yLocation + 32, 20, "           " + printInfo.startTime)
-                drawText(yLocation + 64, 20, "           " + printInfo.leftTime)
+                drawText(yLocation + 48, 20, "停放时间:")
+                drawText(yLocation + 32, 20, "         " + printInfo.startTime)
+                drawText(yLocation + 64, 20, "         " + printInfo.leftTime)
                 yLocation += 96
-                drawText(yLocation, 20, "缴费金额   " + printInfo.payMoney)
+                drawText(yLocation, 20, "缴费金额:" + printInfo.payMoney)
                 yLocation += 32
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36
                 drawText(yLocation, 20, "----------------电子票据开具方式----------------")
                 yLocation += 36
-                drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝")
+                drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
                 yLocation += 36
-                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
+//                val options = BitmapFactory.Options()
+//                options.inJustDecodeBounds = true // 设置为 true 表示只获取图片的大小信息而不加载到内存
+//                BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr, options)
+//                options.inSampleSize = calculateInSampleSize(options, 300, 300)
+//                options.inJustDecodeBounds = false
+                zpSDK!!.drawGraphic(
+                    65 + 60,
+                    yLocation,
+                    300,
+                    300,
+                    BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                )
+//                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
                 yLocation += (300 + 18)
                 drawText(yLocation, 20, "2、注册您的“上海停车”账号,绑定车牌。")
                 yLocation += 36
-                drawText(yLocation, 20, "3、在停车缴费---“我要开票”---“道路电子票据”---下")
+                drawText(yLocation, 20, "3、在“停车缴费”---“我要开票”---“道路停车电子缴”")
                 yLocation += 36
-                drawText(yLocation, 20, "载您的道路停车票据")
+                drawText(yLocation, 20, "款书(票据)---下载您的道路停车票据")
+//                yLocation += 36
+//                drawText(yLocation, 20, "提示:")
+//                yLocation += 36
+//                drawText(yLocation, 20, printInfo.plateId + "的车主(单位)")
+//                yLocation += 36
+//                drawText(yLocation, 20, "您(单位)在" + today + "之前，累计有 " + printInfo.oweCount + " 笔道路停车欠费记")
+//                yLocation += 36
+//                drawText(yLocation, 20, "录，请您尽快在本市任一道路停车场补缴。（其中，属智慧道")
+//                yLocation += 36
+//                drawText(yLocation, 20, "路停车场的欠费，可在智慧道路停车场或者登录“上海停车”")
+//                yLocation += 36
+//                drawText(yLocation, 20, "官方APP、小程序查询补缴。）")
                 yLocation += 36
-                drawText(yLocation, 20, "提示:")
-                yLocation += 36
-                drawText(yLocation, 20, printInfo.plateId + "的车主(单位)")
-                yLocation += 36
-                drawText(yLocation, 20, "您(单位)在" + today + "之前，累计有 " + printInfo.oweCount + " 笔道路停车欠费记")
-                yLocation += 36
-                drawText(yLocation, 20, "录，请您尽快在本市任一道路停车场补缴。（其中，属智慧道")
-                yLocation += 36
-                drawText(yLocation, 20, "路停车场的欠费，可在智慧道路停车场或者登录“上海停车”")
-                yLocation += 36
-                drawText(yLocation, 20, "官方APP、小程序查询补缴。）")
-                yLocation += 36
-                drawText(yLocation, 20, "--------------- 注意事项 ----------------")
+                drawText(yLocation, 20, "--------------------注意事项-------------------")
                 yLocation += 36
                 drawText(yLocation, 20, "1、本告知书仅为您(单位)本次停车付费的凭证，不作为电子")
                 yLocation += 36
@@ -290,7 +301,7 @@ class BluePrint() {
                     yLocation += 72
                 }
                 if (printInfo.company.length <= 22) {
-                    drawText(yLocation + 36, 24, printInfo.company)
+                    drawText(yLocation, 24, printInfo.company)
                 } else {
                     drawText(yLocation, 24, printInfo.company.substring(0, 22))
                     drawText(yLocation + 36, 24, printInfo.company.substring(22))
@@ -370,5 +381,23 @@ class BluePrint() {
             0,
             0
         )
+    }
+
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        val width = options.outWidth
+        val height = options.outHeight
+        var inSampleSize = 1
+        if (reqWidth > 0 && reqHeight > 0) {
+            if (width > reqWidth || height > reqHeight) {
+                val halfWidth = width / 2
+                val halfHeight = height / 2
+
+                // 计算最大的 inSampleSize 值，使得宽度和高度都大于请求的宽度和高度
+                while (halfWidth / inSampleSize >= reqWidth && halfHeight / inSampleSize >= reqHeight) {
+                    inSampleSize *= 2
+                }
+            }
+        }
+        return inSampleSize
     }
 }
