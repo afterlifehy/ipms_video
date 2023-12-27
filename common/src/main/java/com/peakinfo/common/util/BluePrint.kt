@@ -211,28 +211,28 @@ class BluePrint() {
                 zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
                 drawText(10 + 36 + 40, 20, "-----------------------------------------------")
-                drawText(10 + 36 + 40 + 32, 20, "停车单号:" + printInfo.orderId)
-                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码:" + printInfo.plateId)
-                if (printInfo.roadId.length <= 17) {
-                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId)
-                } else if (printInfo.roadId.length > 17 && printInfo.roadId.length <= 34) {
-                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId.substring(0, 17))
+                drawText(10 + 36 + 40 + 32, 20, "停车单号:   " + printInfo.orderId)
+                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码:   " + printInfo.plateId)
+                if (printInfo.roadId.length <= 21) {
+                    drawText(yLocation, 20, "停车路段:   " + printInfo.roadId)
+                } else if (printInfo.roadId.length > 21 && printInfo.roadId.length <= 42) {
+                    drawText(yLocation, 20, "停车路段:   " + printInfo.roadId.substring(0, 21))
                     yLocation += 32
-                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(17))
-                } else if (printInfo.roadId.length > 34 && printInfo.roadId.length <= 51) {
-                    drawText(yLocation, 20, "停车路段(路名、路段):" + printInfo.roadId.substring(0, 17))
+                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(21))
+                } else if (printInfo.roadId.length > 42 && printInfo.roadId.length <= 63) {
+                    drawText(yLocation, 20, "停车路段:   " + printInfo.roadId.substring(0, 21))
                     yLocation += 32
-                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(17, 34))
+                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(21, 42))
                     yLocation += 32
-                    drawText(yLocation, 20, "                     " + printInfo.roadId.substring(34))
+                    drawText(yLocation, 20, "           " + printInfo.roadId.substring(42))
                 } else {
                     return -2
                 }
-                drawText(yLocation + 48, 20, "停放时间:")
-                drawText(yLocation + 32, 20, "         " + printInfo.startTime)
-                drawText(yLocation + 64, 20, "         " + printInfo.leftTime)
+                drawText(yLocation + 48, 20, "停放时间:   ")
+                drawText(yLocation + 32, 20, "            " + printInfo.startTime)
+                drawText(yLocation + 64, 20, "            " + printInfo.leftTime)
                 yLocation += 96
-                drawText(yLocation, 20, "缴费金额:" + printInfo.payMoney)
+                drawText(yLocation, 20, "缴费金额:   " + printInfo.payMoney)
                 yLocation += 32
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36
