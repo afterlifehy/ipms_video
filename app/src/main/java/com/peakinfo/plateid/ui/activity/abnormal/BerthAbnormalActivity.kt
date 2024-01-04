@@ -22,6 +22,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.ParkingSpaceBackEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.Constant
@@ -35,6 +36,7 @@ import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.BERTH_ABNORMAL)
 class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
@@ -251,6 +253,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     param["attr"] = jsonobject
                     mViewModel.abnormalReport(param)
                     ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                    EventBus.getDefault().post(ParkingSpaceBackEvent())
                     onBackPressedSupport()
                 }
             }
