@@ -22,7 +22,6 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
-import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.Constant
@@ -36,7 +35,6 @@ import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
 import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.BERTH_ABNORMAL)
 class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBerthAbnormalBinding>(), OnClickListener {
@@ -251,8 +249,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     }
                     jsonobject["orderNo"] = orderNo
                     param["attr"] = jsonobject
-                    showProgressDialog(20000)
                     mViewModel.abnormalReport(param)
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                    onBackPressedSupport()
                 }
             }
 
@@ -350,14 +349,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         super.startObserve()
         mViewModel.apply {
             abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
-                dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.上报成功))
-                if (type == "02") {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent(carLicense, carColor))
-                } else {
-                    EventBus.getDefault().post(RefreshParkingSpaceEvent(binding.etPlate.text.toString(), checkedColor))
-                }
-                onBackPressedSupport()
             }
             errMsg.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()

@@ -104,7 +104,6 @@
     <string name="支付成功">支付成功</string>
     <string name="填写泊位号">填写泊位号</string>
     <string name="请填写泊位号">请填写泊位号</string>
-    <string name="上报成功">上报成功</string>
     <string name="已付">已付：</string>
     <string name="元">元</string>
     <string name="欠">欠：</string>
@@ -151,4 +150,5 @@
     <string name="未检测到已配对的打印设备">未检测到已配对的打印设备</string>
     <string name="去配对">去配对</string>
     <string name="打印机连接失败需要手动连接">打印机连接失败，需要手动连接</string>
+    <string name="已上报请等待处理">已上报，请等待处理</string>
 </resources>

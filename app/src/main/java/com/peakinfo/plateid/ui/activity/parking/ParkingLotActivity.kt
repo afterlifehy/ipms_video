@@ -22,7 +22,6 @@ import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
 import com.peakinfo.common.event.RefreshParkingLotEvent
-import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R

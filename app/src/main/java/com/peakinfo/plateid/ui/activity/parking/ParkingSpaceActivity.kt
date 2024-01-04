@@ -28,7 +28,6 @@ import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.RefreshParkingLotEvent
-import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BigDecimalManager
 import com.peakinfo.common.util.BluePrint
@@ -41,8 +40,6 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.PARKING_SPACE)
 class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
@@ -66,13 +63,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var count = 0
     var handler = Handler(Looper.getMainLooper())
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
-        carLicense = refreshParkingSpaceEvent.carLicense
-        carColor = refreshParkingSpaceEvent.carColor.toString()
-        requestParkingSpaceFee()
-    }
 
     override fun initView() {
         orderNo = intent.getStringExtra(ARouterMap.ORDER_NO).toString()
