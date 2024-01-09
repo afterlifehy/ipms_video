@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffe8eef6">
@@ -11,82 +12,97 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ic_deep_top_bg" />
 
-    <include
-        android:id="@+id/layout_toolbar"
-        layout="@layout/layout_comment_toolbar" />
-
-    <com.aries.ui.view.radius.RadiusRelativeLayout
-        android:id="@+id/rrl_search"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_47"
-        android:layout_below="@+id/layout_toolbar"
-        android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginEnd="@dimen/dp_13"
-        android:paddingStart="@dimen/dp_13"
-        android:paddingEnd="@dimen/dp_13"
-        app:rv_radius="@dimen/dp_7">
-
-        <ImageView
-            android:id="@+id/iv_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_search" />
-
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_toStartOf="@+id/tv_search"
-            android:layout_toEndOf="@+id/iv_search"
-            android:background="@null"
-            android:hint="@string/请输入车牌号"
-            android:maxLength="8"
-            android:textColorHint="@color/color_ff999999"
-            android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="@dimen/sp_19" />
-
-        <TextView
-            android:id="@+id/tv_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:text="@string/搜索"
-            android:textColor="@color/color_ff0371f4"
-            android:textSize="@dimen/sp_19" />
-    </com.aries.ui.view.radius.RadiusRelativeLayout>
-
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/srl_order"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rrl_search"
-        app:srlEnableNestedScrolling="true">
+        android:orientation="vertical">
 
-        <FrameLayout
+        <include
+            android:id="@+id/layout_toolbar"
+            layout="@layout/layout_comment_toolbar" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginBottom="@dimen/dp_13"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_19"
+            android:textStyle="bold"
+            tools:text="日期：2024-01-01~2024-01-09" />
+
+        <com.aries.ui.view.radius.RadiusRelativeLayout
+            android:id="@+id/rrl_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="@dimen/dp_47"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginEnd="@dimen/dp_13"
+            android:paddingStart="@dimen/dp_13"
+            android:paddingEnd="@dimen/dp_13"
+            app:rv_radius="@dimen/dp_7">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_orders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_13"
-                android:layout_marginTop="@dimen/dp_13"
-                android:layout_marginEnd="@dimen/dp_13" />
-
-            <include
-                android:id="@+id/layout_noData"
-                layout="@layout/layout_no_data"
+            <ImageView
+                android:id="@+id/iv_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-        </FrameLayout>
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_search" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_toStartOf="@+id/tv_search"
+                android:layout_toEndOf="@+id/iv_search"
+                android:background="@null"
+                android:hint="@string/请输入车牌号"
+                android:maxLength="8"
+                android:textColorHint="@color/color_ff999999"
+                android:textCursorDrawable="@drawable/shape_cursor"
+                android:textSize="@dimen/sp_19" />
+
+            <TextView
+                android:id="@+id/tv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/搜索"
+                android:textColor="@color/color_ff0371f4"
+                android:textSize="@dimen/sp_19" />
+        </com.aries.ui.view.radius.RadiusRelativeLayout>
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/srl_order"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srlEnableNestedScrolling="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_orders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_13"
+                    android:layout_marginTop="@dimen/dp_13"
+                    android:layout_marginEnd="@dimen/dp_13" />
+
+                <include
+                    android:id="@+id/layout_noData"
+                    layout="@layout/layout_no_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    </LinearLayout>
 
     <com.peakinfo.common.view.keyboard.MyKeyboardView
         android:id="@+id/kv_keyBoard"

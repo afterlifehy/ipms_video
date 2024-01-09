@@ -61,6 +61,7 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
         orderInquiryAdapter = OrderInquiryAdapter(orderList, this)
         binding.rvOrders.adapter = orderInquiryAdapter
 
+        binding.tvDate.text = "日期：${startDate}~${endDate}"
         initKeyboard()
 
     }
@@ -155,13 +156,11 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
             }
 
             R.id.iv_right -> {
-                datePop = DatePop(BaseApplication.instance(), startDate, endDate, 0,object : DatePop.DateCallBack {
+                datePop = DatePop(BaseApplication.instance(), startDate, endDate, 0, object : DatePop.DateCallBack {
                     override fun selectDate(startTime: String, endTime: String) {
                         startDate = startTime
                         endDate = endTime
-                        pageIndex = 1
-                        showProgressDialog(20000)
-                        query()
+                        binding.tvDate.text = "日期：${startDate}~${endDate}"
                     }
 
                 })
