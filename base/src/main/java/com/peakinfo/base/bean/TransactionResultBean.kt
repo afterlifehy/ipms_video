@@ -1,17 +1,18 @@
 package com.peakinfo.base.bean
 
 data class TransactionResultBean(
-    val result: List<TransactionBean>
+    var result: List<TransactionBean>
 )
 
 data class TransactionBean(
-    val carLicense: String,
-    val endTime: String,
+    var carLicense: String,
+    var endTime: String,
     var hasPayed: String,
-    val orderNo: String,
-    val oweMoney: String,
-    val parkingNo: String,
+    var orderNo: String,
+    var oweMoney: String,
+    var parkingNo: String,
     var payedAmount: String,
-    val startTime: String,
-    val tradeNo: String,
+    var startTime: String,
+    var tradeNo: String,
+    var orderType: String = "2"
 )
