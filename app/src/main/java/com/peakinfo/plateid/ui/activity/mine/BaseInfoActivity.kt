@@ -10,6 +10,7 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.GlideUtils
@@ -56,6 +57,13 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
                 binding.tvName.text = it[0]
                 binding.tvAccount.text = it[1]
                 binding.tvPhoneNum.text = it[2]
+            }
+            errMsg.observe(this@BaseInfoActivity){
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.msg)
+            }
+            mException.observe(this@BaseInfoActivity) {
+                dismissProgressDialog()
             }
         }
     }

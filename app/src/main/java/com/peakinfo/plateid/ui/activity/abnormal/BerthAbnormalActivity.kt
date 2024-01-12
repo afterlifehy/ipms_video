@@ -143,7 +143,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             (v as EditText).requestFocus()
             keyboardUtil.changeKeyboard(true)
             val clickPosition = v.getOffsetForPosition(p1!!.x, p1.y)
-            keyboardUtil.setEditText(v,clickPosition)
+            keyboardUtil.setEditText(v, clickPosition)
             keyboardUtil.showKeyboard(show = {
                 val location = IntArray(2)
                 v.getLocationOnScreen(location)
@@ -356,6 +356,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             errMsg.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
+            }
+            mException.observe(this@BerthAbnormalActivity) {
+                dismissProgressDialog()
             }
         }
     }

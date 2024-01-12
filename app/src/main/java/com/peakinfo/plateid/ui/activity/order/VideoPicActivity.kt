@@ -91,6 +91,9 @@ class VideoPicActivity : VbBaseActivity<VideoPicViewModel, ActivityVideoPicBindi
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@VideoPicActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 

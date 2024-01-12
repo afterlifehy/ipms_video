@@ -353,6 +353,9 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@CollectionManagementActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 

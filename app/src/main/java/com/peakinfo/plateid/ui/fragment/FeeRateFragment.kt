@@ -48,6 +48,9 @@ class FeeRateFragment : VbBaseFragment<FeeRateFragmentViewModel, FragmentFeeRate
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@FeeRateFragment) {
+                dismissProgressDialog()
+            }
         }
     }
 

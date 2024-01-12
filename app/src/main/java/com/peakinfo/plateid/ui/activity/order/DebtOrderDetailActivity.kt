@@ -188,6 +188,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@DebtOrderDetailActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 

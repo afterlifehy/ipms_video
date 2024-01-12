@@ -189,6 +189,9 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@DebtCollectionActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 

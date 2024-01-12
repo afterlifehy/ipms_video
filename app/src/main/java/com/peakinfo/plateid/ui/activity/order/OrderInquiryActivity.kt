@@ -215,6 +215,9 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@OrderInquiryActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 

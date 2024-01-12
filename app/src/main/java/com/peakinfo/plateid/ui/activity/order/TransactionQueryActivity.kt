@@ -274,6 +274,9 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                 dismissProgressDialog()
                 ToastUtil.showMiddleToast(it.msg)
             }
+            mException.observe(this@TransactionQueryActivity) {
+                dismissProgressDialog()
+            }
         }
     }
 
