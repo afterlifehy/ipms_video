@@ -52,6 +52,7 @@ class TransactionQueryAdapter(data: MutableList<TransactionBean>? = null, val on
             holder.vb.flPaymentInquiry.setOnClickListener(onClickListener)
         }
         if (item.orderType == "2") {
+            holder.vb.rtvOrderType.show()
             holder.vb.rtvOrderType.text = i18n(com.peakinfo.base.R.string.场内支付)
             holder.vb.rtvOrderType.delegate.setTextColor(
                 ContextCompat.getColor(
@@ -66,6 +67,7 @@ class TransactionQueryAdapter(data: MutableList<TransactionBean>? = null, val on
                 )
             )
         } else {
+            holder.vb.rtvOrderType.show()
             holder.vb.rtvOrderType.text = i18n(com.peakinfo.base.R.string.欠费追缴)
             holder.vb.rtvOrderType.delegate.setTextColor(
                 ContextCompat.getColor(

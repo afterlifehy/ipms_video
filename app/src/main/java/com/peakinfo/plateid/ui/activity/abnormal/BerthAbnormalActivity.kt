@@ -329,18 +329,25 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     binding.etPlate.setText(plateId)
                     binding.etPlate.setSelection(plateId.length)
                     if (plate.startsWith("蓝")) {
+                        checkedColor = Constant.BLUE
                         collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
                     } else if (plate.startsWith("绿")) {
+                        checkedColor = Constant.GREEN
                         collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
                     } else if (plate.startsWith("黄")) {
+                        checkedColor = Constant.YELLOW
                         collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
                     } else if (plate.startsWith("黄绿")) {
+                        checkedColor = Constant.YELLOW_GREEN
                         collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
                     } else if (plate.startsWith("白")) {
+                        checkedColor = Constant.WHITE
                         collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
                     } else if (plate.startsWith("黑")) {
+                        checkedColor = Constant.BLACK
                         collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
                     } else {
+                        checkedColor = Constant.OTHERS
                         collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
                     }
                 }

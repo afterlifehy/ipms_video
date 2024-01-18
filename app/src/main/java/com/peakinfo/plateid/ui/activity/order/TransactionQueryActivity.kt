@@ -251,7 +251,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     roadId = it.roadName,
                     plateId = it.carLicense,
                     payMoney = String.format("%.2f", payMoney.toFloat()),
-                    orderId = currentTransactionBean!!.orderNo,
+                    orderId = it.tradeNo,
                     phone = it.phone,
                     startTime = it.startTime,
                     leftTime = it.endTime,
