@@ -32,6 +32,7 @@ import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
+import com.peakinfo.plateid.BuildConfig
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMineBinding
 import com.peakinfo.plateid.dialog.BlueToothDeviceListDialog
@@ -56,7 +57,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
         mineBluePrint = intent.getIntExtra(ARouterMap.MINE_BLUE_PRINT, 0)
-        binding.tvVersion.text = AppUtils.getAppVersionName()
+        if (BuildConfig.is_dev) {
+            binding.tvVersion.text = AppUtils.getAppVersionName() + "." + AppUtils.getAppVersionCode()
+        } else {
+            binding.tvVersion.text = AppUtils.getAppVersionName()
+        }
     }
 
     override fun initListener() {
