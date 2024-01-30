@@ -146,7 +146,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun initData() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
+        jsonobject["version"] = AppUtils.getAppVersionCode().toString()
         param["attr"] = jsonobject
         mViewModel.checkUpdate(param)
     }
