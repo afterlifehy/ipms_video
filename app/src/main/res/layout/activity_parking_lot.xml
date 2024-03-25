@@ -22,6 +22,7 @@
             android:id="@+id/fl_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:paddingStart="@dimen/dp_13"
             android:paddingEnd="@dimen/dp_50">
 
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
             android:drawableEnd="@mipmap/ic_arrow_down"
