@@ -221,4 +221,5 @@ dependencies {
 //        exclude(group = "androidx.appcompat")
 //        exclude(group = "androidx.core")
 //    }
+    api(ThirdPart.baiduMapLocation)
 }

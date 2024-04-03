@@ -1,4 +1,5 @@
 package com.peakinfo.base.event
 
-class ReLoginEvent {
+class ReLoginEvent(status: Int) {
+    var status = status
 }

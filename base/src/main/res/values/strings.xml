@@ -153,4 +153,5 @@
     <string name="已上报请等待处理">已上报，请等待处理</string>
     <string name="登录信息异常请重新签到">登录信息异常，请重新签到</string>
     <string name="去签到">去签到</string>
+    <string name="未获取到位置信息">未获取到位置信息</string>
 </resources>

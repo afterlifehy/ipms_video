@@ -35,7 +35,7 @@ class LoginExpiredInterceptor : Interceptor {
             if (content.contains("status")) {
                 val contentData = GsonUtils.fromJson(content, HttpWrapper::class.java)
                 if (contentData.status == 1010||contentData.status == 1012 || contentData.status == 1015) {
-                    EventBus.getDefault().post(ReLoginEvent())
+                    EventBus.getDefault().post(ReLoginEvent(contentData.status))
                 }
                 return response.newBuilder()
                     .body(ResponseBody.create(mediaType, content))

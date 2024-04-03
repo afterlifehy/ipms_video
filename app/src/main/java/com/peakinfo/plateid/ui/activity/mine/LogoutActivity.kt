@@ -6,13 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
-import android.location.LocationManager
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
@@ -25,6 +25,7 @@ import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
+import com.peakinfo.common.util.BaiduLocationUtil
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityLogOutBinding
 import com.peakinfo.plateid.mvvm.viewmodel.LogoutViewModel
@@ -42,7 +43,7 @@ import kotlinx.coroutines.withContext
 @Route(path = ARouterMap.LOGOUT)
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
-    var locationManager: LocationManager? = null
+    lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 121.445345
     var lon = 31.238665
     var locationEnable = 0
@@ -68,25 +69,28 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         var rxPermissions = RxPermissions(this@LogoutActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                val provider = LocationManager.NETWORK_PROVIDER
-                locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                    override fun onLocationChanged(location: Location) {
-                        lat = location.latitude
-                        lon = location.longitude
-                        locationEnable = 1
+                baiduLocationUtil = BaiduLocationUtil()
+                baiduLocationUtil.initBaiduLocation()
+                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                    override fun locationChange(
+                        lon: Double,
+                        lat: Double,
+                        location: LocationClientOption?,
+                        isSuccess: Boolean,
+                        address: String?
+                    ) {
+                        if (isSuccess) {
+                            this@LogoutActivity.lat = lat
+                            this@LogoutActivity.lon = lon
+                            locationEnable = 1
+                        } else {
+                            locationEnable = -1
+                        }
                     }
 
-                    override fun onProviderDisabled(provider: String) {
-                        locationEnable = -1
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
-                    }
-
-                    override fun onProviderEnabled(provider: String) {
-                        locationEnable = 1
-                    }
-
-                })
+                }
+                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                baiduLocationUtil.startLocation()
             }
         }
     }
@@ -114,56 +118,63 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
 
             R.id.tv_logout -> {
-                var rxPermissions = RxPermissions(this@LogoutActivity)
-                rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
-                    if (it) {
-                        DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.确认签退))
-                            .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
-                            .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
-                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                override fun onLeftClickLinsener(msg: String) {
+                if (locationEnable == 1) {
+                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.确认签退))
+                        .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                        .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
+                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                            override fun onLeftClickLinsener(msg: String) {
+                            }
+
+                            override fun onRightClickLinsener(msg: String) {
+                                showProgressDialog(20000)
+                                runBlocking {
+                                    val token =
+                                        PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                                    val param = HashMap<String, Any>()
+                                    val jsonobject = JSONObject()
+                                    jsonobject["token"] = token
+                                    jsonobject["longitude"] = lon
+                                    jsonobject["latitude"] = lat
+                                    param["attr"] = jsonobject
+                                    mViewModel.logout(param)
                                 }
-
-                                override fun onRightClickLinsener(msg: String) {
-                                    if (locationManager == null) {
-                                        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                                        val provider = LocationManager.NETWORK_PROVIDER
-                                        locationManager?.requestLocationUpdates(provider, 1000, 1f, object : LocationListener {
-                                            override fun onLocationChanged(location: Location) {
-                                                lat = location.latitude
-                                                lon = location.longitude
+                            }
+                        }).build(this@LogoutActivity).showDailog()
+                } else {
+                    var rxPermissions = RxPermissions(this@LogoutActivity)
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
+                    } else {
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE)
+                            .subscribe {
+                                if (it) {
+                                    baiduLocationUtil = BaiduLocationUtil()
+                                    baiduLocationUtil.initBaiduLocation()
+                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                                        override fun locationChange(
+                                            lon: Double,
+                                            lat: Double,
+                                            location: LocationClientOption?,
+                                            isSuccess: Boolean,
+                                            address: String?
+                                        ) {
+                                            if (isSuccess) {
+                                                this@LogoutActivity.lat = lat
+                                                this@LogoutActivity.lon = lon
                                                 locationEnable = 1
-                                            }
-
-                                            override fun onProviderDisabled(provider: String) {
+                                            } else {
                                                 locationEnable = -1
-                                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                             }
-
-                                            override fun onProviderEnabled(provider: String) {
-                                                locationEnable = 1
-                                            }
-                                        })
-                                    }
-                                    if (locationEnable != -1) {
-                                        showProgressDialog(20000)
-                                        runBlocking {
-                                            val token =
-                                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                                            val param = HashMap<String, Any>()
-                                            val jsonobject = JSONObject()
-                                            jsonobject["token"] = token
-                                            jsonobject["longitude"] = lon
-                                            jsonobject["latitude"] = lat
-                                            param["attr"] = jsonobject
-                                            mViewModel.logout(param)
                                         }
-                                    } else {
-                                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
-                                    }
-                                }
 
-                            }).build(this@LogoutActivity).showDailog()
+                                    }
+                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                    baiduLocationUtil.startLocation()
+                                } else {
+                                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                }
+                            }
                     }
                 }
             }

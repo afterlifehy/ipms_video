@@ -100,6 +100,15 @@
             android:name="android.max_aspect"
             android:value="2.1" />
 
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="h0SOWJbaYyF38uS4knG9pfu1CzeKJZ10"></meta-data>
+
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"></service>
+
         <activity
             android:name="com.peakinfo.plateid.ui.activity.SplashActivity"
             android:exported="true"

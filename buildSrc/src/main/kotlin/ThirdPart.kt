@@ -156,4 +156,6 @@ object ThirdPart {
     const val umsdk_common = "com.umeng.umsdk:common:9.4.4"
     const val umsdk_asms =  "com.umeng.umsdk:asms:1.4.1"
     const val umeng_apm = "com.umeng.umsdk:apm:1.5.2"
+
+    const val baiduMapLocation = "com.baidu.lbsyun:BaiduMapSDK_Location:9.3.7"
 }
