@@ -22,6 +22,7 @@ import com.peakinfo.base.bean.PrintInfoBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
+import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
@@ -192,6 +193,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 parkingSpaceBean = it
                 binding.tvPlate.text = it.carLicense
+                if (it.monthPay > 0L) {
+                    binding.rtvMonthlyPayment.show()
+                } else {
+                    binding.rtvMonthlyPayment.hide()
+                }
 
                 val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)

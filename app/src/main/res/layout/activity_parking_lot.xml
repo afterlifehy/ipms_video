@@ -12,53 +12,63 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ic_parking_lot_top_bg" />
 
-    <RelativeLayout
-        android:id="@+id/rl_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/abl_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:elevation="@dimen/dp_0">
 
-        <FrameLayout
-            android:id="@+id/fl_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:paddingStart="@dimen/dp_13"
-            android:paddingEnd="@dimen/dp_50">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/Theme.AppCompat"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="@dimen/dp_14"
-                android:layout_height="@dimen/dp_25"
-                android:scaleType="centerInside"
-                android:src="@mipmap/ic_back" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/fl_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/dp_40">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:drawableEnd="@mipmap/ic_arrow_down"
-            android:drawablePadding="@dimen/dp_11"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxEms="8"
-            android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_23"
-            android:textStyle="bold"
-            tools:text="CN007定西路(愚园CN007定西路(愚园" />
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_30"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/ic_back" />
+            </FrameLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:drawableEnd="@mipmap/ic_arrow_down"
+                android:drawablePadding="@dimen/dp_11"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxEms="8"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_23"
+                android:textStyle="bold"
+                tools:text="CN007定西路(愚园CN007定西路(愚园" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_parkingLot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rl_toolbar"
+        android:layout_below="@+id/abl_toolbar"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_17" />

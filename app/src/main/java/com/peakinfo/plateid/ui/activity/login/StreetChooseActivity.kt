@@ -104,6 +104,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         streetList = loginInfo?.result as MutableList<Street>
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -122,23 +123,59 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rtv_enterWorkBench -> {
-                if (streetChoosedList.isNotEmpty()) {
-                    showProgressDialog(20000)
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginInfo?.loginName
-                    jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-                    jsonobject["longitude"] = lon
-                    jsonobject["latitude"] = lat
-                    param["attr"] = jsonobject
-                    mViewModel.checkOnWork(param)
+                if (locationEnable == 1) {
+                    if (streetChoosedList.isNotEmpty()) {
+                        showProgressDialog(20000)
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["loginName"] = loginInfo?.loginName
+                        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+                        jsonobject["longitude"] = lon.toString()
+                        jsonobject["latitude"] = lat.toString()
+                        param["attr"] = jsonobject
+                        mViewModel.checkOnWork(param)
+                    } else {
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
+                    }
                 } else {
-                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
+                    var rxPermissions = RxPermissions(this@StreetChooseActivity)
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
+                    } else {
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                            if (it) {
+                                baiduLocationUtil = BaiduLocationUtil()
+                                baiduLocationUtil.initBaiduLocation()
+                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+                                    override fun locationChange(
+                                        lon: Double,
+                                        lat: Double,
+                                        location: LocationClientOption?,
+                                        isSuccess: Boolean,
+                                        address: String?
+                                    ) {
+                                        if (isSuccess) {
+                                            this@StreetChooseActivity.lat = lat
+                                            this@StreetChooseActivity.lon = lon
+                                            locationEnable = 1
+                                        } else {
+                                            locationEnable = -1
+                                        }
+                                    }
+
+                                }
+                                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                baiduLocationUtil.startLocation()
+                            } else {
+                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                            }
+                        }
+                    }
                 }
             }
 
             R.id.rfl_delete -> {
-                if(!AppUtil.isFastClick(500)){
+                if (!AppUtil.isFastClick(500)) {
                     val item = v.tag as Street
                     val position = streetChoosedList.indexOf(item)
                     streetChoosedList.remove(item)

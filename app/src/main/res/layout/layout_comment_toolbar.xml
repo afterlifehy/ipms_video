@@ -22,13 +22,12 @@
             android:id="@+id/fl_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_40">
 
             <ImageView
                 android:id="@+id/iv_back"
-                android:layout_width="@dimen/dp_14"
-                android:layout_height="@dimen/dp_25"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_30"
                 android:scaleType="centerInside"
                 android:src="@mipmap/ic_back" />
         </FrameLayout>

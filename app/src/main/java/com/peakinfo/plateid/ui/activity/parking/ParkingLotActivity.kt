@@ -212,7 +212,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         get() = true
 
     override fun marginStatusBarView(): View {
-        return binding.rlToolbar
+        return binding.ablToolbar
     }
 
     override fun providerVMClass(): Class<ParkingLotViewModel> {
