@@ -8,7 +8,9 @@ import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
 import com.peakinfo.base.bean.FeeRateBean
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18n
+import com.peakinfo.base.ext.show
 import com.peakinfo.plateid.databinding.ItemFeeRateBinding
 
 class FeeRateAdapter(data: MutableList<FeeRateBean>? = null) : BaseBindingAdapter<FeeRateBean, ItemFeeRateBinding>(data) {
@@ -28,11 +30,16 @@ class FeeRateAdapter(data: MutableList<FeeRateBean>? = null) : BaseBindingAdapte
             }
         }
         holder.vb.tvDayTime.text = "${item.whiteStart}至${item.whiteEnd}"
-        holder.vb.tvNightTime.text = "${item.blackStart}至${item.blackEnd} ${item.period}元/次"
+        if (item.blackStart == null) {
+            holder.vb.tvNightTime.gone()
+        } else {
+            holder.vb.tvNightTime.show()
+            holder.vb.tvNightTime.text = "${item.blackStart}至${item.blackEnd} ${item.period}元/次"
+        }
         holder.vb.rtvStartAmount.text = "${item.first}元"
         holder.vb.tvCenterAmount.text = "${item.second}元"
         holder.vb.rtvEndAmount.text = "${item.third}元"
-        holder.vb.tvRemark.text = "${item.unitPrice.replace("后续","超过1小时后，")}。"
+        holder.vb.tvRemark.text = "${item.unitPrice.replace("后续", "超过1小时后，")}。"
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemFeeRateBinding {

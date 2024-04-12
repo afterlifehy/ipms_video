@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -157,7 +158,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                         EventBus.getDefault().post(CurrentStreetUpdateEvent(street))
                     }
                 })
-                streetPop?.showAsDropDown((v.parent) as RelativeLayout)
+                streetPop?.showAsDropDown((v.parent) as Toolbar)
                 val upDrawable = ContextCompat.getDrawable(BaseApplication.instance(), com.peakinfo.common.R.mipmap.ic_arrow_up)
                 upDrawable?.setBounds(0, 0, upDrawable.intrinsicWidth, upDrawable.intrinsicHeight)
                 binding.tvTitle.setCompoundDrawables(
