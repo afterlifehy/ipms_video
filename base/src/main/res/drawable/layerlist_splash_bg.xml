@@ -3,7 +3,7 @@
     <item>
         <bitmap
             android:id="@+id/bitmap_splash"
-            android:src="@mipmap/ic_splash_bg">
+            android:src="@mipmap/ic_splash_bg_temp">
         </bitmap>
     </item>
 </layer-list>

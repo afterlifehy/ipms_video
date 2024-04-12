@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -20,6 +21,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.UpdateBean
@@ -161,18 +163,30 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
 
             R.id.rtv_login -> {
+                var rxPermissions = RxPermissions(this@LoginActivity)
                 if (locationEnable == 1) {
-                    showProgressDialog(20000)
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["loginName"] = binding.etAccount.text.toString()
-                    jsonobject["password"] = binding.etPw.text.toString()
-                    jsonobject["longitude"] = lon.toString()
-                    jsonobject["latitude"] = lat.toString()
-                    param["attr"] = jsonobject
-                    mViewModel.login(param)
+                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
+                        if (it) {
+                            showProgressDialog(20000)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["loginName"] = binding.etAccount.text.toString()
+                            jsonobject["password"] = binding.etPw.text.toString()
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                jsonobject["simId"] = PhoneUtils.getIMSI()
+                            } else {
+                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                            }
+                            jsonobject["imei"] = PhoneUtils.getIMEI()
+                            jsonobject["longitude"] = lon.toString()
+                            jsonobject["latitude"] = lat.toString()
+                            param["attr"] = jsonobject
+                            mViewModel.login(param)
+                        } else {
+                            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请授权电话权限))
+                        }
+                    }
                 } else {
-                    var rxPermissions = RxPermissions(this@LoginActivity)
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {

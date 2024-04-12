@@ -17,7 +17,7 @@ class GlideUtils private constructor() {
      */
     private fun initOption() {
         defaultOption = RequestOptions()
-        defaultOption!!.error(R.mipmap.ic_launcher).placeholder(com.peakinfo.common.R.mipmap.ic_launcher)
+        defaultOption!!.error(R.mipmap.ic_launcher).placeholder(R.mipmap.ic_launcher)
         /*
             DiskCacheStrategy.NONE： 表示不缓存任何内容。
             DiskCacheStrategy.DATA： 表示只缓存原始图片。
@@ -73,7 +73,7 @@ class GlideUtils private constructor() {
         val options: RequestOptions = RequestOptions()
             .centerCrop()
             .format(DecodeFormat.PREFER_RGB_565)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
         Glide.with(BaseApplication.instance()).asBitmap().load(file).apply(options).into(imageView)
     }
 

@@ -142,7 +142,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {
-                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE).subscribe {
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                             if (it) {
                                 baiduLocationUtil = BaiduLocationUtil()
                                 baiduLocationUtil.initBaiduLocation()

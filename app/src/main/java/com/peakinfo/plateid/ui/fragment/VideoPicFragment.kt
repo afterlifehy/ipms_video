@@ -93,11 +93,12 @@ class VideoPicFragment : VbBaseFragment<VideoPicFragmentViewModel, FragmentVideo
     }
 
     fun loadCover(imageView: ImageView, url: String, res: String) {
+        imageView.tag = null
+        imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         Glide.with(BaseApplication.baseApplication)
             .setDefaultRequestOptions(
                 RequestOptions()
                     .frame(1000000)
-                    .centerCrop()
             )
             .load(url)
             .into(imageView)
