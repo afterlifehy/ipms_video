@@ -155,4 +155,6 @@
     <string name="去签到">去签到</string>
     <string name="未获取到位置信息">未获取到位置信息</string>
     <string name="错峰包月">错峰包月</string>
+    <string name="月结金额">月结金额：</string>
+    <string name="请授权电话权限">请授权电话权限</string>
 </resources>

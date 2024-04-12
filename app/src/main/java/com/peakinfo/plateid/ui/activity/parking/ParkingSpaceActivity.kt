@@ -208,11 +208,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
                 binding.tvPaidAmount.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                val strings4 = arrayOf(i18N(com.peakinfo.base.R.string.待缴费用), "${AppUtil.keepNDecimal(it.amountPending / 100.00, 2)}元")
-                binding.tvPendingFee.text = AppUtil.getSpan(strings4, sizes, colors2, styles)
+                if (it.monthPay > 0L) {
+                    val strings4 = arrayOf(i18N(com.peakinfo.base.R.string.月结金额), "${AppUtil.keepNDecimal(it.monthPay / 100.00, 2)}元")
+                    binding.tvMonthPay.text = AppUtil.getSpan(strings4, sizes, colors)
+                } else {
+                    binding.tvMonthPay.gone()
+                }
 
-                val strings5 = arrayOf(i18N(com.peakinfo.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.amountTotal / 100.00, 2)}元")
-                binding.tvOrderAmount.text = AppUtil.getSpan(strings5, sizes, colors)
+                val strings5 = arrayOf(i18N(com.peakinfo.base.R.string.待缴费用), "${AppUtil.keepNDecimal(it.amountPending / 100.00, 2)}元")
+                binding.tvPendingFee.text = AppUtil.getSpan(strings5, sizes, colors2, styles)
+
+                val strings6 = arrayOf(i18N(com.peakinfo.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.amountTotal / 100.00, 2)}元")
+                binding.tvOrderAmount.text = AppUtil.getSpan(strings6, sizes, colors)
 
                 binding.tvArrearsNum.text = "${it.historyCount}笔"
 
