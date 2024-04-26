@@ -2,9 +2,7 @@ package com.peakinfo.plateid.ui.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -12,12 +10,9 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow.OnDismissListener
 import android.widget.RelativeLayout
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.blankj.utilcode.util.AppUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.peakinfo.base.BaseApplication
@@ -43,7 +38,6 @@ import com.peakinfo.plateid.ui.activity.mine.LogoutActivity
 import com.peakinfo.plateid.ui.activity.mine.MineActivity
 import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
-import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -306,38 +300,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("CheckResult")
-    fun requestPermissions() {
-        var rxPermissions = RxPermissions(this@MainActivity)
-        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
-            if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall()
-                    } else {
-                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                        requestInstallPackageLauncher.launch(intent)
-                    }
-                } else {
-                    UpdateUtil.instance?.downloadFileAndInstall()
-                }
-            } else {
-
-            }
-        }
-    }
-
-    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall()
-        } else {
-
         }
     }
 

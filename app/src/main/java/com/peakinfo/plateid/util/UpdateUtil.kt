@@ -1,7 +1,6 @@
 package com.peakinfo.plateid.util
 
 import android.os.Build
-import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PathUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloadListener
@@ -15,9 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-/**
- * Created by kxrt_android_03 on 2017/4/20.
- */
 class UpdateUtil {
     private var updateDialog: UpdateDialog? = null
     private var updateBean: UpdateBean? = null
@@ -46,7 +42,7 @@ class UpdateUtil {
         }
     }
 
-    fun downloadFileAndInstall() {
+    fun downloadFileAndInstall(inter: UpdateInterface) {
         updateDialog?.downLoadUI()
         ToastUtil.showMiddleToast("开始下载更新")
         GlobalScope.launch(Dispatchers.IO) {
@@ -65,12 +61,12 @@ class UpdateUtil {
                     }
 
                     override fun completed(task: BaseDownloadTask?) {
-                        AppUtils.installApp(path)
                         if (updateBean?.force == "1") {
                             updateDialog?.updateUI()
                         } else if (updateBean?.force == "0") {
                             updateDialog?.dismiss()
                         }
+                        inter.install(path)
                     }
 
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -88,5 +84,6 @@ class UpdateUtil {
 
     interface UpdateInterface {
         fun requestionPermission()
+        fun install(path: String)
     }
 }

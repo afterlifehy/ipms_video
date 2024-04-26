@@ -10,7 +10,7 @@ data class ParkingLotBean(
     val cleared: String,
     val orderNo: String,
     val parkingNo: String,
-    val state: String,
+    var state: String,
     val deadLine: Long,
     val monthPay: Long
 )

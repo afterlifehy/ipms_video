@@ -253,39 +253,27 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
     fun requestPermissions() {
         var rxPermissions = RxPermissions(this@MineActivity)
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe {
             if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (packageManager.canRequestPackageInstalls()) {
-                        UpdateUtil.instance?.downloadFileAndInstall()
-                    } else {
-                        val uri = Uri.parse("package:${AppUtils.getAppPackageName()}")
-                        val intent =
-                            Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, uri)
-                        requestInstallPackageLauncher.launch(intent)
+                UpdateUtil.instance?.downloadFileAndInstall(object : UpdateUtil.UpdateInterface {
+                    override fun requestionPermission() {
+
                     }
-                } else {
-                    UpdateUtil.instance?.downloadFileAndInstall()
-                }
+
+                    override fun install(path: String) {
+                        AppUtils.installApp(path)
+                    }
+
+                })
             } else {
 
             }
         }
     }
 
-    val requestInstallPackageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            UpdateUtil.instance?.downloadFileAndInstall()
-        } else {
-
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -295,6 +283,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     UpdateUtil.instance?.checkNewVersion(updateBean!!, object : UpdateUtil.UpdateInterface {
                         override fun requestionPermission() {
                             requestPermissions()
+                        }
+
+                        override fun install(path: String) {
+
                         }
                     })
                 } else {
