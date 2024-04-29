@@ -17,6 +17,7 @@ class LoginViewModel : BaseViewModel() {
 
     val loginLiveData = MutableLiveData<LoginBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
+    val verifyAccountLiveDate = MutableLiveData<LoginBean>()
 
     fun login(param: Map<String, Any?>) {
         launch {
@@ -44,4 +45,16 @@ class LoginViewModel : BaseViewModel() {
         }
     }
 
+    fun verifyAccount(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.verifyAccount(param)
+            }
+            executeResponse(response, {
+                verifyAccountLiveDate.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
 }

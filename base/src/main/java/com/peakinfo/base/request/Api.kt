@@ -124,4 +124,16 @@ interface Api {
      */
     @POST("S_VO2_20")
     suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 登录密码验证
+     */
+    @POST("S_VO2_21")
+    suspend fun verifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+
+    /**
+     * 登录市平台
+     */
+    @POST("S_VO2_22")
+    suspend fun login2(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 }

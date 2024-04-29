@@ -27,4 +27,18 @@ class LoginRepository : BaseRepository() {
     suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.checkOnWork(param)
     }
+
+    /**
+     * 登录密码验证
+     */
+    suspend fun verifyAccount(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
+        return mServer.verifyAccount(param)
+    }
+
+    /**
+     * 登录市平台
+     */
+    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
+        return mServer.login2(param)
+    }
 }

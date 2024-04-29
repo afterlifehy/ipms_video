@@ -195,24 +195,24 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
                 val streetList = loginInfo?.result as ArrayList<Street>
                 runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, loginInfo!!.token)
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone)
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name)
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, loginInfo!!.token.toString())
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone.toString())
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name.toString())
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName.toString())
                 }
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
                 RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
 
-                val workingHoursBean = RealmUtil.instance?.findCurrentWorkingHour(loginInfo!!.loginName)
+                val workingHoursBean = RealmUtil.instance?.findCurrentWorkingHour(loginInfo!!.loginName.toString())
                 if (workingHoursBean != null) {
                     val lastDay = TimeUtils.millis2String(workingHoursBean.time, "yyyy-MM-dd")
                     val currentDay = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
                     if (lastDay != currentDay) {
-                        RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                        RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName.toString(), System.currentTimeMillis()))
                     }
                 } else {
-                    RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName, System.currentTimeMillis()))
+                    RealmUtil.instance?.addRealm(WorkingHoursBean(loginInfo!!.loginName.toString(), System.currentTimeMillis()))
                 }
                 ARouter.getInstance().build(ARouterMap.MAIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
