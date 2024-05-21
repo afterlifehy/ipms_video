@@ -75,6 +75,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 baiduLocationUtil.startLocation()
             }
         }
+
+        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
     }
 
     override fun initListener() {
@@ -177,7 +179,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                             jsonobject["longitude"] = lon.toString()
                             jsonobject["latitude"] = lat.toString()
                             param["attr"] = jsonobject
-                            mViewModel.login(param)
+                            mViewModel.verifyAccount(param)
                         } else {
                             ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请授权电话权限))
                         }
@@ -226,7 +228,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            loginLiveData.observe(this@LoginActivity) {
+            verifyAccountLiveDate.observe(this@LoginActivity) {
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).withParcelable(ARouterMap.LOGIN_INFO, it)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
