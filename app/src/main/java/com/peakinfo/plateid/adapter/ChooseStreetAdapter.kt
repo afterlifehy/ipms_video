@@ -1,8 +1,10 @@
 package com.peakinfo.plateid.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.CheckBox
 import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
@@ -12,11 +14,14 @@ import com.peakinfo.base.util.ToastUtil
 
 class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedList: MutableList<Street>) :
     BaseBindingAdapter<Street, ItemChooseStreetBinding>(data) {
-
+    var checkedView : CheckBox? = null
+    var checkedItem :Street? = null
     override fun convert(holder: VBViewHolder<ItemChooseStreetBinding>, item: Street) {
         holder.vb.tvStreet.text = item.streetName
         if (streetChoosedList.contains(item)) {
             holder.vb.cbStreet.isChecked = true
+            checkedView = holder.vb.cbStreet
+            checkedItem = item
         } else {
             holder.vb.cbStreet.isChecked = false
         }
@@ -24,27 +29,33 @@ class ChooseStreetAdapter(data: MutableList<Street>? = null, var streetChoosedLi
             holder.vb.cbStreet.isChecked = !item.ischeck
             item.ischeck = holder.vb.cbStreet.isChecked
             if (holder.vb.cbStreet.isChecked) {
-                if (streetChoosedList.size == 5) {
-                    holder.vb.cbStreet.isChecked = false
-                    ToastUtil.showMiddleToast("最多选择5条路段")
-                } else {
-                    streetChoosedList.add(item)
-                }
+                checkedView?.isChecked = false
+                checkedItem?.ischeck = false
+                streetChoosedList.clear()
+                checkedItem = item
+                checkedView = holder.vb.cbStreet
+                checkedItem?.ischeck = true
+                checkedView?.isChecked = true
+                streetChoosedList.add(item)
             } else {
+                checkedItem?.ischeck = false
+                checkedView?.isChecked = false
                 streetChoosedList.remove(item)
             }
         }
         holder.vb.cbStreet.setOnClickListener {
             if (holder.vb.cbStreet.isChecked) {
-                item.ischeck = true
-                if (streetChoosedList.size == 5) {
-                    holder.vb.cbStreet.isChecked = false
-                    ToastUtil.showMiddleToast("最多选择5条路段")
-                } else {
-                    streetChoosedList.add(item)
-                }
+                checkedView?.isChecked = false
+                checkedItem?.ischeck = false
+                streetChoosedList.clear()
+                checkedItem = item
+                checkedView = holder.vb.cbStreet
+                checkedItem?.ischeck = true
+                checkedView?.isChecked = true
+                streetChoosedList.add(item)
             } else {
-                item.ischeck = false
+                checkedItem?.ischeck = false
+                checkedView?.isChecked = false
                 streetChoosedList.remove(item)
             }
         }

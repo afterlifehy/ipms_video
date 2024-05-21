@@ -14,21 +14,7 @@ class StreetChooseViewModel : BaseViewModel() {
         LoginRepository()
     }
 
-    val checkOnWorkLiveData = MutableLiveData<Any>()
-    val loginLiveData = MutableLiveData<LoginBean>()
-
-    fun checkOnWork(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.checkOnWork(param)
-            }
-            executeResponse(response, {
-                checkOnWorkLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
+    val login2LiveData = MutableLiveData<Any>()
 
     fun login2(param: Map<String, Any?>) {
         launch {
@@ -36,7 +22,7 @@ class StreetChooseViewModel : BaseViewModel() {
                 mLoginRepository.login2(param)
             }
             executeResponse(response, {
-                loginLiveData.value = response.attr
+                login2LiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

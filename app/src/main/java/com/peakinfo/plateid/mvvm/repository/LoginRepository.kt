@@ -24,8 +24,8 @@ class LoginRepository : BaseRepository() {
     /**
      * 考勤排班
      */
-    suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.checkOnWork(param)
+    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.login2(param)
     }
 
     /**
@@ -35,10 +35,4 @@ class LoginRepository : BaseRepository() {
         return mServer.verifyAccount(param)
     }
 
-    /**
-     * 登录市平台
-     */
-    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
-        return mServer.login2(param)
-    }
 }

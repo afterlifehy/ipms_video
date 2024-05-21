@@ -129,11 +129,11 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["loginName"] = loginInfo?.loginName
-                        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+                        jsonobject["streetNo"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
                         jsonobject["longitude"] = lon.toString()
                         jsonobject["latitude"] = lat.toString()
                         param["attr"] = jsonobject
-                        mViewModel.checkOnWork(param)
+                        mViewModel.login2(param)
                     } else {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
                     }
@@ -188,7 +188,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            checkOnWorkLiveData.observe(this@StreetChooseActivity) {
+            login2LiveData.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
                 for (i in streetChoosedList) {
                     RealmUtil.instance?.updateStreetChoosed(i)
