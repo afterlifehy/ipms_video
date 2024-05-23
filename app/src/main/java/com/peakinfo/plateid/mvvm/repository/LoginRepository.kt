@@ -22,7 +22,7 @@ class LoginRepository : BaseRepository() {
     }
 
     /**
-     * 考勤排班
+     * 登录
      */
     suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.login2(param)

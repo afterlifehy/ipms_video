@@ -14,6 +14,7 @@ class ParkingLotViewModel : BaseViewModel() {
     }
 
     val parkingLotListLiveData = MutableLiveData<ParkingLotResultBean>()
+    val login2LiveData = MutableLiveData<Any>()
 
     fun getParkingLotList(param: Map<String, Any?>) {
         launch {
@@ -22,6 +23,19 @@ class ParkingLotViewModel : BaseViewModel() {
             }
             executeResponse(response, {
                 parkingLotListLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun login2(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.login2(param)
+            }
+            executeResponse(response, {
+                login2LiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

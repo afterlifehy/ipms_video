@@ -13,15 +13,15 @@ class MainViewModel : BaseViewModel() {
         MineRepository()
     }
 
-    val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
+    val login2LiveData = MutableLiveData<Any>()
 
-    fun checkUpdate(param: Map<String, Any?>) {
+    fun login2(param: Map<String, Any?>) {
         launch {
             val response = withContext(Dispatchers.IO) {
-                mMineRepository.checkUpdate(param)
+                mMineRepository.login2(param)
             }
             executeResponse(response, {
-                checkUpdateLiveDate.value = response.attr
+                login2LiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

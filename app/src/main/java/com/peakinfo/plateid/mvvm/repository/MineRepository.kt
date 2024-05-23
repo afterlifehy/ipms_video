@@ -26,4 +26,11 @@ class MineRepository : BaseRepository() {
     suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
         return mServer.feeRate(param)
     }
+
+    /**
+     * 登录
+     */
+    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.login2(param)
+    }
 }

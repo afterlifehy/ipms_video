@@ -36,4 +36,11 @@ class ParkingRepository : BaseRepository() {
     suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return mServer.payResult(param)
     }
+
+    /**
+     * 登录
+     */
+    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.login2(param)
+    }
 }
