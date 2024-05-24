@@ -3,6 +3,7 @@ package com.peakinfo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
+import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.plateid.mvvm.repository.MineRepository
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ class MainViewModel : BaseViewModel() {
         MineRepository()
     }
 
-    val login2LiveData = MutableLiveData<Any>()
+    val login2LiveData = MutableLiveData<Login2Bean>()
 
     fun login2(param: Map<String, Any?>) {
         launch {

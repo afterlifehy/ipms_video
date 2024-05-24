@@ -123,7 +123,7 @@ interface Api {
      * 考勤排班
      */
     @POST("S_VO2_22")
-    suspend fun login2(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+    suspend fun login2(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Login2Bean>
 
     /**
      * 登录密码验证

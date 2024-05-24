@@ -13,6 +13,7 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.peakinfo.base.BaseApplication
@@ -20,8 +21,11 @@ import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.dialog.DialogHelp
+import com.peakinfo.base.ds.PreferencesDataStore
+import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -39,6 +43,7 @@ import com.peakinfo.plateid.ui.activity.mine.MineActivity
 import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
@@ -225,14 +230,20 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             R.id.tv_title -> {
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
+                        showProgressDialog(20000)
                         currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(street, old)
-                        if (street.streetName.indexOf("(") < 0) {
-                            binding.tvTitle.text = street.streetNo + street.streetName
-                        } else {
-                            binding.tvTitle.text =
-                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
+                        runBlocking {
+                            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["loginName"] = loginName
+                            jsonobject["streetNo"] = currentStreet?.streetNo
+                            jsonobject["longitude"] = Constant.lon
+                            jsonobject["latitude"] = Constant.lat
+                            param["attr"] = jsonobject
+                            mViewModel.login2(param)
                         }
                     }
                 })
@@ -300,6 +311,18 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            login2LiveData.observe(this@MainActivity) {
+                dismissProgressDialog()
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
+                }
+                if (currentStreet!!.streetName.indexOf("(") < 0) {
+                    binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+                } else {
+                    binding.tvTitle.text =
+                        currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                }
+            }
         }
     }
 

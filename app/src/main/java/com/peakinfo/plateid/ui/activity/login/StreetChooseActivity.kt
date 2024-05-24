@@ -129,7 +129,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["loginName"] = loginInfo?.loginName
-                        jsonobject["streetNo"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+                        jsonobject["streetNo"] = streetChoosedList[0].streetNo
                         jsonobject["longitude"] = lon.toString()
                         jsonobject["latitude"] = lat.toString()
                         param["attr"] = jsonobject
@@ -195,7 +195,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
                 val streetList = loginInfo?.result as ArrayList<Street>
                 runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, loginInfo!!.token.toString())
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone.toString())
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name.toString())
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName.toString())

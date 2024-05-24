@@ -18,7 +18,10 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingLotBean
 import com.peakinfo.base.bean.Street
+import com.peakinfo.base.ds.PreferencesDataStore
+import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -30,6 +33,7 @@ import com.peakinfo.plateid.adapter.ParkingLotAdapter
 import com.peakinfo.plateid.databinding.ActivityParkingLotBinding
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingLotViewModel
 import com.peakinfo.plateid.pop.StreetPop
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -148,14 +152,18 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                         currentStreet = street
                         val old = RealmUtil.instance?.findCurrentStreet()
                         RealmUtil.instance?.updateCurrentStreet(street, old)
-                        if (street.streetName.indexOf("(") < 0) {
-                            binding.tvTitle.text = street.streetNo + street.streetName
-                        } else {
-                            binding.tvTitle.text =
-                                street.streetNo + street.streetName.substring(0, street.streetName.indexOf("("))
+                        runBlocking {
+                            showProgressDialog(20000)
+                            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                            val param = HashMap<String, Any>()
+                            val jsonobject = JSONObject()
+                            jsonobject["loginName"] = loginName
+                            jsonobject["streetNo"] = currentStreet?.streetNo
+                            jsonobject["longitude"] = Constant.lon
+                            jsonobject["latitude"] = Constant.lat
+                            param["attr"] = jsonobject
+                            mViewModel.login2(param)
                         }
-                        getParkingLotList()
-                        EventBus.getDefault().post(CurrentStreetUpdateEvent(street))
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as Toolbar)
@@ -191,6 +199,16 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                 parkingLotList.clear()
                 parkingLotList.addAll(it.result)
                 parkingLotAdapter?.setList(parkingLotList)
+            }
+            login2LiveData.observe(this@ParkingLotActivity) {
+                if (currentStreet!!.streetName.indexOf("(") < 0) {
+                    binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
+                } else {
+                    binding.tvTitle.text =
+                        currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                }
+                getParkingLotList()
+                EventBus.getDefault().post(CurrentStreetUpdateEvent(currentStreet!!))
             }
             errMsg.observe(this@ParkingLotActivity) {
                 dismissProgressDialog()

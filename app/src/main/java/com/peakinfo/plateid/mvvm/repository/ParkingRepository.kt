@@ -2,6 +2,7 @@ package com.peakinfo.plateid.mvvm.repository
 
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.HttpWrapper
+import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.ParkingLotResultBean
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
@@ -40,7 +41,7 @@ class ParkingRepository : BaseRepository() {
     /**
      * 登录
      */
-    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+    suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Login2Bean> {
         return mServer.login2(param)
     }
 }

@@ -9,7 +9,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
@@ -22,6 +21,7 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.util.BaiduLocationUtil
@@ -64,6 +64,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         if (isSuccess) {
                             this@LoginActivity.lat = lat
                             this@LoginActivity.lon = lon
+                            Constant.lon = lon.toString()
+                            Constant.lat = lat.toString()
                             locationEnable = 1
                         } else {
                             locationEnable = -1
