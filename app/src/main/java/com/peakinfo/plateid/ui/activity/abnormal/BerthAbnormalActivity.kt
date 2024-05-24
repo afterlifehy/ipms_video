@@ -112,13 +112,13 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         } else {
             currentStreet = RealmUtil.instance?.findCurrentStreet()
         }
-        if (streetList.size == 1) {
+//        if (streetList.size == 1) {
             binding.cbLotName.hide()
             binding.rflLotName.setOnClickListener(null)
-        } else {
-            binding.cbLotName.show()
-            binding.rflLotName.setOnClickListener(this)
-        }
+//        } else {
+//            binding.cbLotName.show()
+//            binding.rflLotName.setOnClickListener(this)
+//        }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
 
