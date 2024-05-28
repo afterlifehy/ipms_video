@@ -15,6 +15,7 @@ class MainViewModel : BaseViewModel() {
     }
 
     val login2LiveData = MutableLiveData<Login2Bean>()
+    val logoutLiveData = MutableLiveData<Any>()
 
     fun login2(param: Map<String, Any?>) {
         launch {
@@ -23,6 +24,19 @@ class MainViewModel : BaseViewModel() {
             }
             executeResponse(response, {
                 login2LiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "login2"))
+            })
+        }
+    }
+
+    fun logout(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mMineRepository.logout(param)
+            }
+            executeResponse(response, {
+                logoutLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })

@@ -44,4 +44,11 @@ class ParkingRepository : BaseRepository() {
     suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Login2Bean> {
         return mServer.login2(param)
     }
+
+    /**
+     * 签退
+     */
+    suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.logout(param)
+    }
 }

@@ -13,6 +13,7 @@ import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
@@ -38,6 +39,7 @@ import com.peakinfo.plateid.mvvm.viewmodel.MainViewModel
 import com.peakinfo.plateid.pop.StreetPop
 import com.peakinfo.plateid.ui.activity.abnormal.BerthAbnormalActivity
 import com.peakinfo.plateid.ui.activity.income.IncomeCountingActivity
+import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.peakinfo.plateid.ui.activity.mine.LogoutActivity
 import com.peakinfo.plateid.ui.activity.mine.MineActivity
 import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
@@ -52,6 +54,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     var streetPop: StreetPop? = null
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
+    var tempStreet: Street? = null
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(currentStreetUpdateEvent: CurrentStreetUpdateEvent) {
@@ -230,20 +233,21 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             R.id.tv_title -> {
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     override fun selectStreet(street: Street) {
+                        if (street.streetNo == currentStreet!!.streetNo) {
+                            return
+                        }
                         showProgressDialog(20000)
-                        currentStreet = street
-                        val old = RealmUtil.instance?.findCurrentStreet()
-                        RealmUtil.instance?.updateCurrentStreet(street, old)
+                        tempStreet = street
                         runBlocking {
-                            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                            val token =
+                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
-                            jsonobject["loginName"] = loginName
-                            jsonobject["streetNo"] = currentStreet?.streetNo
+                            jsonobject["token"] = token
                             jsonobject["longitude"] = Constant.lon
                             jsonobject["latitude"] = Constant.lat
                             param["attr"] = jsonobject
-                            mViewModel.login2(param)
+                            mViewModel.logout(param)
                         }
                     }
                 })
@@ -311,16 +315,54 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            logoutLiveData.observe(this@MainActivity) {
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["loginName"] = loginName
+                    jsonobject["streetNo"] = tempStreet?.streetNo
+                    jsonobject["longitude"] = Constant.lon
+                    jsonobject["latitude"] = Constant.lat
+                    param["attr"] = jsonobject
+                    mViewModel.login2(param)
+                }
+            }
             login2LiveData.observe(this@MainActivity) {
                 dismissProgressDialog()
+                currentStreet = tempStreet
+                val old = RealmUtil.instance?.findCurrentStreet()
+                RealmUtil.instance?.updateCurrentStreet(currentStreet!!, old)
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                 }
+                ToastUtil.showMiddleToast("${currentStreet?.streetName}签到成功")
                 if (currentStreet!!.streetName.indexOf("(") < 0) {
                     binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
                 } else {
                     binding.tvTitle.text =
                         currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
+                }
+            }
+            errMsg.observe(this@MainActivity) {
+                dismissProgressDialog()
+                ToastUtil.showMiddleToast(it.msg)
+                if (it.api == "login2") {
+                    ToastUtil.showMiddleToast("${currentStreet?.streetName}签到失败")
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                    }
+                    RealmUtil.instance?.deleteAllStreet()
+                    ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                    for (i in ActivityCacheManager.instance().getAllActivity()) {
+                        if (i !is LoginActivity) {
+                            i.finish()
+                        }
+                    }
                 }
             }
         }
