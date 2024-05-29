@@ -127,14 +127,6 @@
                 android:textSize="@dimen/sp_19"
                 tools:text="定西路(愚园路～安化路)西侧" />
 
-            <CheckBox
-                android:id="@+id/cb_streetName"
-                android:layout_width="@dimen/dp_22"
-                android:layout_height="@dimen/dp_22"
-                android:layout_gravity="end|center_vertical"
-                android:background="@color/transparent"
-                android:button="@drawable/selector_lot_arrow"
-                android:checked="false" />
         </com.aries.ui.view.radius.RadiusFrameLayout>
 
         <LinearLayout

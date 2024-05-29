@@ -86,7 +86,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
-        binding.cbStreetName.setOnClickListener(this)
         binding.rflSubmit.setOnClickListener(this)
         binding.tvPic1.setOnClickListener(this)
         binding.tvPic2.setOnClickListener(this)
@@ -109,13 +108,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
             streetNo = currentStreet!!.streetNo
         }
         binding.tvStreetName.text = currentStreet?.streetName
-        if (streetList.size == 1) {
-            binding.cbStreetName.hide()
-            binding.rflStreetName.setOnClickListener(null)
-        } else {
-            binding.cbStreetName.show()
-            binding.rflStreetName.setOnClickListener(this)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -174,15 +166,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
 
             R.id.rfl_recognize -> {
                 ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CollectionManagementActivity, 1)
-            }
-
-            R.id.cb_streetName -> {
-                showAbnormalStreetListDialog()
-            }
-
-            R.id.rfl_streetName -> {
-                binding.cbStreetName.isChecked = true
-                showAbnormalStreetListDialog()
             }
 
             R.id.rfl_submit -> {
@@ -253,21 +236,6 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                     }
                 }
             }
-        }
-    }
-
-    fun showAbnormalStreetListDialog() {
-        abnormalStreetListDialog =
-            AbnormalStreetListDialog(streetList, currentStreet!!, object : AbnormalStreetListDialog.AbnormalStreetCallBack {
-                override fun chooseStreet(street: Street) {
-                    currentStreet = street
-                    streetNo = currentStreet!!.streetNo
-                    binding.tvStreetName.text = street.streetName.toString()
-                }
-            })
-        abnormalStreetListDialog?.show()
-        abnormalStreetListDialog?.setOnDismissListener {
-            binding.cbStreetName.isChecked = false
         }
     }
 
