@@ -155,18 +155,18 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                         if (street.streetNo == currentStreet!!.streetNo) {
                             return
                         }
+                        showProgressDialog(20000)
                         tempStreet = street
                         runBlocking {
-                            showProgressDialog(20000)
-                            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                            val token =
+                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
-                            jsonobject["loginName"] = loginName
-                            jsonobject["streetNo"] = currentStreet?.streetNo
+                            jsonobject["token"] = token
                             jsonobject["longitude"] = Constant.lon
                             jsonobject["latitude"] = Constant.lat
                             param["attr"] = jsonobject
-                            mViewModel.login2(param)
+                            mViewModel.logout(param)
                         }
                     }
                 })

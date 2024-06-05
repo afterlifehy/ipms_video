@@ -72,7 +72,7 @@
                         android:background="@mipmap/ic_plate_bg_green_right"
                         android:gravity="center"
                         android:textColor="@color/black"
-                        android:textSize="25sp"
+                        android:textSize="@dimen/sp_24"
                         android:textStyle="bold" />
                 </LinearLayout>
 
