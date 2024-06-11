@@ -48,7 +48,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.BLUETOOTH_SCAN,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 baiduLocationUtil = BaiduLocationUtil()
@@ -165,32 +166,20 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             R.id.rtv_login -> {
                 var rxPermissions = RxPermissions(this@LoginActivity)
                 if (locationEnable == 1) {
-                    rxPermissions.request(Manifest.permission.READ_PHONE_STATE).subscribe {
-                        if (it) {
-                            showProgressDialog(20000)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["loginName"] = binding.etAccount.text.toString()
-                            jsonobject["password"] = binding.etPw.text.toString()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                jsonobject["simId"] = PhoneUtils.getIMSI()
-                            } else {
-                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                            }
-                            jsonobject["imei"] = PhoneUtils.getIMEI()
-                            jsonobject["longitude"] = lon.toString()
-                            jsonobject["latitude"] = lat.toString()
-                            param["attr"] = jsonobject
-                            mViewModel.verifyAccount(param)
-                        } else {
-                            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请授权电话权限))
-                        }
-                    }
+                    showProgressDialog(20000)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["loginName"] = binding.etAccount.text.toString()
+                    jsonobject["password"] = binding.etPw.text.toString()
+                    jsonobject["longitude"] = lon.toString()
+                    jsonobject["latitude"] = lat.toString()
+                    param["attr"] = jsonobject
+                    mViewModel.verifyAccount(param)
                 } else {
-                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION) && rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {
-                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE)
+                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                             .subscribe {
                                 if (it) {
                                     baiduLocationUtil = BaiduLocationUtil()
@@ -217,8 +206,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                     baiduLocationUtil.startLocation()
                                 } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
-                                } else if (!rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请授权电话权限))
                                 }
                             }
                     }

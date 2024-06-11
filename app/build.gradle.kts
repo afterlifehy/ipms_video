@@ -108,7 +108,7 @@ android {
                         "plateid_v${versionName}_${versionCode}_.apk"
                 } else {
                     this.outputFileName =
-                        "plateid_v${versionName}_${versionCode}_debug_${BuildConfig.release_is_dev}.apk"
+                        "plateid_v${versionName}_${versionCode}_debug_${BuildConfig.debug_is_dev}.apk"
                 }
             }
         }

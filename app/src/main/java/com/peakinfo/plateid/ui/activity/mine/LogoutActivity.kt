@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
+import android.os.Build
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
@@ -13,6 +15,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
@@ -136,6 +140,13 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                     jsonobject["token"] = token
                                     jsonobject["longitude"] = lon.toString()
                                     jsonobject["latitude"] = lat.toString()
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        jsonobject["simId"] = PhoneUtils.getIMSI()
+                                    } else {
+                                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                                    }
+                                    jsonobject["imei"] = PhoneUtils.getIMEI()
+                                    jsonobject["version"] = AppUtils.getAppVersionName()
                                     param["attr"] = jsonobject
                                     mViewModel.logout(param)
                                 }

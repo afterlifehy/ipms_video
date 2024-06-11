@@ -7,6 +7,7 @@ import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.os.Build
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
@@ -16,6 +17,8 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
@@ -104,7 +107,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         streetList = loginInfo?.result as MutableList<Street>
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "MissingPermission")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -123,6 +126,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
 
             R.id.rtv_enterWorkBench -> {
+                val rxPermissions = RxPermissions(this@StreetChooseActivity)
                 if (locationEnable == 1) {
                     if (streetChoosedList.isNotEmpty()) {
                         showProgressDialog(20000)
@@ -132,13 +136,19 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         jsonobject["streetNo"] = streetChoosedList[0].streetNo
                         jsonobject["longitude"] = lon.toString()
                         jsonobject["latitude"] = lat.toString()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                        } else {
+                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                        }
+                        jsonobject["imei"] = PhoneUtils.getIMEI()
+                        jsonobject["version"] = AppUtils.getAppVersionName()
                         param["attr"] = jsonobject
                         mViewModel.login2(param)
                     } else {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
                     }
                 } else {
-                    var rxPermissions = RxPermissions(this@StreetChooseActivity)
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {

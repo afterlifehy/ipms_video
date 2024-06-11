@@ -1,8 +1,11 @@
 package com.peakinfo.plateid.ui.activity.parking
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow
@@ -14,6 +17,8 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingLotBean
@@ -151,6 +156,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
 
             R.id.tv_title -> {
                 streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
+                    @SuppressLint("MissingPermission")
                     override fun selectStreet(street: Street) {
                         if (street.streetNo == currentStreet!!.streetNo) {
                             return
@@ -165,6 +171,13 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                             jsonobject["token"] = token
                             jsonobject["longitude"] = Constant.lon
                             jsonobject["latitude"] = Constant.lat
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                jsonobject["simId"] = PhoneUtils.getIMSI()
+                            } else {
+                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                            }
+                            jsonobject["imei"] = PhoneUtils.getIMEI()
+                            jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
                             mViewModel.logout(param)
                         }
@@ -195,6 +208,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -214,6 +228,13 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     jsonobject["streetNo"] = currentStreet?.streetNo
                     jsonobject["longitude"] = Constant.lon
                     jsonobject["latitude"] = Constant.lat
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        jsonobject["simId"] = PhoneUtils.getIMSI()
+                    } else {
+                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                    }
+                    jsonobject["imei"] = PhoneUtils.getIMEI()
+                    jsonobject["version"] = AppUtils.getAppVersionName()
                     param["attr"] = jsonobject
                     mViewModel.login2(param)
                 }

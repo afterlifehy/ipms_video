@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.PopupWindow.OnDismissListener
@@ -15,6 +16,8 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.hyperai.hyperlpr3.HyperLPR3
 import com.hyperai.hyperlpr3.bean.HyperLPRParameter
 import com.peakinfo.base.BaseApplication
@@ -232,6 +235,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
             R.id.tv_title -> {
                 streetPop = StreetPop(this@MainActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
+                    @SuppressLint("MissingPermission")
                     override fun selectStreet(street: Street) {
                         if (street.streetNo == currentStreet!!.streetNo) {
                             return
@@ -246,6 +250,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                             jsonobject["token"] = token
                             jsonobject["longitude"] = Constant.lon
                             jsonobject["latitude"] = Constant.lat
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                jsonobject["simId"] = PhoneUtils.getIMSI()
+                            } else {
+                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                            }
+                            jsonobject["imei"] = PhoneUtils.getIMEI()
+                            jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
                             mViewModel.logout(param)
                         }
@@ -311,7 +322,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         HyperLPR3.getInstance().init(BaseApplication.instance(), parameter)
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi", "MissingPermission")
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -325,6 +336,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     jsonobject["streetNo"] = tempStreet?.streetNo
                     jsonobject["longitude"] = Constant.lon
                     jsonobject["latitude"] = Constant.lat
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        jsonobject["simId"] = PhoneUtils.getIMSI()
+                    } else {
+                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                    }
+                    jsonobject["imei"] = PhoneUtils.getIMEI()
+                    jsonobject["version"] = AppUtils.getAppVersionName()
                     param["attr"] = jsonobject
                     mViewModel.login2(param)
                 }
