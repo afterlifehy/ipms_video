@@ -56,6 +56,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     var streetNo = ""
     var token = ""
     var currentTransactionBean: TransactionBean? = null
+    var loginName = ""
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -110,6 +111,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
         }
         streetNo = RealmUtil.instance?.findCurrentStreet()!!.streetNo
         showProgressDialog(20000)
@@ -127,6 +129,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["streetNo"] = streetNo
+        jsonobject["loginName"] = loginName
         jsonobject["carLicense"] = searchContent
         jsonobject["startDate"] = startDate
         jsonobject["endDate"] = endDate
