@@ -5,15 +5,21 @@ import android.view.WindowManager
 import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.dialog.VBBaseLibDialog
+import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.CodeUtils
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.databinding.DialogPaymentQrBinding
+import com.zrq.spanbuilder.TextStyle
 
-class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
+class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String = "") : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,
     com.peakinfo.base.R.style.CommonBottomDialogStyle
 ) {
+    val sizes = intArrayOf(19, 30, 19)
+    val colors = intArrayOf(com.peakinfo.base.R.color.white, com.peakinfo.base.R.color.white, com.peakinfo.base.R.color.white)
+    val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
 
     init {
         initView()
@@ -21,9 +27,11 @@ class PaymentQrDialog(var qr: String) : VBBaseLibDialog<DialogPaymentQrBinding>(
 
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+        val strings = arrayOf(i18N(com.peakinfo.base.R.string.支付), amount, i18N(com.peakinfo.base.R.string.元))
+        binding.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
+        binding.tvPlate.text = plate
         val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
         GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
-
         binding.ivClose.setOnClickListener {
             dismiss()
         }

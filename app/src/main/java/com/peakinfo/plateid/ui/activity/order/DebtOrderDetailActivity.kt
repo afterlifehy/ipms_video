@@ -153,7 +153,8 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
                 qr = it.payUrl
-                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog =
+                    PaymentQrDialog(qr, AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2), debtCollectionBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {

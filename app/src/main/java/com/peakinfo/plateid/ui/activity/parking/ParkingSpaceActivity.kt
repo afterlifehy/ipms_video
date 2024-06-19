@@ -232,7 +232,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 qr = it.payUrl
-                paymentQrDialog = PaymentQrDialog(qr)
+                paymentQrDialog = PaymentQrDialog(qr, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
