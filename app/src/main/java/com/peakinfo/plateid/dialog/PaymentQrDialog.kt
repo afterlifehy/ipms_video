@@ -17,9 +17,9 @@ class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String
     ActivityCacheManager.instance().getCurrentActivity()!!,
     com.peakinfo.base.R.style.CommonBottomDialogStyle
 ) {
-    val sizes = intArrayOf(19, 30, 19)
-    val colors = intArrayOf(com.peakinfo.base.R.color.white, com.peakinfo.base.R.color.white, com.peakinfo.base.R.color.white)
-    val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
+    val sizes = intArrayOf(30, 19)
+    val colors = intArrayOf(com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404)
+    val styles = arrayOf(TextStyle.BOLD, TextStyle.NORMAL)
 
     init {
         initView()
@@ -27,7 +27,7 @@ class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String
 
     private fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-        val strings = arrayOf(i18N(com.peakinfo.base.R.string.支付), amount, i18N(com.peakinfo.base.R.string.元))
+        val strings = arrayOf(amount, i18N(com.peakinfo.base.R.string.元))
         binding.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
         binding.tvPlate.text = plate
         val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
@@ -58,6 +58,6 @@ class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String
     }
 
     override fun getGravity(): Int {
-        return Gravity.BOTTOM
+        return Gravity.CENTER
     }
 }

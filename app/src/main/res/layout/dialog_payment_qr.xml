@@ -7,7 +7,7 @@
     android:background="@color/transparent"
     android:paddingStart="@dimen/dp_13"
     android:paddingEnd="@dimen/dp_13"
-    android:paddingBottom="@dimen/dp_47">
+    android:paddingBottom="@dimen/dp_80">
 
     <ImageView
         android:id="@+id/iv_close"
@@ -21,10 +21,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/iv_close"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_20"
         android:orientation="vertical"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
+
+        <com.aries.ui.view.radius.RadiusFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            app:rv_radius="@dimen/dp_7">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_plate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@mipmap/ic_plate"
+                android:drawablePadding="@dimen/dp_13"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold"
+                tools:text="沪DX9687" />
+
+            <TextView
+                android:id="@+id/tv_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                tools:text="10" />
+        </com.aries.ui.view.radius.RadiusFrameLayout>
 
         <com.aries.ui.view.radius.RadiusLinearLayout
             android:layout_width="match_parent"
@@ -89,26 +115,9 @@
             app:rv_bottomLeftRadius="@dimen/dp_7"
             app:rv_bottomRightRadius="@dimen/dp_7">
 
-            <TextView
-                android:id="@+id/tv_plate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_19"
-                android:textStyle="bold"
-                tools:text="10" />
-
-            <TextView
-                android:id="@+id/tv_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                tools:text="10" />
-
             <com.aries.ui.view.radius.RadiusFrameLayout
-                android:layout_width="@dimen/dp_184"
-                android:layout_height="@dimen/dp_184"
+                android:layout_width="@dimen/dp_195"
+                android:layout_height="@dimen/dp_195"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_10"
                 app:rv_backgroundColor="@color/white"
@@ -116,8 +125,8 @@
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/riv_qr"
-                    android:layout_width="@dimen/dp_153"
-                    android:layout_height="@dimen/dp_153"
+                    android:layout_width="@dimen/dp_165"
+                    android:layout_height="@dimen/dp_165"
                     android:layout_gravity="center" />
             </com.aries.ui.view.radius.RadiusFrameLayout>
 
