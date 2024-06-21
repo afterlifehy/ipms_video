@@ -92,6 +92,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.rrlArrears.setOnClickListener(this)
         binding.rflOnSitePayment.setOnClickListener(this)
         binding.rflAbnormalReport.setOnClickListener(this)
+        binding.rflPrepaid.setOnClickListener(this)
+        binding.rflPrintNotice.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -113,6 +115,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         mViewModel.parkingSpaceFee(param)
     }
 
+    @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fl_back -> {
@@ -157,6 +160,25 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     .withString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
                     .withString(ARouterMap.ABNORMAL_CAR_COLOR, parkingSpaceBean?.carColor.toString())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+            }
+
+            R.id.rfl_prepaid -> {
+                ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                    .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                    .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+            }
+
+            R.id.rfl_printNotice -> {
+                var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+//                            ticketPrintRequest()
+                        }
+                    }
+                } else {
+//                    ticketPrintRequest()
+                }
             }
         }
     }

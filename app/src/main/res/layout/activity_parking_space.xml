@@ -25,7 +25,6 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_13"
-        android:visibility="gone"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
 
@@ -74,7 +73,6 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_13"
         android:paddingBottom="@dimen/dp_20"
-        android:visibility="gone"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
 
@@ -181,6 +179,62 @@
                     tools:text="15.00元" />
             </com.aries.ui.view.radius.RadiusRelativeLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_47"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <com.aries.ui.view.radius.RadiusFrameLayout
+                android:id="@+id/rfl_printNotice"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/dp_6"
+                android:layout_weight="1"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_7"
+                app:rv_strokeColor="@color/color_ff0371f4"
+                app:rv_strokeWidth="@dimen/dp_1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableStart="@mipmap/ic_notice"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:gravity="center"
+                    android:text="@string/告知书"
+                    android:textColor="@color/color_ff0371f4"
+                    android:textSize="@dimen/sp_19"
+                    android:textStyle="bold" />
+            </com.aries.ui.view.radius.RadiusFrameLayout>
+
+            <com.aries.ui.view.radius.RadiusFrameLayout
+                android:id="@+id/rfl_prepaid"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_6"
+                android:layout_weight="1"
+                app:rv_backgroundColor="@color/white"
+                app:rv_radius="@dimen/dp_7"
+                app:rv_strokeColor="@color/color_ff0371f4"
+                app:rv_strokeWidth="@dimen/dp_1">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableStart="@mipmap/ic_prepay"
+                    android:drawablePadding="@dimen/dp_5"
+                    android:gravity="center"
+                    android:text="@string/预支付"
+                    android:textColor="@color/color_ff0371f4"
+                    android:textSize="@dimen/sp_19"
+                    android:textStyle="bold" />
+            </com.aries.ui.view.radius.RadiusFrameLayout>
+        </LinearLayout>
+
     </com.aries.ui.view.radius.RadiusLinearLayout>
 
     <LinearLayout
@@ -191,8 +245,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:orientation="horizontal">
 
         <com.aries.ui.view.radius.RadiusFrameLayout
             android:id="@+id/rfl_onSitePayment"
@@ -208,7 +261,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableStart="@mipmap/ic_inside_pay_logo"
-                android:drawablePadding="@dimen/dp_12"
+                android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/场内支付"
                 android:textColor="@color/white"
@@ -230,7 +283,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableStart="@mipmap/ic_report_abnormal_logo"
-                android:drawablePadding="@dimen/dp_12"
+                android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="@string/上报异常"
                 android:textColor="@color/white"

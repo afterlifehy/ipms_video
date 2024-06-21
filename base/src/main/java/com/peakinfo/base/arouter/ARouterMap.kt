@@ -70,6 +70,11 @@ object ARouterMap {
 
     const val FEE_RATE = "/ipms_app/feeRate"
 
+    const val PREPAID = "/ipms_app/prepaid"
+    const val PREPAID_CARLICENSE = "carLicense"
+    const val PREPAID_PARKING_NO = "parkingNo"
+    const val PREPAID_ORDER_NO = "orderNo"
+
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 

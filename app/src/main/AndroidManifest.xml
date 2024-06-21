@@ -244,5 +244,10 @@
             android:name="com.peakinfo.plateid.ui.activity.mine.FeeRateActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.parking.PrepaidActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>
