@@ -30,6 +30,7 @@ import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.ParkingSpaceBackEvent
 import com.peakinfo.common.event.RefreshParkingLotEvent
+import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BigDecimalManager
 import com.peakinfo.common.util.BluePrint
@@ -71,6 +72,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(parkingSpaceBackEvent: ParkingSpaceBackEvent) {
         onBackPressedSupport()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(refreshParkingSpaceEvent: RefreshParkingSpaceEvent) {
+        requestParkingSpaceFee()
     }
 
     override fun initView() {
@@ -163,9 +169,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_prepaid -> {
-                ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                    .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                    .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+                if (parkingSpaceBean!!.amountPayed > 0) {
+                    ToastUtil.showMiddleToast("已付金额大于0")
+                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
+                    ToastUtil.showMiddleToast("在停时间超过5分钟")
+                } else {
+                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+                }
             }
 
             R.id.rfl_printNotice -> {

@@ -25,6 +25,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.PaySuccessEvent
 import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
@@ -113,6 +114,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            prePayFee()
         }
     }
 
@@ -147,22 +149,26 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
             R.id.rfl_scanPay -> {
                 if (timeDuration >= minAmount) {
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["parkingNo"] = parkingNo
-                    jsonobject["orderNo"] = orderNo
-                    jsonobject["loginName"] = loginName
-                    jsonobject["simId"] = token
-                    jsonobject["parkingHours"] = timeDuration.toString()
-                    jsonobject["orderType"] = "1"
-                    param["attr"] = jsonobject
-                    mViewModel.prePayFeeInquiry(param)
+                    prePayFee()
                 } else {
                     ToastUtil.showMiddleToast("时长过短")
                     return
                 }
             }
         }
+    }
+
+    fun prePayFee() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["parkingNo"] = parkingNo
+        jsonobject["orderNo"] = orderNo
+        jsonobject["loginName"] = loginName
+        jsonobject["simId"] = token
+        jsonobject["parkingHours"] = timeDuration.toString()
+        jsonobject["orderType"] = "1"
+        param["attr"] = jsonobject
+        mViewModel.prePayFeeInquiry(param)
     }
 
     @SuppressLint("CheckResult")
