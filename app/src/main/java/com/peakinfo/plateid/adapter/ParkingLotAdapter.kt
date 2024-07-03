@@ -59,9 +59,9 @@ class ParkingLotAdapter(data: MutableList<ParkingLotBean>? = null, val onClickLi
 
     override fun convert(holder: VBViewHolder<ItemParkingLotBinding>, item: ParkingLotBean) {
         //测试用
-//        if (item.carLicense == "默00000") {
-//            item.state = "01"
-//        }
+        if (item.carLicense == "默00000") {
+            item.state = "01"
+        }
         if (item.state == "01") {
             holder.vb.llParkingLotBg.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_bg_grey)
             holder.vb.tvParkingLotNum.setBackgroundResource(com.peakinfo.common.R.mipmap.ic_parking_num_bg_grey)
