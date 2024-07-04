@@ -29,7 +29,6 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
-import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -101,12 +100,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
         }
         if (streetList.size == 1) {
-            binding.tvTitle.setCompoundDrawables(
-                null,
-                null,
-                null,
-                null
-            )
+            binding.tvTitle.setCompoundDrawables(null, null, null, null)
             binding.tvTitle.setOnClickListener(null)
         } else {
             binding.tvTitle.setOnClickListener(this)
@@ -245,11 +239,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         runBlocking {
                             val token =
                                 PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                            val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
+                            val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["token"] = token
-                            jsonobject["longitude"] = Constant.lon
-                            jsonobject["latitude"] = Constant.lat
+                            jsonobject["longitude"] = longitude.toString()
+                            jsonobject["latitude"] = latitude.toString()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 jsonobject["simId"] = PhoneUtils.getIMSI()
                             } else {
@@ -330,12 +326,14 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                    val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = tempStreet?.streetNo
-                    jsonobject["longitude"] = Constant.lon
-                    jsonobject["latitude"] = Constant.lat
+                    jsonobject["longitude"] = longitude
+                    jsonobject["latitude"] = latitude
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         jsonobject["simId"] = PhoneUtils.getIMSI()
                     } else {

@@ -19,6 +19,7 @@ import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.PrintInfoBean
+import com.peakinfo.base.bean.TransactionBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
@@ -169,15 +170,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_prepaid -> {
-                if (parkingSpaceBean!!.amountPayed > 0) {
-                    ToastUtil.showMiddleToast("已付金额大于0")
-                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
-                    ToastUtil.showMiddleToast("在停时间超过5分钟")
-                } else {
-                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
-                }
+//                if (parkingSpaceBean!!.amountPayed > 0) {
+//                    ToastUtil.showMiddleToast("已付金额大于0")
+//                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
+//                    ToastUtil.showMiddleToast("在停时间超过5分钟")
+//                } else {
+                ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                    .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                    .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+//                }
             }
 
             R.id.rfl_printNotice -> {
@@ -185,14 +186,24 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-//                            ticketPrintRequest()
+                            ticketPrintRequest()
                         }
                     }
                 } else {
-//                    ticketPrintRequest()
+                    ticketPrintRequest()
                 }
             }
         }
+    }
+
+    fun ticketPrintRequest() {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["tradeNo"] = tradeNo
+        jsonobject["token"] = token
+        param["attr"] = jsonobject
+        mViewModel.notificationInquiry(param)
     }
 
     fun checkPayResult() {
@@ -236,7 +247,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.dayHourMin(it.parkingTime))
+                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.millisToDate(it.parkingTime * 1000L))
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
@@ -296,6 +307,30 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     startPrint(it)
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
+            }
+            notificationInquiryLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
+                if (it != null && it.payMoney != null) {
+                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+                    val payMoney = it.payMoney
+                    val printInfo = PrintInfoBean(
+                        roadId = it.roadName,
+                        plateId = it.carLicense,
+                        payMoney = String.format("%.2f", payMoney.toFloat()),
+                        orderId = it.tradeNo,
+                        phone = it.phone,
+                        startTime = it.startTime,
+                        leftTime = it.endTime,
+                        remark = it.remark,
+                        company = it.businessCname,
+                        oweCount = it.oweCount
+                    )
+                    Thread {
+                        BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    }.start()
+                } else {
+                    ToastUtil.showMiddleToast("未查询到告知书")
+                }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

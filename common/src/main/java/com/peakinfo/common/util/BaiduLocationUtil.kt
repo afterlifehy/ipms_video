@@ -1,5 +1,6 @@
 package com.peakinfo.common.util
 
+import android.util.Log
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
@@ -33,6 +34,7 @@ class BaiduLocationUtil {
                 longitude = p0!!.longitude
                 latitude = p0.latitude
                 val errorCode = p0.locType
+//                Log.v("lon","${longitude}  ${latitude}")
                 // 获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
                 if (errorCode == 61 || errorCode == 66 || errorCode == 161) {
                     // 定位成功

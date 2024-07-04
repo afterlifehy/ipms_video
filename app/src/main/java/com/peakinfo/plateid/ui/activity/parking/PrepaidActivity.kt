@@ -186,7 +186,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
             payResultInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
-                if (it != null) {
+                if (it != null && it.payMoney != null) {
                     handler.removeCallbacks(runnable)
                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
                     if (paymentQrDialog != null) {

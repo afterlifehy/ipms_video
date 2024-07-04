@@ -243,29 +243,36 @@ object AppUtil {
     }
 
     fun dayHourMin(parkingTime: Int): String {
-        val totalSeconds = parkingTime
-        var day = totalSeconds / (3600 * 24)
-        var hour = (totalSeconds % (3600 * 24)) / 3600
-        var minute = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        // 判断是否需要进位
-        if (seconds > 0) {
-            minute += 1
-            // 处理分钟进位到小时
-            if (minute == 60) {
-                minute = 0
-                hour += 1
-                // 处理小时进位到天
-                if (hour == 24) {
-                    hour = 0
-                    day += 1
-                }
-            }
+        val day = parkingTime / (60 * 24)
+        val hour = parkingTime / 60 - day * 24
+        val minute = parkingTime - day * 24 * 60 - hour * 60
+        if (day == 0 && hour == 0) {
+            return "${minute}分钟"
+        } else if (day == 0) {
+            return "${hour}小时${minute}分钟"
+        } else {
+            return "${day}天${hour}小时${minute}分钟"
         }
-        return when {
-            day == 0 && hour == 0 -> "${minute}分钟"
-            day == 0 -> "${hour}小时${minute}分钟"
-            else -> "${day}天${hour}小时${minute}分钟"
+        return "${day}天${hour}小时${minute}分钟"
+    }
+
+    fun millisToDate(millis: Long): String {
+        val second = 1000L
+        val minute = 60 * second
+        val hour = 60 * minute
+        val day = 24 * hour
+        // 计算天、小时、分钟、秒
+        val days = millis / day
+        val hours = (millis % day) / hour
+        val minutes = (millis % hour) / minute
+        val seconds = (millis % minute) / second
+
+        // 构建结果字符串
+        return buildString {
+            if (days > 0) append("${days}天")
+            if (hours > 0) append("${hours}小时")
+            if (minutes > 0) append("${minutes}分")
+            if (seconds > 0 || length == 0) append("${seconds}秒")
         }
     }
 }

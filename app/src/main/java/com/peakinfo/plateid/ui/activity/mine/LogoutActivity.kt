@@ -28,6 +28,7 @@ import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.BaiduLocationLoginEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.BaiduLocationUtil
 import com.peakinfo.plateid.R
@@ -43,6 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.LOGOUT)
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
@@ -50,7 +52,6 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 121.445345
     var lon = 31.238665
-    var locationEnable = 0
 
     @SuppressLint("MissingPermission", "CheckResult")
     override fun initView() {
@@ -73,30 +74,35 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
         var rxPermissions = RxPermissions(this@LogoutActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil()
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@LogoutActivity.lat = lat
-                            this@LogoutActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                startBaiduMapLocation()
                 baiduLocationUtil.startLocation()
             }
         }
+    }
+
+    fun startBaiduMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil()
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@LogoutActivity.lat = lat
+                    this@LogoutActivity.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
+                }
+            }
+
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
     override fun initListener() {
@@ -122,74 +128,55 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
 
             R.id.tv_logout -> {
-                if (locationEnable == 1) {
-                    DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.确认签退))
-                        .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
-                        .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
-                        .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                            override fun onLeftClickLinsener(msg: String) {
-                            }
-
-                            override fun onRightClickLinsener(msg: String) {
-                                showProgressDialog(20000)
-                                runBlocking {
-                                    val token =
-                                        PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                                    val param = HashMap<String, Any>()
-                                    val jsonobject = JSONObject()
-                                    jsonobject["token"] = token
-                                    jsonobject["longitude"] = lon.toString()
-                                    jsonobject["latitude"] = lat.toString()
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                        jsonobject["simId"] = PhoneUtils.getIMSI()
-                                    } else {
-                                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                                    }
-                                    jsonobject["imei"] = PhoneUtils.getIMEI()
-                                    jsonobject["version"] = AppUtils.getAppVersionName()
-                                    param["attr"] = jsonobject
-                                    mViewModel.logout(param)
-                                }
-                            }
-                        }).build(this@LogoutActivity).showDailog()
+                var rxPermissions = RxPermissions(this@LogoutActivity)
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    logout()
                 } else {
-                    var rxPermissions = RxPermissions(this@LogoutActivity)
-                    if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
-                    } else {
-                        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                            .subscribe {
-                                if (it) {
-                                    baiduLocationUtil = BaiduLocationUtil()
-                                    baiduLocationUtil.initBaiduLocation()
-                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                        override fun locationChange(
-                                            lon: Double,
-                                            lat: Double,
-                                            location: LocationClientOption?,
-                                            isSuccess: Boolean,
-                                            address: String?
-                                        ) {
-                                            if (isSuccess) {
-                                                this@LogoutActivity.lat = lat
-                                                this@LogoutActivity.lon = lon
-                                                locationEnable = 1
-                                            } else {
-                                                locationEnable = -1
-                                            }
-                                        }
-
-                                    }
-                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                    baiduLocationUtil.startLocation()
-                                } else {
-                                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
-                                }
+                    rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
+                        .subscribe {
+                            if (it) {
+                                startBaiduMapLocation()
+                                logout()
+                            } else {
+                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
-                    }
+                        }
                 }
             }
         }
+    }
+
+    fun logout() {
+        DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.确认签退))
+            .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+            .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
+            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                override fun onLeftClickLinsener(msg: String) {
+                }
+
+                @SuppressLint("MissingPermission")
+                override fun onRightClickLinsener(msg: String) {
+                    showProgressDialog(20000)
+                    runBlocking {
+                        val token =
+                            PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["token"] = token
+                        jsonobject["longitude"] = lon.toString()
+                        jsonobject["latitude"] = lat.toString()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            jsonobject["simId"] = PhoneUtils.getIMSI()
+                        } else {
+                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                        }
+                        jsonobject["imei"] = PhoneUtils.getIMEI()
+                        jsonobject["version"] = AppUtils.getAppVersionName()
+                        param["attr"] = jsonobject
+                        mViewModel.logout(param)
+                    }
+                }
+            }).build(this@LogoutActivity).showDailog()
     }
 
     override fun startObserve() {
@@ -198,6 +185,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             logoutLiveData.observe(this@LogoutActivity) {
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                EventBus.getDefault().post(BaiduLocationLoginEvent())
                 for (i in ActivityCacheManager.instance().getAllActivity()) {
                     if (i !is LoginActivity) {
                         i.finish()

@@ -3,6 +3,7 @@ package com.peakinfo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
+import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
@@ -18,6 +19,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val parkingSpaceFeeLiveData = MutableLiveData<ParkingSpaceBean>()
     val insidePayLiveData = MutableLiveData<QRPayBean>()
     val payResultLiveData = MutableLiveData<PayResultBean>()
+    val notificationInquiryLiveData = MutableLiveData<NotificationBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -54,6 +56,19 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 payResultLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+            })
+        }
+    }
+
+    fun notificationInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.notificationInquiry(param)
+            }
+            executeResponse(response, {
+                notificationInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }

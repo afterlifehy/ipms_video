@@ -12,6 +12,7 @@ data class OrderBean(
     val amount: String,
     val carLicense: String,
     var duration: String,
+    var duration2: String,
     val endTime: String,
     val hasPayed: String,
     val orderNo: String,
@@ -23,6 +24,9 @@ data class OrderBean(
     init {
         if (duration == null) {
             duration = "0"
+        }
+        if (duration2.isNullOrEmpty()) {
+            duration2 = "0"
         }
     }
 }
