@@ -172,15 +172,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_prepaid -> {
-//                if (parkingSpaceBean!!.amountPayed > 0) {
-//                    ToastUtil.showMiddleToast("已付金额大于0")
-//                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
-//                    ToastUtil.showMiddleToast("在停时间超过5分钟")
-//                } else {
-                ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                    .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                    .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
-//                }
+                if (parkingSpaceBean!!.amountPayed > 0) {
+                    ToastUtil.showMiddleToast("已付金额大于0")
+                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
+                    ToastUtil.showMiddleToast("在停时间超过5分钟")
+                } else {
+                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+                }
             }
 
             R.id.rfl_printNotice -> {
