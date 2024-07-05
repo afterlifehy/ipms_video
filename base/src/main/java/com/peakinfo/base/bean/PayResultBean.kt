@@ -16,3 +16,7 @@ data class PayResultBean(
     val startTime: String,
     val tradeNo: String
 )
+
+data class NoticePrintResultBean(
+    var result: ArrayList<PayResultBean>
+)

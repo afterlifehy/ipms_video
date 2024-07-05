@@ -5,6 +5,7 @@ import com.peakinfo.base.bean.DebtCollectionResultBean
 import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.OrderResultBean
+import com.peakinfo.base.bean.PayQRBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.TransactionResultBean
@@ -80,5 +81,12 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun callInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.callInquiry(param)
+    }
+
+    /**
+     * 预支付查询
+     */
+    suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.prePayFeeInquiry(param)
     }
 }

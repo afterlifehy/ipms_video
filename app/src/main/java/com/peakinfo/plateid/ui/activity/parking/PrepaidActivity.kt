@@ -161,11 +161,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     fun prePayFee() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["parkingNo"] = parkingNo
         jsonobject["orderNo"] = orderNo
-        jsonobject["loginName"] = loginName
-        jsonobject["simId"] = token
-        jsonobject["parkingHours"] = timeDuration.toString()
+        jsonobject["token"] = token
+        jsonobject["parkingHours"] = timeDuration.toInt().toString()
         jsonobject["orderType"] = "1"
         param["attr"] = jsonobject
         mViewModel.prePayFeeInquiry(param)
@@ -178,7 +176,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             prePayFeeInquiryLiveData.observe(this@PrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                paymentQrDialog = PaymentQrDialog(it.qrCode, AppUtil.keepNDecimals(it.totalAmount.toString(), 2))
+                paymentQrDialog = PaymentQrDialog(it.qrCode, "", AppUtil.keepNDecimals(it.totalAmount.toString(), 2), carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -230,10 +228,10 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     fun checkPayResult() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["simId"] = token
+        jsonobject["token"] = token
         jsonobject["tradeNo"] = tradeNo
         param["attr"] = jsonobject
-        mViewModel.payResultInquiry(param)
+        mViewModel.payResult(param)
     }
 
     fun startPrint(it: PayResultBean) {

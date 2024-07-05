@@ -131,4 +131,15 @@ interface Api {
     @POST("S_VO2_21")
     suspend fun verifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 
+    /**
+     *预支付查询
+     */
+    @POST("S_VO2_23")
+    suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
+     * 订单打印告知书
+     */
+    @POST("S_VO2_24")
+    suspend fun queryNoticeByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NoticePrintResultBean>
 }

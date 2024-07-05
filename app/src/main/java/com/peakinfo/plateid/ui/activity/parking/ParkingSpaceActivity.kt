@@ -42,6 +42,9 @@ import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -63,7 +66,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var token = ""
     var parkingSpaceBean: ParkingSpaceBean? = null
 
-    var qr = ""
     var tradeNo = ""
     var amountPending = 0
 
@@ -186,24 +188,22 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            ticketPrintRequest()
+                            noticePrintRequest()
                         }
                     }
                 } else {
-                    ticketPrintRequest()
+                    noticePrintRequest()
                 }
             }
         }
     }
 
-    fun ticketPrintRequest() {
+    fun noticePrintRequest() {
         showProgressDialog(20000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        jsonobject["tradeNo"] = tradeNo
-        jsonobject["token"] = token
-        param["attr"] = jsonobject
-        mViewModel.notificationInquiry(param)
+        jsonobject["orderNo"] = orderNo
+        mViewModel.queryNoticeByOrderNo(param)
     }
 
     fun checkPayResult() {
@@ -276,8 +276,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                qr = it.payUrl
-                paymentQrDialog = PaymentQrDialog(qr, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
+                paymentQrDialog =
+                    PaymentQrDialog("", it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -300,36 +300,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean)
+                            startPrint(payResultBean) {}
                         }
                     }
                 } else {
-                    startPrint(it)
+                    startPrint(it) {}
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
             }
-            notificationInquiryLiveData.observe(this@ParkingSpaceActivity) {
+            queryNoticeByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                if (it != null && it.payMoney != null) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
-                    val payMoney = it.payMoney
-                    val printInfo = PrintInfoBean(
-                        roadId = it.roadName,
-                        plateId = it.carLicense,
-                        payMoney = String.format("%.2f", payMoney.toFloat()),
-                        orderId = it.tradeNo,
-                        phone = it.phone,
-                        startTime = it.startTime,
-                        leftTime = it.endTime,
-                        remark = it.remark,
-                        company = it.businessCname,
-                        oweCount = it.oweCount
-                    )
-                    Thread {
-                        BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-                    }.start()
-                } else {
-                    ToastUtil.showMiddleToast("未查询到告知书")
+                if (it.result != null && it.result.size > 0) {
+                    performPrintTasks(it.result) {
+                    }
                 }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
@@ -342,7 +325,26 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         }
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun performPrintTasks(printDataList: List<PayResultBean>, onComplete: () -> Unit) {
+        val iterator = printDataList.iterator()
+
+        fun printNext() {
+            if (iterator.hasNext()) {
+                val printData = iterator.next()
+                startPrint(printData) {
+                    // 打印完成后继续下一个打印
+                    printNext()
+                }
+            } else {
+                // 所有打印任务完成时调用 onComplete 回调
+                onComplete()
+            }
+        }
+        // 开始第一个打印任务
+        printNext()
+    }
+
+    fun startPrint(it: PayResultBean, onComplete: () -> Unit) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
@@ -360,6 +362,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         Thread {
             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()
+        GlobalScope.launch {
+            delay(3000)
+            // 执行打印完成后的回调
+            onComplete()
+        }
     }
 
     override fun isRegEventBus(): Boolean {

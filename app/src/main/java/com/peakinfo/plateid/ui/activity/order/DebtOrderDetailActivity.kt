@@ -45,7 +45,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
-    var qr = ""
     var tradeNo = ""
     var debtCollectionBean: DebtCollectionBean? = null
     var token = ""
@@ -152,9 +151,13 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             debtPayLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                qr = it.payUrl
                 paymentQrDialog =
-                    PaymentQrDialog(qr, AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2), debtCollectionBean!!.carLicense)
+                    PaymentQrDialog(
+                        "",
+                        it.payUrl,
+                        AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2),
+                        debtCollectionBean!!.carLicense
+                    )
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {

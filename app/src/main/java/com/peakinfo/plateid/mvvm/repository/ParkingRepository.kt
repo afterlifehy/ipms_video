@@ -3,6 +3,7 @@ package com.peakinfo.plateid.mvvm.repository
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.Login2Bean
+import com.peakinfo.base.bean.NoticePrintResultBean
 import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.ParkingLotResultBean
 import com.peakinfo.base.bean.ParkingSpaceBean
@@ -58,5 +59,12 @@ class ParkingRepository : BaseRepository() {
      */
     suspend fun notificationInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NotificationBean> {
         return mServer.notificationInquiry(param)
+    }
+
+    /**
+     * 订单打印告知书
+     */
+    suspend fun queryNoticeByOrderNo(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NoticePrintResultBean> {
+        return mServer.queryNoticeByOrderNo(param)
     }
 }

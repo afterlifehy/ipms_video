@@ -13,7 +13,7 @@ import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.databinding.DialogPaymentQrBinding
 import com.zrq.spanbuilder.TextStyle
 
-class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String = "") : VBBaseLibDialog<DialogPaymentQrBinding>(
+class PaymentQrDialog(var qrCode: String = "", var qrUrl: String = "", var amount: String = "", var plate: String = "") : VBBaseLibDialog<DialogPaymentQrBinding>(
     ActivityCacheManager.instance().getCurrentActivity()!!,
     com.peakinfo.base.R.style.CommonBottomDialogStyle
 ) {
@@ -30,8 +30,13 @@ class PaymentQrDialog(var qr: String, var amount: String = "", var plate: String
         val strings = arrayOf(amount, i18N(com.peakinfo.base.R.string.元))
         binding.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
         binding.tvPlate.text = plate
-        val qrBitmap = CodeUtils.createImage(qr, SizeUtils.dp2px(153f), SizeUtils.dp2px(153f), null)
-        GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        if(qrCode.isEmpty()){
+            val qrBitmap = CodeUtils.createImage(qrUrl, SizeUtils.dp2px(184f), SizeUtils.dp2px(184f), null)
+            GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        }else{
+            val qrBitmap = AppUtil.base64ToBitmap(qrCode)
+            GlideUtils.instance?.loadImage(binding.rivQr, qrBitmap)
+        }
         binding.ivClose.setOnClickListener {
             dismiss()
         }

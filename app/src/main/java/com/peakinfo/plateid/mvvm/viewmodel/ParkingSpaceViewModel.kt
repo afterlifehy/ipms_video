@@ -3,6 +3,7 @@ package com.peakinfo.plateid.mvvm.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
+import com.peakinfo.base.bean.NoticePrintResultBean
 import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
@@ -11,7 +12,7 @@ import com.peakinfo.plateid.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ParkingSpaceViewModel: BaseViewModel() {
+class ParkingSpaceViewModel : BaseViewModel() {
     val mParkingRepository by lazy {
         ParkingRepository()
     }
@@ -20,6 +21,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val insidePayLiveData = MutableLiveData<QRPayBean>()
     val payResultLiveData = MutableLiveData<PayResultBean>()
     val notificationInquiryLiveData = MutableLiveData<NotificationBean>()
+    val queryNoticeByOrderNoLiveData = MutableLiveData<NoticePrintResultBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -67,6 +69,19 @@ class ParkingSpaceViewModel: BaseViewModel() {
             }
             executeResponse(response, {
                 notificationInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun queryNoticeByOrderNo(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.queryNoticeByOrderNo(param)
+            }
+            executeResponse(response, {
+                queryNoticeByOrderNoLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
