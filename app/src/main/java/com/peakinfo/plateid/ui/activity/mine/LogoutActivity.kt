@@ -50,8 +50,8 @@ import org.greenrobot.eventbus.EventBus
 class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(), OnClickListener {
     private var job: Job? = null
     lateinit var baiduLocationUtil: BaiduLocationUtil
-    var lat = 121.445345
-    var lon = 31.238665
+    var lat = 0.00
+    var lon = 0.00
 
     @SuppressLint("MissingPermission", "CheckResult")
     override fun initView() {
@@ -160,11 +160,13 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     runBlocking {
                         val token =
                             PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                        val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                        val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
                         val param = HashMap<String, Any>()
                         val jsonobject = JSONObject()
                         jsonobject["token"] = token
-                        jsonobject["longitude"] = lon.toString()
-                        jsonobject["latitude"] = lat.toString()
+                        jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+                        jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             jsonobject["simId"] = PhoneUtils.getIMSI()
                         } else {

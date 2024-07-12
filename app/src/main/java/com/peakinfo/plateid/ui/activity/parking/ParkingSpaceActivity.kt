@@ -14,6 +14,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingSpaceBean
@@ -174,7 +175,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             R.id.rfl_prepaid -> {
                 if (parkingSpaceBean!!.amountPayed > 0) {
                     ToastUtil.showMiddleToast("已付金额大于0")
-                } else if (System.currentTimeMillis() - parkingSpaceBean!!.parkingTime * 1000 > 1000 * 60 * 5) {
+                } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
+                        parkingSpaceBean!!.startTime,
+                        "yyyy-MM-dd HH:mm:ss"
+                    ) > 1000 * 60 * 5
+                ) {
                     ToastUtil.showMiddleToast("在停时间超过5分钟")
                 } else {
                     ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
@@ -203,6 +208,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
+        param["attr"] = jsonobject
         mViewModel.queryNoticeByOrderNo(param)
     }
 
@@ -358,8 +364,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
         Thread {
+            runOnUiThread {
+                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+            }
             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()
         GlobalScope.launch {

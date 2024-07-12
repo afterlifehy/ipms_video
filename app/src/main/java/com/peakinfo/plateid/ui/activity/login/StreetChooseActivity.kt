@@ -167,8 +167,8 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 val jsonobject = JSONObject()
                 jsonobject["loginName"] = loginInfo?.loginName
                 jsonobject["streetNo"] = streetChoosedList[0].streetNo
-                jsonobject["longitude"] = longitude.toString()
-                jsonobject["latitude"] = latitude.toString()
+                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     jsonobject["simId"] = PhoneUtils.getIMSI()
                 } else {
