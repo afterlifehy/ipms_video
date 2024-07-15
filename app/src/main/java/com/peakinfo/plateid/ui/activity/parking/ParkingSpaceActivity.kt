@@ -178,9 +178,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
                         parkingSpaceBean!!.startTime,
                         "yyyy-MM-dd HH:mm:ss"
-                    ) > 1000 * 60 * 5
+                    ) > 1000 * 60 * 60
                 ) {
-                    ToastUtil.showMiddleToast("在停时间超过5分钟")
+                    ToastUtil.showMiddleToast("在停时间超过1小时")
                 } else {
                     ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                         .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
