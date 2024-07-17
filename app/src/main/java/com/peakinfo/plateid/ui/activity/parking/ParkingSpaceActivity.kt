@@ -149,17 +149,21 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (carLicense == "默00000") {
                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请修改车牌))
                 } else {
-                    showProgressDialog(20000)
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["token"] = token
-                    jsonobject["tradeNo"] = tradeNo
-                    jsonobject["carLicense"] = carLicense
-                    jsonobject["carColor"] = carColor
-                    jsonobject["amountPending"] = amountPending
-                    jsonobject["orderNo"] = orderNo
-                    param["attr"] = jsonobject
-                    mViewModel.insidePay(param)
+                    if (parkingSpaceBean!!.amountPending > 0) {
+                        showProgressDialog(20000)
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["token"] = token
+                        jsonobject["tradeNo"] = tradeNo
+                        jsonobject["carLicense"] = carLicense
+                        jsonobject["carColor"] = carColor
+                        jsonobject["amountPending"] = amountPending
+                        jsonobject["orderNo"] = orderNo
+                        param["attr"] = jsonobject
+                        mViewModel.insidePay(param)
+                    } else {
+                        ToastUtil.showMiddleToast("代缴费用为0")
+                    }
                 }
             }
 

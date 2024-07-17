@@ -117,20 +117,22 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     val printResult = BluePrint.instance?.connet(device.address)
                     if (printResult != 0) {
                         runOnUiThread {
-                            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.打印机连接失败需要手动连接))
-                                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
-                                .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
-                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
-                                    }
+                            if (!isFinishing && !isDestroyed) {
+                                DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.打印机连接失败需要手动连接))
+                                    .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                                    .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
+                                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                        override fun onLeftClickLinsener(msg: String) {
+                                        }
 
-                                    override fun onRightClickLinsener(msg: String) {
-                                        val intent = Intent(this@MainActivity, MineActivity::class.java)
-                                        intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
-                                        startActivity(intent)
-                                    }
+                                        override fun onRightClickLinsener(msg: String) {
+                                            val intent = Intent(this@MainActivity, MineActivity::class.java)
+                                            intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+                                            startActivity(intent)
+                                        }
 
-                                }).build(this@MainActivity).showDailog()
+                                    }).build(this@MainActivity).showDailog()
+                            }
                         }
                     }
                 }
