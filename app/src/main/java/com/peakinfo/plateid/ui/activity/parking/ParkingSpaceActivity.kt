@@ -162,7 +162,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                         param["attr"] = jsonobject
                         mViewModel.insidePay(param)
                     } else {
-                        ToastUtil.showMiddleToast("代缴费用为0")
+                        ToastUtil.showMiddleToast("待缴费用为0")
                     }
                 }
             }

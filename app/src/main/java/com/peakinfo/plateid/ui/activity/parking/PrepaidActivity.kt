@@ -248,19 +248,12 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        val printList = BluePrint.instance?.blueToothDevice!!
-        if (printList.size == 1) {
-            Thread {
-                val device = printList[0]
-                var connectResult = BluePrint.instance?.connet(device.address)
-                if (connectResult == 0) {
-                    runOnUiThread {
-                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
-                    }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-                }
-            }.start()
-        }
+        Thread {
+            runOnUiThread {
+                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+            }
+            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+        }.start()
     }
 
     override fun providerVMClass(): Class<PrepaidViewModel> {
