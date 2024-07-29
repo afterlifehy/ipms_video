@@ -72,6 +72,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var count = 0
     var handler = Handler(Looper.getMainLooper())
+    var isOnsitePay = false
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(parkingSpaceBackEvent: ParkingSpaceBackEvent) {
@@ -149,20 +150,11 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (carLicense == "默00000") {
                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请修改车牌))
                 } else {
-                    if (parkingSpaceBean!!.amountPending > 0) {
-                        showProgressDialog(20000)
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["token"] = token
-                        jsonobject["tradeNo"] = tradeNo
-                        jsonobject["carLicense"] = carLicense
-                        jsonobject["carColor"] = carColor
-                        jsonobject["amountPending"] = amountPending
-                        jsonobject["orderNo"] = orderNo
-                        param["attr"] = jsonobject
-                        mViewModel.insidePay(param)
+                    if (AppUtil.isFastClick(3000)) {
+                        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请不要频繁点击))
                     } else {
-                        ToastUtil.showMiddleToast("待缴费用为0")
+                        isOnsitePay = true
+                        requestParkingSpaceFee()
                     }
                 }
             }
@@ -283,6 +275,24 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 tradeNo = it.tradeNo
                 amountPending = it.amountPending
+                if (isOnsitePay) {
+                    if (parkingSpaceBean!!.amountPending > 0) {
+                        showProgressDialog(20000)
+                        val param = HashMap<String, Any>()
+                        val jsonobject = JSONObject()
+                        jsonobject["token"] = token
+                        jsonobject["tradeNo"] = tradeNo
+                        jsonobject["carLicense"] = carLicense
+                        jsonobject["carColor"] = carColor
+                        jsonobject["amountPending"] = amountPending
+                        jsonobject["orderNo"] = orderNo
+                        param["attr"] = jsonobject
+                        mViewModel.insidePay(param)
+                    } else {
+                        ToastUtil.showMiddleToast("待缴费用为0")
+                    }
+                    isOnsitePay = false
+                }
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

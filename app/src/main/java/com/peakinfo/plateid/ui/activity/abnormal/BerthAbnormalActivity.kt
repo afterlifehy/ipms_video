@@ -125,8 +125,6 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         classificationList.add(i18n(com.peakinfo.base.R.string.泊位有车POS无订单))
         classificationList.add(i18n(com.peakinfo.base.R.string.泊位无车POS有订单))
         classificationList.add(i18n(com.peakinfo.base.R.string.在停车牌与POS不一致))
-
-
     }
 
     @SuppressLint("ClickableViewAccessibility")

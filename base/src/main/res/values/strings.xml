@@ -160,4 +160,5 @@
     <string name="支付">支付</string>
     <string name="预支付">预支付</string>
     <string name="告知书">告知书</string>
+    <string name="请不要频繁点击">请不要频繁点击</string>
 </resources>
