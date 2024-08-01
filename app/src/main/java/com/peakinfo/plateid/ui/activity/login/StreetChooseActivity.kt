@@ -2,8 +2,10 @@ package com.peakinfo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
@@ -37,6 +39,7 @@ import com.peakinfo.plateid.dialog.StreetChooseListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.StreetChooseViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
+
 
 @Route(path = ARouterMap.STREET_CHOOSE)
 class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStreetChooseBinding>(),
@@ -170,11 +173,16 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
                 jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    jsonobject["simId"] = PhoneUtils.getIMSI()
+                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                    val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+                    if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+                        jsonobject["simId"] = subscriptionInfoList[0].iccId
+                    }
                 } else {
+                    jsonobject["imei"] = PhoneUtils.getIMEI()
                     jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                 }
-                jsonobject["imei"] = PhoneUtils.getIMEI()
                 jsonobject["version"] = AppUtils.getAppVersionName()
                 param["attr"] = jsonobject
                 mViewModel.login2(param)

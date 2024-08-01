@@ -151,7 +151,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请修改车牌))
                 } else {
                     if (AppUtil.isFastClick(3000)) {
-                        ToastUtil.showToast(i18N(com.peakinfo.base.R.string.请不要频繁点击))
+                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请不要频繁点击))
                     } else {
                         isOnsitePay = true
                         requestParkingSpaceFee()
