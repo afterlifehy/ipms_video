@@ -2,11 +2,9 @@ package com.peakinfo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
 import android.os.Build
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
@@ -53,7 +51,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     lateinit var baiduLocationUtil: BaiduLocationUtil
     var lat = 0.00
     var lon = 0.00
-    var locationEnable = 0
 
     @SuppressLint("CheckResult", "MissingPermission")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -70,30 +67,34 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
             if (it) {
-                baiduLocationUtil = BaiduLocationUtil()
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@StreetChooseActivity.lat = lat
-                            this@StreetChooseActivity.lon = lon
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                startBaiduMapLocation()
                 baiduLocationUtil.startLocation()
             }
         }
+    }
+
+    fun startBaiduMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil()
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(
+                lon: Double,
+                lat: Double,
+                location: LocationClientOption?,
+                isSuccess: Boolean,
+                address: String?
+            ) {
+                if (isSuccess) {
+                    this@StreetChooseActivity.lat = lat
+                    this@StreetChooseActivity.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
+                }
+            }
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
     }
 
     override fun initListener() {
@@ -127,55 +128,19 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
 
             R.id.rtv_enterWorkBench -> {
                 val rxPermissions = RxPermissions(this@StreetChooseActivity)
-                if (locationEnable == 1) {
-                    if (streetChoosedList.isNotEmpty()) {
-                        showProgressDialog(20000)
-                        val param = HashMap<String, Any>()
-                        val jsonobject = JSONObject()
-                        jsonobject["loginName"] = loginInfo?.loginName
-                        jsonobject["streetNo"] = streetChoosedList[0].streetNo
-                        jsonobject["longitude"] = lon.toString()
-                        jsonobject["latitude"] = lat.toString()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            jsonobject["simId"] = PhoneUtils.getIMSI()
-                        } else {
-                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                        }
-                        jsonobject["imei"] = PhoneUtils.getIMEI()
-                        jsonobject["version"] = AppUtils.getAppVersionName()
-                        param["attr"] = jsonobject
-                        mViewModel.login2(param)
-                    } else {
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
+                if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    if (baiduLocationUtil == null) {
+                        startBaiduMapLocation()
                     }
+                    login2()
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                             if (it) {
-                                baiduLocationUtil = BaiduLocationUtil()
-                                baiduLocationUtil.initBaiduLocation()
-                                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                    override fun locationChange(
-                                        lon: Double,
-                                        lat: Double,
-                                        location: LocationClientOption?,
-                                        isSuccess: Boolean,
-                                        address: String?
-                                    ) {
-                                        if (isSuccess) {
-                                            this@StreetChooseActivity.lat = lat
-                                            this@StreetChooseActivity.lon = lon
-                                            locationEnable = 1
-                                        } else {
-                                            locationEnable = -1
-                                        }
-                                    }
-
-                                }
-                                baiduLocationUtil.setBaiduLocationCallBack(callback)
-                                baiduLocationUtil.startLocation()
+                                startBaiduMapLocation()
+                                login2()
                             } else {
                                 ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
@@ -195,6 +160,39 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         }
     }
 
+    @SuppressLint("MissingPermission")
+    fun login2() {
+        if (streetChoosedList.isNotEmpty()) {
+            showProgressDialog(20000)
+            runBlocking {
+                val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
+                val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["loginName"] = loginInfo?.loginName
+                jsonobject["streetNo"] = streetChoosedList[0].streetNo
+                jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
+                jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                    val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+                    if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+                        jsonobject["simId"] = subscriptionInfoList[0].iccId
+                    }
+                } else {
+                    jsonobject["imei"] = PhoneUtils.getIMEI()
+                    jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                }
+                jsonobject["version"] = AppUtils.getAppVersionName()
+                param["attr"] = jsonobject
+                mViewModel.login2(param)
+            }
+        } else {
+            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
+        }
+    }
+
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
@@ -208,7 +206,10 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone.toString())
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name.toString())
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, loginInfo!!.loginName.toString())
+                    PreferencesDataStore(BaseApplication.instance()).putString(
+                        PreferencesKeys.loginName,
+                        loginInfo!!.loginName.toString()
+                    )
                 }
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)

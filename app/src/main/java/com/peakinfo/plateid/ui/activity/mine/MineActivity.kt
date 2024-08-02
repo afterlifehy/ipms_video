@@ -2,15 +2,12 @@ package com.peakinfo.plateid.ui.activity.mine
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -29,6 +26,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.BaiduLocationLoginEvent
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
@@ -41,6 +39,7 @@ import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.MINE)
 class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnClickListener {
@@ -186,6 +185,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
                         override fun onRightClickLinsener(msg: String) {
                             ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                            EventBus.getDefault().post(BaiduLocationLoginEvent())
                             for (i in ActivityCacheManager.instance().getAllActivity()) {
                                 if (i !is LoginActivity) {
                                     i.finish()

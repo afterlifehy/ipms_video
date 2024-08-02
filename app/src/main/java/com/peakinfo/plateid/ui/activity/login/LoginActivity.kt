@@ -3,8 +3,6 @@ package com.peakinfo.plateid.ui.activity.login
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
-import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -16,20 +14,24 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.UpdateBean
+import com.peakinfo.base.ds.PreferencesDataStore
+import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.event.BaiduLocationLoginEvent
 import com.peakinfo.common.util.BaiduLocationUtil
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityLoginBinding
 import com.peakinfo.plateid.mvvm.viewmodel.LoginViewModel
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.runBlocking
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
 @Route(path = ARouterMap.LOGIN)
@@ -39,6 +41,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lon = 31.238665
     var updateBean: UpdateBean? = null
     var locationEnable = 0
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(baiduLocationLoginEvent: BaiduLocationLoginEvent) {
+        startBaiduMapLocation()
+    }
 
     @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
@@ -52,35 +59,36 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             Manifest.permission.READ_PHONE_STATE
         ).subscribe {
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                baiduLocationUtil = BaiduLocationUtil()
-                baiduLocationUtil.initBaiduLocation()
-                val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                    override fun locationChange(
-                        lon: Double,
-                        lat: Double,
-                        location: LocationClientOption?,
-                        isSuccess: Boolean,
-                        address: String?
-                    ) {
-                        if (isSuccess) {
-                            this@LoginActivity.lat = lat
-                            this@LoginActivity.lon = lon
-                            Constant.lon = lon.toString()
-                            Constant.lat = lat.toString()
-                            locationEnable = 1
-                        } else {
-                            locationEnable = -1
-                        }
-                    }
-
-                }
-                baiduLocationUtil.setBaiduLocationCallBack(callback)
+                startBaiduMapLocation()
                 baiduLocationUtil.startLocation()
             }
         }
 
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
     }
+
+    fun startBaiduMapLocation() {
+        baiduLocationUtil = BaiduLocationUtil()
+        baiduLocationUtil.initBaiduLocation()
+        val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
+            override fun locationChange(lon: Double, lat: Double, location: LocationClientOption?, isSuccess: Boolean, address: String?) {
+                if (isSuccess) {
+                    this@LoginActivity.lat = lat
+                    this@LoginActivity.lon = lon
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lat, lat)
+                        PreferencesDataStore(BaseApplication.instance()).putDouble(PreferencesKeys.lon, lon)
+                    }
+                    locationEnable = 1
+                } else {
+                    locationEnable = -1
+                }
+            }
+
+        }
+        baiduLocationUtil.setBaiduLocationCallBack(callback)
+    }
+
 
     override fun initListener() {
         binding.tvForgetPw.setOnClickListener(this)
@@ -182,27 +190,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                             .subscribe {
                                 if (it) {
-                                    baiduLocationUtil = BaiduLocationUtil()
-                                    baiduLocationUtil.initBaiduLocation()
-                                    val callback = object : BaiduLocationUtil.BaiduLocationCallBack {
-                                        override fun locationChange(
-                                            lon: Double,
-                                            lat: Double,
-                                            location: LocationClientOption?,
-                                            isSuccess: Boolean,
-                                            address: String?
-                                        ) {
-                                            if (isSuccess) {
-                                                this@LoginActivity.lat = lat
-                                                this@LoginActivity.lon = lon
-                                                locationEnable = 1
-                                            } else {
-                                                locationEnable = -1
-                                            }
-                                        }
-
-                                    }
-                                    baiduLocationUtil.setBaiduLocationCallBack(callback)
+                                    startBaiduMapLocation()
                                     baiduLocationUtil.startLocation()
                                 } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                                     ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
@@ -275,6 +263,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun providerVMClass(): Class<LoginViewModel>? {
         return LoginViewModel::class.java
+    }
+
+    override fun isRegEventBus(): Boolean {
+        return true
     }
 
     override val isFullScreen: Boolean

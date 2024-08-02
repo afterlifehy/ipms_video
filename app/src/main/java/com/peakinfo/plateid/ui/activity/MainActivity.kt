@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
@@ -29,7 +30,6 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
-import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -101,12 +101,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
         }
         if (streetList.size == 1) {
-            binding.tvTitle.setCompoundDrawables(
-                null,
-                null,
-                null,
-                null
-            )
+            binding.tvTitle.setCompoundDrawables(null, null, null, null)
             binding.tvTitle.setOnClickListener(null)
         } else {
             binding.tvTitle.setOnClickListener(this)
@@ -123,20 +118,22 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     val printResult = BluePrint.instance?.connet(device.address)
                     if (printResult != 0) {
                         runOnUiThread {
-                            DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.打印机连接失败需要手动连接))
-                                .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
-                                .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
-                                .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
-                                    override fun onLeftClickLinsener(msg: String) {
-                                    }
+                            if (!isFinishing && !isDestroyed) {
+                                DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.打印机连接失败需要手动连接))
+                                    .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
+                                    .setRightMsg(i18N(com.peakinfo.base.R.string.去连接)).setCancelable(true)
+                                    .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                        override fun onLeftClickLinsener(msg: String) {
+                                        }
 
-                                    override fun onRightClickLinsener(msg: String) {
-                                        val intent = Intent(this@MainActivity, MineActivity::class.java)
-                                        intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
-                                        startActivity(intent)
-                                    }
+                                        override fun onRightClickLinsener(msg: String) {
+                                            val intent = Intent(this@MainActivity, MineActivity::class.java)
+                                            intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
+                                            startActivity(intent)
+                                        }
 
-                                }).build(this@MainActivity).showDailog()
+                                    }).build(this@MainActivity).showDailog()
+                            }
                         }
                     }
                 }
@@ -243,19 +240,25 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         showProgressDialog(20000)
                         tempStreet = street
                         runBlocking {
-                            val token =
-                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                            val token = PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
+                            val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
+                            val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
                             val param = HashMap<String, Any>()
                             val jsonobject = JSONObject()
                             jsonobject["token"] = token
-                            jsonobject["longitude"] = Constant.lon
-                            jsonobject["latitude"] = Constant.lat
+                            jsonobject["longitude"] = longitude.toString()
+                            jsonobject["latitude"] = latitude.toString()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                jsonobject["simId"] = PhoneUtils.getIMSI()
+                                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                                val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                                val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+                                if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+                                    jsonobject["simId"] = subscriptionInfoList[0].iccId
+                                }
                             } else {
+                                jsonobject["imei"] = PhoneUtils.getIMEI()
                                 jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                             }
-                            jsonobject["imei"] = PhoneUtils.getIMEI()
                             jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
                             mViewModel.logout(param)
@@ -330,18 +333,25 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
+                    val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = tempStreet?.streetNo
-                    jsonobject["longitude"] = Constant.lon
-                    jsonobject["latitude"] = Constant.lat
+                    jsonobject["longitude"] = longitude
+                    jsonobject["latitude"] = latitude
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        jsonobject["simId"] = PhoneUtils.getIMSI()
+                        jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                        val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                        val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+                        if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+                            jsonobject["simId"] = subscriptionInfoList[0].iccId
+                        }
                     } else {
+                        jsonobject["imei"] = PhoneUtils.getIMEI()
                         jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                     }
-                    jsonobject["imei"] = PhoneUtils.getIMEI()
                     jsonobject["version"] = AppUtils.getAppVersionName()
                     param["attr"] = jsonobject
                     mViewModel.login2(param)
