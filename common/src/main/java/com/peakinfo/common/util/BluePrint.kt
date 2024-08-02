@@ -82,6 +82,7 @@ class BluePrint() {
             Handler(Looper.getMainLooper()).post {
                 ToastUtil.showMiddleToast("打印机连接失败")
             }
+            zpSDK = null
             printResult = -1
             return printResult
         }
