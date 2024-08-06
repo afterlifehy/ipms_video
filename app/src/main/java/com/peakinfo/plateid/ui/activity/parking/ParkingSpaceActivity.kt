@@ -202,7 +202,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.dayHourMin(it.parkingTime))
+                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.millisToDate(it.parkingTime * 1000L))
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
