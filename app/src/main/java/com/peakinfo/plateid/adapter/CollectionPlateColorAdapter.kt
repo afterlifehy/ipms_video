@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.show
 import com.peakinfo.common.util.Constant
@@ -28,11 +29,17 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<String>?
         collectioPlateColorMap[Constant.YELLOW_GREEN] = com.peakinfo.common.R.mipmap.ic_plate_yellow_green
         collectioPlateColorMap[Constant.WHITE] = com.peakinfo.common.R.mipmap.ic_plate_white
         collectioPlateColorMap[Constant.BLACK] = com.peakinfo.common.R.mipmap.ic_plate_black
-        collectioPlateColorMap[Constant.OTHERS] = com.peakinfo.common.R.mipmap.ic_plate_other
     }
 
     override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: String) {
-        GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorMap[item]!!)
+        if (item == Constant.OTHERS) {
+            holder.vb.flLin.show()
+            holder.vb.ivColor.gone()
+        } else {
+            holder.vb.flLin.gone()
+            holder.vb.ivColor.show()
+            GlideUtils.instance?.loadImage(holder.vb.ivColor, collectioPlateColorMap[item]!!)
+        }
         if (checkedColor == item) {
             holder.vb.rflStroke.show()
             holder.vb.ivHook.show()

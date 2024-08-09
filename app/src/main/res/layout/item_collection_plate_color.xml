@@ -7,6 +7,21 @@
     android:layout_height="@dimen/dp_45"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:id="@+id/fl_lin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dp_8"
+        android:background="@drawable/shape_lin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/临"
+            android:textColor="@color/black" />
+    </FrameLayout>
+    
     <ImageView
         android:id="@+id/iv_color"
         android:layout_width="match_parent"
