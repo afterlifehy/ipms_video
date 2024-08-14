@@ -174,12 +174,14 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
                 jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                    val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                    val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-                    if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
-                        jsonobject["simId"] = subscriptionInfoList[0].iccId
-                    }
+//                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+//                    val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+//                    val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+//                    if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
+//                        jsonobject["simId"] = subscriptionInfoList[0].iccId
+//                    }
+                    jsonobject["imei"] = ""
+                    jsonobject["simId"] = ""
                 } else {
                     jsonobject["imei"] = PhoneUtils.getIMEI()
                     jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
