@@ -19,4 +19,5 @@ object Constant {
     const val TRANSPARENT = "13"
     const val YELLOW_GREEN = "20"
     const val OTHERS = "33"
+    const val OTHERS_OLD = "99"
 }

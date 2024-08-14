@@ -32,7 +32,7 @@ class CollectionPlateColorAdapter(val widthType: Int, data: MutableList<String>?
     }
 
     override fun convert(holder: VBViewHolder<ItemCollectionPlateColorBinding>, item: String) {
-        if (item == Constant.OTHERS) {
+        if (item == Constant.OTHERS || item == Constant.OTHERS_OLD) {
             holder.vb.flLin.show()
             holder.vb.ivColor.gone()
         } else {
