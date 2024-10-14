@@ -3,6 +3,7 @@ package com.peakinfo.common.util
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
@@ -246,12 +247,14 @@ class BluePrint() {
 //                BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr, options)
 //                options.inSampleSize = calculateInSampleSize(options, 300, 300)
 //                options.inJustDecodeBounds = false
+                val bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
                 zpSDK!!.drawGraphic(
                     65 + 60,
                     yLocation,
                     300,
                     300,
-                    BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                    scaledBitmap
                 )
 //                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
                 yLocation += (300 + 18)
