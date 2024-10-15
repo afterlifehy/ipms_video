@@ -249,14 +249,19 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                             jsonobject["longitude"] = longitude.toString()
                             jsonobject["latitude"] = latitude.toString()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-//                                val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-//                                val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-//                                if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
-//                                    jsonobject["simId"] = subscriptionInfoList[0].iccId
-//                                }
-                                jsonobject["imei"] = ""
-                                jsonobject["simId"] = ""
+                                try {
+                                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                                    jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                                } catch (e: Exception) {
+                                    val manufacturer = Build.MANUFACTURER
+                                    val model = Build.MODEL
+                                    val id = manufacturer + model + " " + Settings.Secure.getString(
+                                        BaseApplication.instance().getContentResolver(),
+                                        Settings.Secure.ANDROID_ID
+                                    )
+                                    jsonobject["imei"] = id
+                                    jsonobject["simId"] = id
+                                }
                             } else {
                                 jsonobject["imei"] = PhoneUtils.getIMEI()
                                 jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
@@ -346,6 +351,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         try {
                             jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                         } catch (e: Exception) {
                             val manufacturer = Build.MANUFACTURER
                             val model = Build.MODEL

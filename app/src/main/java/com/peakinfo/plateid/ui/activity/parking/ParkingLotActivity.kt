@@ -176,6 +176,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 try {
                                     jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                                    jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                                 } catch (e: Exception) {
                                     val manufacturer = Build.MANUFACTURER
                                     val model = Build.MODEL
@@ -246,6 +247,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         try {
                             jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                         } catch (e: Exception) {
                             val manufacturer = Build.MANUFACTURER
                             val model = Build.MODEL
