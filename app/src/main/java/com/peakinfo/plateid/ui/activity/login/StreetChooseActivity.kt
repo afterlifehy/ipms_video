@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
@@ -174,14 +175,18 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
                 jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-//                    val subscriptionManager = getSystemService(TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-//                    val subscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-//                    if (subscriptionInfoList != null && !subscriptionInfoList.isEmpty()) {
-//                        jsonobject["simId"] = subscriptionInfoList[0].iccId
-//                    }
-                    jsonobject["imei"] = ""
-                    jsonobject["simId"] = ""
+                    try {
+                        jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        val manufacturer = Build.MANUFACTURER
+                        val model = Build.MODEL
+                        val id = manufacturer + model + " " + Settings.Secure.getString(
+                            BaseApplication.instance().getContentResolver(),
+                            Settings.Secure.ANDROID_ID
+                        )
+                        jsonobject["imei"] = id
+                        jsonobject["simId"] = id
+                    }
                 } else {
                     jsonobject["imei"] = PhoneUtils.getIMEI()
                     jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber

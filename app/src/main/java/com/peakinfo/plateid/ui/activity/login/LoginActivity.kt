@@ -3,6 +3,9 @@ package com.peakinfo.plateid.ui.activity.login
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
+import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -177,6 +180,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
+                    try {
+                        jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        val manufacturer = Build.MANUFACTURER
+                        val model = Build.MODEL
+                        val id = manufacturer + model + " " + Settings.Secure.getString(
+                            BaseApplication.instance().getContentResolver(),
+                            Settings.Secure.ANDROID_ID
+                        )
+                        jsonobject["imei"] = id
+                    }
                     jsonobject["loginName"] = binding.etAccount.text.toString()
                     jsonobject["password"] = binding.etPw.text.toString()
                     jsonobject["longitude"] = lon.toString()
