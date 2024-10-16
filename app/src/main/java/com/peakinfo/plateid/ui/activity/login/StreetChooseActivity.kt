@@ -181,10 +181,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     } catch (e: Exception) {
                         val manufacturer = Build.MANUFACTURER
                         val model = Build.MODEL
-                        val id = manufacturer + model + " " + Settings.Secure.getString(
-                            BaseApplication.instance().getContentResolver(),
-                            Settings.Secure.ANDROID_ID
-                        )
+                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
                         jsonobject["imei"] = id
                         jsonobject["simId"] = id
                     }

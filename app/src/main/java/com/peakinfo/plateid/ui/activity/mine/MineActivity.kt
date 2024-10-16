@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.RequiresApi
@@ -15,6 +16,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.BlueToothDeviceBean
@@ -151,9 +153,23 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
             }
 
             R.id.fl_version -> {
+                var imei = ""
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        val manufacturer = Build.MANUFACTURER
+                        val model = Build.MODEL
+                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                        imei = id
+                    }
+                } else {
+                    imei = PhoneUtils.getIMEI()
+                }
                 val param = HashMap<String, Any>()
                 val jsonobject = JSONObject()
                 jsonobject["version"] = AppUtils.getAppVersionCode()
+                jsonobject["imei"] = imei
                 param["attr"] = jsonobject
                 mViewModel.checkUpdate(param)
             }

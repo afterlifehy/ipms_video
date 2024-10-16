@@ -17,6 +17,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.UpdateBean
@@ -64,6 +65,27 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 startBaiduMapLocation()
                 baiduLocationUtil.startLocation()
+            }
+            if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                var imei = ""
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        val manufacturer = Build.MANUFACTURER
+                        val model = Build.MODEL
+                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                        imei = id
+                    }
+                } else {
+                    imei = PhoneUtils.getIMEI()
+                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["version"] = AppUtils.getAppVersionCode()
+                jsonobject["imei"] = imei
+                param["attr"] = jsonobject
+                mViewModel.checkUpdate(param)
             }
         }
 
@@ -160,11 +182,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     }
 
     override fun initData() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["version"] = AppUtils.getAppVersionCode()
-        param["attr"] = jsonobject
-        mViewModel.checkUpdate(param)
     }
 
     @SuppressLint("CheckResult", "MissingPermission")
@@ -180,16 +197,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    try {
-                        jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                    } catch (e: Exception) {
-                        val manufacturer = Build.MANUFACTURER
-                        val model = Build.MODEL
-                        val id = manufacturer + model + " " + Settings.Secure.getString(
-                            BaseApplication.instance().getContentResolver(),
-                            Settings.Secure.ANDROID_ID
-                        )
-                        jsonobject["imei"] = id
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        try {
+                            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                        } catch (e: Exception) {
+                            val manufacturer = Build.MANUFACTURER
+                            val model = Build.MODEL
+                            val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                            jsonobject["imei"] = id
+                        }
+                    } else {
+                        jsonobject["imei"] = PhoneUtils.getIMEI()
                     }
                     jsonobject["loginName"] = binding.etAccount.text.toString()
                     jsonobject["password"] = binding.etPw.text.toString()
