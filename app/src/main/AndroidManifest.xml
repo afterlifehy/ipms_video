@@ -246,5 +246,10 @@
             android:name=".ui.activity.mine.FeeRateActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ui.activity.login.ResetPwActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

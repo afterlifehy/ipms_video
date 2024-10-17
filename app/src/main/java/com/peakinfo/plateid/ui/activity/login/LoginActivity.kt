@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.Editable
@@ -24,6 +25,8 @@ import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.startAct
+import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.BaiduLocationLoginEvent
@@ -188,7 +191,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.tv_forgetPw -> {
-
+                startArouter(ARouterMap.RESET_PW)
             }
 
             R.id.rtv_login -> {
@@ -239,8 +242,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.apply {
             verifyAccountLiveDate.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                ARouter.getInstance().build(ARouterMap.STREET_CHOOSE).withParcelable(ARouterMap.LOGIN_INFO, it)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                startAct<StreetChooseActivity>(data = Bundle().apply {
+                    putParcelable(ARouterMap.LOGIN_INFO, it)
+                })
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
@@ -258,7 +262,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()

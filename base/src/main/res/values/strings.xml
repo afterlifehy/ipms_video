@@ -159,4 +159,8 @@
     <string name="请授权电话权限">请授权电话权限</string>
     <string name="支付">支付</string>
     <string name="临">临</string>
+    <string name="重置密码">重置密码</string>
+    <string name="请输入旧密码">请输入旧密码</string>
+    <string name="请输入新密码">请输入新密码</string>
+    <string name="重复密码">重复密码</string>
 </resources>
