@@ -130,11 +130,11 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             R.id.tv_search -> {
                 carLicense = binding.etSearch.text.toString()
                 if (carLicense.isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请输入车牌号))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请输入车牌号))
                     return
                 }
                 if (carLicense.length != 7 && carLicense.length != 8) {
-                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
+                    ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
                 query()
@@ -185,7 +185,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             }
             errMsg.observe(this@DebtCollectionActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@DebtCollectionActivity) {
                 dismissProgressDialog()

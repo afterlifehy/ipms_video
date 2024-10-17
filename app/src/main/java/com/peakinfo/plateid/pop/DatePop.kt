@@ -120,7 +120,7 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                     startDate = "${i}-${AppUtil.fillZero((i2 + 1).toString())}-${AppUtil.fillZero(i3.toString())}"
                     val temp = TimeUtils.string2Millis(startDate, "yyyy-MM-dd")
                     if (temp > endMillis) {
-                        ToastUtil.showMiddleToast("开始时间不能晚于结束时间")
+                        ToastUtil.showBottomToast("开始时间不能晚于结束时间")
                     } else {
                         startMillis = temp
                         binding.tvStartTime.text = startDate
@@ -140,7 +140,7 @@ class DatePop(val context: Context?, var startDate: String, var endDate: String,
                     endDate = "${i}-${AppUtil.fillZero((i2 + 1).toString())}-${AppUtil.fillZero(i3.toString())}"
                     val temp = TimeUtils.string2Millis(endDate, "yyyy-MM-dd")
                     if (temp < startMillis) {
-                        ToastUtil.showMiddleToast("结束时间不能早于开始时间")
+                        ToastUtil.showBottomToast("结束时间不能早于开始时间")
                     } else {
                         endMillis = temp
                         binding.tvEndTime.text = endDate

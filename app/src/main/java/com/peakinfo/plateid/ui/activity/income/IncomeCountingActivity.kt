@@ -103,7 +103,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                             endDate = endTime
                             val difference = TimeUtils.getTimeSpan(endTime, startTime, SimpleDateFormat("yyyy-MM-dd"), TimeConstants.DAY)
                             if (difference > 90) {
-                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.查询时间间隔不得超过90天))
+                                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.查询时间间隔不得超过90天))
                                 return
                             }
                             binding.rtvDateRange.text = "统计时间：${startDate}~${endDate}"
@@ -127,14 +127,14 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+                            ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
                             Thread {
                                 BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                             }.start()
                         }
                     }
                 } else {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
                     Thread {
                         BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
                     }.start()
@@ -174,7 +174,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
             }
             errMsg.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@IncomeCountingActivity) {
                 dismissProgressDialog()

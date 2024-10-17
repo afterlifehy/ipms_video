@@ -49,7 +49,7 @@ class BluePrint() {
             printResult = Print1(content)
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
-                ToastUtil.showMiddleToast("打印机状态异常")
+                ToastUtil.showBottomToast("打印机状态异常")
             }
         }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
@@ -61,11 +61,11 @@ class BluePrint() {
 
             } else if (printResult == -2) {
                 Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showMiddleToast("路段名称过长...")
+                    ToastUtil.showBottomToast("路段名称过长...")
                 }
             } else {
                 Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showMiddleToast("打印失败")
+                    ToastUtil.showBottomToast("打印失败")
                 }
             }
         }
@@ -76,19 +76,19 @@ class BluePrint() {
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("打印机开始连接")
+            ToastUtil.showBottomToast("打印机开始连接")
         }
 
         if (!zpSDK!!.connect(mAddress)) {
             Handler(Looper.getMainLooper()).post {
-                ToastUtil.showMiddleToast("打印机连接失败")
+                ToastUtil.showBottomToast("打印机连接失败")
             }
             zpSDK = null
             printResult = -1
             return printResult
         }
         Handler(Looper.getMainLooper()).post {
-            ToastUtil.showMiddleToast("打印机连接成功")
+            ToastUtil.showBottomToast("打印机连接成功")
         }
         return 0
     }
@@ -324,7 +324,7 @@ class BluePrint() {
                 when (zpSDK?.GetStatus()) {
                     -1 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                            ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
                         }
                         return@Thread
                     }
@@ -335,21 +335,21 @@ class BluePrint() {
 
                     1 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
+                            ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
                         }
                         return@Thread
                     }
 
                     2 -> {
                         Handler(Looper.getMainLooper()).post {
-                            ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机开盖))
+                            ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机开盖))
                         }
                         return@Thread
                     }
                 }
             } catch (e: Exception) {
                 Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
                 }
                 return@Thread
             }

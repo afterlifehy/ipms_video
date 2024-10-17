@@ -123,7 +123,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
         val searchContent = binding.etSearch.text.toString()
         if (searchContent.isNotEmpty() && (searchContent.length != 7 && searchContent.length != 8)) {
             dismissProgressDialog()
-            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
+            ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
             return
         }
         val param = HashMap<String, Any>()
@@ -248,7 +248,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             }
             notificationInquiryLiveData.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+                ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
                 val payMoney = it.payMoney
                 val printInfo = PrintInfoBean(
                     roadId = it.roadName,
@@ -268,14 +268,14 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             }
             payResultLiveData.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 currentTransactionBean?.hasPayed = "1"
                 currentTransactionBean?.payedAmount = currentTransactionBean!!.oweMoney
                 transactionQueryAdapter?.notifyItemChanged(transactionQueryList.indexOf(currentTransactionBean))
             }
             errMsg.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()

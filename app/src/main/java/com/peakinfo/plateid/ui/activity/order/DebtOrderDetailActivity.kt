@@ -167,7 +167,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             payResultLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
-                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 if (paymentQrDialog != null) {
                     paymentQrDialog?.dismiss()
                 }
@@ -187,7 +187,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             }
             errMsg.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
@@ -209,7 +209,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
         Thread {
             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()

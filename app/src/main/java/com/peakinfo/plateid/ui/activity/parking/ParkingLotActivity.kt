@@ -272,7 +272,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     getParkingLotList()
                     EventBus.getDefault().post(CurrentStreetUpdateEvent(currentStreet!!))
                 }
-                ToastUtil.showMiddleToast("${currentStreet?.streetName}签到成功")
+                ToastUtil.showBottomToast("${currentStreet?.streetName}签到成功")
                 if (currentStreet!!.streetName.indexOf("(") < 0) {
                     binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
                 } else {
@@ -282,9 +282,9 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             }
             errMsg.observe(this@ParkingLotActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
                 if (it.api == "login2") {
-                    ToastUtil.showMiddleToast("${currentStreet?.streetName}签到失败")
+                    ToastUtil.showBottomToast("${currentStreet?.streetName}签到失败")
                     runBlocking {
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")

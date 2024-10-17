@@ -106,14 +106,14 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         1 -> {
                             bluePrintStatus = 1
                             runOnUiThread {
-                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.打印机缺纸))
+                                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.打印机缺纸))
                             }
                         }
 
                         2 -> {
                             bluePrintStatus = 2
                             runOnUiThread {
-                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.打印机开盖))
+                                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.打印机开盖))
                             }
                         }
                     }
@@ -247,7 +247,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         } else {
                             bluePrintStatus = -1
                             binding.tvDeviceName.text = ""
-                            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.无打印机连接))
+                            ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.无打印机连接))
                         }
                     }
                 })
@@ -306,11 +306,11 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         }
                     })
                 } else {
-                    ToastUtil.showMiddleToast("当前已是最新版本")
+                    ToastUtil.showBottomToast("当前已是最新版本")
                 }
             }
             errMsg.observe(this@MineActivity) {
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@MineActivity) {
                 dismissProgressDialog()

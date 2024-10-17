@@ -220,7 +220,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     mViewModel.verifyAccount(param)
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                             .subscribe {
@@ -228,7 +228,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                     startBaiduMapLocation()
                                     baiduLocationUtil.startLocation()
                                 } else if (!rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                    ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                                 }
                             }
                     }

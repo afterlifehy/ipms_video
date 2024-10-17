@@ -27,7 +27,7 @@ object ToastUtil {
     val toastQueue: Queue<String> = LinkedList()
     var isShowingToast: Boolean = false
 
-    fun showMiddleToast(msg: String?, icon: Int = -1) {
+    fun showBottomToast(msg: String?, icon: Int = -1) {
         val mView = ToastViewManager.get().getTostView(msg!!, icon)
         val mTost = ToastViewManager.get().getToast()
         mTost.view = mView
@@ -40,7 +40,7 @@ object ToastUtil {
      */
     fun showSucessToast(msg: String?) {
         msg?.let {
-            showMiddleToast(it, R.mipmap.ic_launcher)
+            showBottomToast(it, R.mipmap.ic_launcher)
         }
     }
 
@@ -49,7 +49,7 @@ object ToastUtil {
      */
     fun showErrorToast(msg: String?) {
         msg?.let {
-            showMiddleToast(it, R.mipmap.ic_launcher)
+            showBottomToast(it, R.mipmap.ic_launcher)
 
         }
     }

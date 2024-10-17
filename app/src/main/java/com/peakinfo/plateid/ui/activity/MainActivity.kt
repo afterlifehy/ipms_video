@@ -374,7 +374,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                 }
-                ToastUtil.showMiddleToast("${currentStreet?.streetName}签到成功")
+                ToastUtil.showBottomToast("${currentStreet?.streetName}签到成功")
                 if (currentStreet!!.streetName.indexOf("(") < 0) {
                     binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
                 } else {
@@ -384,9 +384,9 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
             errMsg.observe(this@MainActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
                 if (it.api == "login2") {
-                    ToastUtil.showMiddleToast("${currentStreet?.streetName}签到失败")
+                    ToastUtil.showBottomToast("${currentStreet?.streetName}签到失败")
                     runBlocking {
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
@@ -432,7 +432,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 }
             }
         } else {
-            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.再按一次退出程序))
+            ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.再按一次退出程序))
         }
     }
 }

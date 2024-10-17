@@ -136,14 +136,14 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     login2()
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
+                        ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
                     } else {
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                             if (it) {
                                 startBaiduMapLocation()
                                 login2()
                             } else {
-                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
                         }
                     }
@@ -194,7 +194,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 mViewModel.login2(param)
             }
         } else {
-            ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请添加路段))
+            ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请添加路段))
         }
     }
 
@@ -234,7 +234,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             }
             errMsg.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()

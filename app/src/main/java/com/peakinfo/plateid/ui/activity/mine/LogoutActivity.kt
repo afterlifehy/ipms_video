@@ -135,7 +135,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                                 startBaiduMapLocation()
                                 logout()
                             } else {
-                                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
+                                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
                         }
                 }
@@ -198,7 +198,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                         i.finish()
                     }
                 }
-                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.签退成功))
+                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.签退成功))
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
@@ -209,7 +209,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             }
             errMsg.observe(this@LogoutActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@LogoutActivity) {
                 dismissProgressDialog()

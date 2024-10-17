@@ -128,7 +128,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
             notificationInquiryLiveData.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+                ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
                 val payMoney = it.payMoney
                 val printInfo = PrintInfoBean(
                     roadId = it.roadName,
@@ -148,7 +148,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             }
             errMsg.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()

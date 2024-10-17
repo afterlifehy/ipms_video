@@ -60,7 +60,7 @@ class BaseInfoActivity : VbBaseActivity<BaseInfoViewModel, ActivityBaseInfoBindi
             }
             errMsg.observe(this@BaseInfoActivity){
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@BaseInfoActivity) {
                 dismissProgressDialog()

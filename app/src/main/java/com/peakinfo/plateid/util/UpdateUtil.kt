@@ -44,7 +44,7 @@ class UpdateUtil {
 
     fun downloadFileAndInstall(inter: UpdateInterface) {
         updateDialog?.downLoadUI()
-        ToastUtil.showMiddleToast("开始下载更新")
+        ToastUtil.showBottomToast("开始下载更新")
         GlobalScope.launch(Dispatchers.IO) {
             FileDownloader.setup(ActivityCacheManager.instance().getCurrentActivity())
             val path = "${PathUtils.getExternalDownloadsPath()}/${FileDownloadUtils.generateFileName(updateBean?.url)}.apk"

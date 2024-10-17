@@ -210,25 +210,25 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             R.id.rfl_report -> {
                 type = AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
                 if (binding.retParkingNo.text.toString().isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写泊位号))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请填写泊位号))
                     return
                 }
                 if (type == "00") {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择异常分类))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请选择异常分类))
                     return
                 }
                 if (type != "02" && binding.etPlate.text.toString().isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请填写车牌))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请填写车牌))
                     return
                 }
                 if (type != "02") {
                     if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
-                        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
+                        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                         return
                     }
                 }
                 if (type != "02" && checkedColor.isEmpty()) {
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))
                     return
                 }
                 runBlocking {
@@ -250,7 +250,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     jsonobject["orderNo"] = orderNo
                     param["attr"] = jsonobject
                     mViewModel.abnormalReport(param)
-                    ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
                     EventBus.getDefault().post(ParkingSpaceBackEvent())
                     onBackPressedSupport()
                 }
@@ -360,7 +360,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             }
             errMsg.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()

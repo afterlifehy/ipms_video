@@ -134,7 +134,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
             R.id.rfl_onSitePayment -> {
                 if (carLicense == "默00000") {
-                    ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.请修改车牌))
+                    ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请修改车牌))
                 } else {
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
@@ -245,7 +245,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             payResultLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
-                ToastUtil.showMiddleToast(i18N(com.peakinfo.base.R.string.支付成功))
+                ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 requestParkingSpaceFee()
                 if (paymentQrDialog != null) {
                     paymentQrDialog?.dismiss()
@@ -265,7 +265,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -287,7 +287,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        ToastUtil.showMiddleToast(i18n(com.peakinfo.base.R.string.开始打印))
+        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
         Thread {
             BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
         }.start()
