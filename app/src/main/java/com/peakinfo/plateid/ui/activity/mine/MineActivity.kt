@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.view.View
@@ -25,6 +26,7 @@ import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
@@ -72,6 +74,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.flFeeRate.setOnClickListener(this)
         binding.flBlueToothPrint.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
+        binding.flModifyPw.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -188,6 +191,15 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                     }
                 } else {
                     showBlueToothDeviceListDialog()
+                }
+            }
+
+            R.id.fl_modifyPw -> {
+                runBlocking {
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, loginName)
+                    })
                 }
             }
 

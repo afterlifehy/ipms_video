@@ -1,6 +1,7 @@
 package com.peakinfo.plateid.ui.activity.login
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -21,14 +22,28 @@ import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.RESET_PW)
 class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>(), View.OnClickListener {
+    var account = ""
+    val letterAndDigitFilter = InputFilter { source, _, _, _, _, _ ->
+        val regex = Regex("[a-zA-Z0-9]+")  // 正则表达式，只允许字母和数字
+        if (source.matches(regex)) {
+            null  // 如果匹配，则返回 null，表示允许输入
+        } else {
+            ""  // 如果不匹配，则不允许输入
+        }
+    }
+    val lengthFilter = InputFilter.LengthFilter(13)
 
     override fun initView() {
+        binding.layoutToolbar.tvTitle.text = "重置密码"
+        account = intent.getStringExtra(ARouterMap.RESET_PW_ACCOUNT).toString()
     }
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rtvReset.setOnClickListener(this)
-        binding.etAccount.addTextChangedListener(textWatcher)
+        binding.etOldPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
+        binding.etNewPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
+        binding.etRepeatPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
         binding.etOldPw.addTextChangedListener(textWatcher)
         binding.etNewPw.addTextChangedListener(textWatcher)
         binding.etRepeatPw.addTextChangedListener(textWatcher)
@@ -45,8 +60,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
     }
 
     private fun updateResetButton() {
-        val isAllFieldsFilled = binding.etAccount.text.isNotEmpty() &&
-                binding.etOldPw.text.isNotEmpty() &&
+        val isAllFieldsFilled = binding.etOldPw.text.isNotEmpty() &&
                 binding.etNewPw.text.isNotEmpty() &&
                 binding.etRepeatPw.text.isNotEmpty()
 
@@ -79,6 +93,18 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
             }
 
             R.id.rtv_reset -> {
+                if (binding.etOldPw.text.toString().length < 6) {
+                    ToastUtil.showBottomToast("老密码位数不能少于6位")
+                    return
+                }
+                if (binding.etNewPw.text.toString().length < 6) {
+                    ToastUtil.showBottomToast("新密码位数不能少于6位")
+                    return
+                }
+                if (binding.etRepeatPw.text.toString().length < 6) {
+                    ToastUtil.showBottomToast("重复密码位数不能少于6位")
+                    return
+                }
                 if (binding.etOldPw.text.toString() == binding.etNewPw.text.toString()) {
                     ToastUtil.showBottomToast("新密码不能和旧密码相同")
                     return
@@ -91,7 +117,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    jsonobject["loginName"] = binding.etAccount.text.toString()
+                    jsonobject["loginName"] = account
                     jsonobject["oldPassword"] = binding.etOldPw.text.toString()
                     jsonobject["newPassword"] = binding.etNewPw.text.toString()
                     jsonobject["platform"] = "G2"

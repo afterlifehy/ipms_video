@@ -10,6 +10,7 @@ object ARouterMap {
     const val LOGIN = "/ipms_app/login"
 
     const val RESET_PW = "/G0_app/resetPw"
+    const val RESET_PW_ACCOUNT = "account"
 
     const val STREET_CHOOSE = "/ipms_app/streetChoose"
     const val LOGIN_INFO = "loginInfo"
