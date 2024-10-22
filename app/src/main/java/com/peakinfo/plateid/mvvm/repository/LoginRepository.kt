@@ -5,6 +5,7 @@ import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.UpdateBean
+import retrofit2.http.Body
 
 class LoginRepository : BaseRepository() {
 
@@ -34,6 +35,13 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun verifyAccount(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
         return mServer.verifyAccount(param)
+    }
+
+    /**
+     * 修改密码
+     */
+    suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return mServer.editPw(param)
     }
 
 }

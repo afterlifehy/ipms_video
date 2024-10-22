@@ -131,4 +131,9 @@ interface Api {
     @POST("S_VO2_21")
     suspend fun verifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 
+    /**
+     * 修改密码
+     */
+    @POST("S_V_03")
+    suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }
