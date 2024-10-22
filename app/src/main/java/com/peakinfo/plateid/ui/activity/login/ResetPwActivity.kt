@@ -34,7 +34,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
     val lengthFilter = InputFilter.LengthFilter(13)
 
     override fun initView() {
-        binding.layoutToolbar.tvTitle.text = "重置密码"
+        binding.layoutToolbar.tvTitle.text = "修改密码"
         account = intent.getStringExtra(ARouterMap.RESET_PW_ACCOUNT).toString()
     }
 
