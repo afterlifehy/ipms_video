@@ -1,5 +1,6 @@
 package com.peakinfo.plateid.ui.activity.login
 
+import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -11,8 +12,10 @@ import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ClickUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
+import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.ext.startAct
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.plateid.R
@@ -32,9 +35,11 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
         }
     }
     val lengthFilter = InputFilter.LengthFilter(13)
+    var loginInfo: LoginBean? = null
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = "修改密码"
+        loginInfo = intent.getParcelableExtra(ARouterMap.RESET_LOGIN_INFO)
         account = intent.getStringExtra(ARouterMap.RESET_PW_ACCOUNT).toString()
     }
 
@@ -134,7 +139,14 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
             editPwLiveData.observe(this@ResetPwActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast("修改成功")
-                onBackPressedSupport()
+                if (loginInfo != null) {
+                    startAct<StreetChooseActivity>(data = Bundle().apply {
+                        putParcelable(ARouterMap.LOGIN_INFO, loginInfo)
+                    })
+                } else {
+                    onBackPressedSupport()
+                }
+                finish()
             }
             errMsg.observe(this@ResetPwActivity) {
                 dismissProgressDialog()

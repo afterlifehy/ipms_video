@@ -247,9 +247,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     }
                 } else {
                     startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putParcelable(ARouterMap.RESET_LOGIN_INFO, it)
                         putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
                     })
                 }
+                binding.etPw.setText("")
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
