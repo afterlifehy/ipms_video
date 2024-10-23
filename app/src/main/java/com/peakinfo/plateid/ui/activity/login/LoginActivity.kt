@@ -238,10 +238,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.apply {
             verifyAccountLiveDate.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
-                    startAct<StreetChooseActivity>(data = Bundle().apply {
-                        putParcelable(ARouterMap.LOGIN_INFO, it)
+                if (it.editPw == 0) {
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
+                        startAct<StreetChooseActivity>(data = Bundle().apply {
+                            putParcelable(ARouterMap.LOGIN_INFO, it)
+                        })
+                    }
+                } else {
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
                     })
                 }
             }
@@ -262,11 +268,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             errMsg.observe(this@LoginActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
-                if (it.code == 1001 && it.api == "login") {
-                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
-                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
-                    })
-                }
             }
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()
