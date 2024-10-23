@@ -93,10 +93,6 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
             }
 
             R.id.rtv_reset -> {
-                if (binding.etOldPw.text.toString().length < 6) {
-                    ToastUtil.showBottomToast("老密码位数不能少于6位")
-                    return
-                }
                 if (binding.etNewPw.text.toString().length < 6) {
                     ToastUtil.showBottomToast("新密码位数不能少于6位")
                     return
