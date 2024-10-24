@@ -11,7 +11,6 @@ object ARouterMap {
 
     const val RESET_PW = "/G0_app/resetPw"
     const val RESET_PW_ACCOUNT = "account"
-    const val RESET_LOGIN_INFO = "loginInfo"
 
     const val STREET_CHOOSE = "/ipms_app/streetChoose"
     const val LOGIN_INFO = "loginInfo"

@@ -136,4 +136,10 @@ interface Api {
      */
     @POST("S_V_03")
     suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 查询是为初始密码
+     */
+    @POST("S_V_05")
+    suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean>
 }

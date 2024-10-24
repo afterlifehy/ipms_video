@@ -35,11 +35,9 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
         }
     }
     val lengthFilter = InputFilter.LengthFilter(13)
-    var loginInfo: LoginBean? = null
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = "修改密码"
-        loginInfo = intent.getParcelableExtra(ARouterMap.RESET_LOGIN_INFO)
         account = intent.getStringExtra(ARouterMap.RESET_PW_ACCOUNT).toString()
     }
 
@@ -139,14 +137,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
             editPwLiveData.observe(this@ResetPwActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast("修改成功")
-                if (loginInfo != null) {
-                    startAct<StreetChooseActivity>(data = Bundle().apply {
-                        putParcelable(ARouterMap.LOGIN_INFO, loginInfo)
-                    })
-                } else {
-                    onBackPressedSupport()
-                }
-                finish()
+                onBackPressedSupport()
             }
             errMsg.observe(this@ResetPwActivity) {
                 dismissProgressDialog()

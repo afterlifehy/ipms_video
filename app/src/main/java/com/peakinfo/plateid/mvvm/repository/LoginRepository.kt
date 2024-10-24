@@ -4,8 +4,10 @@ import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.LoginBean
+import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import retrofit2.http.Body
+import retrofit2.http.POST
 
 class LoginRepository : BaseRepository() {
 
@@ -44,4 +46,10 @@ class LoginRepository : BaseRepository() {
         return mServer.editPw(param)
     }
 
+    /**
+     * 查询是为初始密码
+     */
+    suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean> {
+        return mServer.queryPwStatus(param)
+    }
 }

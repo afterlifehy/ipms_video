@@ -196,24 +196,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        try {
-                            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                        } catch (e: Exception) {
-                            val manufacturer = Build.MANUFACTURER
-                            val model = Build.MODEL
-                            val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                            jsonobject["imei"] = id
-                        }
-                    } else {
-                        jsonobject["imei"] = PhoneUtils.getIMEI()
-                    }
                     jsonobject["loginName"] = binding.etAccount.text.toString()
-                    jsonobject["password"] = binding.etPw.text.toString()
-                    jsonobject["longitude"] = lon.toString()
-                    jsonobject["latitude"] = lat.toString()
                     param["attr"] = jsonobject
-                    mViewModel.verifyAccount(param)
+                    mViewModel.queryPwStatus(param)
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
@@ -233,25 +218,41 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         }
     }
 
+    @SuppressLint("MissingPermission")
+    fun verifyAccount() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            try {
+                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+            } catch (e: Exception) {
+                val manufacturer = Build.MANUFACTURER
+                val model = Build.MODEL
+                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                jsonobject["imei"] = id
+            }
+        } else {
+            jsonobject["imei"] = PhoneUtils.getIMEI()
+        }
+        jsonobject["loginName"] = binding.etAccount.text.toString()
+        jsonobject["password"] = binding.etPw.text.toString()
+        jsonobject["longitude"] = lon.toString()
+        jsonobject["latitude"] = lat.toString()
+        param["attr"] = jsonobject
+        mViewModel.verifyAccount(param)
+    }
+
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
             verifyAccountLiveDate.observe(this@LoginActivity) {
                 dismissProgressDialog()
-                if (it.editPw == 0) {
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
-                        startAct<StreetChooseActivity>(data = Bundle().apply {
-                            putParcelable(ARouterMap.LOGIN_INFO, it)
-                        })
-                    }
-                } else {
-                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
-                        putParcelable(ARouterMap.RESET_LOGIN_INFO, it)
-                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
+                    startAct<StreetChooseActivity>(data = Bundle().apply {
+                        putParcelable(ARouterMap.LOGIN_INFO, it)
                     })
                 }
-                binding.etPw.setText("")
             }
             checkUpdateLiveDate.observe(this@LoginActivity) {
                 updateBean = it
@@ -265,6 +266,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
                         }
                     })
+                }
+            }
+            queryPwStatusLiveData.observe(this@LoginActivity) {
+                if (it.editPw == 0) {
+                    verifyAccount()
+                } else {
+                    dismissProgressDialog()
+                    startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
+                        putString(ARouterMap.RESET_PW_ACCOUNT, binding.etAccount.text.toString())
+                    })
+                    binding.etPw.setText("")
                 }
             }
             errMsg.observe(this@LoginActivity) {

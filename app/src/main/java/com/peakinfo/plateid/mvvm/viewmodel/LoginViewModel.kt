@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.LoginBean
+import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.plateid.mvvm.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ class LoginViewModel : BaseViewModel() {
     val loginLiveData = MutableLiveData<LoginBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
     val verifyAccountLiveDate = MutableLiveData<LoginBean>()
+    val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
 
     fun login(param: Map<String, Any?>) {
         launch {
@@ -54,6 +56,19 @@ class LoginViewModel : BaseViewModel() {
                 verifyAccountLiveDate.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun queryPwStatus(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.queryPwStatus(param)
+            }
+            executeResponse(response, {
+                queryPwStatusLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "queryPwStatus"))
             })
         }
     }
