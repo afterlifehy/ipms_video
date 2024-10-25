@@ -173,6 +173,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                 val jsonobject = JSONObject()
                 jsonobject["version"] = AppUtils.getAppVersionCode()
                 jsonobject["imei"] = imei
+                jsonobject["softType"] = "11"
                 param["attr"] = jsonobject
                 mViewModel.checkUpdate(param)
             }
