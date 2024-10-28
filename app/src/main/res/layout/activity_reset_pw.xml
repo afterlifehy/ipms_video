@@ -17,132 +17,181 @@
         android:id="@+id/layout_toolbar"
         layout="@layout/layout_comment_toolbar" />
 
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:id="@+id/rll_oldPw"
+    <LinearLayout
+        android:id="@+id/ll_oldPw"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_toolbar"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_60"
-        android:layout_below="@+id/layout_toolbar"
         android:layout_marginEnd="@dimen/dp_13"
-        android:paddingStart="@dimen/dp_17"
-        android:paddingEnd="@dimen/dp_17"
-        app:rv_radius="@dimen/dp_7"
-        app:rv_strokeColor="@color/color_ff0371f4"
-        app:rv_strokeWidth="@dimen/dp_1">
+        android:orientation="horizontal">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_login_pw_logo" />
+            android:text="@string/原密码"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_20" />
 
-        <EditText
-            android:id="@+id/et_oldPw"
+        <com.aries.ui.view.radius.RadiusLinearLayout
+            android:id="@+id/rll_oldPw"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_14"
-            android:background="@null"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center_vertical"
-            android:hint="@string/请输入旧密码"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textColorHint="@color/color_ff99a7a6"
-            android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="@dimen/sp_19" />
-    </com.aries.ui.view.radius.RadiusLinearLayout>
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_20"
+            android:paddingStart="@dimen/dp_17"
+            android:paddingEnd="@dimen/dp_17"
+            app:rv_radius="@dimen/dp_7"
+            app:rv_strokeColor="@color/color_ff0371f4"
+            app:rv_strokeWidth="@dimen/dp_1">
 
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:id="@+id/rll_newPw"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_login_pw_logo" />
+
+            <EditText
+                android:id="@+id/et_oldPw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_14"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:hint="@string/请输入原密码"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_ff99a7a6"
+                android:textCursorDrawable="@drawable/shape_cursor"
+                android:textSize="@dimen/sp_19" />
+        </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_newPw"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:layout_below="@+id/rll_oldPw"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_oldPw"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_13"
-        android:paddingStart="@dimen/dp_17"
-        android:paddingEnd="@dimen/dp_17"
-        app:rv_radius="@dimen/dp_7"
-        app:rv_strokeColor="@color/color_ff0371f4"
-        app:rv_strokeWidth="@dimen/dp_1">
+        android:orientation="horizontal">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_login_pw_logo" />
+            android:text="@string/新密码"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_20" />
 
-        <EditText
-            android:id="@+id/et_newPw"
+        <com.aries.ui.view.radius.RadiusLinearLayout
+            android:id="@+id/rll_newPw"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_14"
-            android:background="@null"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center_vertical"
-            android:hint="@string/请输入新密码"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textColorHint="@color/color_ff99a7a6"
-            android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="@dimen/sp_19" />
-    </com.aries.ui.view.radius.RadiusLinearLayout>
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_20"
+            android:paddingStart="@dimen/dp_17"
+            android:paddingEnd="@dimen/dp_17"
+            app:rv_radius="@dimen/dp_7"
+            app:rv_strokeColor="@color/color_ff0371f4"
+            app:rv_strokeWidth="@dimen/dp_1">
 
-    <com.aries.ui.view.radius.RadiusLinearLayout
-        android:id="@+id/rll_repeatPw"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_login_pw_logo" />
+
+            <EditText
+                android:id="@+id/et_newPw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_14"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:hint="@string/请输入新密码"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_ff99a7a6"
+                android:textCursorDrawable="@drawable/shape_cursor"
+                android:textSize="@dimen/sp_19" />
+        </com.aries.ui.view.radius.RadiusLinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_repeatPw"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:layout_below="@+id/rll_newPw"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_newPw"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_13"
-        android:paddingStart="@dimen/dp_17"
-        android:paddingEnd="@dimen/dp_17"
-        app:rv_radius="@dimen/dp_7"
-        app:rv_strokeColor="@color/color_ff0371f4"
-        app:rv_strokeWidth="@dimen/dp_1">
+        android:orientation="horizontal">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_login_pw_logo" />
+            android:text="@string/重复密码2"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_20" />
 
-        <EditText
-            android:id="@+id/et_repeatPw"
+        <com.aries.ui.view.radius.RadiusLinearLayout
+            android:id="@+id/rll_repeatPw"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_14"
-            android:background="@null"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center_vertical"
-            android:hint="@string/重复密码"
-            android:imeOptions="flagNoExtractUi"
-            android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textColorHint="@color/color_ff99a7a6"
-            android:textCursorDrawable="@drawable/shape_cursor"
-            android:textSize="@dimen/sp_19" />
-    </com.aries.ui.view.radius.RadiusLinearLayout>
+            android:layout_height="@dimen/dp_60"
+            android:paddingStart="@dimen/dp_17"
+            android:paddingEnd="@dimen/dp_17"
+            app:rv_radius="@dimen/dp_7"
+            app:rv_strokeColor="@color/color_ff0371f4"
+            app:rv_strokeWidth="@dimen/dp_1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/ic_login_pw_logo" />
+
+            <EditText
+                android:id="@+id/et_repeatPw"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_14"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:hint="@string/重复密码"
+                android:imeOptions="flagNoExtractUi"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_ff99a7a6"
+                android:textCursorDrawable="@drawable/shape_cursor"
+                android:textSize="@dimen/sp_19" />
+        </com.aries.ui.view.radius.RadiusLinearLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rll_repeatPw"
+        android:layout_below="@+id/ll_repeatPw"
         android:layout_marginStart="@dimen/dp_13"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="@string/注密码只能输入6到13位字母或数字"
         android:textColor="@color/color_ffe92404"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_20" />
 
     <com.aries.ui.view.radius.RadiusTextView
         android:id="@+id/rtv_reset"

@@ -43,7 +43,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.rtvReset.setOnClickListener(this)
+        binding.rtvReset.setOnClickListener(null)
         binding.etOldPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
         binding.etNewPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
         binding.etRepeatPw.filters = arrayOf(letterAndDigitFilter, lengthFilter)
@@ -105,7 +105,7 @@ class ResetPwActivity : VbBaseActivity<ResetPwViewModel, ActivityResetPwBinding>
                     return
                 }
                 if (binding.etOldPw.text.toString() == binding.etNewPw.text.toString()) {
-                    ToastUtil.showBottomToast("新密码不能和旧密码相同")
+                    ToastUtil.showBottomToast("新密码不能和原密码相同")
                     return
                 }
                 if (binding.etNewPw.text.toString() != binding.etRepeatPw.text.toString()) {

@@ -160,9 +160,12 @@
     <string name="支付">支付</string>
     <string name="临">临</string>
     <string name="重置密码">重置密码</string>
-    <string name="请输入旧密码">请输入旧密码</string>
+    <string name="请输入原密码">请输入原密码</string>
     <string name="请输入新密码">请输入新密码</string>
     <string name="重复密码">重复密码</string>
     <string name="修改密码">修改密码</string>
     <string name="注密码只能输入6到13位字母或数字">注：密码只能输入6到13位字母或数字</string>
+    <string name="原密码">原密码：</string>
+    <string name="新密码">新密码：</string>
+    <string name="重复密码2">重复密码：</string>
 </resources>
