@@ -1,11 +1,13 @@
 package com.peakinfo.base.dialog
 
 import android.content.Context
+import android.text.Spannable
 import com.peakinfo.base.R
 import com.peakinfo.base.ext.i18n
 
 class DialogHelp {
     var title: String = ""
+    var span: Spannable? = null
     var contentMsg: String = ""
     var leftMsg: String = ""
     var rightMsg: String = ""
@@ -29,6 +31,7 @@ class DialogHelp {
 
     private constructor(mBuilder: Builder, context: Context?) {
         this.title = mBuilder.getTitle()
+        this.span = mBuilder.getSpan()
         this.contentMsg = mBuilder.getContentMsg()
         this.leftMsg = mBuilder.getLeftMsg()
         this.rightMsg = mBuilder.getRightMsg()
@@ -42,6 +45,7 @@ class DialogHelp {
 
     class Builder {
         private var title: String = ""
+        private var span: Spannable? = null
         private var contentMsg: String = ""
         private var leftMsg: String = i18n(R.string.Cancel)
         private var rightMsg: String = i18n(R.string.Ok)
@@ -57,6 +61,10 @@ class DialogHelp {
 
         fun getTitle(): String {
             return title
+        }
+
+        fun getSpan(): Spannable? {
+            return span
         }
 
         fun getContentMsg(): String {
@@ -95,6 +103,11 @@ class DialogHelp {
 
         fun setTitle(title: String): Builder {
             this.title = title
+            return this
+        }
+
+        fun setTitle(sp: Spannable): Builder {
+            this.span = sp
             return this
         }
 

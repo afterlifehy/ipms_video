@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.peakinfo.base.R
 import com.peakinfo.base.databinding.DialogContextLayoutBinding
 import com.peakinfo.base.ext.gone
+import com.peakinfo.base.ext.show
 
 class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
     VBBaseLibDialog<DialogContextLayoutBinding>(context), View.OnClickListener {
@@ -29,7 +30,14 @@ class GlobalDialog(context: Context, mDialogHelp: DialogHelp) :
     fun bindShowViewData() {
         mDialogHelp?.let {
             if (!TextUtils.isEmpty(it.title)) {
+                binding.tvTitle.show()
                 binding.tvTitle.text = it.title
+            } else {
+                binding.tvTitle.gone()
+            }
+            if (it.span != null) {
+                binding.tvTitle.show()
+                binding.tvTitle.text = it.span
             } else {
                 binding.tvTitle.gone()
             }

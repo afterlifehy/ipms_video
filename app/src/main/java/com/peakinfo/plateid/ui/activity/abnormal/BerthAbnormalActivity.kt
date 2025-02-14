@@ -14,12 +14,14 @@ import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
+import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
+import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.ParkingSpaceBackEvent
@@ -35,6 +37,7 @@ import com.peakinfo.plateid.databinding.ActivityBerthAbnormalBinding
 import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
+import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
@@ -72,6 +75,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             binding.retParkingNo.setText(parkingNo.replaceFirst(streetNo + "-", ""))
             carLicense = intent.getStringExtra(ARouterMap.ABNORMAL_CARLICENSE)!!
             carColor = intent.getStringExtra(ARouterMap.ABNORMAL_CAR_COLOR)!!
+            binding.retParkingNo.isEnabled = false
         }
 
         collectioPlateColorList.add(Constant.BLUE)
@@ -113,18 +117,22 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
             currentStreet = RealmUtil.instance?.findCurrentStreet()
         }
 //        if (streetList.size == 1) {
-            binding.cbLotName.hide()
-            binding.rflLotName.setOnClickListener(null)
+        binding.cbLotName.hide()
+        binding.rflLotName.setOnClickListener(null)
 //        } else {
 //            binding.cbLotName.show()
 //            binding.rflLotName.setOnClickListener(this)
 //        }
         binding.tvLotName.text = currentStreet?.streetName
         binding.rtvStreetNo.text = currentStreet?.streetNo
+        binding.rtvNewStreetNo.text = currentStreet?.streetNo
 
         classificationList.add(i18n(com.peakinfo.base.R.string.泊位有车POS无订单))
         classificationList.add(i18n(com.peakinfo.base.R.string.泊位无车POS有订单))
         classificationList.add(i18n(com.peakinfo.base.R.string.在停车牌与POS不一致))
+        if (parkingNo.isNotEmpty()) {
+            classificationList.add("泊位有误")
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -217,18 +225,22 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请选择异常分类))
                     return
                 }
-                if (type != "02" && binding.etPlate.text.toString().isEmpty()) {
+                if ((type == "01" || type == "03") && binding.etPlate.text.toString().isEmpty()) {
                     ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请填写车牌))
                     return
                 }
-                if (type != "02") {
+                if (type == "01" || type == "03") {
                     if (binding.etPlate.text.toString().length != 7 && binding.etPlate.text.toString().length != 8) {
                         ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                         return
                     }
                 }
-                if (type != "02" && checkedColor.isEmpty()) {
+                if ((type == "01" || type == "03") && checkedColor.isEmpty()) {
                     ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.请选择车牌颜色))
+                    return
+                }
+                if (type == "04" && binding.retNewParkingNo.text.toString().isEmpty()) {
+                    ToastUtil.showBottomToast("更正泊位不能为空")
                     return
                 }
                 runBlocking {
@@ -237,10 +249,14 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName
                     jsonobject["streetNo"] = currentStreet?.streetNo
-                    jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
+                    if (type == "04") {
+                        jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retNewParkingNo.text.toString())
+                    } else {
+                        jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
+                    }
                     jsonobject["type"] = type
                     jsonobject["remark"] = binding.retRemarks.text.toString()
-                    if (type == "02") {
+                    if (type == "02" || type == "04") {
                         jsonobject["carLicense"] = carLicense
                         jsonobject["carColor"] = carColor
                     } else {
@@ -249,10 +265,33 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     }
                     jsonobject["orderNo"] = orderNo
                     param["attr"] = jsonobject
-                    mViewModel.abnormalReport(param)
-                    ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
-                    EventBus.getDefault().post(ParkingSpaceBackEvent())
-                    onBackPressedSupport()
+                    if (type == "04") {
+                        val colors = intArrayOf(
+                            com.peakinfo.base.R.color.color_ff1a1a1a,
+                            com.peakinfo.base.R.color.color_ffe92404,
+                            com.peakinfo.base.R.color.color_ff1a1a1a
+                        )
+                        val sizes = intArrayOf(19, 19, 19)
+                        val strings = arrayOf("请确认${carLicense}停放在 ", "${binding.retNewParkingNo.text}号", "泊位")
+                        DialogHelp.Builder().setTitle(AppUtil.getSpan(strings, sizes, colors)!!)
+                            .setLeftMsg("取消").setRightMsg("确认").setCancelable(true)
+                            .setOnButtonClickLinsener(object : DialogHelp.OnButtonClickLinsener {
+                                override fun onLeftClickLinsener(msg: String) {
+                                }
+
+                                override fun onRightClickLinsener(msg: String) {
+                                    mViewModel.abnormalReport(param)
+                                    EventBus.getDefault().post(ParkingSpaceBackEvent())
+                                    onBackPressedSupport()
+                                }
+
+                            }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
+                    } else {
+                        mViewModel.abnormalReport(param)
+                        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                        EventBus.getDefault().post(ParkingSpaceBackEvent())
+                        onBackPressedSupport()
+                    }
                 }
             }
 
@@ -284,6 +323,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     currentStreet = street
                     binding.tvLotName.text = currentStreet?.streetName
                     binding.rtvStreetNo.text = currentStreet?.streetNo
+                    binding.rtvNewStreetNo.text = currentStreet?.streetNo
                 }
             })
         abnormalStreetListDialog?.show()
@@ -301,9 +341,15 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     if (classification == i18n(com.peakinfo.base.R.string.在停车牌与POS不一致) || classification == i18n(com.peakinfo.base.R.string.泊位有车POS无订单)) {
                         binding.llPlate.show()
                         binding.rvPlateColor.show()
+                        binding.llNewParkingNo.gone()
+                    } else if (classification == "泊位有误") {
+                        binding.llPlate.gone()
+                        binding.rvPlateColor.gone()
+                        binding.llNewParkingNo.show()
                     } else {
                         binding.llPlate.gone()
                         binding.rvPlateColor.gone()
+                        binding.llNewParkingNo.gone()
                     }
                 }
             })
