@@ -142,4 +142,10 @@ interface Api {
      */
     @POST("S_V_05")
     suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean>
+
+    /**
+     *预支付查询
+     */
+    @POST("S_VO2_23")
+    suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
 }

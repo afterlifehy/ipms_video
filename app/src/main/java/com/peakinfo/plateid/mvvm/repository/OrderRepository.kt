@@ -81,4 +81,11 @@ class OrderRepository : BaseRepository() {
     suspend fun callInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return mServer.callInquiry(param)
     }
+
+    /**
+     * 预支付查询
+     */
+    suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
+        return mServer.prePayFeeInquiry(param)
+    }
 }
