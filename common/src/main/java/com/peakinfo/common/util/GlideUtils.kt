@@ -43,7 +43,7 @@ class GlideUtils private constructor() {
         Glide.with(BaseApplication.instance()).load(url).into(iv!!)
     }
 
-    fun loadImage(iv: ImageView?, url: Bitmap?) {
+    fun loadImage(iv: ImageView?, url: Bitmap) {
         Glide.with(BaseApplication.instance()).load(url).apply(defaultOption!!).into(iv!!)
     }
 
