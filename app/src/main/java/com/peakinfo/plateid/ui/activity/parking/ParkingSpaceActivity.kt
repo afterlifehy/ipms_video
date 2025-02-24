@@ -14,6 +14,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingSpaceBean
@@ -92,6 +93,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.rrlArrears.setOnClickListener(this)
         binding.rflOnSitePayment.setOnClickListener(this)
         binding.rflAbnormalReport.setOnClickListener(this)
+        binding.rflPrepaid.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -129,6 +131,22 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (parkingSpaceBean?.historyCount != 0) {
                     ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
+            }
+
+            R.id.rfl_prepaid -> {
+                if (parkingSpaceBean!!.amountPayed > 0) {
+                    ToastUtil.showMiddleToast("已付金额大于0")
+                } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
+                        parkingSpaceBean!!.startTime,
+                        "yyyy-MM-dd HH:mm:ss"
+                    ) > 1000 * 60 * 60
+                ) {
+                    ToastUtil.showMiddleToast("在停时间超过1小时")
+                } else {
+                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
                 }
             }
 

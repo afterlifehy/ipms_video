@@ -76,6 +76,11 @@ object ARouterMap {
     const val WEBVIEW = "/ipms_app/webview"
     const val URL = "url"
 
+    const val PREPAID = "/ipms_app/prepaid"
+    const val PREPAID_CARLICENSE = "carlicense"
+    const val PREPAID_PARKING_NO = "parkingNo"
+    const val PREPAID_ORDER_NO = "orderNo"
+
     class common {
         companion object {
 
