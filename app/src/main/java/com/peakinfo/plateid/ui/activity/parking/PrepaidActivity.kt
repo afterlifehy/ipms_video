@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.ArrayMap
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -25,7 +24,6 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
-import com.peakinfo.common.event.PaySuccessEvent
 import com.peakinfo.common.event.RefreshParkingSpaceEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
