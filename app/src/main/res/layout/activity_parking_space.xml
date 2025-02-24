@@ -182,7 +182,7 @@
 
         <com.aries.ui.view.radius.RadiusFrameLayout
             android:id="@+id/rfl_prepaid"
-            android:layout_width="@dimen/dp_200"
+            android:layout_width="@dimen/dp_160"
             android:layout_height="@dimen/dp_47"
             android:layout_weight="1"
             android:layout_marginTop="@dimen/dp_10"
