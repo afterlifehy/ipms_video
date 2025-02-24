@@ -5,6 +5,7 @@ import com.peakinfo.base.bean.DebtCollectionResultBean
 import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.OrderResultBean
+import com.peakinfo.base.bean.PayQRBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.TransactionResultBean

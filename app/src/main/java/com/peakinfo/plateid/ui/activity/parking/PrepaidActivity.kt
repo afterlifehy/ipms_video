@@ -39,9 +39,10 @@ import org.greenrobot.eventbus.EventBus
 @Route(path = ARouterMap.PREPAID)
 class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
+    var maxDuration = 99.0
+    var minDuration = 1.0
     var paymentQrDialog: PaymentQrDialog? = null
 
-    var minAmount = 1.0
     var parkingNo = ""
     var carLicense = ""
     var orderNo = ""
@@ -86,20 +87,20 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
                     if (splitInput.size > 1 && splitInput[1].length > 1) {
                         s?.delete(s.length - 1, s.length)
                     }
-                    if (value.endsWith(".") && value.length > 1) {
-                        timeDuration = value.replace(".", "").toDouble()
-                    } else if (value.endsWith(".") && value.length <= 1) {
-                        timeDuration = minAmount - 0.5
-                    } else {
+//                    if (value.endsWith(".") && value.length > 1) {
+//                        timeDuration = value.replace(".", "").toDouble()
+//                    } else if (value.endsWith(".") && value.length <= 1) {
+//                        timeDuration = minAmount - 0.5
+//                    } else {
                         timeDuration = value.toDouble()
-                    }
+//                    }
                 } else if (value.length > 0) {
                     timeDuration = value.toDouble()
                 } else {
-                    timeDuration = 0.0
+                    timeDuration = minDuration
                 }
-                if (timeDuration > 999) {
-                    timeDuration = 999.0
+                if (timeDuration > maxDuration) {
+                    timeDuration = maxDuration
                     binding.etTimeDuration.setText(timeDuration.toString())
                     binding.etTimeDuration.setSelection(timeDuration.toString().length)
                 }
@@ -123,11 +124,11 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_add -> {
-                if (timeDuration == 999.0) {
+                if (timeDuration == maxDuration) {
                     return
                 }
-                if (timeDuration < minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration < minDuration) {
+                    timeDuration = minDuration
                 } else {
                     timeDuration += 0.5
                 }
@@ -136,8 +137,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_minus -> {
-                if (timeDuration <= minAmount) {
-                    timeDuration = minAmount
+                if (timeDuration <= minDuration) {
+                    timeDuration = minDuration
                 } else {
                     timeDuration -= 0.5
                 }
@@ -146,7 +147,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             }
 
             R.id.rfl_scanPay -> {
-                if (timeDuration >= minAmount) {
+                if (timeDuration >= minDuration) {
                     prePayFee()
                 } else {
                     ToastUtil.showMiddleToast("时长过短")
