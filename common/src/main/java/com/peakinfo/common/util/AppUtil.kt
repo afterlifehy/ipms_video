@@ -3,10 +3,12 @@ package com.peakinfo.common.util
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.text.Spannable
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
@@ -273,6 +275,18 @@ object AppUtil {
             if (hours > 0) append("${hours}小时")
             if (minutes > 0) append("${minutes}分")
             if (seconds > 0 || length == 0) append("${seconds}秒")
+        }
+    }
+
+    fun base64ToBitmap(base64String: String): Bitmap? {
+        return try {
+            // 解码 Base64 字符串为字节数组
+            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+            // 将字节数组转换为 Bitmap
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            null
         }
     }
 }
