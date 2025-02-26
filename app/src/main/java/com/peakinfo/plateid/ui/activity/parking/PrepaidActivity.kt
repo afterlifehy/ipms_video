@@ -25,6 +25,7 @@ import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
+import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
@@ -65,6 +66,12 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
+
+        val street = RealmUtil.instance?.findCurrentStreet()
+        maxDuration = street?.prepayDuration!!
+        if (maxDuration < 1.0) {
+            maxDuration = 1.0
+        }
     }
 
     override fun initListener() {

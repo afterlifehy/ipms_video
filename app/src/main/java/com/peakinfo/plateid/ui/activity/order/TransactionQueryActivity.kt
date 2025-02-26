@@ -262,9 +262,19 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     company = it.businessCname,
                     oweCount = it.oweCount
                 )
-                Thread {
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-                }.start()
+                val printList = BluePrint.instance?.blueToothDevice!!
+                if (printList.size == 1) {
+                    Thread {
+                        val device = printList[0]
+                        var connectResult = BluePrint.instance?.connet(device.address)
+                        if (connectResult == 0) {
+                            runOnUiThread {
+                                ToastUtil.showBottomToast("开始打印")
+                            }
+                            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                        }
+                    }.start()
+                }
             }
             payResultLiveData.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()

@@ -6,7 +6,7 @@ import com.peakinfo.base.bean.WorkingHoursBean
 import io.realm.*
 
 class RealmUtil {
-    private val versionCode = 1
+    private val versionCode = 2
     private var transaction: RealmAsyncTask? = null
     private val config: RealmConfiguration = RealmConfiguration.Builder() // 文件名
         .name("peakinfo.realm") // 版本号

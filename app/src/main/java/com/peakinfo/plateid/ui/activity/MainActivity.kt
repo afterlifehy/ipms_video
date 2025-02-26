@@ -92,7 +92,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
     override fun initData() {
         streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         currentStreet = RealmUtil.instance?.findCurrentStreet()
-        connectBluePrint()
+//        connectBluePrint()
 
         if (currentStreet!!.streetName.indexOf("(") < 0) {
             binding.tvTitle.text = currentStreet!!.streetNo + currentStreet!!.streetName
@@ -128,7 +128,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
                                         override fun onRightClickLinsener(msg: String) {
                                             val intent = Intent(this@MainActivity, MineActivity::class.java)
-                                            intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
                                             startActivity(intent)
                                         }
 
@@ -215,7 +214,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
 
                 override fun onRightClickLinsener(msg: String) {
                     val intent = Intent(this@MainActivity, MineActivity::class.java)
-                    intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 1)
                     startActivity(intent)
                 }
 
@@ -226,7 +224,6 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         when (v?.id) {
             R.id.iv_head -> {
                 val intent = Intent(this@MainActivity, MineActivity::class.java)
-                intent.putExtra(ARouterMap.MINE_BLUE_PRINT, 0)
                 startActivity(intent)
             }
 

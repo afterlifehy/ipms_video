@@ -1,7 +1,9 @@
 package com.peakinfo.common.realm;
 
 import io.realm.DynamicRealm;
+import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**
@@ -11,10 +13,10 @@ public class MyMigration implements RealmMigration {
     @Override
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
         RealmSchema schema = realm.getSchema();
-//        if (oldVersion == 1) {
-//            RealmObjectSchema calenderSchema = schema.create("CalenderEventIdBean")
-//                    .addField("eventId", Long.class, FieldAttribute.PRIMARY_KEY).setRequired("eventId", true);
-//            oldVersion++;
-//        }
+        if (oldVersion == 1) {
+            schema.get("Street")
+                    .addField("prepayDuration", Double.class);
+            oldVersion++;
+        }
     }
 }

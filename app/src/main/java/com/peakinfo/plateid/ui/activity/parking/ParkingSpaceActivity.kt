@@ -41,6 +41,9 @@ import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingSpaceViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import com.zrq.spanbuilder.TextStyle
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -303,12 +306,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount
+            oweCount = 0
         )
-        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
-        Thread {
-            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-        }.start()
+        val printList = BluePrint.instance?.blueToothDevice!!
+        if (printList.size == 1) {
+            Thread {
+                val device = printList[0]
+                var connectResult = BluePrint.instance?.connet(device.address)
+                if (connectResult == 0) {
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                }
+            }.start()
+        }
     }
 
     override fun isRegEventBus(): Boolean {
