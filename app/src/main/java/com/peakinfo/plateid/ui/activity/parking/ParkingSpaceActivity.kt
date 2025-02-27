@@ -155,7 +155,16 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_printNotice -> {
-
+                var rxPermissions = RxPermissions(this@ParkingSpaceActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            noticePrintRequest()
+                        }
+                    }
+                } else {
+                    noticePrintRequest()
+                }
             }
 
             R.id.rfl_onSitePayment -> {
@@ -204,6 +213,15 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 handler.postDelayed(this, 3000)
             }
         }
+    }
+
+    fun noticePrintRequest() {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["orderNo"] = orderNo
+        param["attr"] = jsonobject
+        mViewModel.queryNoticeByOrderNo(param)
     }
 
     @SuppressLint("CheckResult")
@@ -288,6 +306,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                     startPrint(it)
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
+            }
+            queryNoticeByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
+                dismissProgressDialog()
+//                if (it.result != null && it.result.size > 0) {
+//                    performPrintTasks(it.result) {
+//                    }
+//                }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()

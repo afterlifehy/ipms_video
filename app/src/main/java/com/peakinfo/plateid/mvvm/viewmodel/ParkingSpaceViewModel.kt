@@ -18,6 +18,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val parkingSpaceFeeLiveData = MutableLiveData<ParkingSpaceBean>()
     val insidePayLiveData = MutableLiveData<QRPayBean>()
     val payResultLiveData = MutableLiveData<PayResultBean>()
+    val queryNoticeByOrderNoLiveData = MutableLiveData<Any>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -54,6 +55,19 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 payResultLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+            })
+        }
+    }
+
+    fun queryNoticeByOrderNo(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.payResult(param)
+            }
+            executeResponse(response, {
+                queryNoticeByOrderNoLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }
