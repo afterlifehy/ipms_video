@@ -97,6 +97,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         binding.rflOnSitePayment.setOnClickListener(this)
         binding.rflAbnormalReport.setOnClickListener(this)
         binding.rflPrepaid.setOnClickListener(this)
+        binding.rflPrintNotice.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -151,6 +152,10 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                         .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
                         .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
                 }
+            }
+
+            R.id.rfl_printNotice -> {
+
             }
 
             R.id.rfl_onSitePayment -> {
