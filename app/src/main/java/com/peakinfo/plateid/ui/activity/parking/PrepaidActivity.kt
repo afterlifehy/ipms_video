@@ -89,18 +89,23 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
 
             override fun afterTextChanged(s: Editable?) {
                 val value = s.toString()
+                if (value == ".") {
+                    binding.etTimeDuration.setText("0.")
+                    timeDuration = 0.0
+                    return
+                }
                 if (value.contains(".")) {
                     val splitInput = value.split(".")
                     if (splitInput.size > 1 && splitInput[1].length > 1) {
                         s?.delete(s.length - 1, s.length)
                     }
-//                    if (value.endsWith(".") && value.length > 1) {
-//                        timeDuration = value.replace(".", "").toDouble()
-//                    } else if (value.endsWith(".") && value.length <= 1) {
-//                        timeDuration = minAmount - 0.5
-//                    } else {
-                        timeDuration = value.toDouble()
-//                    }
+                    timeDuration = value.toDouble()
+                    if (timeDuration < minDuration) {
+                        timeDuration = minDuration
+                        binding.etTimeDuration.setText(minDuration.toString())
+                        binding.etTimeDuration.setSelection(minDuration.toString().length)
+                        return
+                    }
                 } else if (value.length > 0) {
                     timeDuration = value.toDouble()
                 } else {
