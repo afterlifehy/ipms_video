@@ -148,4 +148,10 @@ interface Api {
      */
     @POST("S_VO2_23")
     suspend fun prePayFeeInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean>
+
+    /**
+     *多告知书打印
+     */
+    @POST("S_VO2_24")
+    suspend fun queryNoticeByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NoticePrintResultBean>
 }

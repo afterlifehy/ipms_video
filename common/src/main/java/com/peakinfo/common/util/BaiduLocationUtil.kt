@@ -37,7 +37,7 @@ class BaiduLocationUtil {
                 // 获取定位类型、定位错误返回码，具体信息可参照类参考中BDLocation类中的说明
                 if (errorCode == 61 || errorCode == 66 || errorCode == 161) {
                     // 定位成功
-                    Log.v("lon","${longitude}  ${latitude}")
+//                    Log.v("lon","${longitude}  ${latitude}")
                     locationSuccess(longitude, latitude, locationOption, p0.address.address)
                 } else {
                     // 定位失败
