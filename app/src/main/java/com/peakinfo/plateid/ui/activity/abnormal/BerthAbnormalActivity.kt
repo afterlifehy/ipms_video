@@ -280,17 +280,22 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                                 }
 
                                 override fun onRightClickLinsener(msg: String) {
+                                    showProgressDialog(20000)
                                     mViewModel.abnormalReport(param)
                                     EventBus.getDefault().post(ParkingSpaceBackEvent())
-                                    onBackPressedSupport()
                                 }
 
                             }).build(ActivityCacheManager.instance().getCurrentActivity()).showDailog()
                     } else {
-                        mViewModel.abnormalReport(param)
-                        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                        if (type == "03") {
+                            showProgressDialog(20000)
+                            mViewModel.abnormalReport(param)
+                        }else{
+                            mViewModel.abnormalReport(param)
+                            ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
+                            onBackPressedSupport()
+                        }
                         EventBus.getDefault().post(ParkingSpaceBackEvent())
-                        onBackPressedSupport()
                     }
                 }
             }
@@ -403,6 +408,8 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         super.startObserve()
         mViewModel.apply {
             abnormalReportLiveData.observe(this@BerthAbnormalActivity) {
+                dismissProgressDialog()
+                onBackPressedSupport()
             }
             errMsg.observe(this@BerthAbnormalActivity) {
                 dismissProgressDialog()

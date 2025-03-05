@@ -45,7 +45,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
-    var qr = ""
     var tradeNo = ""
     var debtCollectionBean: DebtCollectionBean? = null
     var token = ""
@@ -152,9 +151,8 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             debtPayLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
-                qr = it.payUrl
                 paymentQrDialog =
-                    PaymentQrDialog(qr, AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2), debtCollectionBean!!.carLicense)
+                    PaymentQrDialog(it.qrCode,it.payUrl, AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2), debtCollectionBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -209,10 +207,19 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             company = it.businessCname,
             oweCount = it.oweCount
         )
-        ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
-        Thread {
-            BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
-        }.start()
+        val printList = BluePrint.instance?.blueToothDevice!!
+        if (printList.size == 1) {
+            Thread {
+                val device = printList[0]
+                var connectResult = BluePrint.instance?.connet(device.address)
+                if (connectResult == 0) {
+                    runOnUiThread {
+                        ToastUtil.showBottomToast("开始打印")
+                    }
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                }
+            }.start()
+        }
     }
 
     override fun getVbBindingView(): ViewBinding {

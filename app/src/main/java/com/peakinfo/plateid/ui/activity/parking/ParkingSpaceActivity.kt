@@ -65,7 +65,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
     var token = ""
     var parkingSpaceBean: ParkingSpaceBean? = null
 
-    var qr = ""
     var tradeNo = ""
     var amountPending = 0
 
@@ -275,8 +274,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                qr = it.payUrl
-                paymentQrDialog = PaymentQrDialog(qr, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
+                paymentQrDialog = PaymentQrDialog(it.qrCode,it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -312,8 +310,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             queryNoticeByOrderNoLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
                 if (it.result != null && it.result.size > 0) {
-                    performPrintTasks(it.result) {
-                    }
+//                    performPrintTasks(it.result) {
+//                    }
+                    startPrint(it.result[0]){}
                 }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
@@ -338,7 +337,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 }
             } else {
                 // 所有打印任务完成时调用 onComplete 回调
-                onComplete()
+                Handler(Looper.getMainLooper()).postDelayed({ onComplete()},1000)
             }
         }
         // 开始第一个打印任务

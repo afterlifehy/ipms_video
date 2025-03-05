@@ -326,17 +326,19 @@ class BluePrint() {
                         Handler(Looper.getMainLooper()).post {
                             ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
                         }
+                        disConnect()
                         return@Thread
                     }
 
                     0 -> {
-
+                        disConnect()
                     }
 
                     1 -> {
                         Handler(Looper.getMainLooper()).post {
                             ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机缺纸))
                         }
+                        disConnect()
                         return@Thread
                     }
 
@@ -344,6 +346,7 @@ class BluePrint() {
                         Handler(Looper.getMainLooper()).post {
                             ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机开盖))
                         }
+                        disConnect()
                         return@Thread
                     }
                 }
@@ -351,6 +354,7 @@ class BluePrint() {
                 Handler(Looper.getMainLooper()).post {
                     ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.打印机状态异常))
                 }
+                disConnect()
                 return@Thread
             }
         }.start()
