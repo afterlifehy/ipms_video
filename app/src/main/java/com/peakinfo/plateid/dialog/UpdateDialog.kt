@@ -18,7 +18,7 @@ import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.DialogUpdateBinding
 
-class UpdateDialog(var updateBean: UpdateBean, val callback: updateCallBack) :
+class UpdateDialog(var updateBean: UpdateBean, val callback: UpdateCallBack) :
     VBBaseLibDialog<DialogUpdateBinding>(ActivityCacheManager.instance().getCurrentActivity()!!), OnClickListener {
 
     init {
@@ -93,7 +93,7 @@ class UpdateDialog(var updateBean: UpdateBean, val callback: updateCallBack) :
         return Gravity.CENTER
     }
 
-    interface updateCallBack {
+    interface UpdateCallBack {
         fun confirm()
     }
 }

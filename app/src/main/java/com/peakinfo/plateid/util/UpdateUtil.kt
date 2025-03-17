@@ -32,7 +32,7 @@ class UpdateUtil {
     fun checkNewVersion(updateBean: UpdateBean, inter: UpdateInterface) {
         this.updateBean = updateBean
         if (updateBean.state == "0") {
-            updateDialog = UpdateDialog(updateBean, object : UpdateDialog.updateCallBack {
+            updateDialog = UpdateDialog(updateBean, object : UpdateDialog.UpdateCallBack {
                 override fun confirm() {
                     inter.requestionPermission()
                 }

@@ -5,8 +5,8 @@ object BuildConfig {
     const val minSdk = 23
     const val targetSdk = 33
 
-    const val versionCode = 30028
-    const val versionName = "2.4.7_alpha"
+    const val versionCode = 30029
+    const val versionName = "2.4.7_beta"
 
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
