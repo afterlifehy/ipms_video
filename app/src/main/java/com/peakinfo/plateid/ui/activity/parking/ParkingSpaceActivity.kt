@@ -138,19 +138,20 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
 
             R.id.rfl_prepaid -> {
-                if (parkingSpaceBean!!.amountPayed > 0) {
-                    ToastUtil.showMiddleToast("已付金额大于0")
-                } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
-                        parkingSpaceBean!!.startTime,
-                        "yyyy-MM-dd HH:mm:ss"
-                    ) > 1000 * 60 * 60
-                ) {
-                    ToastUtil.showMiddleToast("在停时间超过1小时")
-                } else {
-                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
-                }
+                ToastUtil.showBottomToast("敬请期待")
+//                if (parkingSpaceBean!!.amountPayed > 0) {
+//                    ToastUtil.showMiddleToast("已付金额大于0")
+//                } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
+//                        parkingSpaceBean!!.startTime,
+//                        "yyyy-MM-dd HH:mm:ss"
+//                    ) > 1000 * 60 * 60
+//                ) {
+//                    ToastUtil.showMiddleToast("在停时间超过1小时")
+//                } else {
+//                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
+//                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
+//                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+//                }
             }
 
             R.id.rfl_printNotice -> {
