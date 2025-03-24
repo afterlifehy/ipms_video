@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.AbnormalReportResultBean
-import com.peakinfo.plateid.mvvm.repository.AbnormalRepository
+import com.peakinfo.base.base.mvvm.repository.AbnormalRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

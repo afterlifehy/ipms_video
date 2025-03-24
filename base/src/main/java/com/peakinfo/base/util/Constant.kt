@@ -7,5 +7,11 @@ object Constant {
     const val timeOut = 100L
     const val rt_FILE_PATH = "/peakinfo"
     const val secret = "JijKEPxhO8GZ3H+fY5KXsAJF+1HZfYuMDhJTsy6x"
+
+    var code = ""
+    var password = ""
+    var needCert = false
+    var certSn = ""
+    var refreshCert = false
 }
 

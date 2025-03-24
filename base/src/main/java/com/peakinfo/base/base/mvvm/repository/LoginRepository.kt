@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.mvvm.repository
+package com.peakinfo.base.base.mvvm.repository
 
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.HttpWrapper
@@ -15,41 +15,48 @@ class LoginRepository : BaseRepository() {
      * 登录
      */
     suspend fun login(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
-        return mServer.login(param)
+        return rtServer.login(param)
     }
 
     /**
      * 版本更新查询
      */
     suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
-        return mServer.checkUpdate(param)
+        return rtServer.checkUpdate(param)
     }
 
     /**
      * 登录
      */
     suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Login2Bean> {
-        return mServer.login2(param)
+        return rtServer.login2(param)
     }
 
     /**
      * 登录密码验证
      */
     suspend fun verifyAccount(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
-        return mServer.verifyAccount(param)
+        return rtServer.verifyAccount(param)
     }
 
     /**
      * 修改密码
      */
     suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.editPw(param)
+        return rtServer.editPw(param)
     }
 
     /**
      * 查询是为初始密码
      */
     suspend fun queryPwStatus(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QueryPwStatusBean> {
-        return mServer.queryPwStatus(param)
+        return rtServer.queryPwStatus(param)
+    }
+
+    /**
+     * 通知更新证书
+     */
+    suspend fun reportUpdateCA(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.reportUpdateCA(param)
     }
 }

@@ -5,7 +5,7 @@ import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.DebtCollectionResultBean
 import com.peakinfo.base.bean.QRPayBean
-import com.peakinfo.plateid.mvvm.repository.OrderRepository
+import com.peakinfo.base.base.mvvm.repository.OrderRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

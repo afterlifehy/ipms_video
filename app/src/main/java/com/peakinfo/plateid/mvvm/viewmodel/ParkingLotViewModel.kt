@@ -5,7 +5,7 @@ import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.ParkingLotResultBean
-import com.peakinfo.plateid.mvvm.repository.ParkingRepository
+import com.peakinfo.base.base.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

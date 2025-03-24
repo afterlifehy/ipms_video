@@ -199,6 +199,8 @@ dependencies {
 
     api(files("libs/zp_cpcl_new.jar"))
     api(files("libs/zpSDK.jar"))
+    api(files("libs/ksmkey-2.1.1.jar"))
+    api(files("libs/security-1.1.0.jar"))
 
     //gsyVideoPlayer
     api(ThirdPart.gsyVideoPlayer)

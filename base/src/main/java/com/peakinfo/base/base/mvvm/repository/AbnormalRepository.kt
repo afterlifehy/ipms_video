@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.mvvm.repository
+package com.peakinfo.base.base.mvvm.repository
 
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.AbnormalReportResultBean
@@ -9,6 +9,6 @@ class AbnormalRepository : BaseRepository() {
      * 异常上报
      */
     suspend fun abnormalReport(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<AbnormalReportResultBean> {
-        return mServer.abnormalReport(param)
+        return rtServer.abnormalReport(param)
     }
 }

@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.mvvm.repository
+package com.peakinfo.base.base.mvvm.repository
 
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.DebtCollectionResultBean
@@ -17,76 +17,76 @@ class OrderRepository : BaseRepository() {
      * 视频图片
      */
     suspend fun videoPic(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<VideoPicBean> {
-        return mServer.videoPic(param)
+        return rtServer.videoPic(param)
     }
 
     /**
      * 欠费查询
      */
     suspend fun debtInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtCollectionResultBean> {
-        return mServer.debtInquiry(param)
+        return rtServer.debtInquiry(param)
     }
 
     /**
      * 欠费支付
      */
     suspend fun debtPay(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QRPayBean> {
-        return mServer.debtPay(param)
+        return rtServer.debtPay(param)
     }
 
     /**
      * 查询支付结果
      */
     suspend fun payResult(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
-        return mServer.payResult(param)
+        return rtServer.payResult(param)
     }
 
     /**
      * 订单查询
      */
     suspend fun orderInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<OrderResultBean> {
-        return mServer.orderInquiry(param)
+        return rtServer.orderInquiry(param)
     }
 
     /**
      * 根据order交易查询
      */
     suspend fun transactionInquiryByOrder(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean> {
-        return mServer.transactionInquiryByOrder(param)
+        return rtServer.transactionInquiryByOrder(param)
     }
 
     /**
      * 告知书查询
      */
     suspend fun notificationInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NotificationBean> {
-        return mServer.notificationInquiry(param)
+        return rtServer.notificationInquiry(param)
     }
 
     /**
      * 交易查询
      */
     suspend fun transactionInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<TransactionResultBean> {
-        return mServer.transactionInquiry(param)
+        return rtServer.transactionInquiry(param)
     }
 
     /**
      * 催缴单催缴
      */
     suspend fun callSubmit(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.callSubmit(param)
+        return rtServer.callSubmit(param)
     }
 
     /**
      * 欠费催缴单查询
      */
     suspend fun callInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.callInquiry(param)
+        return rtServer.callInquiry(param)
     }
 
     /**
      * 预支付查询
      */
     suspend fun prePayFeeInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayQRBean> {
-        return mServer.prePayFeeInquiry(param)
+        return rtServer.prePayFeeInquiry(param)
     }
 }

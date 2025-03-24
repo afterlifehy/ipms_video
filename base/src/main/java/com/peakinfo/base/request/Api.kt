@@ -1,6 +1,14 @@
 package com.peakinfo.base.request
 
 import com.peakinfo.base.bean.*
+import com.peakinfo.base.bean.ca.FeeInfoBean
+import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.OweMoneyBean
+import com.peakinfo.base.bean.ca.OwemoneyInfoBean
+import com.peakinfo.base.bean.ca.QRInfoBean
+import com.peakinfo.base.bean.ca.QueryPayBean
+import com.peakinfo.base.bean.ca.TokenInfoBean
+import com.peakinfo.base.bean.ca.UrgepayBean
 import retrofit2.http.*
 
 
@@ -154,4 +162,119 @@ interface Api {
      */
     @POST("S_VO2_24")
     suspend fun queryNoticeByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NoticePrintResultBean>
+
+    @POST("login")
+    suspend fun login(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<LoginInfoBean>
+
+    /**
+     * 签退前获取token
+     */
+    @POST("token")
+    suspend fun getToken(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<TokenInfoBean>
+
+    /**
+     * 签退
+     */
+    @POST("logout")
+    suspend fun logout(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
+
+    /**
+     * 欠费查询
+     */
+    @POST("owemoney")
+    suspend fun owemoney(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<OwemoneyInfoBean>>
+
+    /**
+     * 查询道路未离场停车费用
+     */
+    @POST("fee")
+    suspend fun fee(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<FeeInfoBean>
+
+    /**
+     * 场内支付
+     */
+    @POST("payonspot")
+    suspend fun payonspot(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRInfoBean>
+
+    /**
+     * 欠费支付请求
+     */
+    @POST("payowemoney")
+    suspend fun payowemoney(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<OweMoneyBean>
+
+    /**
+     * 平台支付二维码
+     */
+    @POST("consumeonline")
+    suspend fun consumeonline(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRInfoBean>
+
+    /**
+     * 线上支付
+     */
+    @POST("owemoney/cancel")
+    suspend fun owemoneyCancel(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
+
+    /**
+     * 支付结果查询
+     */
+    @POST("querypay")
+    suspend fun querypay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QueryPayBean>
+
+    /**
+     * 欠费催缴单查询
+     */
+    @POST("urgepaylist")
+    suspend fun urgepaylist(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<UrgepayBean>>
+
+    /**
+     * 欠费单催缴
+     */
+    @POST("urgepay")
+    suspend fun urgepay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
+
+    /**
+     * 预付费停车费
+     */
+    @POST("prepay")
+    suspend fun prepay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRInfoBean>
+
+    /**
+     * 取票/开票二维码
+     */
+    @POST("invoice/qrcode")
+    suspend fun invoiceQrcode(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRInfoBean>
+
+    /**
+     * 通知壬通平台刷新证书
+     */
+    @POST("")
+    suspend fun reportUpdateCA(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }

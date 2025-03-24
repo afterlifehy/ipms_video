@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.mvvm.repository
+package com.peakinfo.base.base.mvvm.repository
 
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.FeeRateResultBean
@@ -11,27 +11,27 @@ class MineRepository : BaseRepository() {
      * 版本更新查询
      */
     suspend fun checkUpdate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<UpdateBean> {
-        return mServer.checkUpdate(param)
+        return rtServer.checkUpdate(param)
     }
 
     /**
      * 签退
      */
     suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return mServer.logout(param)
+        return rtServer.logout(param)
     }
 
     /**
      * 费率
      */
     suspend fun feeRate(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<FeeRateResultBean> {
-        return mServer.feeRate(param)
+        return rtServer.feeRate(param)
     }
 
     /**
      * 登录
      */
     suspend fun login2(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Login2Bean> {
-        return mServer.login2(param)
+        return rtServer.login2(param)
     }
 }

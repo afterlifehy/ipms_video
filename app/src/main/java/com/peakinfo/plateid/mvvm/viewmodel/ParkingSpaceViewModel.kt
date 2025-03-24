@@ -7,7 +7,7 @@ import com.peakinfo.base.bean.NoticePrintResultBean
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
-import com.peakinfo.plateid.mvvm.repository.ParkingRepository
+import com.peakinfo.base.base.mvvm.repository.ParkingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

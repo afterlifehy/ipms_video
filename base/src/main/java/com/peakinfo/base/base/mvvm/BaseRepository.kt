@@ -14,6 +14,13 @@ open class BaseRepository {
         )
     }
 
+    val rtServer by lazy {
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
+            Api::class.java,
+            UrlManager.getRTServerUrl()
+        )
+    }
+
     suspend fun <T : Any> apiCall(call: suspend () -> ResResponse<T>): ResResponse<T> {
         return call.invoke()
     }

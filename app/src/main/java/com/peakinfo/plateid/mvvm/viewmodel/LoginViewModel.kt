@@ -6,7 +6,7 @@ import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
-import com.peakinfo.plateid.mvvm.repository.LoginRepository
+import com.peakinfo.base.base.mvvm.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.UpdateBean
-import com.peakinfo.plateid.mvvm.repository.MineRepository
+import com.peakinfo.base.base.mvvm.repository.MineRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

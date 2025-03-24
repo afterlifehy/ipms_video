@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.IncomeCountingBean
-import com.peakinfo.plateid.mvvm.repository.IncomeCountingRepository
+import com.peakinfo.base.base.mvvm.repository.IncomeCountingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
