@@ -56,6 +56,7 @@
             android:hint="@string/请选择工作路段"
             android:maxLines="1"
             android:textColor="@color/color_ff1a1a1a"
+            android:textColorHint="@color/color_ff6c737b"
             android:textSize="@dimen/sp_19"
             tools:text="定西路(愚园路～安化路)西侧" />
 

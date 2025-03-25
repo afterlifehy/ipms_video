@@ -7,6 +7,8 @@ import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
+import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.TokenInfoBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,9 +19,12 @@ class LoginViewModel : BaseViewModel() {
     }
 
     val loginLiveData = MutableLiveData<LoginBean>()
+    val caLoginLiveData = MutableLiveData<LoginInfoBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
     val verifyAccountLiveDate = MutableLiveData<LoginBean>()
     val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
+    val tokenLiveData = MutableLiveData<TokenInfoBean>()
+    val logoutLiveData = MutableLiveData<Any>()
 
     fun login(param: Map<String, Any?>) {
         launch {
@@ -30,6 +35,45 @@ class LoginViewModel : BaseViewModel() {
                 loginLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun caLogin(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.caLogin(param)
+            }
+            executeResponse(response, {
+                caLoginLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogin"))
+            })
+        }
+    }
+
+    fun token(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.token(param)
+            }
+            executeResponse(response, {
+                tokenLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "getToken"))
+            })
+        }
+    }
+
+    fun logout(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.logout(param)
+            }
+            executeResponse(response, {
+                logoutLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "logout"))
             })
         }
     }

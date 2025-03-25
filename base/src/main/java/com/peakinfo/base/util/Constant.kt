@@ -13,5 +13,12 @@ object Constant {
     var needCert = false
     var certSn = ""
     var refreshCert = false
+
+    var imei = ""
+    var deviceId = ""
+    var simId = ""
+
+    var APP_ID = ""
+    var PASSWORD = ""
 }
 

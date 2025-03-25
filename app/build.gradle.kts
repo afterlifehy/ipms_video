@@ -30,6 +30,10 @@ android {
         }
     }
 
+    packagingOptions {
+        pickFirst("okhttp3/internal/publicsuffix/publicsuffixes.gz")
+    }
+
     buildFeatures {
         viewBinding = true
     }

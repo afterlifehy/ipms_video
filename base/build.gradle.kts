@@ -138,7 +138,9 @@ dependencies {
     api(ThirdPart.retrofit_rxjava2_adapter)
 
     //okhttp3
-    api(ThirdPart.okhttp3)
+    api(ThirdPart.okhttp3) {
+        exclude(group = "com.squareup.okhttp3", module = "okhttp")
+    }
 
     //fragment_swipe
     api(ThirdPart.fragmentationx)

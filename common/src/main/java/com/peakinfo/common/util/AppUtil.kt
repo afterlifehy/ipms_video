@@ -1,6 +1,7 @@
 package com.peakinfo.common.util
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,6 +13,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
+import com.blankj.utilcode.util.DeviceUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.help.ActivityCacheManager
 import com.zrq.spanbuilder.Spans
@@ -287,6 +289,33 @@ object AppUtil {
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
             null
+        }
+    }
+
+    fun getDeviceId(): String {
+        val androidId: String = DeviceUtils.getAndroidID()
+        return if (androidId != null && androidId.length != 0) {
+            androidId
+        } else {
+            val serial: String = Build.SERIAL
+            if (serial != null && serial.length != 0) getSERIAL() else getDeviceUUID()
+        }
+    }
+
+    private fun getSERIAL(): String {
+        return try {
+            Build.SERIAL
+        } catch (var1: java.lang.Exception) {
+            ""
+        }
+    }
+
+    private fun getDeviceUUID(): String {
+        return try {
+            "23" + Build.BOARD.length % 10 + Build.BRAND.length % 10 + Build.DEVICE.length % 10 + Build.HARDWARE.length % 10 + Build.ID.length % 10 + Build.MODEL.length % 10 + Build.PRODUCT.length % 10 + Build.SERIAL.length % 10
+        } catch (var1: Exception) {
+            var1.printStackTrace()
+            ""
         }
     }
 }

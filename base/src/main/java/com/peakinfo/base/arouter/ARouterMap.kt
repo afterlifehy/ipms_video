@@ -45,6 +45,7 @@ object ARouterMap {
 
     const val PARKING_LOT = "/ipms_app/parkingLot"
 
+    const val CA_PARKING_SPACE = "/ipms_app/parkingSpace"
     const val PARKING_SPACE = "/ipms_app/parkingSpace"
     const val ORDER_NO = "orderNo"
     const val CAR_LICENSE = "carLicense"

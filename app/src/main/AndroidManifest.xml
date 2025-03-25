@@ -211,6 +211,11 @@
             android:launchMode="singleTask" />
 
         <activity
+            android:name=".ca.ui.activity.CAParkingSpaceActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
             android:name=".ui.activity.abnormal.BerthAbnormalActivity"
             android:exported="false"
             android:launchMode="singleTask"

@@ -172,7 +172,7 @@ interface Api {
      * 签退前获取token
      */
     @POST("token")
-    suspend fun getToken(
+    suspend fun token(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<TokenInfoBean>
 

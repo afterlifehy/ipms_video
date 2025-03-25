@@ -1,11 +1,16 @@
 package com.peakinfo.base.base.mvvm.repository
 
+import com.blankj.utilcode.util.EncryptUtils
 import com.peakinfo.base.base.mvvm.BaseRepository
 import com.peakinfo.base.bean.HttpWrapper
+import com.peakinfo.base.bean.HttpWrapper2
 import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
+import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.TokenInfoBean
+import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -16,6 +21,54 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun login(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean> {
         return rtServer.login(param)
+    }
+
+    /**
+     * 登录
+     */
+    suspend fun caLogin(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<LoginInfoBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.login(param, options)
+    }
+
+    /**
+     * 签退前获取token
+     */
+    suspend fun token(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<TokenInfoBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.token(param, options)
+    }
+
+    /**
+     * 签退
+     */
+    suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.logout(param, options)
     }
 
     /**
