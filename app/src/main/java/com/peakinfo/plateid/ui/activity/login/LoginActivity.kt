@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnClickListener
@@ -32,6 +33,7 @@ import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.BaiduLocationLoginEvent
+import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BaiduLocationUtil
 import com.peakinfo.plateid.R
@@ -233,10 +235,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
                         override fun chooseStreets() {
                             if (streetChoosedList.isNotEmpty()) {
-                                val firstRoad = streetChoosedList[0]
-//                                binding.tvStreet.text = firstRoad.roadName
-//                                HttpCommonParam.APP_ID = firstRoad.appId
-//                                HttpCommonParam.PASSWORD = firstRoad.password
+                                val firstStreet = streetChoosedList[0]
+                                binding.tvStreet.text = firstStreet.streetName
+                                Constant.APP_ID = firstStreet.appId
+                                Constant.PASSWORD = firstStreet.password
                                 if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
                                     binding.rtvLogin.isEnabled = true
                                     binding.rtvLogin.alpha = 1f
@@ -246,8 +248,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 }
                             } else {
                                 binding.tvStreet.text = ""
-//                                HttpCommonParam.APP_ID = ""
-//                                HttpCommonParam.PASSWORD = ""
+                                Constant.APP_ID = ""
+                                Constant.PASSWORD = ""
                                 binding.rtvLogin.isEnabled = false
                                 binding.rtvLogin.alpha = 0.2f
                             }
@@ -279,7 +281,38 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     })
                 }
             }
-            queryPwStatus()
+            querySimLiveData.observe(this@LoginActivity) {
+                querySimBean = it
+                streetList = querySimBean?.result as MutableList<Street>
+                streetList.apply {
+                    add(Street())
+                    add(Street())
+                }
+//                val targetAppid = it.appIdLast
+//                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
+//                    matchedStreet.ischeck = true
+//                    Constant.APP_ID = matchedStreet.appId
+//                    Constant.PASSWORD = matchedStreet.password
+//                    streetChoosedList.apply {
+//                        clear()
+//                        add(matchedStreet)
+//                    }
+//                    binding.tvStreet.text = matchedStreet.streetName
+//                }
+                runBlocking {
+                    val certSn = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.certSn)
+                    if (it.state == "1") {
+                        ToastUtil.showBottomToast("设备未注册", 1)
+                        return@runBlocking
+                    } else if (it.state == "2" && TextUtils.isEmpty(certSn)) {
+                        Constant.needCert = true
+                    } else if (it.state == "3") {
+                        Constant.refreshCert = true
+                    }
+                    Constant.certSn = it.certSn.toString()
+                    Constant.code = it.code
+                }
+            }
             queryPwStatusLiveData.observe(this@LoginActivity) {
                 if (it.editPw == 0) {
                     verifyAccount()
@@ -297,7 +330,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 } else {
                     dismissProgressDialog()
                     runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, it.loginName.toString())
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, it.loginName.toString())
                         startAct<StreetChooseActivity>(data = Bundle().apply {
                             putParcelable(ARouterMap.LOGIN_INFO, it)
                         })
@@ -306,18 +339,19 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             caLoginLiveData.observe(this@LoginActivity) {
                 dismissProgressDialog()
-//                Constant.selectStreet = HttpCommonParam.roadData[0]
-
                 val userId = binding.etAccount.text.toString()
                 runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, userId)
-//                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, userId)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, userId)
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
                 }
+                RealmUtil.instance?.deleteAllStreet()
+                RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
+                RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
                 if (it != null && it.token != "") {
                     startAct<MainActivity>()
                     logInOutNotice("1")
                 } else {
-                    ToastUtil.showBottomToast("登录失败, 响应结果为空或token为空!",1)
+                    ToastUtil.showBottomToast("登录失败, 响应结果为空或token为空!", 1)
                 }
             }
             tokenLiveData.observe(this@LoginActivity) {
@@ -352,7 +386,21 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         }
     }
 
-    fun queryPwStatus(){
+    fun querySim() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        if (Constant.imei == "868946066209045") {
+            Constant.simId = "huyong"
+        }
+        jsonObject["simId"] = Constant.simId
+        jsonObject["deviceId"] = Constant.deviceId
+        jsonObject["imeiId"] = Constant.imei
+        jsonObject["cardType"] = AppUtil.getSimType()
+        param["attr"] = jsonObject
+        mViewModel.querySim(param)
+    }
+
+    fun queryPwStatus() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()
@@ -407,10 +455,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.checkUpdate(param)
     }
 
-    fun querySim() {
-
-    }
-
     fun token() {
         val userId = binding.etAccount.text.toString()
         val password = binding.etPw.text.toString()
@@ -447,8 +491,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.logout(param)
     }
 
-    fun logInOutNotice(type:String) {
-
+    fun logInOutNotice(state: String) {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["imei"] = Constant.imei
+        jsonobject["loginName"] = binding.etAccount.text.toString()
+        jsonobject["simId"] = Constant.simId
+        jsonobject["state"] = state
+        jsonobject["version"] = AppUtils.getAppVersionName()
+        param["attr"] = jsonobject
+        mViewModel.logInOutNotice(param)
     }
 
     @SuppressLint("CheckResult")

@@ -16,7 +16,7 @@ open class BaseInfoViewModel : BaseViewModel() {
         val street = RealmUtil.instance?.findCurrentStreet()
         return runBlocking {
             val name = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.name)
-            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             val phone = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.phone)
 
             baseInfoList.add(name)

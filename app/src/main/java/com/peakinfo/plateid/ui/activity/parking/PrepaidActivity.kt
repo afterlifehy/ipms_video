@@ -22,7 +22,6 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.event.RefreshParkingSpaceEvent
 import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
@@ -124,7 +123,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             prePayFee()
         }
     }

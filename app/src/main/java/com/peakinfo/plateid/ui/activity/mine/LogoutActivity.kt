@@ -109,7 +109,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
 
     override fun initData() {
         runBlocking {
-            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             val workingHour = RealmUtil.instance?.findCurrentWorkingHour(loginName)
             if (workingHour != null) {
                 binding.tvWorkingHours.text = TimeUtils.millis2String(workingHour.time, "yyyy-MM-dd HH:mm:ss")
@@ -203,7 +203,7 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, "")
                 }
                 RealmUtil.instance?.deleteAllStreet()
             }

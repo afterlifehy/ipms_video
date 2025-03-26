@@ -19,7 +19,6 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
-import com.peakinfo.base.bean.BlueToothDeviceBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
@@ -35,7 +34,6 @@ import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.BuildConfig
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityMineBinding
-import com.peakinfo.plateid.dialog.BlueToothDeviceListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.MineViewModel
 import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.peakinfo.plateid.util.UpdateUtil
@@ -118,7 +116,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
 
             R.id.fl_modifyPw -> {
                 runBlocking {
-                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
                     startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
                         putString(ARouterMap.RESET_PW_ACCOUNT, loginName)
                     })
@@ -145,7 +143,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                                 PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, "")
                             }
                             RealmUtil.instance?.deleteAllStreet()
                         }

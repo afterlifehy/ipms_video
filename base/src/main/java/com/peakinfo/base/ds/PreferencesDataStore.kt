@@ -105,11 +105,13 @@ object PreferencesKeys {
 
     val name by stringPreferencesKey()
 
-    val loginName by stringPreferencesKey()
+    val account by stringPreferencesKey()
 
     val lat by doublePreferencesKey()
 
     val lon by doublePreferencesKey()
+
+    val certSn by stringPreferencesKey()
 
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }

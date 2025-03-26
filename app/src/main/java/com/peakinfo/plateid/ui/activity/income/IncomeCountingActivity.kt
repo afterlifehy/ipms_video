@@ -16,16 +16,13 @@ import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.bean.Summary
-import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
-import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
@@ -35,7 +32,6 @@ import com.peakinfo.plateid.databinding.ActivityIncomeCountingBinding
 import com.peakinfo.plateid.mvvm.viewmodel.IncomeCountingViewModel
 import com.peakinfo.plateid.pop.DatePop
 import com.tbruyelle.rxpermissions3.RxPermissions
-import com.zrq.spanbuilder.TextStyle
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 
@@ -77,7 +73,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
 
     override fun initData() {
         runBlocking {
-            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
         }
         endDate = TimeUtils.millis2String(System.currentTimeMillis(), "yyyy-MM-dd")
         startDate = endDate.substring(0, 8) + "01"

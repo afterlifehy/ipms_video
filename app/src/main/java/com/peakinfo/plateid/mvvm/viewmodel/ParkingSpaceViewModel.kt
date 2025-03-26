@@ -8,6 +8,9 @@ import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.base.mvvm.repository.ParkingRepository
+import com.peakinfo.base.bean.ca.FeeInfoBean
+import com.peakinfo.base.bean.ca.OwemoneyInfoBean
+import com.peakinfo.base.bean.ca.QRInfoBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -20,6 +23,9 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val insidePayLiveData = MutableLiveData<QRPayBean>()
     val payResultLiveData = MutableLiveData<PayResultBean>()
     val queryNoticeByOrderNoLiveData = MutableLiveData<NoticePrintResultBean>()
+    val feeLiveData = MutableLiveData<FeeInfoBean>()
+    val owemoneyLiveData = MutableLiveData<List<OwemoneyInfoBean>>()
+    val payonspotLiveData = MutableLiveData<QRInfoBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -69,6 +75,45 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 queryNoticeByOrderNoLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun fee(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.fee(param)
+            }
+            executeResponse(response, {
+                feeLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "fee"))
+            })
+        }
+    }
+
+    fun owemoney(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.owemoney(param)
+            }
+            executeResponse(response, {
+                owemoneyLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "owemoney"))
+            })
+        }
+    }
+
+    fun payonspot(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.payonspot(param)
+            }
+            executeResponse(response, {
+                payonspotLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "payonspot"))
             })
         }
     }

@@ -37,7 +37,6 @@ import com.peakinfo.plateid.databinding.ActivityBerthAbnormalBinding
 import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
-import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
@@ -244,7 +243,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                     return
                 }
                 runBlocking {
-                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
                     val param = HashMap<String, Any>()
                     val jsonobject = JSONObject()
                     jsonobject["loginName"] = loginName

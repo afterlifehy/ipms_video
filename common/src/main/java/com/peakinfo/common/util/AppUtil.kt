@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.FileProvider
 import com.blankj.utilcode.util.DeviceUtils
+import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.help.ActivityCacheManager
 import com.zrq.spanbuilder.Spans
@@ -317,5 +318,19 @@ object AppUtil {
             var1.printStackTrace()
             ""
         }
+    }
+
+    fun getSimType(): String {
+        val name = PhoneUtils.getSimOperatorName()
+        if (name == "CMCC") {
+            return "1"
+        }
+        if (name == "China Unicom") {
+            return "2"
+        }
+        if (name == "中国电信") {
+            return "3"
+        }
+        return "1"
     }
 }

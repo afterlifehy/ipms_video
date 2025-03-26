@@ -86,7 +86,7 @@ class SplashActivity : VbBaseActivity<SplashViewModel, ActivitySplashBinding>(),
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
             PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+            PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, "")
         }
         RealmUtil.instance?.deleteAllStreet()
         Handler(Looper.getMainLooper()).postDelayed({

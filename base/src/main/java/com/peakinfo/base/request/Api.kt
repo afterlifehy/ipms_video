@@ -7,6 +7,7 @@ import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
+import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import com.peakinfo.base.bean.ca.UrgepayBean
 import retrofit2.http.*
@@ -180,7 +181,7 @@ interface Api {
      * 签退
      */
     @POST("logout")
-    suspend fun logout(
+    suspend fun caLogout(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<Any>
 
@@ -277,4 +278,16 @@ interface Api {
      */
     @POST("")
     suspend fun reportUpdateCA(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 登录前查询
+     */
+    @POST("S_VO2_25")
+    suspend fun querySim(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QuerySimBean>
+
+    /**
+     * 通知签到签退
+     */
+    @POST("S_VO2_26")
+    suspend fun logInOutNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }

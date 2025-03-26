@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
@@ -212,7 +211,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, loginInfo!!.phone.toString())
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, loginInfo!!.name.toString())
                     PreferencesDataStore(BaseApplication.instance()).putString(
-                        PreferencesKeys.loginName,
+                        PreferencesKeys.account,
                         loginInfo!!.loginName.toString()
                     )
                 }

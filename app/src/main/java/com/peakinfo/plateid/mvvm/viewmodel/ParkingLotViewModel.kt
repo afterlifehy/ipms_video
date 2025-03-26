@@ -6,6 +6,8 @@ import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.Login2Bean
 import com.peakinfo.base.bean.ParkingLotResultBean
 import com.peakinfo.base.base.mvvm.repository.ParkingRepository
+import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.TokenInfoBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,6 +19,10 @@ class ParkingLotViewModel : BaseViewModel() {
     val parkingLotListLiveData = MutableLiveData<ParkingLotResultBean>()
     val login2LiveData = MutableLiveData<Login2Bean>()
     val logoutLiveData = MutableLiveData<Any>()
+    val tokenLiveData = MutableLiveData<TokenInfoBean>()
+    val logInOutNoticeLiveData = MutableLiveData<Any>()
+    val caLoginLiveData = MutableLiveData<LoginInfoBean>()
+    val caLogoutLiveData = MutableLiveData<Any>()
 
     fun getParkingLotList(param: Map<String, Any?>) {
         launch {
@@ -53,6 +59,58 @@ class ParkingLotViewModel : BaseViewModel() {
                 logoutLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun caLogin(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.caLogin(param)
+            }
+            executeResponse(response, {
+                caLoginLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogin"))
+            })
+        }
+    }
+
+    fun token(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.token(param)
+            }
+            executeResponse(response, {
+                tokenLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "getToken"))
+            })
+        }
+    }
+
+    fun caLogout(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.caLogout(param)
+            }
+            executeResponse(response, {
+                caLogoutLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogout"))
+            })
+        }
+    }
+
+    fun logInOutNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.logInOutNotice(param)
+            }
+            executeResponse(response, {
+                logInOutNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
             })
         }
     }

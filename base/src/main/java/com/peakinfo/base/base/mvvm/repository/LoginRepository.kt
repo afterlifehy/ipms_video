@@ -9,12 +9,20 @@ import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 class LoginRepository : BaseRepository() {
+
+    /**
+     * 登录前查询
+     */
+    suspend fun querySim(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<QuerySimBean> {
+        return rtServer.querySim(param)
+    }
 
     /**
      * 登录
@@ -58,7 +66,7 @@ class LoginRepository : BaseRepository() {
     /**
      * 签退
      */
-    suspend fun logout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+    suspend fun caLogout(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
         val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
         val curTime = (System.currentTimeMillis() / 1000).toString()
         val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
@@ -68,7 +76,7 @@ class LoginRepository : BaseRepository() {
             "checkSum" to checkSum,
             "appId" to Constant.APP_ID
         )
-        return mServer.logout(param, options)
+        return mServer.caLogout(param, options)
     }
 
     /**
@@ -111,5 +119,12 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun reportUpdateCA(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return rtServer.reportUpdateCA(param)
+    }
+
+    /**
+     * 通知签到签退
+     */
+    suspend fun logInOutNotice(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.logInOutNotice(param)
     }
 }

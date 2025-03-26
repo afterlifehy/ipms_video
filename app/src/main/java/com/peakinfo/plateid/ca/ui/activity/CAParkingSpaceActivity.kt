@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -20,12 +21,12 @@ import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.PrintInfoBean
+import com.peakinfo.base.bean.ca.FeeInfoBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
@@ -63,13 +64,16 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
     var carColor = ""
     var parkingNo = ""
     var token = ""
-    var parkingSpaceBean: ParkingSpaceBean? = null
 
     var tradeNo = ""
     var amountPending = 0
 
     var count = 0
     var handler = Handler(Looper.getMainLooper())
+
+    private lateinit var feeInfo: FeeInfoBean
+    private var oweCount = 0
+    private var oweMoney = 0L
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(parkingSpaceBackEvent: ParkingSpaceBackEvent) {
@@ -103,19 +107,27 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
         showProgressDialog(20000)
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            requestParkingSpaceFee()
+            fee()
+            owemoney()
         }
     }
 
-    fun requestParkingSpaceFee() {
+    fun fee() {
         val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["token"] = token
-        jsonobject["orderNo"] = orderNo
-        jsonobject["carLicense"] = carLicense
-        jsonobject["carColor"] = carColor
-        param["attr"] = jsonobject
-        mViewModel.parkingSpaceFee(param)
+        param["token"] = token
+        param["businessId"] = orderNo
+        param["plateId"] = carLicense
+        param["plateColor"] = carColor
+        mViewModel.fee(param)
+    }
+
+    fun owemoney() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["district"] = 1
+        param["plateId"] = carLicense
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.owemoney(param)
     }
 
     override fun onClick(v: View?) {
@@ -131,25 +143,22 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             }
 
             R.id.rrl_arrears -> {
-                if (parkingSpaceBean?.historyCount != 0) {
+                if (oweCount != 0) {
                     ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
 
             R.id.rfl_prepaid -> {
-                if (parkingSpaceBean!!.amountPayed > 0) {
+                if (feeInfo.prepayMoney!! > 0) {
                     ToastUtil.showMiddleToast("已付金额大于0")
-                } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
-                        parkingSpaceBean!!.startTime,
-                        "yyyy-MM-dd HH:mm:ss"
-                    ) > 1000 * 60 * 60
+                } else if (System.currentTimeMillis() - feeInfo.arrivedTime!! > 1000 * 60 * 60
                 ) {
                     ToastUtil.showMiddleToast("在停时间超过1小时")
                 } else {
-                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
-                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+                    ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, carLicense)
+                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
+                        .withString(ARouterMap.PREPAID_ORDER_NO, orderNo).navigation()
                 }
             }
 
@@ -172,24 +181,20 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 } else {
                     showProgressDialog(20000)
                     val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["token"] = token
-                    jsonobject["tradeNo"] = tradeNo
-                    jsonobject["carLicense"] = carLicense
-                    jsonobject["carColor"] = carColor
-                    jsonobject["amountPending"] = amountPending
-                    jsonobject["orderNo"] = orderNo
-                    param["attr"] = jsonobject
-                    mViewModel.insidePay(param)
+                    param["token"] = token
+                    param["orderId"] = feeInfo.orderId.toString()
+                    param["plateId"] = carLicense
+                    param["plateColor"] = carColor
+                    mViewModel.payonspot(param)
                 }
             }
 
             R.id.rfl_abnormalReport -> {
-                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, parkingSpaceBean?.streetNo)
-                    .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingSpaceBean?.parkingNo)
+                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, feeInfo.roadId)
+                    .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingNo)
                     .withString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
-                    .withString(ARouterMap.ABNORMAL_CARLICENSE, parkingSpaceBean?.carLicense)
-                    .withString(ARouterMap.ABNORMAL_CAR_COLOR, parkingSpaceBean?.carColor.toString())
+                    .withString(ARouterMap.ABNORMAL_CARLICENSE, carLicense)
+                    .withString(ARouterMap.ABNORMAL_CAR_COLOR, carColor)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }
@@ -227,54 +232,88 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            parkingSpaceFeeLiveData.observe(this@CAParkingSpaceActivity) {
+            feeLiveData.observe(this@CAParkingSpaceActivity) {
                 dismissProgressDialog()
+                feeInfo = it
                 binding.rflPlate.show()
                 binding.rllParking.show()
                 binding.llOperation.show()
                 binding.tvNoData.gone()
-
-                parkingSpaceBean = it
-                binding.tvPlate.text = it.carLicense
-                if (it.monthPay > 0L) {
+                binding.tvPlate.text = it.plateId
+                if (it.monthPay!! > 0L) {
                     binding.rtvMonthlyPayment.show()
                 } else {
                     binding.rtvMonthlyPayment.hide()
                 }
 
-                val strings = arrayOf(i18N(com.peakinfo.base.R.string.开始时间), it.startTime)
+                val strings =
+                    arrayOf(i18N(com.peakinfo.base.R.string.开始时间), TimeUtils.millis2String(it.arrivedTime!!, "yyyy-MM-dd HH:mm:ss"))
                 binding.tvStartTime.text = AppUtil.getSpan(strings, sizes, colors)
 
-                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.millisToDate(it.parkingTime * 1000L))
+                val strings2 = arrayOf(i18N(com.peakinfo.base.R.string.在停时间), AppUtil.millisToDate(it.parkingTime!! * 1000L))
                 binding.tvParkingTime.text = AppUtil.getSpan(strings2, sizes, colors)
 
-                val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.amountPayed / 100.00, 2)}元")
+                val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.prepayMoney!! / 100.00, 2)}元")
                 binding.tvPaidAmount.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                if (it.monthPay > 0L) {
-                    val strings4 = arrayOf(i18N(com.peakinfo.base.R.string.月结金额), "${AppUtil.keepNDecimal(it.monthPay / 100.00, 2)}元")
+                if (it.monthPay!! > 0L) {
+                    val strings4 =
+                        arrayOf(i18N(com.peakinfo.base.R.string.月结金额), "${AppUtil.keepNDecimal(it.monthPay!! / 100.00, 2)}元")
                     binding.tvMonthPay.text = AppUtil.getSpan(strings4, sizes, colors)
                 } else {
                     binding.tvMonthPay.gone()
                 }
 
-                val strings5 = arrayOf(i18N(com.peakinfo.base.R.string.待缴费用), "${AppUtil.keepNDecimal(it.amountPending / 100.00, 2)}元")
+                val strings5 = arrayOf(i18N(com.peakinfo.base.R.string.待缴费用), "${AppUtil.keepNDecimal(it.payMoney!! / 100.00, 2)}元")
                 binding.tvPendingFee.text = AppUtil.getSpan(strings5, sizes, colors2, styles)
 
-                val strings6 = arrayOf(i18N(com.peakinfo.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.amountTotal / 100.00, 2)}元")
+                val strings6 = arrayOf(i18N(com.peakinfo.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.dueMoney!! / 100.00, 2)}元")
                 binding.tvOrderAmount.text = AppUtil.getSpan(strings6, sizes, colors)
 
-                binding.tvArrearsNum.text = "${it.historyCount}笔"
-
-                binding.tvArrearsAmount.text =
-                    "${AppUtil.keepNDecimals(BigDecimalManager.divisionDoubleToString(it.historySum, 100.00), 2)}元"
-
-                tradeNo = it.tradeNo
-                amountPending = it.amountPending
+//                tradeNo = it.tradeNo
+//                amountPending = it.amountPending
+            }
+            owemoneyLiveData.observe(this@CAParkingSpaceActivity) {
+                oweCount = it.size
+                oweMoney = it.sumOf { it.oweMoney ?: 0 } ?: 0
+                binding.tvArrearsNum.text = "${oweCount}笔"
+                binding.tvArrearsAmount.text = "${oweMoney}.00元"
+            }
+            payonspotLiveData.observe(this@CAParkingSpaceActivity) {
+                dismissProgressDialog()
+                if (it != null) {
+                    paymentQrDialog =
+                        PaymentQrDialog(it.qrCode!!, it.payUrl!!, AppUtil.keepNDecimal(amountPending / 100.00, 2), carLicense)
+                    paymentQrDialog?.show()
+                    paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
+                        override fun onDismiss(p0: DialogInterface?) {
+                            handler.removeCallbacks(runnable)
+                        }
+                    })
+                    count = 0
+                    handler.post(runnable)
+                } else {
+                    ToastUtil.showBottomToast("没有二维码信息！", 1)
+                    return@observe
+                }
+//                if (this@CAParkingSpaceActivity::info.isInitialized && this@ParkingOrderActivity::feeInfo.isInitialized) {
+//                    val param = HashMap<String, Any>()
+//                    val jsonobject = JSONObject()
+//                    jsonobject["flag"] = "4"
+//                    jsonobject["loginName"] = SPUtil.getAValue("userId", "1234567", "login_data") as String
+//                    jsonobject["businessId"] = info.businessId
+//                    jsonobject["plateId"] = info.plateId
+//                    jsonobject["orderId"] = feeInfo.orderId
+//                    jsonobject["payMoney"] = feeInfo.payMoney.toString()
+//                    jsonobject["orderType"] = "2"
+//                    param["attr"] = jsonobject
+//                    mViewModel.reportNotice(param)
+//                }
             }
             insidePayLiveData.observe(this@CAParkingSpaceActivity) {
                 dismissProgressDialog()
-                paymentQrDialog = PaymentQrDialog(it.qrCode,it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
+                paymentQrDialog =
+                    PaymentQrDialog(it.qrCode, it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -288,7 +327,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
-                requestParkingSpaceFee()
+                fee()
                 if (paymentQrDialog != null) {
                     paymentQrDialog?.dismiss()
                 }
@@ -297,13 +336,13 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean){
+                            startPrint(payResultBean) {
 
                             }
                         }
                     }
                 } else {
-                    startPrint(it){}
+                    startPrint(it) {}
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
             }
@@ -312,7 +351,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 if (it.result != null && it.result.size > 0) {
 //                    performPrintTasks(it.result) {
 //                    }
-                    startPrint(it.result[0]){}
+                    startPrint(it.result[0]) {}
                 }
             }
             errMsg.observe(this@CAParkingSpaceActivity) {
@@ -337,7 +376,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 }
             } else {
                 // 所有打印任务完成时调用 onComplete 回调
-                Handler(Looper.getMainLooper()).postDelayed({ onComplete()},1000)
+                Handler(Looper.getMainLooper()).postDelayed({ onComplete() }, 1000)
             }
         }
         // 开始第一个打印任务

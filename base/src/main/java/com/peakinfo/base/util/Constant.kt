@@ -1,5 +1,7 @@
 package com.peakinfo.base.util
 
+import com.peakinfo.base.bean.Street
+
 object Constant {
 
     const val crtStr = ""
@@ -9,7 +11,6 @@ object Constant {
     const val secret = "JijKEPxhO8GZ3H+fY5KXsAJF+1HZfYuMDhJTsy6x"
 
     var code = ""
-    var password = ""
     var needCert = false
     var certSn = ""
     var refreshCert = false

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.view.View
 import android.view.View.OnClickListener
@@ -30,6 +29,7 @@ import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -37,6 +37,7 @@ import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.plateid.R
+import com.peakinfo.plateid.ca.ui.activity.CAParkingLotActivity
 import com.peakinfo.plateid.databinding.ActivityMainBinding
 import com.peakinfo.plateid.mvvm.viewmodel.MainViewModel
 import com.peakinfo.plateid.pop.StreetPop
@@ -291,8 +292,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.ll_parkingLot -> {
-                val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
-                startActivity(intent)
+                if (Constant.APP_ID.isEmpty()) {
+                    val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(this@MainActivity, CAParkingLotActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
             R.id.fl_incomeCounting -> {
@@ -334,7 +340,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             logoutLiveData.observe(this@MainActivity) {
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
-                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
                     val longitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lon)
                     val latitude = PreferencesDataStore(BaseApplication.instance()).getDouble(PreferencesKeys.lat)
                     val param = HashMap<String, Any>()
@@ -388,7 +394,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, "")
                     }
                     RealmUtil.instance?.deleteAllStreet()
                     ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()

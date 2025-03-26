@@ -12,13 +12,10 @@ import com.peakinfo.base.dialog.DialogHelp
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.event.ReLoginEvent
-import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.http.interceptor.*
 import com.peakinfo.base.network.NetWorkMonitorManager
-import com.peakinfo.base.util.ToastUtil
-import com.peakinfo.common.event.CurrentStreetUpdateEvent
 import com.peakinfo.common.help.SmartRefreshHelp
 import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.plateid.startup.OnAppBaseProxyManager
@@ -61,7 +58,7 @@ class AppApplication : BaseApplication() {
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.phone, "")
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.name, "")
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.loginName, "")
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, "")
                     }
                     RealmUtil.instance?.deleteAllStreet()
                 }

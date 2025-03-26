@@ -111,7 +111,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.loginName)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
         }
         streetNo = RealmUtil.instance?.findCurrentStreet()!!.streetNo
         showProgressDialog(20000)

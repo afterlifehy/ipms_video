@@ -43,9 +43,10 @@ object ARouterMap {
     const val IMG_LIST = "imgList"
     const val IMG_INDEX = "imgIndex"
 
+    const val CA_PARKING_LOT = "/ipms_app/caParkingLot"
     const val PARKING_LOT = "/ipms_app/parkingLot"
 
-    const val CA_PARKING_SPACE = "/ipms_app/parkingSpace"
+    const val CA_PARKING_SPACE = "/ipms_app/caParkingSpace"
     const val PARKING_SPACE = "/ipms_app/parkingSpace"
     const val ORDER_NO = "orderNo"
     const val CAR_LICENSE = "carLicense"

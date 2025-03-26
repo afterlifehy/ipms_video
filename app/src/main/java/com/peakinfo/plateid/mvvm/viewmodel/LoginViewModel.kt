@@ -8,6 +8,7 @@ import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
 import com.peakinfo.base.bean.ca.LoginInfoBean
+import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +19,7 @@ class LoginViewModel : BaseViewModel() {
         LoginRepository()
     }
 
+    val querySimLiveData = MutableLiveData<QuerySimBean>()
     val loginLiveData = MutableLiveData<LoginBean>()
     val caLoginLiveData = MutableLiveData<LoginInfoBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
@@ -25,6 +27,20 @@ class LoginViewModel : BaseViewModel() {
     val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val logoutLiveData = MutableLiveData<Any>()
+    val logInOutNoticeLiveData = MutableLiveData<Any>()
+
+    fun querySim(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.querySim(param)
+            }
+            executeResponse(response, {
+                querySimLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "querySim"))
+            })
+        }
+    }
 
     fun login(param: Map<String, Any?>) {
         launch {
@@ -68,12 +84,12 @@ class LoginViewModel : BaseViewModel() {
     fun logout(param: Map<String, Any?>) {
         launch {
             val response = withContext(Dispatchers.IO) {
-                mLoginRepository.logout(param)
+                mLoginRepository.caLogout(param)
             }
             executeResponse(response, {
                 logoutLiveData.value = response.data
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "logout"))
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogout"))
             })
         }
     }
@@ -113,6 +129,19 @@ class LoginViewModel : BaseViewModel() {
                 queryPwStatusLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "queryPwStatus"))
+            })
+        }
+    }
+
+    fun logInOutNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.logInOutNotice(param)
+            }
+            executeResponse(response, {
+                logInOutNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
             })
         }
     }

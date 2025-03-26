@@ -46,7 +46,7 @@ class CAInterceptor : Interceptor {
 
         val parameterStr = buffer.readUtf8()
         val requestBody = parameterStr.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        val orgSign = Constant.password + "|" + parameterStr
+        val orgSign = Constant.PASSWORD + "|" + parameterStr
         val sign = EncryptUtils.encryptMD5ToString(orgSign).lowercase()
         val base64EncodedParams = base64Encode2String(parameterStr)
         if (base64EncodedParams.length < 400) {

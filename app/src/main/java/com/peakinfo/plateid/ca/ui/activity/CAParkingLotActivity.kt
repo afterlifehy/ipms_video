@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.ui.activity.parking
+package com.peakinfo.plateid.ca.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -18,6 +18,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.PhoneUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
@@ -26,7 +27,9 @@ import com.peakinfo.base.bean.Street
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.startAct
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.CurrentStreetUpdateEvent
@@ -38,14 +41,15 @@ import com.peakinfo.plateid.adapter.ParkingLotAdapter
 import com.peakinfo.plateid.databinding.ActivityParkingLotBinding
 import com.peakinfo.plateid.mvvm.viewmodel.ParkingLotViewModel
 import com.peakinfo.plateid.pop.StreetPop
+import com.peakinfo.plateid.ui.activity.MainActivity
 import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-@Route(path = ARouterMap.PARKING_LOT)
-class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {
+@Route(path = ARouterMap.CA_PARKING_LOT)
+class CAParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLotBinding>(), OnClickListener {
     var parkingLotAdapter: ParkingLotAdapter? = null
     var parkingLotList: MutableList<ParkingLotBean> = ArrayList()
     var count = 0
@@ -55,6 +59,8 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     var streetList: MutableList<Street> = ArrayList()
     var currentStreet: Street? = null
     var tempStreet: Street? = null
+    var account = ""
+    var passwordMD5 = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshParkingLotEvent: RefreshParkingLotEvent) {
@@ -78,6 +84,10 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     }
 
     override fun initData() {
+        runBlocking {
+            account = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
+            passwordMD5 = EncryptUtils.encryptMD5ToString(account).lowercase()
+        }
         currentStreet = RealmUtil.instance?.findCurrentStreet()
         streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         if (currentStreet!!.streetName.indexOf("(") < 0) {
@@ -145,7 +155,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                         .withString(ARouterMap.ABNORMAL_CAR_COLOR, "")
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 } else {
-                    ARouter.getInstance().build(ARouterMap.PARKING_SPACE).withString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)
+                    ARouter.getInstance().build(ARouterMap.CA_PARKING_SPACE).withString(ARouterMap.ORDER_NO, parkingLotBean.orderNo)
                         .withString(ARouterMap.CAR_LICENSE, parkingLotBean.carLicense)
                         .withString(ARouterMap.CAR_COLOR, parkingLotBean.carColor)
                         .withString(ARouterMap.PARKING_NO, parkingLotBean.parkingNo)
@@ -154,7 +164,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
             }
 
             R.id.tv_title -> {
-                streetPop = StreetPop(this@ParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
+                streetPop = StreetPop(this@CAParkingLotActivity, currentStreet, streetList, object : StreetPop.StreetSelectCallBack {
                     @SuppressLint("MissingPermission")
                     override fun selectStreet(street: Street) {
                         if (street.streetNo == currentStreet!!.streetNo) {
@@ -162,36 +172,7 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                         }
                         showProgressDialog(20000)
                         tempStreet = street
-                        runBlocking {
-                            val token =
-                                PreferencesDataStore(BaseApplication.baseApplication).getString(PreferencesKeys.token)
-                            val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
-                            val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["token"] = token
-                            jsonobject["longitude"] = longitude
-                            jsonobject["latitude"] = latitude
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                try {
-                                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                                    jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                                } catch (e: Exception) {
-                                    val manufacturer = Build.MANUFACTURER
-                                    val model = Build.MODEL
-                                    val id =
-                                        manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                                    jsonobject["imei"] = id
-                                    jsonobject["simId"] = id
-                                }
-                            } else {
-                                jsonobject["imei"] = PhoneUtils.getIMEI()
-                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                            }
-                            jsonobject["version"] = AppUtils.getAppVersionName()
-                            param["attr"] = jsonobject
-                            mViewModel.logout(param)
-                        }
+                        token()
                     }
                 })
                 streetPop?.showAsDropDown((v.parent) as Toolbar)
@@ -223,45 +204,24 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            parkingLotListLiveData.observe(this@ParkingLotActivity) {
+            parkingLotListLiveData.observe(this@CAParkingLotActivity) {
                 dismissProgressDialog()
                 parkingLotList.clear()
                 parkingLotList.addAll(it.result)
                 parkingLotAdapter?.setList(parkingLotList)
             }
-            logoutLiveData.observe(this@ParkingLotActivity) {
-                runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
-                    val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
-                    val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
-                    val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["loginName"] = loginName
-                    jsonobject["streetNo"] = currentStreet?.streetNo
-                    jsonobject["longitude"] = longitude
-                    jsonobject["latitude"] = latitude
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        try {
-                            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                        } catch (e: Exception) {
-                            val manufacturer = Build.MANUFACTURER
-                            val model = Build.MODEL
-                            val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                            jsonobject["imei"] = id
-                            jsonobject["simId"] = id
-                        }
-                    } else {
-                        jsonobject["imei"] = PhoneUtils.getIMEI()
-                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                    }
-                    jsonobject["version"] = AppUtils.getAppVersionName()
-                    param["attr"] = jsonobject
-                    mViewModel.login2(param)
-                }
+            tokenLiveData.observe(this@CAParkingLotActivity) {
+                logout(it.token.toString())
             }
-            login2LiveData.observe(this@ParkingLotActivity) {
+            logoutLiveData.observe(this@CAParkingLotActivity) {
+                dismissProgressDialog()
+                ToastUtil.showBottomToast("签退成功", 0)
+                Constant.APP_ID = tempStreet!!.appId
+                Constant.PASSWORD = tempStreet!!.password
+                logInOutNotice("2")
+                caLogin()
+            }
+            caLoginLiveData.observe(this@CAParkingLotActivity) {
                 dismissProgressDialog()
                 currentStreet = tempStreet
                 val old = RealmUtil.instance?.findCurrentStreet()
@@ -278,11 +238,12 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     binding.tvTitle.text =
                         currentStreet!!.streetNo + currentStreet!!.streetName.substring(0, currentStreet!!.streetName.indexOf("("))
                 }
+                logInOutNotice("1")
             }
-            errMsg.observe(this@ParkingLotActivity) {
+            errMsg.observe(this@CAParkingLotActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
-                if (it.api == "login2") {
+                if (it.api == "caLogin") {
                     ToastUtil.showBottomToast("${currentStreet?.streetName}签到失败")
                     runBlocking {
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
@@ -299,9 +260,64 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                     }
                 }
             }
-            mException.observe(this@ParkingLotActivity) {
+            mException.observe(this@CAParkingLotActivity) {
                 dismissProgressDialog()
             }
+        }
+    }
+
+    fun token() {
+        showProgressDialog(20000)
+        val param = HashMap<String, Any>()
+        param["userId"] = account
+        param["simId"] = Constant.simId
+        param["password"] = passwordMD5
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.token(param)
+    }
+
+    fun logout(token: String) {
+        runBlocking {
+            val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
+            val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
+            val param = HashMap<String, Any>()
+            param["token"] = token
+            param["userId"] = account
+            param["deviceId"] = Constant.deviceId
+            param["simId"] = Constant.simId
+            param["password"] = passwordMD5
+            param["longitude"] = longitude
+            param["latitude"] = latitude
+            param["dataTime"] = System.currentTimeMillis()
+            mViewModel.caLogout(param)
+        }
+    }
+
+    fun logInOutNotice(state: String) {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["imei"] = Constant.imei
+        jsonobject["loginName"] = account
+        jsonobject["simId"] = Constant.simId
+        jsonobject["state"] = state
+        jsonobject["version"] = AppUtils.getAppVersionName()
+        param["attr"] = jsonobject
+        mViewModel.logInOutNotice(param)
+    }
+
+    fun caLogin() {
+        runBlocking {
+            val longitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lon)
+            val latitude = PreferencesDataStore(BaseApplication.baseApplication).getDouble(PreferencesKeys.lat)
+            val param = HashMap<String, Any>()
+            param["userId"] = account
+            param["deviceId"] = Constant.deviceId
+            param["simId"] = Constant.simId
+            param["password"] = passwordMD5
+            param["longitude"] = longitude
+            param["latitude"] = latitude
+            param["dataTime"] = System.currentTimeMillis()
+            mViewModel.caLogin(param)
         }
     }
 
