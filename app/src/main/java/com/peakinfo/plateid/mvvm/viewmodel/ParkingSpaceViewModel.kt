@@ -11,6 +11,7 @@ import com.peakinfo.base.base.mvvm.repository.ParkingRepository
 import com.peakinfo.base.bean.ca.FeeInfoBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
+import com.peakinfo.base.bean.ca.QueryPayBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -26,6 +27,9 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val feeLiveData = MutableLiveData<FeeInfoBean>()
     val owemoneyLiveData = MutableLiveData<List<OwemoneyInfoBean>>()
     val payonspotLiveData = MutableLiveData<QRInfoBean>()
+    val querypayLiveData = MutableLiveData<QueryPayBean>()
+    val qrNoticeLiveData = MutableLiveData<Any>()
+    val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -114,6 +118,45 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 payonspotLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "payonspot"))
+            })
+        }
+    }
+
+    fun querypay(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.querypay(param)
+            }
+            executeResponse(response, {
+                querypayLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "querypay"))
+            })
+        }
+    }
+
+    fun qrNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.qrNotice(param)
+            }
+            executeResponse(response, {
+                qrNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "qrNotice"))
+            })
+        }
+    }
+
+    fun payResultNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.payResultNotice(param)
+            }
+            executeResponse(response, {
+                payResultNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "payResultNotice"))
             })
         }
     }

@@ -1,20 +1,21 @@
 package com.peakinfo.base.bean
 
 data class PayResultBean(
-    val businessCname: String,
-    val carLicense: String,
-    val description: String,
-    val endTime: String,
-    val oweCount: Int,
-    val payMoney: String,
-    val payStatus: Int,
-    val payTime: Long,
-    val payType: Int,
-    val phone: String,
-    val remark: String,
-    val roadName: String,
-    val startTime: String,
-    val tradeNo: String
+    var orderId: String,
+    var businessCname: String,
+    var carLicense: String,
+    var description: String,
+    var endTime: String,
+    var oweCount: Int,
+    var payMoney: String,
+    var payStatus: Int,
+    var payTime: Long,
+    var payType: Int,
+    var phone: String,
+    var remark: String,
+    var roadName: String,
+    var startTime: String,
+    var tradeNo: String
 )
 
 data class NoticePrintResultBean(

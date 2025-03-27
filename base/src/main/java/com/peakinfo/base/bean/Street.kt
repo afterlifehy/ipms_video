@@ -4,6 +4,7 @@ import android.os.Parcelable
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import javax.annotation.Nullable
 
 @Parcelize
 open class Street(
@@ -17,6 +18,6 @@ open class Street(
     var password: String = ""
 ) : RealmObject(), Parcelable {
     fun copy(): Street {
-        return Street(streetNo, streetName, ischeck, isCurrent,prepayDuration)
+        return Street(streetNo, streetName, ischeck, isCurrent, prepayDuration, appId, password)
     }
 }

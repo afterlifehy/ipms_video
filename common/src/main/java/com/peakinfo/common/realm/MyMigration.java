@@ -18,5 +18,15 @@ public class MyMigration implements RealmMigration {
                     .addField("prepayDuration", Double.class);
             oldVersion++;
         }
+        if (oldVersion == 2) {
+            schema.get("Street")
+                    .addField("appId", String.class,FieldAttribute.REQUIRED)
+                    .addField("password", String.class,FieldAttribute.REQUIRED);
+            schema.get("Street").transform(obj -> {
+                obj.set("appId", "");
+                obj.set("password", "");
+            });
+            oldVersion++;
+        }
     }
 }

@@ -76,7 +76,7 @@ class LoginViewModel : BaseViewModel() {
             executeResponse(response, {
                 tokenLiveData.value = response.data
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "getToken"))
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "token"))
             })
         }
     }

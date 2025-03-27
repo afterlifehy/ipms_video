@@ -101,6 +101,7 @@ class AppApplication : BaseApplication() {
         list.add(LoginExpiredInterceptor())
         list.add(HostInterceptor())
         list.add(TokenInterceptor())
+        list.add(CAInterceptor())
         if (BuildConfig.is_debug) {
             list.add(LogInterceptor(BuildConfig.is_debug))
             val mHttpLoggingInterceptor = HttpLoggingInterceptor("rt_http")

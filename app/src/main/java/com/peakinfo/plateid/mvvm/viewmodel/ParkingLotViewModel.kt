@@ -84,7 +84,7 @@ class ParkingLotViewModel : BaseViewModel() {
             executeResponse(response, {
                 tokenLiveData.value = response.data
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "getToken"))
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "token"))
             })
         }
     }
@@ -110,8 +110,9 @@ class ParkingLotViewModel : BaseViewModel() {
             executeResponse(response, {
                 logInOutNoticeLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "logInOutNotice"))
             })
         }
     }
+
 }

@@ -7,6 +7,7 @@ import com.peakinfo.base.bean.NotificationBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.TransactionResultBean
 import com.peakinfo.base.base.mvvm.repository.OrderRepository
+import com.peakinfo.base.bean.ca.QueryPayBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,6 +19,7 @@ class TransactionQueryViewModel : BaseViewModel() {
     val transactionInquiryLiveData = MutableLiveData<TransactionResultBean>()
     val notificationInquiryLiveData = MutableLiveData<NotificationBean>()
     val payResultLiveData = MutableLiveData<PayResultBean>()
+    val querypayLiveData = MutableLiveData<QueryPayBean>()
 
     fun transactionInquiry(param: Map<String, Any?>) {
         launch {
@@ -54,6 +56,19 @@ class TransactionQueryViewModel : BaseViewModel() {
                 payResultLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun querypay(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.querypay(param)
+            }
+            executeResponse(response, {
+                querypayLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "querypay"))
             })
         }
     }

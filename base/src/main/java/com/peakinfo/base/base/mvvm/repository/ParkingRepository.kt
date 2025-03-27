@@ -14,8 +14,10 @@ import com.peakinfo.base.bean.ca.FeeInfoBean
 import com.peakinfo.base.bean.ca.LoginInfoBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
+import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import com.peakinfo.base.util.Constant
+import retrofit2.http.Body
 
 class ParkingRepository : BaseRepository() {
 
@@ -169,5 +171,36 @@ class ParkingRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.payonspot(param, options)
+    }
+
+
+    /**
+     * 支付结果查询
+     */
+    suspend fun querypay(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QueryPayBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.querypay(param, options)
+    }
+
+    /**
+     * 支付二维码请求通知
+     */
+    suspend fun qrNotice(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.qrNotice(param)
+    }
+
+    /**
+     * 支付结果通知
+     */
+    suspend fun payResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
+        return rtServer.payResultNotice(param)
     }
 }

@@ -290,4 +290,16 @@ interface Api {
      */
     @POST("S_VO2_26")
     suspend fun logInOutNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单查询
+     */
+    @POST("S_VO2_27")
+    suspend fun qrNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 支付结果通知
+     */
+    @POST("S_VO2_28")
+    suspend fun payResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
 }

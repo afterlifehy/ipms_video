@@ -250,8 +250,13 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 binding.tvStreet.text = ""
                                 Constant.APP_ID = ""
                                 Constant.PASSWORD = ""
-                                binding.rtvLogin.isEnabled = false
-                                binding.rtvLogin.alpha = 0.2f
+                                if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
+                                    binding.rtvLogin.isEnabled = true
+                                    binding.rtvLogin.alpha = 1f
+                                } else {
+                                    binding.rtvLogin.isEnabled = false
+                                    binding.rtvLogin.alpha = 0.2f
+                                }
                             }
                         }
 
@@ -284,10 +289,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             querySimLiveData.observe(this@LoginActivity) {
                 querySimBean = it
                 streetList = querySimBean?.result as MutableList<Street>
-                streetList.apply {
-                    add(Street())
-                    add(Street())
-                }
 //                val targetAppid = it.appIdLast
 //                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
 //                    matchedStreet.ischeck = true

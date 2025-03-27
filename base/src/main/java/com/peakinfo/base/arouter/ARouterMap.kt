@@ -17,6 +17,7 @@ object ARouterMap {
 
     const val ORDER_MAIN = "/ipms_app/orderMain"
 
+    const val CA_TRANSACTION_QUERY = "/ipms_app/caTransactionQuery"
     const val TRANSACTION_QUERY = "/ipms_app/transactionQuery"
 
     const val SCAN_PLATE = "/ipms_app/scanPlate"
@@ -78,6 +79,7 @@ object ARouterMap {
     const val URL = "url"
 
     const val PREPAID = "/ipms_app/prepaid"
+    const val CA_PREPAID = "/ipms_app/caPrepaid"
     const val PREPAID_CARLICENSE = "carlicense"
     const val PREPAID_PARKING_NO = "parkingNo"
     const val PREPAID_ORDER_NO = "orderNo"

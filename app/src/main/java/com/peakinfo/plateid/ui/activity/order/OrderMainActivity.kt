@@ -12,6 +12,7 @@ import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityOrderMainBinding
@@ -45,7 +46,11 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_transactionQuery -> {
-                ARouter.getInstance().build(ARouterMap.TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (Constant.APP_ID.isEmpty()) {
+                    ARouter.getInstance().build(ARouterMap.TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                } else {
+                    ARouter.getInstance().build(ARouterMap.CA_TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
 
             R.id.rfl_debtCollect -> {

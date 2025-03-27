@@ -6,6 +6,8 @@ import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.bean.PayQRBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.base.mvvm.repository.OrderRepository
+import com.peakinfo.base.bean.ca.QRInfoBean
+import com.peakinfo.base.bean.ca.QueryPayBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,6 +18,10 @@ class PrepaidViewModel : BaseViewModel() {
 
     val prePayFeeInquiryLiveData = MutableLiveData<PayQRBean>()
     val payResultInquiryLiveData = MutableLiveData<PayResultBean>()
+    val prepayLiveData = MutableLiveData<QRInfoBean>()
+    val querypayLiveData = MutableLiveData<QueryPayBean>()
+    val qrNoticeLiveData = MutableLiveData<Any>()
+    val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
 
     fun prePayFeeInquiry(param: Map<String, Any?>) {
         launch {
@@ -39,6 +45,58 @@ class PrepaidViewModel : BaseViewModel() {
                 payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+            })
+        }
+    }
+
+    fun prepay(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.prepay(param)
+            }
+            executeResponse(response, {
+                prepayLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "prepay"))
+            })
+        }
+    }
+
+    fun querypay(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.querypay(param)
+            }
+            executeResponse(response, {
+                querypayLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "querypay"))
+            })
+        }
+    }
+
+    fun qrNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.qrNotice(param)
+            }
+            executeResponse(response, {
+                qrNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "qrNotice"))
+            })
+        }
+    }
+
+    fun payResultNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.payResultNotice(param)
+            }
+            executeResponse(response, {
+                payResultNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "payResultNotice"))
             })
         }
     }
