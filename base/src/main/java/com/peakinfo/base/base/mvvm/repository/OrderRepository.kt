@@ -12,6 +12,7 @@ import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.TransactionResultBean
 import com.peakinfo.base.bean.VideoPicBean
+import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.util.Constant
@@ -145,5 +146,37 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun payResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return rtServer.payResultNotice(param)
+    }
+
+    /**
+     * 欠费支付请求
+     */
+    suspend fun payowemoney(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<OweMoneyBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.payowemoney(param, options)
+    }
+
+    /**
+     * 平台支付二维码
+     */
+    suspend fun consumeonline(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QRInfoBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.consumeonline(param, options)
     }
 }

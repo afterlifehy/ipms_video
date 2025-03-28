@@ -6,6 +6,10 @@
 package com.peakinfo.base.ca.com.custle.okhttp.builder;
 
 import android.net.Uri;
+
+import com.peakinfo.base.ca.com.custle.okhttp.request.GetRequest;
+import com.peakinfo.base.ca.com.custle.okhttp.request.RequestCall;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -10,7 +10,8 @@ object UrlManager {
     const val DEV_HOST = "http://180.166.5.198:28080/"
     const val FORMAL_HOST = "http://roadparking.jtcx.sh.cn/"
 
-    const val DEV_CA = "https://device.ysq.mkeysec.net/sdk/v1"
+//    const val DEV_CA = "https://device.ysq.mkeysec.net/sdk/v1"
+    const val DEV_CA = "http://103.36.136.173:1880/posadmin"
     const val FORMAL_CA = "https://parkapp.jtcx.sh.cn/ca/possdk/v1"
 
     fun getRTServerUrl(): String {

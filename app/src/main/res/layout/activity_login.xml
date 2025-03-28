@@ -160,6 +160,7 @@
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_13"
+        android:alpha="0.2"
         android:gravity="center"
         android:paddingTop="@dimen/dp_20"
         android:paddingBottom="@dimen/dp_20"
@@ -167,7 +168,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold"
-        app:rv_backgroundColor="@color/color_990371f4"
+        app:rv_backgroundColor="@color/color_ff0371f4"
         app:rv_radius="@dimen/dp_7" />
 
     <TextView

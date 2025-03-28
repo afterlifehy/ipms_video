@@ -6,10 +6,10 @@ import android.os.Looper
 import android.util.Base64
 import androidx.annotation.RequiresApi
 import com.blankj.utilcode.util.EncryptUtils
-import com.custle.ksmkey.MKeyApi
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.base.mvvm.UrlManager
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
+import com.peakinfo.base.ca.com.custle.ksmkey.MKeyApi
 import com.peakinfo.base.ext.log
 import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
@@ -23,14 +23,18 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 
 class CAInterceptor : Interceptor {
-    private val unitName = "中科国智科技服务（上海）有限公司"
     private val pin = "1234567"
 
     companion object {
-        private val appId = "58"
+        var userName = "中科国智科技服务（上海）有限公司"
+        var userId = "1"
+        var userMobile = ""
+        private val appId = "63"
         val caClient by lazy {
-            MKeyApi.initSDK(UrlManager.getCAUrl(), "pos")
-            MKeyApi.getInstance(BaseApplication.instance(), appId, "", "100")
+            MKeyApi.initSDK(UrlManager.getCAUrl(), "pos1")
+            MKeyApi.getInstance(BaseApplication.instance(), appId, Constant.code,
+                "{\"name\":\"$userName\",\"idNo\":\"$userId\",\"mobile\":\"$userMobile\"}"
+            )
         }
     }
 
@@ -84,7 +88,7 @@ class CAInterceptor : Interceptor {
                                 param["attr"] = jsonObject
                                 mLoginRepository.reportUpdateCA(param)
                             }
-                            if (response.status== 0) {
+                            if (response.status == 0) {
 
                             }
                         } else {

@@ -199,10 +199,10 @@ dependencies {
     //车牌识别
     api(ThirdPart.hyperlpr)
 
-    api(files("libs/ksmkey-2.1.1.jar"))
-    api(files("libs/okhttp-3.12.6.jar"))
-    api(files("libs/okhttputils-1_0_0.jar"))
-    api(files("libs/okio-1.17.4.jar"))
+//    api(files("libs/ksmkey-2.1.1.jar"))
+//    api(files("libs/okhttp-3.12.6.jar"))
+//    api(files("libs/okhttputils-1_0_0.jar"))
+//    api(files("libs/okio-1.17.4.jar"))
     api(files("libs/security-1.1.0.jar"))
     api(files("libs/zp_cpcl_new.jar"))
     api(files("libs/zpSDK.jar"))

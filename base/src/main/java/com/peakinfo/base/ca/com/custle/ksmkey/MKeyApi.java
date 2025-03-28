@@ -14,7 +14,8 @@ import com.peakinfo.base.ca.com.custle.ksmkey.common.MKAppNet;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKAppUtils;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKJsonUtil;
 import com.peakinfo.base.ca.com.custle.ksmkey.certificate.MKUserInfo;
-import com.peakinfo.base.http.HttpsUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.OkHttpUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.https.HttpsUtils;
 
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -75,7 +76,7 @@ public class MKeyApi {
     }
 
     public MKeyApi() {
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory();
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory((InputStream[])null, (InputStream)null, (String)null);
         OkHttpClient okHttpClient = (new OkHttpClient.Builder()).sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager).hostnameVerifier(new HostnameVerifier() {
             public boolean verify(String hostname, SSLSession session) {
                 return true;

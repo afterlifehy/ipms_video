@@ -15,6 +15,9 @@ import com.peakinfo.base.ca.com.custle.ksmkey.util.MKAppUtils;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKJsonUtil;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKNetUtils;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.OkHttpUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.builder.PostFormBuilder;
+import com.peakinfo.base.ca.com.custle.okhttp.callback.StringCallback;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -72,7 +75,7 @@ public class MKCertSignature {
             String keyId = KSCertificate.getInstance(context).getKeyId(userID, pin);
             final long handle = KSCertificate.getInstance(context).sm2PartSignInit(userID, pin);
             String signS1 = KSCertificate.getInstance(context).sm2PartSignS1(userID, handle, pin);
-            ((PostFormBuilder)((PostFormBuilder)OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/key/sign")).addHeader("token", MKAppManager.getInstance().getUserToken())).addParams("strSign", URLEncoder.encode(signS1, "UTF-8")).addParams("msg", URLEncoder.encode(hash, "UTF-8")).addParams("alg", "SM3").addParams("keyId", URLEncoder.encode(keyId, "UTF-8")).addParams("algVersion", "2").build().execute(new StringCallback() {
+            ((PostFormBuilder)((PostFormBuilder) OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/key/sign")).addHeader("token", MKAppManager.getInstance().getUserToken())).addParams("strSign", URLEncoder.encode(signS1, "UTF-8")).addParams("msg", URLEncoder.encode(hash, "UTF-8")).addParams("alg", "SM3").addParams("keyId", URLEncoder.encode(keyId, "UTF-8")).addParams("algVersion", "2").build().execute(new StringCallback() {
                 public void onError(Call call, Exception e, int id) {
                     MKAppUtils.mkeyResultCallBack(callback, "10", e.getLocalizedMessage());
                 }

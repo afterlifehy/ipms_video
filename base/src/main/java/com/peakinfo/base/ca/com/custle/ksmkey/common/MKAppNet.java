@@ -9,6 +9,10 @@ import android.content.Context;
 
 import com.peakinfo.base.ca.com.custle.ksmkey.bean.MKUserAuthBean;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKJsonUtil;
+import com.peakinfo.base.ca.com.custle.ksmkey.util.MKUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.OkHttpUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.builder.PostFormBuilder;
+import com.peakinfo.base.ca.com.custle.okhttp.callback.StringCallback;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -20,7 +24,7 @@ public class MKAppNet {
 
     public static void userAuth(Context context, String userName, String idNo, String phone, String code, final UserAuthCallBack callBack) {
         try {
-            ((PostFormBuilder)OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/authorize/user")).addParams("appId", MKAppManager.getInstance().getAppId()).addParams("userName", URLEncoder.encode(userName, "UTF-8")).addParams("idNo", idNo).addParams("phone", phone).addParams("code", URLEncoder.encode(code, "UTF-8")).addParams("packageName", MKUtils.getPackageName(context)).addParams("clientType", "1").build().execute(new StringCallback() {
+            ((PostFormBuilder) OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/authorize/user")).addParams("appId", MKAppManager.getInstance().getAppId()).addParams("userName", URLEncoder.encode(userName, "UTF-8")).addParams("idNo", idNo).addParams("phone", phone).addParams("code", URLEncoder.encode(code, "UTF-8")).addParams("packageName", MKUtils.getPackageName(context)).addParams("clientType", "1").build().execute(new StringCallback() {
                 public void onError(Call call, Exception e, int id) {
                     callBack.onfailure("10", e.getLocalizedMessage());
                 }

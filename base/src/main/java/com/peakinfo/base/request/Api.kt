@@ -226,14 +226,6 @@ interface Api {
     ): HttpWrapper2<QRInfoBean>
 
     /**
-     * 线上支付
-     */
-    @POST("owemoney/cancel")
-    suspend fun owemoneyCancel(
-        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
-    ): HttpWrapper2<Any>
-
-    /**
      * 支付结果查询
      */
     @POST("querypay")

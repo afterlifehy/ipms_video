@@ -143,20 +143,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
             override fun afterTextChanged(p0: Editable?) {
                 if (binding.etPw.text.isNotEmpty() && p0!!.isNotEmpty()) {
-                    binding.rtvLogin.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(),
-                            com.peakinfo.base.R.color.color_ff0371f4
-                        )
-                    )
+                    binding.rtvLogin.alpha = 1f
                     binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
-                    binding.rtvLogin.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(),
-                            com.peakinfo.base.R.color.color_990371f4
-                        )
-                    )
+                    binding.rtvLogin.alpha = 0.2f
                     binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
@@ -175,20 +165,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
             override fun afterTextChanged(p0: Editable?) {
                 if (binding.etAccount.text.isNotEmpty() && p0!!.isNotEmpty()) {
-                    binding.rtvLogin.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(),
-                            com.peakinfo.base.R.color.color_ff0371f4
-                        )
-                    )
+                    binding.rtvLogin.alpha = 1f
                     binding.rtvLogin.setOnClickListener(this@LoginActivity)
                 } else {
-                    binding.rtvLogin.delegate.setBackgroundColor(
-                        ContextCompat.getColor(
-                            BaseApplication.instance(),
-                            com.peakinfo.base.R.color.color_990371f4
-                        )
-                    )
+                    binding.rtvLogin.alpha = 0.2f
                     binding.rtvLogin.setOnClickListener(null)
                 }
                 binding.rtvLogin.delegate.init()
@@ -240,10 +220,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 Constant.APP_ID = firstStreet.appId
                                 Constant.PASSWORD = firstStreet.password
                                 if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
-                                    binding.rtvLogin.isEnabled = true
+                                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                                     binding.rtvLogin.alpha = 1f
                                 } else {
-                                    binding.rtvLogin.isEnabled = false
+                                    binding.rtvLogin.setOnClickListener(null)
                                     binding.rtvLogin.alpha = 0.2f
                                 }
                             } else {
@@ -251,10 +231,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                                 Constant.APP_ID = ""
                                 Constant.PASSWORD = ""
                                 if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
-                                    binding.rtvLogin.isEnabled = true
+                                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
                                     binding.rtvLogin.alpha = 1f
                                 } else {
-                                    binding.rtvLogin.isEnabled = false
+                                    binding.rtvLogin.setOnClickListener(null)
                                     binding.rtvLogin.alpha = 0.2f
                                 }
                             }

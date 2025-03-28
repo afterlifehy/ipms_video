@@ -14,11 +14,15 @@ import com.google.gson.JsonObject;
 import com.peakinfo.base.ca.com.custle.ksmkey.MKeyApiCallback;
 import com.peakinfo.base.ca.com.custle.ksmkey.bean.MKApplyCertBean;
 import com.peakinfo.base.ca.com.custle.ksmkey.bean.MKBaseBean;
+import com.peakinfo.base.ca.com.custle.ksmkey.bean.MKTrustQueryBean;
 import com.peakinfo.base.ca.com.custle.ksmkey.common.MKAppManager;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKAppUtils;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKJsonUtil;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKNetUtils;
 import com.peakinfo.base.ca.com.custle.ksmkey.util.MKUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.OkHttpUtils;
+import com.peakinfo.base.ca.com.custle.okhttp.builder.PostFormBuilder;
+import com.peakinfo.base.ca.com.custle.okhttp.callback.StringCallback;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -62,7 +66,7 @@ public class MKCertManager {
             String key = MKUtils.getP10Item(p10, 1);
             final String keyId = MKUtils.getP10Item(p10, 2);
             final String csr = MKUtils.getP10Item(p10, 3);
-            ((PostFormBuilder)((PostFormBuilder)OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/key/gen")).addHeader("token", MKAppManager.getInstance().getUserToken())).addParams("key", URLEncoder.encode(key, "UTF-8")).addParams("keyId", URLEncoder.encode(keyId, "UTF-8")).addParams("alg", "SM2").addParams("algVersion", "2").build().execute(new StringCallback() {
+            ((PostFormBuilder)((PostFormBuilder) OkHttpUtils.post().url(MKAppManager.getInstance().getUrl() + "/key/gen")).addHeader("token", MKAppManager.getInstance().getUserToken())).addParams("key", URLEncoder.encode(key, "UTF-8")).addParams("keyId", URLEncoder.encode(keyId, "UTF-8")).addParams("alg", "SM2").addParams("algVersion", "2").build().execute(new StringCallback() {
                 public void onError(Call call, Exception e, int id) {
                     MKAppUtils.mkeyResultCallBack(callback, "10", e.getLocalizedMessage());
                 }
@@ -237,7 +241,7 @@ public class MKCertManager {
                 strValue = strKey.substring(0, 18);
                 String strCode = strKey.substring(18);
                 if (map.containsKey(strValue)) {
-                    String strValue = (String)map.get(strValue) + ";" + strCode;
+                    strValue = (String)map.get(strValue) + ";" + strCode;
                     map.put(strValue, strValue);
                 } else {
                     map.put(strValue, strCode);
