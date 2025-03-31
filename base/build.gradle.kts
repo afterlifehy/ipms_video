@@ -203,9 +203,11 @@ dependencies {
 //    api(files("libs/okhttp-3.12.6.jar"))
 //    api(files("libs/okhttputils-1_0_0.jar"))
 //    api(files("libs/okio-1.17.4.jar"))
-    api(files("libs/security-1.1.0.jar"))
+//    api(files("libs/security-1.1.0.jar"))
     api(files("libs/zp_cpcl_new.jar"))
     api(files("libs/zpSDK.jar"))
+    api(files("libs/ksmkey-pos-1.0.3.aar"))
+    api(files("libs/security-pos-1.0.2.aar"))
 
     //gsyVideoPlayer
     api(ThirdPart.gsyVideoPlayer)

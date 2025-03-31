@@ -22,6 +22,7 @@ object ARouterMap {
 
     const val SCAN_PLATE = "/ipms_app/scanPlate"
 
+    const val CA_DEBT_COLLECTION = "/ipms_app/caDebtCollection"
     const val DEBT_COLLECTION = "/ipms_app/debtCollection"
     const val DEBT_CAR_LICENSE = "carLicense"
 
@@ -72,6 +73,7 @@ object ARouterMap {
 
     const val INCOME_COUNTING = "/ipms_app/incomeCounting"
 
+    const val CA_COLLECTION_MANAGEMENT = "/ipms_app/caCollectionManagement"
     const val COLLECTION_MANAGEMENT = "/ipms_app/collectionManagement"
 
     const val FEE_RATE = "/ipms_app/feeRate"

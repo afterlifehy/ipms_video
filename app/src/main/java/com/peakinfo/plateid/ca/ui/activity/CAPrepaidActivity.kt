@@ -38,7 +38,7 @@ import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 
-@Route(path = ARouterMap.PREPAID)
+@Route(path = ARouterMap.CA_PREPAID)
 class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>(), OnClickListener {
     var timeDuration = 1.0
     var maxDuration = 99.0

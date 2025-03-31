@@ -15,6 +15,7 @@ import com.peakinfo.base.bean.VideoPicBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
+import com.peakinfo.base.bean.ca.UrgepayBean
 import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -178,5 +179,37 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.consumeonline(param, options)
+    }
+
+    /**
+     * 欠费催缴单查询
+     */
+    suspend fun urgepaylist(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<UrgepayBean>> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.urgepaylist(param, options)
+    }
+
+    /**
+     * 欠费催缴单查询
+     */
+    suspend fun urgepay(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.urgepay(param, options)
     }
 }

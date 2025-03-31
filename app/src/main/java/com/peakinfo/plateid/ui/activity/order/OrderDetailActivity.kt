@@ -14,6 +14,7 @@ import com.peakinfo.base.bean.OrderBean
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BigDecimalManager
@@ -131,8 +132,13 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             }
 
             R.id.rtv_debtCollection -> {
-                ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, order?.carLicense)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (Constant.APP_ID.isEmpty()) {
+                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, order?.carLicense)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                } else {
+                    ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, order?.carLicense)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
 
             R.id.rtv_transactionRecord -> {

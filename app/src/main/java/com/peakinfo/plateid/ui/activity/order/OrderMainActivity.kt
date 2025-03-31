@@ -54,7 +54,11 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_debtCollect -> {
-                ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (Constant.APP_ID.isEmpty()) {
+                    ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }else{
+                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
 
             R.id.rfl_orderInquiry -> {
@@ -62,7 +66,11 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_collectionManagement -> {
-                ARouter.getInstance().build(ARouterMap.COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (Constant.APP_ID.isEmpty()) {
+                    ARouter.getInstance().build(ARouterMap.COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }else{
+                    ARouter.getInstance().build(ARouterMap.CA_COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
         }
     }

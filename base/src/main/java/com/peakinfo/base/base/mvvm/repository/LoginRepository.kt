@@ -118,7 +118,7 @@ class LoginRepository : BaseRepository() {
      * 通知更新证书
      */
     suspend fun reportUpdateCA(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
-        return rtServer.reportUpdateCA(param)
+        return caReportServer.reportUpdateCA(param)
     }
 
     /**

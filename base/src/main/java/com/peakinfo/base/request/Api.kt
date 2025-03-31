@@ -268,7 +268,7 @@ interface Api {
     /**
      * 通知壬通平台刷新证书
      */
-    @POST("")
+    @POST("S_G1_01")
     suspend fun reportUpdateCA(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**

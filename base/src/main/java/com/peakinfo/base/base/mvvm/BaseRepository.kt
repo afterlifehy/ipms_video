@@ -21,6 +21,13 @@ open class BaseRepository {
         )
     }
 
+    val caReportServer by lazy {
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
+            Api::class.java,
+            UrlManager.getCAReportUrl()
+        )
+    }
+
     suspend fun <T : Any> apiCall(call: suspend () -> ResResponse<T>): ResResponse<T> {
         return call.invoke()
     }

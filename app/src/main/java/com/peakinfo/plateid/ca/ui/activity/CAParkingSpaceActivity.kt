@@ -29,6 +29,7 @@ import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.hide
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.show
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.ParkingSpaceBackEvent
@@ -136,7 +137,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
 
             R.id.rrl_arrears -> {
                 if (oweCount != 0) {
-                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
+                    ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
