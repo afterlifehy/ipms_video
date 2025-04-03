@@ -84,6 +84,7 @@ object ARouterMap {
     const val PREPAID = "/ipms_app/prepaid"
     const val CA_PREPAID = "/ipms_app/caPrepaid"
     const val PREPAID_CARLICENSE = "carlicense"
+    const val PREPAID_CARCOLOR = "carColor"
     const val PREPAID_PARKING_NO = "parkingNo"
     const val PREPAID_ORDER_NO = "orderNo"
 

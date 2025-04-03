@@ -19,8 +19,7 @@ import com.peakinfo.base.viewbase.inter.OnNetWorkViewShowLinsener
 import org.greenrobot.eventbus.EventBus
 import java.lang.Exception
 
-abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
-    OnNetWorkViewShowLinsener, NetWorkRequestLinsener, OnNetWorkCallLinsener {
+abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
     protected lateinit var mViewModel: VM
     var mRoot: View? = null
     var mInflater: LayoutInflater? = null
@@ -41,9 +40,6 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
                 .setCancelable(true)
                 .setCancelOutside(false)
         mProgressDialog = loadBuilder.create()
-
-        mNewWorkStateManager = ViewNetWorkStateManager(this, false)
-        lifecycle.addObserver(mNewWorkStateManager!!)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -68,7 +64,6 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
         providerVMClass()?.let {
             mViewModel = ViewModelProvider(this).get(it)
             mViewModel.let(lifecycle::addObserver)
-            mViewModel.regNetWorkRequestLinsener(this)
         }
     }
 
@@ -116,36 +111,6 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment(),
             }
             mFragment = fragment
             transaction?.commit()
-        }
-    }
-
-    /**
-     * 如果需在要当前界面知道是否有网络，就可以实现这个类
-     */
-    open fun currentNetWorkState(isNetWork: Boolean) {
-
-    }
-
-    override fun onCurrentNewWorkState(isNetWork: Boolean) {
-        currentNetWorkState(isNetWork)
-    }
-
-    /**
-     * 需要响应调用方法出现网络错误时候，需要添加一个
-     */
-    fun addNetWorkErrorTag(tag: String) {
-        networkErrorTagList.add(tag)
-    }
-
-
-    override fun onNewWorkErrorCall(tag: String, ext: Exception?) {
-        if (networkErrorTagList.contains(tag)) {
-            val info = NetWorkRequestData(1, ext?.message!!, tag)
-            if (NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
-                onNoNetWorkErrror(info)
-            } else {
-                onNetWorkRequestError(info)
-            }
         }
     }
 

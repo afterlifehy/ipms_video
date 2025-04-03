@@ -184,15 +184,6 @@ abstract class BaseDataFragmentKt<VM : BaseViewModel> : BaseFragment<VM>(), View
         return if (fragment is Fragment) fragment else null
     }
 
-    override fun onNetWorkRequestError(errror: NetWorkRequestData) {
-        showLoadError()
-//        showNotDataView()
-    }
-
-    override fun onNoNetWorkErrror(errror: NetWorkRequestData) {
-        showNewWorkError()
-    }
-
     /**
      * 暂无网络
      */
@@ -205,15 +196,6 @@ abstract class BaseDataFragmentKt<VM : BaseViewModel> : BaseFragment<VM>(), View
      */
     open fun isShowTitle(): Boolean {
         return false
-    }
-
-    override fun currentNetWorkState(isNetWork: Boolean) {
-        super.currentNetWorkState(isNetWork)
-        if (isNetWork) {
-//             mViewAddManager?.setNetWorkStatesView(false)
-        } else {
-            //   mViewAddManager?.setNetWorkStatesView(true)
-        }
     }
 
     /**

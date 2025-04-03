@@ -28,6 +28,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val owemoneyLiveData = MutableLiveData<List<OwemoneyInfoBean>>()
     val payonspotLiveData = MutableLiveData<QRInfoBean>()
     val querypayLiveData = MutableLiveData<QueryPayBean>()
+    val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
     val qrNoticeLiveData = MutableLiveData<Any>()
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
 
@@ -131,6 +132,19 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 querypayLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "querypay"))
+            })
+        }
+    }
+
+    fun invoiceQrcode(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.invoiceQrcode(param)
+            }
+            executeResponse(response, {
+                invoiceQrcodeLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "invoiceQrcode"))
             })
         }
     }

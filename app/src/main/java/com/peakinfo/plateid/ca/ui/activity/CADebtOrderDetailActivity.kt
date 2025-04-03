@@ -54,6 +54,9 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     var handler = Handler(Looper.getMainLooper())
     var payMoney = 0
 
+    lateinit var queryPayBean: QueryPayBean
+    lateinit var ticketQrCode: String
+
     val runnable = object : Runnable {
         override fun run() {
             if (count < 60) {
@@ -154,6 +157,10 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 payResultNotice(it)
             }
+            invoiceQrcodeLiveData.observe(this@CADebtOrderDetailActivity) {
+                ticketQrCode = it.qrCode.toString()
+                payResultNotice(queryPayBean)
+            }
             payResultNoticeLiveData.observe(this@CADebtOrderDetailActivity) {
                 if (paymentQrDialog != null) {
                     paymentQrDialog?.dismiss()
@@ -199,6 +206,16 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         param["orderId"] = tradeNo
         mViewModel.querypay(param)
     }
+
+//    fun invoiceQrcode(orderId: String) {
+//        val param = HashMap<String, Any>()
+//        param["token"] = token
+//        param["orderId"] = orderId
+//        param["plateId"] = carLicense
+//        param["plateColor"] = carColor
+//        param["dataTime"] = System.currentTimeMillis()
+//        mViewModel.invoiceQrcode(param)
+//    }
 
     fun qrNotice() {
         runBlocking {

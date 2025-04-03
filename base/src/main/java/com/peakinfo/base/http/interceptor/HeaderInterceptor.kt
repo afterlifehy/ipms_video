@@ -4,11 +4,6 @@ import android.text.TextUtils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.EncryptUtils
-import com.peakinfo.base.BaseApplication
-import com.peakinfo.base.ds.PreferencesDataStore
-import com.peakinfo.base.ds.PreferencesKeys
-import com.peakinfo.base.util.Constant
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -46,7 +41,7 @@ class HeaderInterceptor : Interceptor {
         val addHeader = chain.request().newBuilder()
         val timeStamp = System.currentTimeMillis().toString()
         runBlocking {
-//            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+//            val token = PreferencesDataStore(BaseApp.instance).getString(PreferencesKeys.simId)
             addHeader.addHeader("Content-Type", "application/json")
                 .addHeader("timestamp", timeStamp)
 //                .addHeader("token", token)

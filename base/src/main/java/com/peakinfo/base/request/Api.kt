@@ -164,8 +164,11 @@ interface Api {
     @POST("S_VO2_24")
     suspend fun queryNoticeByOrderNo(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<NoticePrintResultBean>
 
+    /**
+     * 登录
+     */
     @POST("login")
-    suspend fun login(
+    suspend fun caLogin(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<LoginInfoBean>
 
@@ -294,4 +297,10 @@ interface Api {
      */
     @POST("S_VO2_28")
     suspend fun payResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean>
+
+    /**
+     * 通知平台更新Cert
+     */
+    @POST("S_GECE_G1")
+    suspend fun notifyUpdateCert(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 }

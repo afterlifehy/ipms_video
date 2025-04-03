@@ -21,7 +21,8 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <!--手机状态-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
     <!--联系人-->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -259,6 +260,36 @@
 
         <activity
             android:name=".ui.activity.parking.PrepaidActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CADebtOrderDetailActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CADebtCollectionActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CACollectionManagementActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CAParkingLotActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CAPrepaidActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CATransactionQueryActivity"
             android:exported="false"
             android:launchMode="singleTask" />
     </application>

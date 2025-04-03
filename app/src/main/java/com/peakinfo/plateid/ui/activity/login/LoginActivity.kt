@@ -11,7 +11,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
@@ -19,6 +18,7 @@ import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.PhoneUtils
+import com.custle.ksmkey.MKeyApi
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
@@ -29,6 +29,7 @@ import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.startAct
 import com.peakinfo.base.ext.startArouter
+import com.peakinfo.base.http.interceptor.CAInterceptor
 import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
@@ -291,6 +292,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         Constant.refreshCert = true
                     }
                     Constant.certSn = it.certSn.toString()
+                    runBlocking {
+                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, it.certSn.toString())
+                    }
                     Constant.code = it.code
                 }
             }
@@ -354,9 +358,22 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     if (it.code == 1012) {
                         needLogin = true
                         token()
-                    } else {
+                    }else {
                         dismissProgressDialog()
                     }
+//                    else if (it.code == 3006) {
+//                        CAInterceptor.caClient.getCertInfo("") {
+//                            if (it.code == 0) {
+//                                val jsonObject = org.json.JSONObject(it.data)
+//                                val certSn = jsonObject.getString("certSn")
+//                                Constant.certSn = certSn
+//                                runBlocking {
+//                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, certSn)
+//                                }
+//                                notifyUpdateCert(certSn)
+//                            }
+//                        }
+//                    }
                 } else {
                     dismissProgressDialog()
                 }
@@ -364,6 +381,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()
             }
+        }
+    }
+
+    private fun notifyUpdateCert(certSn: String) {
+        if (!TextUtils.isEmpty(certSn)) {
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["deviceId"] = MKeyApi.getDeviceId(BaseApplication.instance())
+            jsonobject["certSn"] = certSn
+            param["attr"] = jsonobject
+            mViewModel.notifyUpdateCert(param)
         }
     }
 

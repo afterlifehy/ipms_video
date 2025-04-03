@@ -122,7 +122,7 @@ class ParkingRepository : BaseRepository() {
             "checkSum" to checkSum,
             "appId" to Constant.APP_ID
         )
-        return mServer.login(param, options)
+        return mServer.caLogin(param, options)
     }
 
     /**
@@ -173,7 +173,6 @@ class ParkingRepository : BaseRepository() {
         return mServer.payonspot(param, options)
     }
 
-
     /**
      * 支付结果查询
      */
@@ -188,6 +187,22 @@ class ParkingRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.querypay(param, options)
+    }
+
+    /**
+     * 取票/开票二维码
+     */
+    suspend fun invoiceQrcode(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QRInfoBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.invoiceQrcode(param, options)
     }
 
     /**

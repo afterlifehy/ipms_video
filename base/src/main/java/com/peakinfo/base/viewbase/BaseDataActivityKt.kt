@@ -267,14 +267,6 @@ abstract class BaseDataActivityKt<VM : BaseViewModel> : BaseActivity<VM>(), View
         }
     }
 
-    override fun onNetWorkRequestError(errror: NetWorkRequestData) {
-        showLoadError()
-    }
-
-    override fun onNoNetWorkErrror(errror: NetWorkRequestData) {
-        showNewWorkError()
-    }
-
     override fun onPagerClick() {
         onReloadData()
         getData()

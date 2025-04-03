@@ -27,9 +27,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity,
-    OnNetWorkViewShowLinsener, NetWorkRequestLinsener,
-    OnNetWorkCallLinsener {
+abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity{
     protected lateinit var mViewModel: VM
     private var mFragment: Fragment? = null
     private var isLoadContentView = true
@@ -73,15 +71,12 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
         if (isRegEventBus()) {
             EventBus.getDefault().register(this)
         }
-        mNewWorkStateManager = ViewNetWorkStateManager(this, true)
-        lifecycle.addObserver(mNewWorkStateManager!!)
     }
 
     fun initVM() {
         providerVMClass()?.let {
             mViewModel = ViewModelProvider(this).get(it)
             mViewModel.let(lifecycle::addObserver)
-            mViewModel.regNetWorkRequestLinsener(this)
         }
     }
 
@@ -161,21 +156,6 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
      */
     open fun currentNewWorkState(isNetWork: Boolean) {
 
-    }
-
-    override fun onCurrentNewWorkState(isNetWork: Boolean) {
-        currentNewWorkState(isNetWork)
-    }
-
-    override fun onNewWorkErrorCall(tag: String, ext: java.lang.Exception?) {
-        if (networkErrorTagList.contains(tag)) {
-            val info = NetWorkRequestData(1, ext?.message!!, tag)
-            if (NetWorkMonitorManager.getInstance().currNetWorkState == NetWorkState.NONE) {
-                onNoNetWorkErrror(info)
-            } else {
-                onNetWorkRequestError(info)
-            }
-        }
     }
 
     override fun onDestroy() {

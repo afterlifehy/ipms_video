@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.peakinfo.base.bean.HttpWrapper
+import com.peakinfo.base.bean.HttpWrapper2
 import com.peakinfo.base.util.ToastUtil
 import kotlinx.coroutines.*
 
@@ -17,24 +18,15 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
     val errMsg: SafeMutableLiveData<ErrorMessage> = SafeMutableLiveData()
     val errorMsgList = ArrayList<SafeMutableLiveData<ErrorMessage>>()
     val mExceptionMsgList = ArrayList<SafeMutableLiveData<Exception>>()
-    private val mRequestErrorLinser = ArrayList<OnNetWorkCallLinsener>()
 
     override fun onCleared() {
         super.onCleared()
-        mRequestErrorLinser.clear()
-    }
-
-    /**
-     * 添加网络请求错误问题
-     */
-    fun regNetWorkRequestLinsener(mNetWorkRequestLinsener: OnNetWorkCallLinsener) {
-        mRequestErrorLinser.add(mNetWorkRequestLinsener)
     }
 
     /**
      * 注册错误回调
      */
-    fun registerToListen(errMsg: SafeMutableLiveData<ErrorMessage>) {
+    fun registerToListener(errMsg: SafeMutableLiveData<ErrorMessage>) {
         errorMsgList.add(errMsg)
     }
 
@@ -81,17 +73,6 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
         return mException
     }
 
-    private fun sendRequstError(exe: Exception, tag: String = "") {
-        if (TextUtils.isEmpty(tag)) {
-            return
-        }
-        mRequestErrorLinser.forEach {
-            it.onNewWorkErrorCall(tag, exe)
-        }
-
-
-    }
-
     private suspend fun tryCatch(
         tryBlock: suspend CoroutineScope.() -> Unit,
         catchBlock: suspend CoroutineScope.(Throwable) -> Unit,
@@ -107,8 +88,6 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
                         //提示报错信息
                         ToastUtil.showBottomToast(e.toString())
                     }
-
-                    sendRequstError(e, tag)
                     traverseExpMsg(e)
                     catchBlock(e)
                 } else {
@@ -127,6 +106,20 @@ open class BaseViewModel : ViewModel(), LifecycleObserver {
     ) {
         coroutineScope {
             if (response.status == 0) {
+                successBlock()
+            } else {
+                errorBlock()
+            }
+        }
+    }
+
+    suspend fun executeResponse(
+        response: HttpWrapper2<Any>,
+        successBlock: suspend CoroutineScope.() -> Unit,
+        errorBlock: suspend CoroutineScope.() -> Unit
+    ) {
+        coroutineScope {
+            if (response.code == 0) {
                 successBlock()
             } else {
                 errorBlock()

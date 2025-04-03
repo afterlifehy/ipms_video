@@ -11,6 +11,8 @@ import com.custle.ksmkey.MKeyApi
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.base.mvvm.UrlManager
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
+import com.peakinfo.base.ds.PreferencesDataStore
+import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.log
 import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
@@ -51,9 +53,9 @@ class CAInterceptor : Interceptor {
         val parameterStr = buffer.readUtf8()
         val requestBody = parameterStr.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val orgSign = Constant.PASSWORD + "|" + parameterStr
-        Log.v("1234",orgSign)
+        Log.v("1234", orgSign)
         val sign = EncryptUtils.encryptMD5ToString(orgSign).lowercase()
-        Log.v("1234",sign)
+        Log.v("1234", sign)
         val base64EncodedParams = base64Encode2String(parameterStr)
         if (base64EncodedParams.length < 400) {
 //            LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    签名body转base64:  $base64EncodedParams")
@@ -78,6 +80,9 @@ class CAInterceptor : Interceptor {
                             val jsonObject = JSONObject(it.data)
                             val certSn = jsonObject.getString("certSn")
                             Constant.certSn = certSn
+                            runBlocking {
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, certSn)
+                            }
                             request = request.newBuilder()
                                 .addHeader("Accept", "application/json")
                                 .build()
@@ -133,6 +138,9 @@ class CAInterceptor : Interceptor {
                             val jsonObject = JSONObject(it.data)
                             val certSn = jsonObject.getString("certSn")
                             Constant.certSn = certSn
+                            runBlocking {
+                                PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, certSn)
+                            }
                             request = request.newBuilder()
                                 .addHeader("Accept", "application/json")
                                 .build()
@@ -194,6 +202,9 @@ class CAInterceptor : Interceptor {
                                     val jsonObject = JSONObject(it.data)
                                     val certSn = jsonObject.getString("certSn")
                                     Constant.certSn = certSn
+                                    runBlocking {
+                                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, certSn)
+                                    }
                                     request = request.newBuilder()
                                         .addHeader("Accept", "application/json")
                                         .build()

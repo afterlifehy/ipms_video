@@ -47,6 +47,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
 
     var parkingNo = ""
     var carLicense = ""
+    var carColor = ""
     var orderNo = ""
 
     var token = ""
@@ -55,6 +56,8 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var tradeNo = ""
+    lateinit var queryPayBean: QueryPayBean
+    lateinit var ticketQrCode: String
 
     val runnable = object : Runnable {
         override fun run() {
@@ -72,6 +75,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.预支付)
 
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
+        carColor = intent.getStringExtra(ARouterMap.PREPAID_CARCOLOR).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
 
@@ -198,7 +202,12 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
                 dismissProgressDialog()
                 handler.removeCallbacks(runnable)
                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
-                payResultNotice(it)
+                queryPayBean = it
+                invoiceQrcode(it.orderId)
+            }
+            invoiceQrcodeLiveData.observe(this@CAPrepaidActivity) {
+                ticketQrCode = it.qrCode.toString()
+                payResultNotice(queryPayBean)
             }
             payResultNoticeLiveData.observe(this@CAPrepaidActivity) {
                 if (paymentQrDialog != null) {
@@ -209,11 +218,11 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean)
+                            startPrint(payResultBean, ticketQrCode)
                         }
                     }
                 } else {
-                    startPrint(it)
+                    startPrint(it, ticketQrCode)
                 }
                 EventBus.getDefault().post(RefreshParkingSpaceEvent())
                 onBackPressedSupport()
@@ -246,7 +255,17 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
         mViewModel.querypay(param)
     }
 
-    fun qrNotice(payMoney:Int) {
+    fun invoiceQrcode(orderId: String) {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["orderId"] = orderId
+        param["plateId"] = carLicense
+        param["plateColor"] = carColor
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.invoiceQrcode(param)
+    }
+
+    fun qrNotice(payMoney: Int) {
         runBlocking {
             val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             val param = HashMap<String, Any>()
@@ -274,7 +293,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
         mViewModel.payResultNotice(param)
     }
 
-    fun startPrint(it: PayResultBean) {
+    fun startPrint(it: PayResultBean, ticketQrCode: String) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
@@ -286,7 +305,8 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount
+            oweCount = it.oweCount,
+            ticketQrCode = ticketQrCode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

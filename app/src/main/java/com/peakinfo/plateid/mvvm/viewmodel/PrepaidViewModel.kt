@@ -22,6 +22,7 @@ class PrepaidViewModel : BaseViewModel() {
     val querypayLiveData = MutableLiveData<QueryPayBean>()
     val qrNoticeLiveData = MutableLiveData<Any>()
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
+    val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
 
     fun prePayFeeInquiry(param: Map<String, Any?>) {
         launch {
@@ -45,6 +46,19 @@ class PrepaidViewModel : BaseViewModel() {
                 payResultInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = "", code = response.status))
+            })
+        }
+    }
+
+    fun invoiceQrcode(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.invoiceQrcode(param)
+            }
+            executeResponse(response, {
+                invoiceQrcodeLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "invoiceQrcode"))
             })
         }
     }

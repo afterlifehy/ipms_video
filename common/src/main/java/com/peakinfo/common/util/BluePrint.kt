@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.SizeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.bean.PrintInfoBean
@@ -247,8 +248,13 @@ class BluePrint() {
 //                BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr, options)
 //                options.inSampleSize = calculateInSampleSize(options, 300, 300)
 //                options.inJustDecodeBounds = false
-                val bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
-                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
+                var bitmap: Bitmap? = null
+                if (printInfo.ticketQrCode.isEmpty()) {
+                    bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                } else {
+                    bitmap = AppUtil.base64ToBitmap(printInfo.ticketQrCode)
+                }
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, 300, 300, true)
                 zpSDK!!.drawGraphic(
                     65 + 60,
                     yLocation,

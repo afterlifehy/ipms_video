@@ -44,7 +44,7 @@ class LoginRepository : BaseRepository() {
             "checkSum" to checkSum,
             "appId" to Constant.APP_ID
         )
-        return mServer.login(param, options)
+        return mServer.caLogin(param, options)
     }
 
     /**
@@ -126,5 +126,12 @@ class LoginRepository : BaseRepository() {
      */
     suspend fun logInOutNotice(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return rtServer.logInOutNotice(param)
+    }
+
+    /**
+     * 通知平台更新cert
+     */
+    suspend fun notifyUpdateCert(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.notifyUpdateCert(param)
     }
 }

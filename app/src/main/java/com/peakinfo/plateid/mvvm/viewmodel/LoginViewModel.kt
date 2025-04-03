@@ -1,5 +1,6 @@
 package com.peakinfo.plateid.mvvm.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
@@ -7,6 +8,7 @@ import com.peakinfo.base.bean.LoginBean
 import com.peakinfo.base.bean.QueryPwStatusBean
 import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
+import com.peakinfo.base.bean.HttpWrapper2
 import com.peakinfo.base.bean.ca.LoginInfoBean
 import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
@@ -28,6 +30,20 @@ class LoginViewModel : BaseViewModel() {
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val logoutLiveData = MutableLiveData<Any>()
     val logInOutNoticeLiveData = MutableLiveData<Any>()
+    val refreshCertLiveData = MutableLiveData<Any>()
+
+    fun notifyUpdateCert(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.notifyUpdateCert(param)
+            }
+            executeResponse(response, {
+                refreshCertLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
+            })
+        }
+    }
 
     fun querySim(param: Map<String, Any?>) {
         launch {

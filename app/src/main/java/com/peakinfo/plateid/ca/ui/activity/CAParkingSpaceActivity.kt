@@ -75,6 +75,10 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
     private lateinit var feeInfo: FeeInfoBean
     private var oweCount = 0
     private var oweMoney = 0L
+    lateinit var queryPayBean: QueryPayBean
+    lateinit var payResultBean: PayResultBean
+    lateinit var ticketQrCode: String
+    var from = 0
 
     val runnable = object : Runnable {
         override fun run() {
@@ -150,6 +154,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                     ToastUtil.showMiddleToast("在停时间超过1小时")
                 } else {
                     ARouter.getInstance().build(ARouterMap.CA_PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, carLicense)
+                        .withString(ARouterMap.PREPAID_CARCOLOR, carColor)
                         .withString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
                         .withString(ARouterMap.PREPAID_ORDER_NO, orderNo).navigation()
                 }
@@ -267,8 +272,18 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 handler.removeCallbacks(runnable)
                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 fee()
-                payResultNotice(it)
+                queryPayBean = it
+                from = 0
+                invoiceQrcode(queryPayBean.orderId)
                 EventBus.getDefault().post(RefreshParkingLotEvent())
+            }
+            invoiceQrcodeLiveData.observe(this@CAParkingSpaceActivity) {
+                ticketQrCode = it.qrCode.toString()
+                if (from == 0) {
+                    payResultNotice(queryPayBean)
+                } else {
+                    startPrint(payResultBean, ticketQrCode) {}
+                }
             }
             payResultNoticeLiveData.observe(this@CAParkingSpaceActivity) {
                 if (paymentQrDialog != null) {
@@ -279,13 +294,13 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean) {
+                            startPrint(payResultBean, ticketQrCode) {
 
                             }
                         }
                     }
                 } else {
-                    startPrint(it) {}
+                    startPrint(it, ticketQrCode) {}
                 }
             }
             queryNoticeByOrderNoLiveData.observe(this@CAParkingSpaceActivity) {
@@ -293,7 +308,9 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 if (it.result != null && it.result.size > 0) {
 //                    performPrintTasks(it.result) {
 //                    }
-                    startPrint(it.result[0]) {}
+                    from = 1
+                    payResultBean = it.result[0]
+                    invoiceQrcode(payResultBean.orderId)
                 }
             }
             errMsg.observe(this@CAParkingSpaceActivity) {
@@ -347,6 +364,16 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
         }
     }
 
+    fun invoiceQrcode(orderId: String) {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["orderId"] = orderId
+        param["plateId"] = carLicense
+        param["plateColor"] = carColor
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.invoiceQrcode(param)
+    }
+
     fun payResultNotice(queryPayBean: QueryPayBean) {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
@@ -374,7 +401,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
         fun printNext() {
             if (iterator.hasNext()) {
                 val printData = iterator.next()
-                startPrint(printData) {
+                startPrint(printData, "") {
                     // 打印完成后继续下一个打印
                     printNext()
                 }
@@ -387,7 +414,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
         printNext()
     }
 
-    fun startPrint(it: PayResultBean, onComplete: () -> Unit) {
+    fun startPrint(it: PayResultBean, ticketQrCode: String, onComplete: () -> Unit) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,
@@ -399,7 +426,8 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0
+            oweCount = 0,
+            ticketQrCode = ticketQrCode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {
