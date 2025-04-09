@@ -219,6 +219,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["orderNo"] = orderNo
+        jsonobject["token"] = token
         param["attr"] = jsonobject
         mViewModel.queryNoticeByOrderNo(param)
     }
@@ -356,7 +357,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0
+            oweCount = 0,
+            ticketQrCode = it.qrcode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

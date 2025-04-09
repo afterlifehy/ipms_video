@@ -218,11 +218,11 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean, ticketQrCode)
+                            startPrint(payResultBean)
                         }
                     }
                 } else {
-                    startPrint(it, ticketQrCode)
+                    startPrint(it)
                 }
                 EventBus.getDefault().post(RefreshParkingSpaceEvent())
                 onBackPressedSupport()
@@ -293,7 +293,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
         mViewModel.payResultNotice(param)
     }
 
-    fun startPrint(it: PayResultBean, ticketQrCode: String) {
+    fun startPrint(it: PayResultBean) {
         val payMoney = it.payMoney
         val printInfo = PrintInfoBean(
             roadId = it.roadName,

@@ -10,5 +10,6 @@ data class NotificationBean(
     val roadName: String,
     val startTime: String,
     val tradeNo: String,
-    val oweCount: Int
+    val oweCount: Int,
+    val qrcode:String
 )

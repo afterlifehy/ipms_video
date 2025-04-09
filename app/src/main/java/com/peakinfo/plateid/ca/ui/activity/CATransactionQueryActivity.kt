@@ -57,6 +57,7 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
     var token = ""
     var currentTransactionBean: TransactionBean? = null
     var loginName = ""
+    var ticketQrCode = ""
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -244,6 +245,10 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                     }
                 }
             }
+//            invoiceQrcodeLiveData.observe(this@CADebtOrderDetailActivity) {
+//                ticketQrCode = it.qrCode.toString()
+//                payResultNotice(queryPayBean)
+//            }
             notificationInquiryLiveData.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
@@ -258,7 +263,8 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = it.oweCount
+                    oweCount = it.oweCount,
+                    ticketQrCode = ticketQrCode
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
                 if (printList.size == 1) {

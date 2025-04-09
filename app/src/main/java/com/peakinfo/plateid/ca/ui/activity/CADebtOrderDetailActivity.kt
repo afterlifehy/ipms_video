@@ -54,8 +54,8 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     var handler = Handler(Looper.getMainLooper())
     var payMoney = 0
 
-    lateinit var queryPayBean: QueryPayBean
     lateinit var ticketQrCode: String
+    lateinit var payResultBean: PayResultBean
 
     val runnable = object : Runnable {
         override fun run() {
@@ -159,13 +159,6 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             }
             invoiceQrcodeLiveData.observe(this@CADebtOrderDetailActivity) {
                 ticketQrCode = it.qrCode.toString()
-                payResultNotice(queryPayBean)
-            }
-            payResultNoticeLiveData.observe(this@CADebtOrderDetailActivity) {
-                if (paymentQrDialog != null) {
-                    paymentQrDialog?.dismiss()
-                }
-                val payResultBean = it
                 var rxPermissions = RxPermissions(this@CADebtOrderDetailActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
@@ -174,10 +167,17 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                         }
                     }
                 } else {
-                    startPrint(it)
+                    startPrint(payResultBean)
                 }
                 EventBus.getDefault().post(RefreshDebtOrderListEvent())
                 onBackPressedSupport()
+            }
+            payResultNoticeLiveData.observe(this@CADebtOrderDetailActivity) {
+                payResultBean = it
+                if (paymentQrDialog != null) {
+                    paymentQrDialog?.dismiss()
+                }
+                invoiceQrcode()
             }
             errMsg.observe(this@CADebtOrderDetailActivity) {
                 dismissProgressDialog()
@@ -207,15 +207,15 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         mViewModel.querypay(param)
     }
 
-//    fun invoiceQrcode(orderId: String) {
-//        val param = HashMap<String, Any>()
-//        param["token"] = token
-//        param["orderId"] = orderId
-//        param["plateId"] = carLicense
-//        param["plateColor"] = carColor
-//        param["dataTime"] = System.currentTimeMillis()
-//        mViewModel.invoiceQrcode(param)
-//    }
+    fun invoiceQrcode() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["orderId"] = payResultBean.orderId
+        param["plateId"] = payResultBean.carLicense
+        param["plateColor"] = 99
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.invoiceQrcode(param)
+    }
 
     fun qrNotice() {
         runBlocking {
@@ -257,7 +257,8 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount
+            oweCount = it.oweCount,
+            ticketQrCode = ticketQrCode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

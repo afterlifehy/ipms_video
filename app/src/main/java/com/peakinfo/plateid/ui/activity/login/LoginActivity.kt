@@ -26,7 +26,9 @@ import com.peakinfo.base.bean.UpdateBean
 import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
+import com.peakinfo.base.ext.show
 import com.peakinfo.base.ext.startAct
 import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.http.interceptor.CAInterceptor
@@ -96,11 +98,12 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     }
                 } else {
                     Constant.imei = PhoneUtils.getIMEI()
-                    Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                    Constant.simId = PhoneUtils.getIMEI()
+//                    (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                 }
                 Constant.deviceId = AppUtil.getDeviceId()
                 checkUpdate()
-                querySim()
+//                querySim()
             }
         }
 
@@ -269,7 +272,12 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             querySimLiveData.observe(this@LoginActivity) {
                 querySimBean = it
-                streetList = querySimBean?.result as MutableList<Street>
+                if (querySimBean?.result!!.isNotEmpty()) {
+                    binding.rflStreet.show()
+                    streetList = querySimBean?.result as MutableList<Street>
+                } else {
+                    binding.rflStreet.gone()
+                }
 //                val targetAppid = it.appIdLast
 //                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
 //                    matchedStreet.ischeck = true
@@ -358,7 +366,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     if (it.code == 1012) {
                         needLogin = true
                         token()
-                    }else {
+                    } else {
                         dismissProgressDialog()
                     }
 //                    else if (it.code == 3006) {

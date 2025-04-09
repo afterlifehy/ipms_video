@@ -48,3 +48,5 @@ rootProject.name = "plateid"
 include(":app")
 include(":base")
 include(":common")
+include(":ksmkey")
+include(":security")

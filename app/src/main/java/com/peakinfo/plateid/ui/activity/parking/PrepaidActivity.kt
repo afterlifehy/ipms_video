@@ -256,7 +256,8 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount
+            oweCount = it.oweCount,
+            ticketQrCode = it.qrcode
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {
