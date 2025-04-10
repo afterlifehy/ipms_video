@@ -292,5 +292,10 @@
             android:name=".ca.ui.activity.CATransactionQueryActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CATransactionRecordActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

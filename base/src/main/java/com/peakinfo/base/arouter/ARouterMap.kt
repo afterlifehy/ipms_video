@@ -39,6 +39,7 @@ object ARouterMap {
     const val ORDER_DETAIL = "/ipms_app/orderDetail"
     const val ORDER = "order"
 
+    const val CA_TRANSACTION_RECORD = "/ipms_app/caTransactionRecord"
     const val TRANSACTION_RECORD = "/ipms_app/transactionRecord"
     const val TRANSACTION_RECORD_ORDER_NO = "orderNo"
 

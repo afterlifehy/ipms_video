@@ -142,8 +142,15 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             }
 
             R.id.rtv_transactionRecord -> {
-                ARouter.getInstance().build(ARouterMap.TRANSACTION_RECORD)
-                    .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (Constant.APP_ID.isEmpty()) {
+                    ARouter.getInstance().build(ARouterMap.TRANSACTION_RECORD)
+                        .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .navigation()
+                } else {
+                    ARouter.getInstance().build(ARouterMap.CA_TRANSACTION_RECORD)
+                        .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .navigation()
+                }
             }
         }
     }

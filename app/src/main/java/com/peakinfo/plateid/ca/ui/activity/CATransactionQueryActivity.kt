@@ -172,31 +172,14 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
             }
 
             R.id.fl_notification -> {
-                var rxPermissions = RxPermissions(this@CATransactionQueryActivity)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            showProgressDialog(20000)
-                            currentTransactionBean = v.tag as TransactionBean
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                            jsonobject["token"] = token
-                            param["attr"] = jsonobject
-                            mViewModel.notificationInquiry(param)
-                        }
-                    }
-                } else {
-                    showProgressDialog(20000)
-                    currentTransactionBean = v.tag as TransactionBean
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                    jsonobject["token"] = token
-                    param["attr"] = jsonobject
-                    mViewModel.notificationInquiry(param)
-                }
-
+                currentTransactionBean = v.tag as TransactionBean
+                val param = HashMap<String, Any>()
+                param["token"] = token
+                param["orderId"] = currentTransactionBean!!.tradeNo
+                param["plateId"] = currentTransactionBean!!.carLicense
+                param["plateColor"] = 99
+                param["dataTime"] = System.currentTimeMillis()
+                mViewModel.invoiceQrcode(param)
             }
 
             R.id.fl_paymentInquiry -> {
@@ -245,10 +228,10 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                     }
                 }
             }
-//            invoiceQrcodeLiveData.observe(this@CADebtOrderDetailActivity) {
-//                ticketQrCode = it.qrCode.toString()
-//                payResultNotice(queryPayBean)
-//            }
+            invoiceQrcodeLiveData.observe(this@CATransactionQueryActivity) {
+                ticketQrCode = it.qrCode.toString()
+                notificationInquiry()
+            }
             notificationInquiryLiveData.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.开始打印))
@@ -280,7 +263,7 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                     }.start()
                 }
             }
-            querypayLiveData.observe(this@CATransactionQueryActivity){
+            querypayLiveData.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.支付成功))
                 currentTransactionBean?.hasPayed = "1"
@@ -294,6 +277,32 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
             mException.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
             }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    fun notificationInquiry() {
+        var rxPermissions = RxPermissions(this@CATransactionQueryActivity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                if (it) {
+                    showProgressDialog(20000)
+                    val param = HashMap<String, Any>()
+                    val jsonobject = JSONObject()
+                    jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+                    jsonobject["token"] = token
+                    param["attr"] = jsonobject
+                    mViewModel.notificationInquiry(param)
+                }
+            }
+        } else {
+            showProgressDialog(20000)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+            jsonobject["token"] = token
+            param["attr"] = jsonobject
+            mViewModel.notificationInquiry(param)
         }
     }
 
