@@ -104,7 +104,7 @@
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
     </LinearLayout>
 
-    <com.peakinfo.common.view.keyboard.MyKeyboardView
+    <com.rt.common.view.keyboard.MyKeyboardView
         android:id="@+id/kv_keyBoard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

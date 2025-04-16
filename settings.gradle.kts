@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "plateid"
+rootProject.name = "ipms_geo"
 
 include(":app")
 include(":base")

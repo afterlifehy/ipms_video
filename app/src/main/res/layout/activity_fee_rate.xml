@@ -31,7 +31,7 @@
             android:src="@mipmap/ic_fee_arrow_left"
             android:visibility="invisible" />
 
-        <com.peakinfo.common.view.flycotablayout.SlidingTabLayout2
+        <com.rt.common.view.flycotablayout.SlidingTabLayout2
             android:id="@+id/stl_street"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"

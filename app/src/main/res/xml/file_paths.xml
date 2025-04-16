@@ -26,7 +26,7 @@
         path="Android/data/" />
     <external-path
         name="files_root"
-        path="Android/data/com.peakinfo.plateid/" />
+        path="Android/data/com.rt.ipms_geo/" />
     <external-path
         name="external_storage_root"
         path="." />
