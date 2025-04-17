@@ -9,7 +9,7 @@ import com.rt.base.bean.ca.QRInfoBean
 import com.rt.base.bean.ca.QueryPayBean
 import com.rt.base.bean.ca.QuerySimBean
 import com.rt.base.bean.ca.TokenInfoBean
-import com.rt.base.bean.ca.UrgepayBean
+import com.rt.base.bean.ca.UrgeBean
 import retrofit2.http.*
 
 
@@ -242,7 +242,7 @@ interface Api {
     @POST("urgepaylist")
     suspend fun urgepaylist(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
-    ): HttpWrapper2<List<UrgepayBean>>
+    ): HttpWrapper2<List<UrgeBean>>
 
     /**
      * 欠费单催缴

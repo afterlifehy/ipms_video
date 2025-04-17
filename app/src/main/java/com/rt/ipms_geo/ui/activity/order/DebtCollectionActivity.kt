@@ -93,7 +93,6 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.ivCamera.setOnClickListener(this)
-        binding.tvCollect.setOnClickListener(this)
         binding.tvSearch.setOnClickListener(this)
         binding.root.setOnClickListener(this)
         binding.layoutToolbar.toolbar.setOnClickListener(this)

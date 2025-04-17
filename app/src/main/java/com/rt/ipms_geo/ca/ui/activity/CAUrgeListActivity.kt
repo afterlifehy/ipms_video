@@ -13,7 +13,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
-import com.rt.base.bean.ca.OwemoneyInfoBean
+import com.rt.base.bean.ca.UrgeBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.gone
@@ -29,22 +29,25 @@ import com.rt.common.view.keyboard.KeyboardUtil
 import com.rt.common.view.keyboard.MyOnTouchListener
 import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_geo.R
-import com.rt.ipms_geo.adapter.CAOweMoneyListAdapter
-import com.rt.ipms_geo.databinding.ActivityDebtCollectionBinding
-import com.rt.ipms_geo.dialog.CollectionDialog
+import com.rt.ipms_geo.adapter.CAUrgeAdapter
+import com.rt.ipms_geo.adapter.CollectionPlateColorAdapter
+import com.rt.ipms_geo.databinding.ActivityUrgeListBinding
 import com.rt.ipms_geo.mvvm.viewmodel.DebtCollectionViewModel
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-@Route(path = ARouterMap.CA_DEBT_COLLECTION)
-class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityDebtCollectionBinding>(), OnClickListener {
+@Route(path = ARouterMap.CA_URGE)
+class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeListBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
-    var caOweMoneyListAdapter: CAOweMoneyListAdapter? = null
-    var owemoneyInfoList: MutableList<OwemoneyInfoBean> = ArrayList()
-    var collectionDialog: CollectionDialog? = null
+    var caUrgeAdapter: CAUrgeAdapter? = null
+    var urgeList: MutableList<UrgeBean> = ArrayList()
     var carLicense = ""
     var token = ""
+    var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
+    val widthType = 3
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
@@ -57,20 +60,32 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.欠费追缴)
+        binding.layoutToolbar.tvTitle.text = "催缴管理"
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
         GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.rt.common.R.mipmap.ic_no_data_2)
-        binding.layoutNoData.tvNoDataTitle.text = i18N(com.rt.base.R.string.通过车牌号未查询到欠费订单)
+        binding.layoutNoData.tvNoDataTitle.text = "通过车牌号未查询到催缴单"
 
         if (intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE) != null) {
             carLicense = intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE).toString()
             binding.etSearch.setText(carLicense)
             binding.etSearch.setSelection(carLicense.length)
         }
-        binding.rvDebt.setHasFixedSize(true)
-        binding.rvDebt.layoutManager = LinearLayoutManager(this)
-        caOweMoneyListAdapter = CAOweMoneyListAdapter(owemoneyInfoList, this)
-        binding.rvDebt.adapter = caOweMoneyListAdapter
+        binding.rvUrge.setHasFixedSize(true)
+        binding.rvUrge.layoutManager = LinearLayoutManager(this)
+        caUrgeAdapter = CAUrgeAdapter(urgeList, this)
+        binding.rvUrge.adapter = caUrgeAdapter
+
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
+        binding.rvPlateColor.setHasFixedSize(true)
+        binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
+        collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
+        binding.rvPlateColor.adapter = collectionPlateColorAdapter
 
         initKeyboard()
     }
@@ -112,17 +127,7 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
             }
 
             R.id.iv_camera -> {
-                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CADebtCollectionActivity, 1)
-            }
-
-            R.id.tv_collect -> {
-                collectionDialog = CollectionDialog(object : CollectionDialog.CollecteCallBack {
-                    override fun collect(plate: String, color: String) {
-
-                    }
-
-                })
-                collectionDialog?.show()
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CAUrgeListActivity, 1)
             }
 
             R.id.tv_search -> {
@@ -143,11 +148,17 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                 keyboardUtil.hideKeyboard()
             }
 
-            R.id.rrl_debtCollection -> {
-                val owemoneyInfoBean = v.tag as OwemoneyInfoBean
-                owemoneyInfoBean.carLicense = carLicense
-                ARouter.getInstance().build(ARouterMap.CA_DEBT_ORDER_DETAIL).withParcelable(ARouterMap.DEBT_ORDER, owemoneyInfoBean)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+            R.id.fl_color -> {
+                checkedColor = v.tag as String
+                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+                query()
+            }
+
+            R.id.rrl_urge -> {
+                val urgeBean = v.tag as UrgeBean
+                ARouter.getInstance().build(ARouterMap.CA_COLLECTION_MANAGEMENT).withParcelable(ARouterMap.URGE, urgeBean)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .navigation()
             }
         }
     }
@@ -155,39 +166,39 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
     fun query() {
         keyboardUtil.hideKeyboard()
         showProgressDialog(20000)
+        carLicense = binding.etSearch.text.toString()
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             val param = HashMap<String, Any>()
             param["token"] = token
-            param["district"] = 1
             param["plateId"] = carLicense
-            param["dataTime"] = System.currentTimeMillis()
-            mViewModel.owemoney(param)
+            param["plateColor"] = checkedColor
+            mViewModel.urgepaylist(param)
         }
     }
 
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            owemoneyLiveData.observe(this@CADebtCollectionActivity) {
+            urgepaylistLiveData.observe(this@CAUrgeListActivity) {
                 dismissProgressDialog()
-                owemoneyInfoList.clear()
-                owemoneyInfoList.addAll(it)
-                if (owemoneyInfoList.size > 0) {
-                    caOweMoneyListAdapter?.updateCarLicense(carLicense)
-                    binding.rvDebt.show()
+                urgeList.clear()
+                urgeList.addAll(it)
+                if (urgeList.size > 0) {
+                    caUrgeAdapter?.updateCarLicense(carLicense)
+                    binding.rvUrge.show()
                     binding.layoutNoData.root.gone()
-                    caOweMoneyListAdapter?.setList(owemoneyInfoList)
+                    caUrgeAdapter?.setList(urgeList)
                 } else {
-                    binding.rvDebt.gone()
+                    binding.rvUrge.gone()
                     binding.layoutNoData.root.show()
                 }
             }
-            errMsg.observe(this@CADebtCollectionActivity) {
+            errMsg.observe(this@CAUrgeListActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
             }
-            mException.observe(this@CADebtCollectionActivity) {
+            mException.observe(this@CAUrgeListActivity) {
                 dismissProgressDialog()
             }
         }
@@ -219,25 +230,8 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                     } else {
                         plate.substring(plate.length.minus(7) ?: 0, plate.length)
                     }
-                    collectionDialog?.setPlate(plateId)
-                    if (plate.startsWith("蓝")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
-                    } else if (plate.startsWith("绿")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
-                    } else if (plate.startsWith("黄")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
-                    } else if (plate.startsWith("黄绿")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
-                    } else if (plate.startsWith("白")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
-                    } else if (plate.startsWith("黑")) {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
-                    } else {
-                        collectionDialog?.collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
-                    }
                 }
             }
-
         }
     }
 
@@ -246,7 +240,7 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
     }
 
     override fun getVbBindingView(): ViewBinding {
-        return ActivityDebtCollectionBinding.inflate(layoutInflater)
+        return ActivityUrgeListBinding.inflate(layoutInflater)
     }
 
     override fun onReloadData() {

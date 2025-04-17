@@ -88,10 +88,19 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_debt"
+        android:id="@+id/rv_plateColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_search"
+        android:layout_marginStart="@dimen/dp_13"
+        android:layout_marginEnd="@dimen/dp_13"
+        android:layout_marginTop="@dimen/dp_10" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_urge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rv_plateColor"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_13" />

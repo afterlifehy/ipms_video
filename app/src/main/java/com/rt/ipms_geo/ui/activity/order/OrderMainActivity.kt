@@ -69,7 +69,7 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
                 if (Constant.APP_ID.isEmpty()) {
                     ARouter.getInstance().build(ARouterMap.COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }else{
-                    ARouter.getInstance().build(ARouterMap.CA_COLLECTION_MANAGEMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                    ARouter.getInstance().build(ARouterMap.CA_URGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
         }

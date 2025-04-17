@@ -14,12 +14,14 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.DebtCollectionBean
 import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.PrintInfoBean
 import com.rt.base.bean.ca.OweMoneyBean
+import com.rt.base.bean.ca.OwemoneyInfoBean
 import com.rt.base.bean.ca.QueryPayBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
@@ -46,8 +48,8 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     val colors2 = intArrayOf(com.rt.base.R.color.color_ff666666, com.rt.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
-    var tradeNo = ""
-    var debtCollectionBean: DebtCollectionBean? = null
+    var orderId = ""
+    var owemoneyInfoBean: OwemoneyInfoBean? = null
     var token = ""
     var count = 0
     var handler = Handler(Looper.getMainLooper())
@@ -74,20 +76,20 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivRight, com.rt.common.R.mipmap.ic_video)
         binding.layoutToolbar.ivRight.show()
 
-        debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? DebtCollectionBean
+        owemoneyInfoBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? OwemoneyInfoBean
 
-        binding.tvPlate.text = debtCollectionBean!!.carLicense
-        val strings1 = arrayOf("${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
+        binding.tvPlate.text = owemoneyInfoBean!!.carLicense
+        val strings1 = arrayOf("${AppUtil.keepNDecimal(owemoneyInfoBean!!.oweMoney!! / 100.00, 2)}", "元")
         binding.tvArrearsAmount.text = AppUtil.getSpan(strings1, sizes, colors)
-        val strings2 = arrayOf(i18N(com.rt.base.R.string.订单) + "：", debtCollectionBean!!.orderNo)
+        val strings2 = arrayOf(i18N(com.rt.base.R.string.订单) + "：", owemoneyInfoBean!!.businessId.toString())
         binding.tvOrderNo.text = AppUtil.getSpan(strings2, sizes2, colors2)
-        val strings3 = arrayOf(i18N(com.rt.base.R.string.泊位) + "：", debtCollectionBean!!.parkingNo)
+        val strings3 = arrayOf(i18N(com.rt.base.R.string.泊位) + "：", owemoneyInfoBean!!.berthId.toString())
         binding.tvBerth.text = AppUtil.getSpan(strings3, sizes2, colors2)
-        val strings4 = arrayOf(i18N(com.rt.base.R.string.路段) + "：", debtCollectionBean!!.streetName)
+        val strings4 = arrayOf(i18N(com.rt.base.R.string.路段) + "：", owemoneyInfoBean!!.roadName.toString())
         binding.tvStreet.text = AppUtil.getSpan(strings4, sizes2, colors2)
-        val strings5 = arrayOf(i18N(com.rt.base.R.string.入场) + "：", debtCollectionBean!!.startTime)
+        val strings5 = arrayOf(i18N(com.rt.base.R.string.入场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.arrivedTime!!,"yyyy-MM-dd HH:mm:ss"))
         binding.tvStartTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.rt.base.R.string.出场) + "：", debtCollectionBean!!.endTime)
+        val strings6 = arrayOf(i18N(com.rt.base.R.string.出场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.leftTime!!,"yyyy-MM-dd HH:mm:ss"))
         binding.tvEndTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
 
     }
@@ -111,7 +113,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             }
 
             R.id.iv_right -> {
-                ARouter.getInstance().build(ARouterMap.VIDEO_PIC).withString(ARouterMap.VIDEO_PIC_ORDER_NO, debtCollectionBean!!.orderNo)
+                ARouter.getInstance().build(ARouterMap.VIDEO_PIC).withString(ARouterMap.VIDEO_PIC_ORDER_NO, owemoneyInfoBean!!.businessId)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
@@ -119,7 +121,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                 showProgressDialog(20000)
                 val param = HashMap<String, Any>()
                 param["token"] = token
-                param["orderId"] = debtCollectionBean!!.oweOrderId
+                param["orderId"] = owemoneyInfoBean!!.orderId.toString()
                 param["channel"] = "pos"
                 mViewModel.payowemoney(param)
             }
@@ -132,14 +134,15 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         mViewModel.apply {
             payowemoneyLiveData.observe(this@CADebtOrderDetailActivity) {
                 payMoney = it.amount
+                orderId = it.orderId
                 consumeonline(it)
             }
             consumeonlineLiveData.observe(this@CADebtOrderDetailActivity) {
                 qrNotice()
                 paymentQrDialog =
                     PaymentQrDialog(
-                        it.qrCode.toString(), it.payUrl.toString(), AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2),
-                        debtCollectionBean!!.carLicense
+                        it.qrCode.toString(), it.payUrl.toString(), AppUtil.keepNDecimal(owemoneyInfoBean!!.oweMoney!! / 100.00, 2),
+                        owemoneyInfoBean!!.carLicense.toString()
                     )
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
@@ -191,7 +194,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     fun consumeonline(oweMoneyBean: OweMoneyBean) {
         val param = HashMap<String, Any>()
         param["token"] = token
-        param["businessId"] = debtCollectionBean!!.orderNo
+        param["businessId"] = oweMoneyBean.businessId
         param["orderId"] = oweMoneyBean.orderId
         param["oweOrderId"] = oweMoneyBean.oweOrderId
         param["payMoney"] = oweMoneyBean.amount
@@ -202,7 +205,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     fun querypay() {
         val param = HashMap<String, Any>()
         param["token"] = token
-        param["orderId"] = tradeNo
+        param["orderId"] = orderId
         mViewModel.querypay(param)
     }
 
@@ -222,9 +225,9 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             val param = HashMap<String, Any>()
             val jsonobject = JSONObject()
             jsonobject["loginName"] = loginName
-            jsonobject["businessId"] = debtCollectionBean!!.orderNo
-            jsonobject["plateId"] = debtCollectionBean!!.carLicense
-            jsonobject["orderId"] = tradeNo
+            jsonobject["businessId"] = owemoneyInfoBean!!.businessId.toString()
+            jsonobject["plateId"] = owemoneyInfoBean!!.carLicense
+            jsonobject["orderId"] = orderId
             jsonobject["payMoney"] = payMoney
             jsonobject["orderType"] = "2"
             param["attr"] = jsonobject

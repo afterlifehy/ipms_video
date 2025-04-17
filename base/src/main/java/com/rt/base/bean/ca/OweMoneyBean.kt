@@ -6,5 +6,6 @@ data class OweMoneyBean(
     val orderId: String,
     val orderType: Int,
     val oweOrderId: String,
-    val ttl: Int
+    val ttl: Int,
+    val businessId:String,
 )

@@ -35,7 +35,7 @@ class CollectionManagementViewModel : BaseViewModel() {
                 mOrderRepository.urgepay(param)
             }
             executeResponse(response, {
-                callSubmitLiveData.value = response.data
+                urgepayLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "urgepay"))
             })

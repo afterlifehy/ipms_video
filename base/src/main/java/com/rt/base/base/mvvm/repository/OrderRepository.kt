@@ -13,9 +13,10 @@ import com.rt.base.bean.QRPayBean
 import com.rt.base.bean.TransactionResultBean
 import com.rt.base.bean.VideoPicBean
 import com.rt.base.bean.ca.OweMoneyBean
+import com.rt.base.bean.ca.OwemoneyInfoBean
 import com.rt.base.bean.ca.QRInfoBean
 import com.rt.base.bean.ca.QueryPayBean
-import com.rt.base.bean.ca.UrgepayBean
+import com.rt.base.bean.ca.UrgeBean
 import com.rt.base.util.Constant
 import retrofit2.http.Body
 
@@ -179,7 +180,7 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单查询
      */
-    suspend fun urgepaylist(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<UrgepayBean>> {
+    suspend fun urgepaylist(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<UrgeBean>> {
         val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
         val curTime = (System.currentTimeMillis() / 1000).toString()
         val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
@@ -222,5 +223,21 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.invoiceQrcode(param, options)
+    }
+
+    /**
+     * 欠费查询
+     */
+    suspend fun owemoney(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<OwemoneyInfoBean>> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.owemoney(param, options)
     }
 }

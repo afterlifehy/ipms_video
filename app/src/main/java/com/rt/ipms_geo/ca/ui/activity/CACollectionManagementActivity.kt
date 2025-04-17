@@ -23,6 +23,7 @@ import com.blankj.utilcode.util.UriUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
+import com.rt.base.bean.ca.UrgeBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
 import com.rt.base.ext.i18N
@@ -43,7 +44,7 @@ import com.rt.ipms_geo.mvvm.viewmodel.CollectionManagementViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
-@Route(path = ARouterMap.COLLECTION_MANAGEMENT)
+@Route(path = ARouterMap.CA_COLLECTION_MANAGEMENT)
 class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(),
     OnClickListener {
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
@@ -52,19 +53,23 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     private lateinit var keyboardUtil: KeyboardUtil
     val widthType = 3
     var streetList: MutableList<Street> = ArrayList()
-    var abnormalStreetListDialog: AbnormalStreetListDialog? = null
     var streetNo = ""
     var currentStreet: Street? = null
     var selectPicDialog: SelectPicDialog? = null
     var currentPic = 1
     var pic1Base64 = ""
     var pic2Base64 = ""
+    lateinit var urgeBean: UrgeBean
 
     override fun initView() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = i18N(com.rt.base.R.string.催缴管理)
+        binding.layoutToolbar.tvTitle.text = "催缴单催缴"
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
+
+        urgeBean = intent.getParcelableExtra(ARouterMap.URGE)!!
+        binding.retPlate.setText(urgeBean.plateId)
+        checkedColor = urgeBean.plateColor.toString()
 
         collectioPlateColorList.add(Constant.BLUE)
         collectioPlateColorList.add(Constant.GREEN)
@@ -78,6 +83,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
         collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
         binding.rvPlateColor.adapter = collectionPlateColorAdapter
+
+        collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
 
         initKeyboard()
     }
@@ -300,7 +307,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
             val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             val param = HashMap<String, Any>()
             param["token"] = token
-            param["urgePayId"] = ""
+            param["urgePayId"] = urgeBean.urgePayId
             param["roadId"] = streetNo
             param["photo1"] = pic1Base64
             param["photo2"] = pic2Base64
@@ -315,6 +322,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         mViewModel.apply {
             urgepayLiveData.observe(this@CACollectionManagementActivity) {
                 dismissProgressDialog()
+                ToastUtil.showBottomToast("催缴成功")
+                onBackPressedSupport()
             }
             errMsg.observe(this@CACollectionManagementActivity) {
                 dismissProgressDialog()

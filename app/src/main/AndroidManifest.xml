@@ -297,5 +297,10 @@
             android:name="com.rt.ipms_geo.ca.ui.activity.CATransactionRecordActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name="com.rt.ipms_geo.ca.ui.activity.CAUrgeListActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

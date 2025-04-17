@@ -76,6 +76,7 @@ object ARouterMap {
 
     const val CA_COLLECTION_MANAGEMENT = "/ipms_app/caCollectionManagement"
     const val COLLECTION_MANAGEMENT = "/ipms_app/collectionManagement"
+    const val URGE = "urge"
 
     const val FEE_RATE = "/ipms_app/feeRate"
 
@@ -88,6 +89,8 @@ object ARouterMap {
     const val PREPAID_CARCOLOR = "carColor"
     const val PREPAID_PARKING_NO = "parkingNo"
     const val PREPAID_ORDER_NO = "orderNo"
+
+    const val CA_URGE = "/ipms_app/urge"
 
     class common {
         companion object {

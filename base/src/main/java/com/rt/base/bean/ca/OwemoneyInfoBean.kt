@@ -1,6 +1,9 @@
 package com.rt.base.bean.ca
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class OwemoneyInfoBean(
     val orderId: String?,
     val orderType: Int?,
@@ -17,4 +20,5 @@ data class OwemoneyInfoBean(
     val dueMoney: Long? ,
     val paidMoney: Long? ,
     val oweMoney: Long?,
-):Serializable
+    var carLicense:String?,
+): Parcelable

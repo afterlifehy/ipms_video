@@ -5,7 +5,8 @@ import com.rt.base.base.mvvm.BaseViewModel
 import com.rt.base.base.mvvm.ErrorMessage
 import com.rt.base.bean.DebtCollectionResultBean
 import com.rt.base.base.mvvm.repository.OrderRepository
-import com.rt.base.bean.ca.UrgepayBean
+import com.rt.base.bean.ca.OwemoneyInfoBean
+import com.rt.base.bean.ca.UrgeBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,7 +16,8 @@ class DebtCollectionViewModel : BaseViewModel() {
     }
 
     val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
-    val urgepaylistLiveData = MutableLiveData<List<UrgepayBean>>()
+    val urgepaylistLiveData = MutableLiveData<List<UrgeBean>>()
+    val owemoneyLiveData = MutableLiveData<List<OwemoneyInfoBean>>()
 
     fun debtInquiry(param: Map<String, Any?>) {
         launch {
@@ -39,6 +41,19 @@ class DebtCollectionViewModel : BaseViewModel() {
                 urgepaylistLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "urgepaylist"))
+            })
+        }
+    }
+
+    fun owemoney(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.owemoney(param)
+            }
+            executeResponse(response, {
+                owemoneyLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "owemoney"))
             })
         }
     }
