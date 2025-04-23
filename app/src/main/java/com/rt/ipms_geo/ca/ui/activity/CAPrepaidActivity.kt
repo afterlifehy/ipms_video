@@ -190,7 +190,8 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
             prepayLiveData.observe(this@CAPrepaidActivity) {
                 dismissProgressDialog()
                 tradeNo = it.orderId.toString()
-                paymentQrDialog = PaymentQrDialog(it.qrCode.toString(), "", AppUtil.keepNDecimals(it.payMoney.toString(), 2), carLicense)
+                paymentQrDialog =
+                    PaymentQrDialog(it.qrCode.toString(), "", AppUtil.keepNDecimals((it.payMoney!! / 100).toString(), 2), carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener { handler.removeCallbacks(runnable) }
                 count = 0
@@ -205,7 +206,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
                 invoiceQrcode(it.orderId)
             }
             invoiceQrcodeLiveData.observe(this@CAPrepaidActivity) {
-                ticketQrCode = it.qrCode.toString()
+                ticketQrCode = it.qrcode.toString()
                 payResultNotice(queryPayBean)
             }
             payResultNoticeLiveData.observe(this@CAPrepaidActivity) {
@@ -228,7 +229,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
             }
             errMsg.observe(this@CAPrepaidActivity) {
                 dismissProgressDialog()
-                ToastUtil.showMiddleToast(it.msg)
+                ToastUtil.showBottomToast(it.msg)
             }
             mException.observe(this@CAPrepaidActivity) {
                 dismissProgressDialog()
@@ -238,12 +239,10 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
 
     fun prepay() {
         val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["token"] = token
-        jsonobject["businessId"] = orderNo
-        jsonobject["payDuration"] = timeDuration.toInt() * 60
-        jsonobject["dataTime"] = System.currentTimeMillis()
-        param["attr"] = jsonobject
+        param["token"] = token
+        param["businessId"] = orderNo
+        param["payDuration"] = timeDuration.toInt() * 60
+        param["dataTime"] = System.currentTimeMillis()
         mViewModel.prepay(param)
     }
 

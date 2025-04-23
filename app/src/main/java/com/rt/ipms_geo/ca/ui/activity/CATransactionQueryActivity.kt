@@ -229,7 +229,7 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                 }
             }
             invoiceQrcodeLiveData.observe(this@CATransactionQueryActivity) {
-                ticketQrCode = it.qrCode.toString()
+                ticketQrCode = it.qrcode.toString()
                 notificationInquiry()
             }
             notificationInquiryLiveData.observe(this@CATransactionQueryActivity) {

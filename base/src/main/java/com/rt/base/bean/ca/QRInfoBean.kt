@@ -10,4 +10,5 @@ data class QRInfoBean(
     val payUrl: String?,
     val ttl: Int?,
     val payMoney: Int?,
+    val qrcode:String?
 ) : Parcelable

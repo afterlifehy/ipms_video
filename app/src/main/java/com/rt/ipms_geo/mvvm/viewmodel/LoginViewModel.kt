@@ -28,6 +28,7 @@ class LoginViewModel : BaseViewModel() {
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val logoutLiveData = MutableLiveData<Any>()
     val logInOutNoticeLiveData = MutableLiveData<Any>()
+    val notifyUpdateCertLiveData = MutableLiveData<Any>()
     val refreshCertLiveData = MutableLiveData<Any>()
 
     fun notifyUpdateCert(param: Map<String, Any?>) {
@@ -36,7 +37,7 @@ class LoginViewModel : BaseViewModel() {
                 mLoginRepository.notifyUpdateCert(param)
             }
             executeResponse(response, {
-                refreshCertLiveData.value = response.attr
+                notifyUpdateCertLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
             })
@@ -156,6 +157,19 @@ class LoginViewModel : BaseViewModel() {
                 logInOutNoticeLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
+            })
+        }
+    }
+
+    fun refreshCert(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.refreshCert(param)
+            }
+            executeResponse(response, {
+                refreshCertLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "refreshCert"))
             })
         }
     }

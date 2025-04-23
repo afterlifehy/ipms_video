@@ -116,7 +116,7 @@ class CATransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, A
                 dismissProgressDialog()
             }
             invoiceQrcodeLiveData.observe(this@CATransactionRecordActivity) {
-                ticketQrCode = it.qrCode.toString()
+                ticketQrCode = it.qrcode.toString()
                 notificationInquiry()
             }
             notificationInquiryLiveData.observe(this@CATransactionRecordActivity) {

@@ -37,6 +37,7 @@ import com.rt.common.realm.RealmUtil
 import com.rt.common.util.AppUtil
 import com.rt.common.util.BluePrint
 import com.rt.ipms_geo.R
+import com.rt.ipms_geo.ca.ui.activity.CALogoutActivity
 import com.rt.ipms_geo.ca.ui.activity.CAParkingLotActivity
 import com.rt.ipms_geo.databinding.ActivityMainBinding
 import com.rt.ipms_geo.mvvm.viewmodel.MainViewModel
@@ -316,8 +317,13 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_logout -> {
-                val intent = Intent(this@MainActivity, LogoutActivity::class.java)
-                startActivity(intent)
+                if (Constant.APP_ID.isEmpty()) {
+                    val intent = Intent(this@MainActivity, LogoutActivity::class.java)
+                    startActivity(intent)
+                }else{
+                    val intent = Intent(this@MainActivity, CALogoutActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
     }

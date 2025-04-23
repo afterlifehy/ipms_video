@@ -133,4 +133,20 @@ class LoginRepository : BaseRepository() {
     suspend fun notifyUpdateCert(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return rtServer.notifyUpdateCert(param)
     }
+
+    /**
+     * 证书刷新
+     */
+    suspend fun refreshCert(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.refreshCert(param, options)
+    }
 }

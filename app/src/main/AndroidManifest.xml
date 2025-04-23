@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Required -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <!--    <uses-permission-->
     <!--        android:name="android.permission.QUERY_ALL_PACKAGES"-->
@@ -300,6 +301,11 @@
 
         <activity
             android:name="com.rt.ipms_geo.ca.ui.activity.CAUrgeListActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name="com.rt.ipms_geo.ca.ui.activity.CALogoutActivity"
             android:exported="false"
             android:launchMode="singleTask" />
     </application>

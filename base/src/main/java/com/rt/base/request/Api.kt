@@ -303,4 +303,12 @@ interface Api {
      */
     @POST("S_GECE_G1")
     suspend fun notifyUpdateCert(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 刷新Cert
+     */
+    @POST("config/cert/refresh")
+    suspend fun refreshCert(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
 }

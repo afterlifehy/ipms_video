@@ -140,6 +140,10 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
                     ToastUtil.showBottomToast(i18N(com.rt.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
+                if(checkedColor.isEmpty()){
+                    ToastUtil.showBottomToast("车牌颜色不能为空")
+                    return
+                }
                 query()
             }
 
@@ -197,6 +201,12 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
             errMsg.observe(this@CAUrgeListActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
+                if (it.api == "urgepaylist") {
+                    urgeList.clear()
+                    caUrgeAdapter?.setList(urgeList)
+                    binding.rvUrge.gone()
+                    binding.layoutNoData.root.show()
+                }
             }
             mException.observe(this@CAUrgeListActivity) {
                 dismissProgressDialog()

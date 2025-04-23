@@ -6,17 +6,13 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.MediaStore
-import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.UriUtils
@@ -26,32 +22,23 @@ import com.rt.base.bean.Street
 import com.rt.base.bean.ca.UrgeBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
-import com.rt.base.ext.i18N
+import com.rt.base.ext.gone
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
 import com.rt.base.viewbase.VbBaseActivity
 import com.rt.common.realm.RealmUtil
 import com.rt.common.util.Constant
 import com.rt.common.util.GlideUtils
-import com.rt.common.view.keyboard.KeyboardUtil
-import com.rt.common.view.keyboard.MyTextWatcher
 import com.rt.ipms_geo.R
-import com.rt.ipms_geo.adapter.CollectionPlateColorAdapter
-import com.rt.ipms_geo.databinding.ActivityCollectionManagementBinding
-import com.rt.ipms_geo.dialog.AbnormalStreetListDialog
+import com.rt.ipms_geo.databinding.ActivityCaCollectionManagementBinding
 import com.rt.ipms_geo.dialog.SelectPicDialog
 import com.rt.ipms_geo.mvvm.viewmodel.CollectionManagementViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
 @Route(path = ARouterMap.CA_COLLECTION_MANAGEMENT)
-class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCollectionManagementBinding>(),
+class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCaCollectionManagementBinding>(),
     OnClickListener {
-    var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
-    var collectioPlateColorList: MutableList<String> = ArrayList()
-    var checkedColor = ""
-    private lateinit var keyboardUtil: KeyboardUtil
-    val widthType = 3
     var streetList: MutableList<Street> = ArrayList()
     var streetNo = ""
     var currentStreet: Street? = null
@@ -60,6 +47,14 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     var pic1Base64 = ""
     var pic2Base64 = ""
     lateinit var urgeBean: UrgeBean
+    val plateMap = mutableMapOf(
+        Constant.BLUE to com.rt.common.R.mipmap.ic_plate_blue,
+        Constant.GREEN to com.rt.common.R.mipmap.ic_plate_green,
+        Constant.YELLOW to com.rt.common.R.mipmap.ic_plate_yellow,
+        Constant.YELLOW_GREEN to com.rt.common.R.mipmap.ic_plate_yellow_green,
+        Constant.WHITE to com.rt.common.R.mipmap.ic_plate_white,
+        Constant.BLACK to com.rt.common.R.mipmap.ic_plate_black
+    )
 
     override fun initView() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -68,37 +63,22 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
 
         urgeBean = intent.getParcelableExtra(ARouterMap.URGE)!!
-        binding.retPlate.setText(urgeBean.plateId)
-        checkedColor = urgeBean.plateColor.toString()
-
-        collectioPlateColorList.add(Constant.BLUE)
-        collectioPlateColorList.add(Constant.GREEN)
-        collectioPlateColorList.add(Constant.YELLOW)
-        collectioPlateColorList.add(Constant.YELLOW_GREEN)
-        collectioPlateColorList.add(Constant.WHITE)
-        collectioPlateColorList.add(Constant.BLACK)
-        collectioPlateColorList.add(Constant.OTHERS)
-
-        binding.rvPlateColor.setHasFixedSize(true)
-        binding.rvPlateColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
-        collectionPlateColorAdapter = CollectionPlateColorAdapter(widthType, collectioPlateColorList, this)
-        binding.rvPlateColor.adapter = collectionPlateColorAdapter
-
-        collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
-
-        initKeyboard()
+        binding.tvPlate.setText(urgeBean.plateId)
+        if (urgeBean.plateColor == 33) {
+            binding.flLin.show()
+        } else {
+            binding.flLin.gone()
+            GlideUtils.instance?.loadImage(binding.ivPlateColor, plateMap[urgeBean.plateColor.toString()]!!)
+        }
     }
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.rflRecognize.setOnClickListener(this)
         binding.rflSubmit.setOnClickListener(this)
         binding.tvPic1.setOnClickListener(this)
         binding.tvPic2.setOnClickListener(this)
         binding.rivPic1.setOnClickListener(this)
         binding.rivPic2.setOnClickListener(this)
-        binding.root.setOnClickListener(this)
-        binding.layoutToolbar.toolbar.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -116,71 +96,15 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         binding.tvStreetName.text = currentStreet?.streetName
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initKeyboard() {
-        keyboardUtil = KeyboardUtil(binding.kvKeyBoard) {
-            binding.retPlate.requestFocus()
-            keyboardUtil.changeKeyboard(true)
-            keyboardUtil.setEditText(binding.retPlate)
-        }
-
-        binding.retPlate.addTextChangedListener(MyTextWatcher(null, null, true, keyboardUtil))
-
-        binding.retPlate.setOnTouchListener { v, p1 ->
-            (v as EditText).requestFocus()
-            keyboardUtil.showKeyboard(show = {
-                val location = IntArray(2)
-                v.getLocationOnScreen(location)
-                val editTextPosY = location[1]
-
-                val screenHeight = window!!.windowManager.defaultDisplay.height
-                val distanceToBottom: Int = screenHeight - editTextPosY - v.getHeight()
-
-                if (binding.kvKeyBoard.height > distanceToBottom) {
-                    // 当键盘高度超过输入框到屏幕底部的距离时，向上移动布局
-                    binding.rllManagement.translationY = (-(binding.kvKeyBoard.height - distanceToBottom)).toFloat()
-                }
-            }, hide = {
-                binding.rllManagement.translationY = 0f
-            })
-            keyboardUtil.changeKeyboard(true)
-            keyboardUtil.setEditText(v)
-            true
-        }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (keyboardUtil.isShow()) {
-                keyboardUtil.hideKeyboard()
-            } else {
-                return super.onKeyDown(keyCode, event)
-            }
-        }
-        return false
-    }
-
     @SuppressLint("CheckResult")
     override fun onClick(v: View?) {
-        if (keyboardUtil.isShow()) {
-            keyboardUtil.hideKeyboard()
-        }
         when (v?.id) {
             R.id.fl_back -> {
                 onBackPressedSupport()
             }
 
-            R.id.rfl_recognize -> {
-                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CACollectionManagementActivity, 1)
-            }
-
             R.id.rfl_submit -> {
                 submit()
-            }
-
-            R.id.fl_color -> {
-                checkedColor = v.tag as String
-                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
             }
 
             R.id.toolbar,
@@ -335,41 +259,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
-                val plate = data?.getStringExtra("plate")
-                if (!plate.isNullOrEmpty()) {
-                    val plateId = if (plate.contains("新能源")) {
-                        plate.substring(plate.length - 8, plate.length)
-                    } else {
-                        plate.substring(plate.length.minus(7) ?: 0, plate.length)
-                    }
-                    if (plate.startsWith("蓝")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
-                    } else if (plate.startsWith("绿")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
-                    } else if (plate.startsWith("黄")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
-                    } else if (plate.startsWith("黄绿")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
-                    } else if (plate.startsWith("白")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
-                    } else if (plate.startsWith("黑")) {
-                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
-                    } else {
-                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 6)
-                    }
-                    binding.retPlate.setText(plateId)
-                    binding.retPlate.setSelection(plateId.length)
-                }
-            }
-        }
-    }
-
     override fun getVbBindingView(): ViewBinding {
-        return ActivityCollectionManagementBinding.inflate(layoutInflater)
+        return ActivityCaCollectionManagementBinding.inflate(layoutInflater)
     }
 
     override fun onReloadData() {

@@ -14,6 +14,7 @@ import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
@@ -143,16 +144,18 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             }
 
             R.id.rfl_prepaid -> {
-                if (feeInfo.prepayMoney!! > 0) {
-                    ToastUtil.showMiddleToast("已付金额大于0")
-                } else if (System.currentTimeMillis() - feeInfo.arrivedTime!! > 1000 * 60 * 60
-                ) {
-                    ToastUtil.showMiddleToast("在停时间超过1小时")
-                } else {
-                    ARouter.getInstance().build(ARouterMap.CA_PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, carLicense)
-                        .withString(ARouterMap.PREPAID_CARCOLOR, carColor)
-                        .withString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
-                        .withString(ARouterMap.PREPAID_ORDER_NO, orderNo).navigation()
+                if (this@CAParkingSpaceActivity::feeInfo.isInitialized) {
+                    if (feeInfo.prepayMoney!! > 0) {
+                        ToastUtil.showMiddleToast("已付金额大于0")
+                    } else if (System.currentTimeMillis() - feeInfo.arrivedTime!! > 1000 * 60 * 60
+                    ) {
+                        ToastUtil.showMiddleToast("在停时间超过1小时")
+                    } else {
+                        ARouter.getInstance().build(ARouterMap.CA_PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, carLicense)
+                            .withString(ARouterMap.PREPAID_CARCOLOR, carColor)
+                            .withString(ARouterMap.PREPAID_PARKING_NO, parkingNo)
+                            .withString(ARouterMap.PREPAID_ORDER_NO, orderNo).navigation()
+                    }
                 }
             }
 
@@ -173,23 +176,27 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 if (carLicense == "默00000") {
                     ToastUtil.showBottomToast(i18N(com.rt.base.R.string.请修改车牌))
                 } else {
-                    showProgressDialog(20000)
-                    val param = HashMap<String, Any>()
-                    param["token"] = token
-                    param["orderId"] = feeInfo.orderId.toString()
-                    param["plateId"] = carLicense
-                    param["plateColor"] = carColor
-                    mViewModel.payonspot(param)
+                    if (this@CAParkingSpaceActivity::feeInfo.isInitialized) {
+                        showProgressDialog(20000)
+                        val param = HashMap<String, Any>()
+                        param["token"] = token
+                        param["orderId"] = feeInfo.orderId.toString()
+                        param["plateId"] = carLicense
+                        param["plateColor"] = carColor
+                        mViewModel.payonspot(param)
+                    }
                 }
             }
 
             R.id.rfl_abnormalReport -> {
-                ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, feeInfo.roadId)
-                    .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingNo)
-                    .withString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
-                    .withString(ARouterMap.ABNORMAL_CARLICENSE, carLicense)
-                    .withString(ARouterMap.ABNORMAL_CAR_COLOR, carColor)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                if (this@CAParkingSpaceActivity::feeInfo.isInitialized) {
+                    ARouter.getInstance().build(ARouterMap.BERTH_ABNORMAL).withString(ARouterMap.ABNORMAL_STREET_NO, feeInfo.roadId)
+                        .withString(ARouterMap.ABNORMAL_PARKING_NO, parkingNo)
+                        .withString(ARouterMap.ABNORMAL_ORDER_NO, orderNo)
+                        .withString(ARouterMap.ABNORMAL_CARLICENSE, carLicense)
+                        .withString(ARouterMap.ABNORMAL_CAR_COLOR, carColor)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }
             }
         }
     }
@@ -274,7 +281,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 EventBus.getDefault().post(RefreshParkingLotEvent())
             }
             invoiceQrcodeLiveData.observe(this@CAParkingSpaceActivity) {
-                ticketQrCode = it.qrCode.toString()
+                ticketQrCode = it.qrcode.toString()
                 if (from == 0) {
                     payResultNotice(queryPayBean)
                 } else {
@@ -306,7 +313,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
 //                    }
                     from = 1
                     payResultBean = it.result[0]
-                    invoiceQrcode(payResultBean.orderId)
+                    invoiceQrcode(payResultBean.tradeNo)
                 }
             }
             errMsg.observe(this@CAParkingSpaceActivity) {

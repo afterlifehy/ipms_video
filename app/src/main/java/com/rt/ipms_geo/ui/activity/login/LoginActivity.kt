@@ -106,6 +106,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         }
 
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
+        if (AppUtils.isAppInstalled("com.peakinfo.plateid")) {
+            AppUtils.uninstallApp("com.peakinfo.plateid")
+        }
     }
 
     fun startBaiduMapLocation() {
@@ -270,7 +273,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             querySimLiveData.observe(this@LoginActivity) {
                 querySimBean = it
-                if (querySimBean?.result!!.isNotEmpty()) {
+                if (querySimBean?.result != null && querySimBean?.result!!.isNotEmpty()) {
                     binding.rflStreet.show()
                     streetList = querySimBean?.result as MutableList<Street>
                 } else {
@@ -366,6 +369,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         token()
                     } else {
                         dismissProgressDialog()
+                        val param = HashMap<String, Any>()
+                        param["deviceId"] = Constant.deviceId
+                        param["deviceCode"] = Constant.deviceId
+                        mViewModel.refreshCert(param)
                     }
 //                    else if (it.code == 3006) {
 //                        CAInterceptor.caClient.getCertInfo("") {

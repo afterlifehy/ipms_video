@@ -160,7 +160,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                 payResultNotice(it)
             }
             invoiceQrcodeLiveData.observe(this@CADebtOrderDetailActivity) {
-                ticketQrCode = it.qrCode.toString()
+                ticketQrCode = it.qrcode.toString()
                 var rxPermissions = RxPermissions(this@CADebtOrderDetailActivity)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
