@@ -6,6 +6,7 @@ import com.rt.base.base.mvvm.ErrorMessage
 import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.QRPayBean
 import com.rt.base.base.mvvm.repository.OrderRepository
+import com.rt.base.bean.DebtCollectionResultBean
 import com.rt.base.bean.ca.OweMoneyBean
 import com.rt.base.bean.ca.QRInfoBean
 import com.rt.base.bean.ca.QueryPayBean
@@ -25,6 +26,7 @@ class DebtOrderDetailViewModel : BaseViewModel() {
     val qrNoticeLiveData = MutableLiveData<Any>()
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
+    val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
 
     fun debtPay(param: Map<String, Any?>) {
         launch {
@@ -126,6 +128,19 @@ class DebtOrderDetailViewModel : BaseViewModel() {
                 invoiceQrcodeLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "invoiceQrcode"))
+            })
+        }
+    }
+
+    fun debtInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtInquiry(param)
+            }
+            executeResponse(response, {
+                debtInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }

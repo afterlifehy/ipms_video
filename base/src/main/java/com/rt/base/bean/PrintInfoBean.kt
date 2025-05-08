@@ -11,7 +11,8 @@ class PrintInfoBean(
     val remark: String,
     val company: String,
     val oweCount: Int,
-    val ticketQrCode: String = ""
+    val ticketQrCode: String = "",
+    var orderType: Int? = 1
 ) {
     override fun toString(): String = "$orderId,$plateId,$roadId,$startTime,$leftTime,$payMoney,$oweCount,$phone,$remark,$company"
 }

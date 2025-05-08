@@ -16,7 +16,8 @@ data class PayResultBean(
     var roadName: String,
     var startTime: String,
     var tradeNo: String,
-    var qrcode:String
+    var qrcode:String,
+    var orderType:Int = 1
 )
 
 data class NoticePrintResultBean(

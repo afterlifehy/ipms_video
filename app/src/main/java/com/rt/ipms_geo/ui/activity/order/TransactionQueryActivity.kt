@@ -57,6 +57,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
     var token = ""
     var currentTransactionBean: TransactionBean? = null
     var loginName = ""
+    var oweCount = 0
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -177,23 +178,13 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                         if (it) {
                             showProgressDialog(20000)
                             currentTransactionBean = v.tag as TransactionBean
-                            val param = HashMap<String, Any>()
-                            val jsonobject = JSONObject()
-                            jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                            jsonobject["token"] = token
-                            param["attr"] = jsonobject
-                            mViewModel.notificationInquiry(param)
+                            debtInquiry()
                         }
                     }
                 } else {
                     showProgressDialog(20000)
                     currentTransactionBean = v.tag as TransactionBean
-                    val param = HashMap<String, Any>()
-                    val jsonobject = JSONObject()
-                    jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
-                    jsonobject["token"] = token
-                    param["attr"] = jsonobject
-                    mViewModel.notificationInquiry(param)
+                    debtInquiry()
                 }
 
             }
@@ -212,6 +203,18 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             binding.root.id -> {
                 keyboardUtil.hideKeyboard()
             }
+        }
+    }
+
+    fun debtInquiry() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["carLicense"] = currentTransactionBean?.carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
         }
     }
 
@@ -246,6 +249,18 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     }
                 }
             }
+            debtInquiryLiveData.observe(this@TransactionQueryActivity) {
+                dismissProgressDialog()
+                if (it.result != null) {
+                    oweCount = it.result.size
+                }
+                val param = HashMap<String, Any>()
+                val jsonobject = JSONObject()
+                jsonobject["tradeNo"] = currentTransactionBean?.tradeNo
+                jsonobject["token"] = token
+                param["attr"] = jsonobject
+                mViewModel.notificationInquiry(param)
+            }
             notificationInquiryLiveData.observe(this@TransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(i18n(com.rt.base.R.string.开始打印))
@@ -260,8 +275,9 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = it.oweCount,
-                    ticketQrCode = it.qrcode
+                    oweCount = oweCount,
+                    ticketQrCode = it.qrcode,
+                    orderType = it.orderType
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
                 if (printList.size == 1) {

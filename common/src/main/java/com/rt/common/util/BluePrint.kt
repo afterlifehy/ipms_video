@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
 import com.alibaba.fastjson.JSONObject
+import com.blankj.utilcode.util.ThreadUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.rt.base.BaseApplication
 import com.rt.base.bean.IncomeCountingBean
 import com.rt.base.bean.PrintInfoBean
@@ -42,6 +44,12 @@ class BluePrint() {
             }
     }
 
+    val orderTypeMap = mutableMapOf(
+        1 to "预付",
+        2 to "场内支付",
+        3 to "欠费补缴"
+    )
+
     @Throws(JSONException::class)
     fun zkblueprint(content: String) {
         //打印文本
@@ -75,19 +83,19 @@ class BluePrint() {
         //获取设备蓝牙地址
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
-        Handler(Looper.getMainLooper()).post {
+        ThreadUtils.runOnUiThread {
             ToastUtil.showBottomToast("打印机开始连接")
         }
 
         if (!zpSDK!!.connect(mAddress)) {
-            Handler(Looper.getMainLooper()).post {
+            ThreadUtils.runOnUiThread {
                 ToastUtil.showBottomToast("打印机连接失败")
             }
             zpSDK = null
             printResult = -1
             return printResult
         }
-        Handler(Looper.getMainLooper()).post {
+        ThreadUtils.runOnUiThread {
             ToastUtil.showBottomToast("打印机连接成功")
         }
         return 0
@@ -208,13 +216,15 @@ class BluePrint() {
                 val now = Calendar.getInstance()
                 val today = now[Calendar.YEAR].toString() + "年" + (now[Calendar.MONTH] + 1) + "月" + now[Calendar.DAY_OF_MONTH] + "日"
                 val printInfo = JSONObject.parseObject(printText, PrintInfoBean::class.java)
-                zpSDK!!.pageSetup(800, 1400)
+                zpSDK!!.pageSetup(800, 1600)
                 //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
                 zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
                 drawText(10 + 36 + 40, 20, "-----------------------------------------------")
                 drawText(10 + 36 + 40 + 32, 20, "停车单号:   " + printInfo.orderId)
-                drawText(10 + 36 + 40 + 32 + 32, 20, "车牌号码:   " + printInfo.plateId)
+                drawText(10 + 36 + 40 + 32 + 32, 20, "缴费类型:   " + orderTypeMap[printInfo.orderType])
+                drawText(10 + 36 + 40 + 32 + 32 + 32, 20, "车牌号码:   " + printInfo.plateId)
+                yLocation += 32
                 if (printInfo.roadId.length <= 21) {
                     drawText(yLocation, 20, "停车路段:   " + printInfo.roadId)
                 } else if (printInfo.roadId.length > 21 && printInfo.roadId.length <= 42) {
@@ -238,10 +248,13 @@ class BluePrint() {
                 yLocation += 32
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36
-                drawText(yLocation, 20, "----------------电子票据开具方式----------------")
+                drawText(yLocation, 20, "----------------电子缴款书开具方式----------------")
                 yLocation += 36
-                drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
+                drawText(yLocation, 20, "扫描如下二维码，确认订单，填写邮箱地址，开具道路停车")
                 yLocation += 36
+                drawText(yLocation, 20, "收费电子书")
+                yLocation += 36
+
                 var bitmap: Bitmap? = null
                 if (printInfo.ticketQrCode.isEmpty()) {
                     bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.rt.common.R.mipmap.ic_print_qr)
@@ -258,41 +271,45 @@ class BluePrint() {
                 )
 //                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
                 yLocation += (300 + 18)
-                drawText(yLocation, 20, "2、注册您的“上海停车”账号,绑定车牌。")
+                drawText(yLocation, 20, "--------------------温馨提示：-------------------")
                 yLocation += 36
-                drawText(yLocation, 20, "3、在“停车缴费”---“我要开票”---“道路停车电子缴”")
+                drawText(yLocation, 20, "${printInfo.plateId}的车主(单位)")
                 yLocation += 36
-                drawText(yLocation, 20, "款书(票据)---下载您的道路停车票据")
-//                yLocation += 36
-//                drawText(yLocation, 20, "提示:")
-//                yLocation += 36
-//                drawText(yLocation, 20, printInfo.plateId + "的车主(单位)")
-//                yLocation += 36
-//                drawText(yLocation, 20, "您(单位)在" + today + "之前，累计有 " + printInfo.oweCount + " 笔道路停车欠费记")
-//                yLocation += 36
-//                drawText(yLocation, 20, "录，请您尽快在本市任一道路停车场补缴。（其中，属智慧道")
-//                yLocation += 36
-//                drawText(yLocation, 20, "路停车场的欠费，可在智慧道路停车场或者登录“上海停车”")
-//                yLocation += 36
-//                drawText(yLocation, 20, "官方APP、小程序查询补缴。）")
+                drawText(
+                    yLocation,
+                    20,
+                    "您(单位)在${
+                        TimeUtils.millis2String(
+                            System.currentTimeMillis(),
+                            "yyyy年MM月dd日"
+                        )
+                    }之前，累计有${printInfo.oweCount}笔道路停车欠费"
+                )
+                yLocation += 36
+                drawText(yLocation, 20, "记录，请您(单位)登录“上海停车“官方 APP、小程序(微")
+                yLocation += 36
+                drawText(yLocation, 20, "信、支付宝)尽快补缴。")
+                yLocation += 36
                 yLocation += 36
                 drawText(yLocation, 20, "--------------------注意事项-------------------")
                 yLocation += 36
-                drawText(yLocation, 20, "1、本告知书仅为您(单位)本次停车付费的凭证，不作为电子")
+                drawText(yLocation, 20, "1、如需要核实有关停车收费情况请致电 " + printInfo.phone + " 。")
                 yLocation += 36
-                drawText(yLocation, 20, "   票据。")
+                drawText(yLocation, 20, "2、本告知书仅为您(单位)本次停车付费的凭证，如需开具")
                 yLocation += 36
-                drawText(yLocation, 20, "2、如需要核实有关停车收费情况请致电 " + printInfo.phone + " 。")
+                drawText(yLocation, 20, "   电子缴款书请扫描二维码。")
                 yLocation += 36
-                drawText(yLocation, 20, "3、如您需要电子票据的,请在即日起30天内，通过“上海停")
+                drawText(yLocation, 20, "3、预付费遵循多退少补原则，实际停车时长超出预付时长")
                 yLocation += 36
-                drawText(yLocation, 20, "   车”官方APP、小程序(微信、支付宝)下载。如您(单位)")
+                drawText(yLocation, 20, "   的，请及时补缴停车费;实际停车时长少于预付时长的，")
                 yLocation += 36
-                drawText(yLocation, 20, "   在下载电子票据过程中遇到问题，请将问题描述和您的")
+                drawText(yLocation, 20, "   在车辆离场后 24小时内将原路退还超出的停车费。")
                 yLocation += 36
-                drawText(yLocation, 20, "   姓名、电话等有效的联系方式反馈至邮箱service@shtc")
+                drawText(yLocation, 20, "4、如您(单位)在下载电子票据过程中遇到问题，请将问题")
                 yLocation += 36
-                drawText(yLocation, 20, "   xx.com")
+                drawText(yLocation, 20, "   描述和您的姓名、电话等有效的联系方式反馈至邮箱")
+                yLocation += 36
+                drawText(yLocation, 20, "   service@jtcx.sh.com")
                 yLocation += 36
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36

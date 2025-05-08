@@ -7,6 +7,7 @@ import com.rt.base.bean.NotificationBean
 import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.TransactionResultBean
 import com.rt.base.base.mvvm.repository.OrderRepository
+import com.rt.base.bean.DebtCollectionResultBean
 import com.rt.base.bean.ca.QRInfoBean
 import com.rt.base.bean.ca.QueryPayBean
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,20 @@ class TransactionQueryViewModel : BaseViewModel() {
     val payResultLiveData = MutableLiveData<PayResultBean>()
     val querypayLiveData = MutableLiveData<QueryPayBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
+    val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
+
+    fun debtInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.debtInquiry(param)
+            }
+            executeResponse(response, {
+                debtInquiryLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
 
     fun transactionInquiry(param: Map<String, Any?>) {
         launch {

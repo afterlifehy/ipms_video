@@ -69,6 +69,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
     var count = 0
     var handler = Handler(Looper.getMainLooper())
+    var historyCount = 0
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(parkingSpaceBackEvent: ParkingSpaceBackEvent) {
@@ -138,17 +139,18 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
             R.id.rfl_prepaid -> {
                 if (parkingSpaceBean!!.amountPayed > 0) {
-                    ToastUtil.showMiddleToast("已付金额大于0")
+                    ToastUtil.showMiddleToast("已付金额大于0，按有关部门规定，不允许预支付")
                 } else if (System.currentTimeMillis() - TimeUtils.string2Millis(
                         parkingSpaceBean!!.startTime,
                         "yyyy-MM-dd HH:mm:ss"
                     ) > 1000 * 60 * 60
                 ) {
-                    ToastUtil.showMiddleToast("在停时间超过1小时")
+                    ToastUtil.showMiddleToast("在停时间超过1小时，按有关部门规定，不允许预支付")
                 } else {
                     ARouter.getInstance().build(ARouterMap.PREPAID).withString(ARouterMap.PREPAID_CARLICENSE, parkingSpaceBean!!.carLicense)
                         .withString(ARouterMap.PREPAID_PARKING_NO, parkingSpaceBean!!.parkingNo)
-                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo).navigation()
+                        .withString(ARouterMap.PREPAID_ORDER_NO, parkingSpaceBean!!.orderNo)
+                        .withInt(ARouterMap.PREPAID_OWE_COUNT, historyCount).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
 
@@ -264,6 +266,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 val strings6 = arrayOf(i18N(com.rt.base.R.string.订单总额), "${AppUtil.keepNDecimal(it.amountTotal / 100.00, 2)}元")
                 binding.tvOrderAmount.text = AppUtil.getSpan(strings6, sizes, colors)
 
+                historyCount = it.historyCount
                 binding.tvArrearsNum.text = "${it.historyCount}笔"
 
                 binding.tvArrearsAmount.text =
@@ -274,7 +277,8 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             }
             insidePayLiveData.observe(this@ParkingSpaceActivity) {
                 dismissProgressDialog()
-                paymentQrDialog = PaymentQrDialog(it.qrCode,it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
+                paymentQrDialog =
+                    PaymentQrDialog(it.qrCode, it.payUrl, AppUtil.keepNDecimal(amountPending / 100.00, 2), parkingSpaceBean!!.carLicense)
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -297,13 +301,13 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
                         if (it) {
-                            startPrint(payResultBean){
+                            startPrint(payResultBean) {
 
                             }
                         }
                     }
                 } else {
-                    startPrint(it){}
+                    startPrint(it) {}
                 }
                 EventBus.getDefault().post(RefreshParkingLotEvent())
             }
@@ -312,7 +316,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 if (it.result != null && it.result.size > 0) {
 //                    performPrintTasks(it.result) {
 //                    }
-                    startPrint(it.result[0]){}
+                    startPrint(it.result[0]) {}
                 }
             }
             errMsg.observe(this@ParkingSpaceActivity) {
@@ -337,7 +341,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
                 }
             } else {
                 // 所有打印任务完成时调用 onComplete 回调
-                Handler(Looper.getMainLooper()).postDelayed({ onComplete()},1000)
+                Handler(Looper.getMainLooper()).postDelayed({ onComplete() }, 1000)
             }
         }
         // 开始第一个打印任务
@@ -356,8 +360,9 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = 0,
-            ticketQrCode = it.qrcode
+            oweCount = historyCount,
+            ticketQrCode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

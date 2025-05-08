@@ -21,6 +21,7 @@ import com.rt.base.bean.PayResultBean
 import com.rt.base.bean.PrintInfoBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
+import com.rt.base.ext.gone
 import com.rt.base.ext.i18N
 import com.rt.base.ext.show
 import com.rt.base.util.ToastUtil
@@ -49,6 +50,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     var token = ""
     var count = 0
     var handler = Handler(Looper.getMainLooper())
+    var oweCount = 0
 
     @SuppressLint("NewApi")
     override fun initView() {
@@ -83,6 +85,19 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     }
 
     override fun initData() {
+        debtInquiry()
+    }
+
+    fun debtInquiry() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["carLicense"] = debtCollectionBean!!.carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -147,11 +162,22 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            debtInquiryLiveData.observe(this@DebtOrderDetailActivity) {
+                dismissProgressDialog()
+                if (it.result != null) {
+                    oweCount = it.result.size
+                }
+            }
             debtPayLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo
                 paymentQrDialog =
-                    PaymentQrDialog(it.qrCode,it.payUrl, AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2), debtCollectionBean!!.carLicense)
+                    PaymentQrDialog(
+                        it.qrCode,
+                        it.payUrl,
+                        AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2),
+                        debtCollectionBean!!.carLicense
+                    )
                 paymentQrDialog?.show()
                 paymentQrDialog?.setOnDismissListener(object : DialogInterface.OnDismissListener {
                     override fun onDismiss(p0: DialogInterface?) {
@@ -204,8 +230,9 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount,
-            ticketQrCode = it.qrcode
+            oweCount = oweCount,
+            ticketQrCode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

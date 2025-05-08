@@ -11,5 +11,6 @@ data class NotificationBean(
     val startTime: String,
     val tradeNo: String,
     val oweCount: Int,
-    val qrcode:String
+    val qrcode: String,
+    var orderType: Int = 1
 )

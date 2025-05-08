@@ -53,6 +53,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var tradeNo = ""
+    var oweCount = 0
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -62,6 +63,7 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
         carLicense = intent.getStringExtra(ARouterMap.PREPAID_CARLICENSE).toString()
         parkingNo = intent.getStringExtra(ARouterMap.PREPAID_PARKING_NO).toString()
         orderNo = intent.getStringExtra(ARouterMap.PREPAID_ORDER_NO).toString()
+        oweCount = intent.getIntExtra(ARouterMap.PREPAID_OWE_COUNT, 0)
 
         binding.tvPlate.text = carLicense
         binding.tvParkingNo.text = parkingNo
@@ -256,8 +258,9 @@ class PrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBinding>
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount,
-            ticketQrCode = it.qrcode
+            oweCount = oweCount,
+            ticketQrCode = it.qrcode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

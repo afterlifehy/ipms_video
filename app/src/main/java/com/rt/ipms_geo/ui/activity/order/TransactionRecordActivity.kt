@@ -36,6 +36,8 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     var transactionRecordList: MutableList<TransactionBean> = ArrayList()
     var orderNo = ""
     var token = ""
+    var oweCount = 0
+    var carLicense = ""
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.rt.common.R.mipmap.ic_back_white)
@@ -43,6 +45,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.rt.base.R.color.white))
 
         orderNo = intent.getStringExtra(ARouterMap.TRANSACTION_RECORD_ORDER_NO).toString()
+        carLicense = intent.getStringExtra(ARouterMap.TRANSACTION_RECORD_CARLICENSE).toString()
 
         binding.rvTransactionRecord.setHasFixedSize(true)
         binding.rvTransactionRecord.layoutManager = LinearLayoutManager(this@TransactionRecordActivity)
@@ -59,6 +62,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
         }
         query()
+        debtInquiry()
     }
 
     private fun query() {
@@ -69,6 +73,18 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
 //        20230904JAZ038001P7A32A
         param["attr"] = jsonobject
         mViewModel.transactionInquiryByOrder(param)
+    }
+
+    fun debtInquiry() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["carLicense"] = carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -125,6 +141,12 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                 }
                 dismissProgressDialog()
             }
+            debtInquiryLiveData.observe(this@TransactionRecordActivity) {
+                dismissProgressDialog()
+                if (it.result != null) {
+                    oweCount = it.result.size
+                }
+            }
             notificationInquiryLiveData.observe(this@TransactionRecordActivity) {
                 dismissProgressDialog()
                 val payMoney = it.payMoney
@@ -138,8 +160,9 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = it.oweCount,
-                    ticketQrCode = it.qrcode
+                    oweCount = oweCount,
+                    ticketQrCode = it.qrcode,
+                    orderType = it.orderType
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
                 if (printList.size == 1) {

@@ -51,7 +51,22 @@ class TransactionQueryAdapter(data: MutableList<TransactionBean>? = null, val on
             holder.vb.flPaymentInquiry.tag = item
             holder.vb.flPaymentInquiry.setOnClickListener(onClickListener)
         }
-        if (item.orderType == "1" || item.orderType == "2") {
+        if (item.orderType == "1") {
+            holder.vb.rtvOrderType.show()
+            holder.vb.rtvOrderType.text = i18n(com.rt.base.R.string.预支付)
+            holder.vb.rtvOrderType.delegate.setTextColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.rt.base.R.color.color_ff49b8d7
+                )
+            )
+            holder.vb.rtvOrderType.delegate.setBackgroundColor(
+                ContextCompat.getColor(
+                    BaseApplication.instance(),
+                    com.rt.base.R.color.color_ffe5f6f7
+                )
+            )
+        } else if (item.orderType == "2") {
             holder.vb.rtvOrderType.show()
             holder.vb.rtvOrderType.text = i18n(com.rt.base.R.string.场内支付)
             holder.vb.rtvOrderType.delegate.setTextColor(
