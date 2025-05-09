@@ -218,8 +218,8 @@ class BluePrint() {
                 val printInfo = JSONObject.parseObject(printText, PrintInfoBean::class.java)
                 zpSDK!!.pageSetup(800, 1600)
                 //zpSDK.drawGraphic(0, 0, 0, 0, bmp);
-                zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车费", 0, 0, 0) //3
-                zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子票据告知书", 0, 0, 0) //3
+                zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市机动车道路停车收费", 0, 0, 0) //3
+                zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 24, "电子缴款书下载告知", 0, 0, 0) //3
                 drawText(10 + 36 + 40, 20, "-----------------------------------------------")
                 drawText(10 + 36 + 40 + 32, 20, "停车单号:   " + printInfo.orderId)
                 drawText(10 + 36 + 40 + 32 + 32, 20, "缴费类型:   " + orderTypeMap[printInfo.orderType])
