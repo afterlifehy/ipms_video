@@ -137,18 +137,9 @@ dependencies {
     api(ThirdPart.retrofit_kotlin_coroutines_adapter)
     api(ThirdPart.retrofit_rxjava2_adapter)
 
-    //okhttp3
-    api(ThirdPart.okhttp3) {
-        exclude(group = "com.squareup.okhttp3", module = "okhttp")
-    }
-
     //fragment_swipe
     api(ThirdPart.fragmentationx)
     api(ThirdPart.fragmentationx_swipeback)
-
-    //gson
-    api(ThirdPart.fastjson)
-    api(ThirdPart.gson)
 
     // Preferences DataStore（可以直接使用）
     api(ThirdPart.datastore)
@@ -229,4 +220,5 @@ dependencies {
 
 //    api(project(":ksmkey"))
     api(project(":security"))
+    api(project(":ksmkey"))
 }

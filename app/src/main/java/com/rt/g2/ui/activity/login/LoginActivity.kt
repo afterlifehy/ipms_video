@@ -18,7 +18,7 @@ import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.PhoneUtils
-import com.rt.base.ksmkey.MKeyApi
+import com.custle.ksmkey.MKeyApi
 import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street

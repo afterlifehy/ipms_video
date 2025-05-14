@@ -244,8 +244,8 @@ class BluePrint() {
                 drawText(yLocation + 32, 20, "            " + printInfo.startTime)
                 drawText(yLocation + 64, 20, "            " + printInfo.leftTime)
                 yLocation += 96
-                drawText(yLocation, 20, "缴费金额:   " + printInfo.payMoney)
-                yLocation += 32
+//                drawText(yLocation, 20, "缴费金额:   " + printInfo.payMoney)
+//                yLocation += 32
                 drawText(yLocation, 20, "-----------------------------------------------")
                 yLocation += 36
                 drawText(yLocation, 20, "----------------电子缴款书开具方式----------------")

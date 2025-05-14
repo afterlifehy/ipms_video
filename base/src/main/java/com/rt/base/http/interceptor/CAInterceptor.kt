@@ -7,7 +7,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.blankj.utilcode.util.EncryptUtils
-import com.rt.base.ksmkey.MKeyApi
+import com.custle.ksmkey.MKeyApi
 import com.rt.base.BaseApplication
 import com.rt.base.base.mvvm.UrlManager
 import com.rt.base.base.mvvm.repository.LoginRepository

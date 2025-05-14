@@ -48,5 +48,5 @@ rootProject.name = "g2"
 include(":app")
 include(":base")
 include(":common")
-include(":ksmkey")
 include(":security")
+include(":ksmkey")
