@@ -227,6 +227,6 @@ dependencies {
 //    }
     api(ThirdPart.baiduMapLocation)
 
-    api(project(":ksmkey"))
+//    api(project(":ksmkey"))
     api(project(":security"))
 }

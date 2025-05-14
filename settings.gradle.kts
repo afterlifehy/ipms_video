@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ipms_geo"
+rootProject.name = "g2"
 
 include(":app")
 include(":base")
