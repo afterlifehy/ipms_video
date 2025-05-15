@@ -109,6 +109,13 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         if (AppUtils.isAppInstalled("com.peakinfo.plateid")) {
             AppUtils.uninstallApp("com.peakinfo.plateid")
         }
+        if (AppUtils.isAppInstalled("com.rt.ipms_geo")) {
+            val info = packageManager.getPackageInfo("com.rt.ipms_geo", 0)
+            val versionName = info.versionName
+            if (versionName == "2.4.9") {
+                AppUtils.uninstallApp("com.rt.ipms_geo")
+            }
+        }
     }
 
     fun startBaiduMapLocation() {
