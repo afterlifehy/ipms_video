@@ -43,7 +43,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "g2"
+rootProject.name = "ipms_video"
 
 include(":app")
 include(":base")

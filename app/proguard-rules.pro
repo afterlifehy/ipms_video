@@ -34,8 +34,8 @@ public void *(android.webkit.WebView, java.lang.String);
 }
 
 #---------------------------------1.实体类---------------------------------
--keep class com.rt.g2.bean.**{*;}
--keep class com.rt.g2.event.**{*;}
+-keep class com.rt.ipms_video.bean.**{*;}
+-keep class com.rt.ipms_video.event.**{*;}
 -keep class com.rt.base.bean.**{*;}
 -keep class com.rt.base.event.**{*;}
 -keep class com.rt.common.bean.**{*;}
@@ -160,7 +160,7 @@ public void *(android.webkit.WebView, java.lang.String);
 -keep class com.google.protobuf.** {*;}
 
 #---------------------------------自定义view-----------------------
--keep class com.rt.g2.view.**{*;}
+-keep class com.rt.ipms_video.view.**{*;}
 -keep class com.rt.common.view.**{*;}
 -keep class com.rt.common.widget.**{*;}
 -keep class com.rt.base.view.**{*;}
