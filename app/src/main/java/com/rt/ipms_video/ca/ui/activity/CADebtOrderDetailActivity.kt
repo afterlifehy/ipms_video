@@ -53,7 +53,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var payMoney = 0
-
+    var oweCount = 0
     lateinit var ticketQrCode: String
     lateinit var payResultBean: PayResultBean
 
@@ -86,9 +86,11 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         binding.tvBerth.text = AppUtil.getSpan(strings3, sizes2, colors2)
         val strings4 = arrayOf(i18N(com.rt.base.R.string.路段) + "：", owemoneyInfoBean!!.roadName.toString())
         binding.tvStreet.text = AppUtil.getSpan(strings4, sizes2, colors2)
-        val strings5 = arrayOf(i18N(com.rt.base.R.string.入场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.arrivedTime!!,"yyyy-MM-dd HH:mm:ss"))
+        val strings5 =
+            arrayOf(i18N(com.rt.base.R.string.入场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.arrivedTime!!, "yyyy-MM-dd HH:mm:ss"))
         binding.tvStartTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
-        val strings6 = arrayOf(i18N(com.rt.base.R.string.出场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.leftTime!!,"yyyy-MM-dd HH:mm:ss"))
+        val strings6 =
+            arrayOf(i18N(com.rt.base.R.string.出场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.leftTime!!, "yyyy-MM-dd HH:mm:ss"))
         binding.tvEndTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
 
     }
@@ -102,7 +104,17 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            debtInquiry()
         }
+    }
+
+    fun debtInquiry() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["token"] = token
+        jsonobject["carLicense"] = owemoneyInfoBean!!.carLicense
+        param["attr"] = jsonobject
+        mViewModel.debtInquiry(param)
     }
 
     override fun onClick(v: View?) {
@@ -131,6 +143,12 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            debtInquiryLiveData.observe(this@CADebtOrderDetailActivity) {
+                dismissProgressDialog()
+                if (it.result != null) {
+                    oweCount = it.result.size
+                }
+            }
             payowemoneyLiveData.observe(this@CADebtOrderDetailActivity) {
                 payMoney = it.amount
                 orderId = it.orderId
@@ -258,8 +276,9 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             leftTime = it.endTime,
             remark = it.remark,
             company = it.businessCname,
-            oweCount = it.oweCount,
-            ticketQrCode = ticketQrCode
+            oweCount = oweCount,
+            ticketQrCode = ticketQrCode,
+            orderType = it.orderType
         )
         val printList = BluePrint.instance?.blueToothDevice!!
         if (printList.size == 1) {

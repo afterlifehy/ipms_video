@@ -58,6 +58,7 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
     var currentTransactionBean: TransactionBean? = null
     var loginName = ""
     var ticketQrCode = ""
+    var oweCount = 0
 
     override fun initView() {
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
@@ -173,13 +174,18 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
 
             R.id.fl_notification -> {
                 currentTransactionBean = v.tag as TransactionBean
-                val param = HashMap<String, Any>()
-                param["token"] = token
-                param["orderId"] = currentTransactionBean!!.tradeNo
-                param["plateId"] = currentTransactionBean!!.carLicense
-                param["plateColor"] = 99
-                param["dataTime"] = System.currentTimeMillis()
-                mViewModel.invoiceQrcode(param)
+                var rxPermissions = RxPermissions(this@CATransactionQueryActivity)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
+                        if (it) {
+                            showProgressDialog(20000)
+                            debtInquiry()
+                        }
+                    }
+                } else {
+                    showProgressDialog(20000)
+                    debtInquiry()
+                }
             }
 
             R.id.fl_paymentInquiry -> {
@@ -194,6 +200,18 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
             binding.root.id -> {
                 keyboardUtil.hideKeyboard()
             }
+        }
+    }
+
+    fun debtInquiry() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["token"] = token
+            jsonobject["carLicense"] = currentTransactionBean?.carLicense
+            param["attr"] = jsonobject
+            mViewModel.debtInquiry(param)
         }
     }
 
@@ -232,6 +250,19 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                 ticketQrCode = it.qrcode.toString()
                 notificationInquiry()
             }
+            debtInquiryLiveData.observe(this@CATransactionQueryActivity) {
+                dismissProgressDialog()
+                if (it.result != null) {
+                    oweCount = it.result.size
+                }
+                val param = HashMap<String, Any>()
+                param["token"] = token
+                param["orderId"] = currentTransactionBean!!.tradeNo
+                param["plateId"] = currentTransactionBean!!.carLicense
+                param["plateColor"] = 99
+                param["dataTime"] = System.currentTimeMillis()
+                mViewModel.invoiceQrcode(param)
+            }
             notificationInquiryLiveData.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(i18n(com.rt.base.R.string.开始打印))
@@ -246,8 +277,9 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                     leftTime = it.endTime,
                     remark = it.remark,
                     company = it.businessCname,
-                    oweCount = it.oweCount,
-                    ticketQrCode = ticketQrCode
+                    oweCount = oweCount,
+                    ticketQrCode = ticketQrCode,
+                    orderType = it.orderType
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
                 if (printList.size == 1) {

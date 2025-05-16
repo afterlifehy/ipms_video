@@ -23,6 +23,7 @@ import com.rt.base.BaseApplication
 import com.rt.base.arouter.ARouterMap
 import com.rt.base.bean.Street
 import com.rt.base.bean.UpdateBean
+import com.rt.base.bean.WorkingHoursBean
 import com.rt.base.bean.ca.QuerySimBean
 import com.rt.base.ds.PreferencesDataStore
 import com.rt.base.ds.PreferencesKeys
@@ -84,20 +85,31 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 baiduLocationUtil.startLocation()
             }
             if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+                val manufacturer = Build.MANUFACTURER
+                val model = Build.MODEL
+                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     try {
                         Constant.imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                    } catch (e: Exception) {
+                        Constant.imei = id
+                    }
+                    try {
                         Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
                     } catch (e: Exception) {
-                        val manufacturer = Build.MANUFACTURER
-                        val model = Build.MODEL
-                        val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                        Constant.imei = id
-                        Constant.simId = id
+                        Constant.simId = ""
                     }
                 } else {
-                    Constant.imei = PhoneUtils.getIMEI()
-                    Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                    try {
+                        Constant.imei = PhoneUtils.getIMEI()
+                    } catch (e: Exception) {
+                        Constant.imei = id
+                    }
+                    try {
+                        Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                    } catch (e: Exception) {
+                        Constant.simId = ""
+                    }
                 }
                 Constant.deviceId = AppUtil.getDeviceId()
                 checkUpdate()
@@ -348,6 +360,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
                 RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
+                RealmUtil.instance?.addRealm(WorkingHoursBean(binding.etAccount.text.toString(), System.currentTimeMillis()))
                 if (it != null && it.token != "") {
                     startAct<MainActivity>()
                     logInOutNotice("1")
