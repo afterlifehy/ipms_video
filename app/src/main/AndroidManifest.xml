@@ -113,6 +113,11 @@
             android:enabled="true"
             android:process=":remote"></service>
 
+        <service
+            android:name=".service.HeartbeatService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name="com.rt.ipms_video.ui.activity.SplashActivity"
             android:exported="true"

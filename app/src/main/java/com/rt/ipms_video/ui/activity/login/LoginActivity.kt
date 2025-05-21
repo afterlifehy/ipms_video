@@ -2,6 +2,8 @@ package com.rt.ipms_video.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -43,6 +45,7 @@ import com.rt.ipms_video.R
 import com.rt.ipms_video.databinding.ActivityLoginBinding
 import com.rt.ipms_video.dialog.StreetChooseListDialog
 import com.rt.ipms_video.mvvm.viewmodel.LoginViewModel
+import com.rt.ipms_video.service.HeartbeatService
 import com.rt.ipms_video.ui.activity.MainActivity
 import com.rt.ipms_video.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
@@ -356,6 +359,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, userId)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
+                    startHeartbeatService(this@LoginActivity)
                 }
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
@@ -414,6 +418,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()
             }
+        }
+    }
+
+    fun startHeartbeatService(context: Context) {
+        val intent = Intent(context, HeartbeatService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
         }
     }
 

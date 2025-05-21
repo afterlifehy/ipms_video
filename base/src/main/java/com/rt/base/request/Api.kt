@@ -311,4 +311,12 @@ interface Api {
     suspend fun refreshCert(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<Any>
+
+    /**
+     * 收费设备心跳
+     */
+    @POST("heartbeat")
+    suspend fun heartbeat(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
 }
