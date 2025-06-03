@@ -371,14 +371,13 @@ class BluePrint() {
                     yLocation += 36
                     drawText(yLocation, 20, "1、扫描下载“上海停车”官方APP、小程序(微信、支付宝)")
                     yLocation += 36
-//                val options = BitmapFactory.Options()
-//                options.inJustDecodeBounds = true // 设置为 true 表示只获取图片的大小信息而不加载到内存
-//                BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr, options)
-//                options.inSampleSize = calculateInSampleSize(options, 300, 300)
-//                options.inJustDecodeBounds = false
-                    val bitmap =
-                        BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
-                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
+                    var bitmap: Bitmap? = null
+                    if (printInfo.ticketQrCode.isEmpty()) {
+                        bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                    } else {
+                        bitmap = AppUtil.base64ToBitmap(printInfo.ticketQrCode)
+                    }
+                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, 300, 300, true)
                     zpSDK!!.drawGraphic(
                         65 + 60,
                         yLocation,
@@ -386,25 +385,12 @@ class BluePrint() {
                         300,
                         scaledBitmap
                     )
-//                zpSDK!!.drawQrCode(65 + 60, yLocation, "https://shtc.jtcx.sh.cn/union.html", 0, 10, 0)
                     yLocation += (300 + 18)
                     drawText(yLocation, 20, "2、注册您的“上海停车”账号,绑定车牌。")
                     yLocation += 36
                     drawText(yLocation, 20, "3、在“停车缴费”---“我要开票”---“道路停车电子缴”")
                     yLocation += 36
                     drawText(yLocation, 20, "款书(票据)---下载您的道路停车票据")
-//                yLocation += 36
-//                drawText(yLocation, 20, "提示:")
-//                yLocation += 36
-//                drawText(yLocation, 20, printInfo.plateId + "的车主(单位)")
-//                yLocation += 36
-//                drawText(yLocation, 20, "您(单位)在" + today + "之前，累计有 " + printInfo.oweCount + " 笔道路停车欠费记")
-//                yLocation += 36
-//                drawText(yLocation, 20, "录，请您尽快在本市任一道路停车场补缴。（其中，属智慧道")
-//                yLocation += 36
-//                drawText(yLocation, 20, "路停车场的欠费，可在智慧道路停车场或者登录“上海停车”")
-//                yLocation += 36
-//                drawText(yLocation, 20, "官方APP、小程序查询补缴。）")
                     yLocation += 36
                     drawText(yLocation, 20, "--------------------注意事项-------------------")
                     yLocation += 36
@@ -441,7 +427,6 @@ class BluePrint() {
                         drawText(yLocation + 36, 24, printInfo.company.substring(22))
                     }
                 }
-
             }
         }
         zpSDK!!.print(0, 0)
