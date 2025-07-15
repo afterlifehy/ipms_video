@@ -248,7 +248,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 oweCount = it.size
                 oweMoney = it.sumOf { it.oweMoney ?: 0 } ?: 0
                 binding.tvArrearsNum.text = "${oweCount}笔"
-                binding.tvArrearsAmount.text = "${oweMoney}.00元"
+                binding.tvArrearsAmount.text = "${AppUtil.keepNDecimal(oweMoney / 100.00, 2)}元"
             }
             payonspotLiveData.observe(this@CAParkingSpaceActivity) {
                 dismissProgressDialog()

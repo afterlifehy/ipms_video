@@ -26,7 +26,6 @@ class DebtOrderDetailViewModel : BaseViewModel() {
     val qrNoticeLiveData = MutableLiveData<Any>()
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
-    val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
 
     fun debtPay(param: Map<String, Any?>) {
         launch {
@@ -132,16 +131,4 @@ class DebtOrderDetailViewModel : BaseViewModel() {
         }
     }
 
-    fun debtInquiry(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mOrderRepository.debtInquiry(param)
-            }
-            executeResponse(response, {
-                debtInquiryLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
 }

@@ -211,7 +211,7 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
             jsonobject["token"] = token
             jsonobject["carLicense"] = currentTransactionBean?.carLicense
             param["attr"] = jsonobject
-            mViewModel.debtInquiry(param)
+            mViewModel.caDebtInquiry(param)
         }
     }
 
@@ -250,10 +250,10 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
                 ticketQrCode = it.qrcode.toString()
                 notificationInquiry()
             }
-            debtInquiryLiveData.observe(this@CATransactionQueryActivity) {
+            caDebtInquiryLiveData.observe(this@CATransactionQueryActivity) {
                 dismissProgressDialog()
-                if (it.result != null) {
-                    oweCount = it.result.size
+                if (it != null) {
+                    oweCount = it.size
                 }
                 val param = HashMap<String, Any>()
                 param["token"] = token

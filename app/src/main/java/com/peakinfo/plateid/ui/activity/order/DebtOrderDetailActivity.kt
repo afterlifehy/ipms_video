@@ -60,6 +60,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
         binding.layoutToolbar.ivRight.show()
 
         debtCollectionBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? DebtCollectionBean
+        oweCount = intent.getIntExtra(ARouterMap.DEBT_ORDER_COUNT, 1)
 
         binding.tvPlate.text = debtCollectionBean!!.carLicense
         val strings1 = arrayOf("${AppUtil.keepNDecimal(debtCollectionBean!!.oweMoney / 100.00, 2)}", "元")
@@ -84,19 +85,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     }
 
     override fun initData() {
-        debtInquiry()
-    }
-
-    fun debtInquiry() {
-        runBlocking {
-            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["carLicense"] = debtCollectionBean!!.carLicense
-            param["attr"] = jsonobject
-            mViewModel.debtInquiry(param)
-        }
     }
 
     override fun onClick(v: View?) {
@@ -161,12 +149,6 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            debtInquiryLiveData.observe(this@DebtOrderDetailActivity) {
-                dismissProgressDialog()
-                if (it.result != null) {
-                    oweCount = it.result.size
-                }
-            }
             debtPayLiveData.observe(this@DebtOrderDetailActivity) {
                 dismissProgressDialog()
                 tradeNo = it.tradeNo

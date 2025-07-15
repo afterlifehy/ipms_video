@@ -12,6 +12,7 @@ import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.TransactionResultBean
 import com.peakinfo.base.bean.VideoPicBean
+import com.peakinfo.base.bean.ca.DebtBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
@@ -129,6 +130,23 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.querypay(param, options)
+    }
+
+
+    /**
+     * 欠费列表查询
+     */
+    suspend fun caDebtInquiry(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<List<DebtBean>> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.caDebtInquiry(param, options)
     }
 
     /**

@@ -100,6 +100,13 @@ class LoginRepository : BaseRepository() {
     }
 
     /**
+     * 验证密码
+     */
+    suspend fun caVerifyAccount(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.caVerifyAccount(param)
+    }
+
+    /**
      * 修改密码
      */
     suspend fun editPw(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {

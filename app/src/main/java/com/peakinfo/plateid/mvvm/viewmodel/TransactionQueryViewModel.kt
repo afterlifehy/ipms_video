@@ -8,6 +8,7 @@ import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.TransactionResultBean
 import com.peakinfo.base.base.mvvm.repository.OrderRepository
 import com.peakinfo.base.bean.DebtCollectionResultBean
+import com.peakinfo.base.bean.ca.DebtBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ class TransactionQueryViewModel : BaseViewModel() {
     val payResultLiveData = MutableLiveData<PayResultBean>()
     val querypayLiveData = MutableLiveData<QueryPayBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
+    val caDebtInquiryLiveData = MutableLiveData<List<DebtBean>>()
     val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
 
     fun debtInquiry(param: Map<String, Any?>) {
@@ -34,6 +36,19 @@ class TransactionQueryViewModel : BaseViewModel() {
                 debtInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun caDebtInquiry(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.caDebtInquiry(param)
+            }
+            executeResponse(response, {
+                caDebtInquiryLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
             })
         }
     }

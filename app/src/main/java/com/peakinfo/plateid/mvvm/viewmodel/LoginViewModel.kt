@@ -24,6 +24,7 @@ class LoginViewModel : BaseViewModel() {
     val caLoginLiveData = MutableLiveData<LoginInfoBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
     val verifyAccountLiveDate = MutableLiveData<LoginBean>()
+    val caVerifyAccountLiveData = MutableLiveData<Any>()
     val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val logoutLiveData = MutableLiveData<Any>()
@@ -131,6 +132,19 @@ class LoginViewModel : BaseViewModel() {
                 verifyAccountLiveDate.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
+            })
+        }
+    }
+
+    fun caVerifyAccount(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.caVerifyAccount(param)
+            }
+            executeResponse(response, {
+                caVerifyAccountLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "caVerifyAccount"))
             })
         }
     }

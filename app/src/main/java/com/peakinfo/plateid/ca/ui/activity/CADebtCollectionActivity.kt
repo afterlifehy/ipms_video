@@ -147,6 +147,7 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                 val owemoneyInfoBean = v.tag as OwemoneyInfoBean
                 owemoneyInfoBean.carLicense = carLicense
                 ARouter.getInstance().build(ARouterMap.CA_DEBT_ORDER_DETAIL).withParcelable(ARouterMap.DEBT_ORDER, owemoneyInfoBean)
+                    .withInt(ARouterMap.DEBT_ORDER_COUNT, owemoneyInfoList.size)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }

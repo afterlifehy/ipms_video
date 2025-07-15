@@ -1,6 +1,7 @@
 package com.peakinfo.base.request
 
 import com.peakinfo.base.bean.*
+import com.peakinfo.base.bean.ca.DebtBean
 import com.peakinfo.base.bean.ca.FeeInfoBean
 import com.peakinfo.base.bean.ca.LoginInfoBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
@@ -44,6 +45,13 @@ interface Api {
     @POST("S_VO2_05")
     suspend fun debtInquiry(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<DebtCollectionResultBean>
 
+    /**
+     * CA欠费查询
+     */
+    @POST("owemoney")
+    suspend fun caDebtInquiry(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<DebtBean>>
     /**
      * 欠费支付
      */
@@ -139,6 +147,12 @@ interface Api {
      */
     @POST("S_VO2_21")
     suspend fun verifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
+
+    /**
+     * 验证密码
+     */
+    @POST("S_V_04")
+    suspend fun caVerifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 修改密码

@@ -299,7 +299,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     binding.rflStreet.show()
                     streetList = querySimBean?.result as MutableList<Street>
                 } else {
-                    binding.rflStreet.gone()
+//                    binding.rflStreet.gone()
                 }
 //                val targetAppid = it.appIdLast
 //                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
@@ -331,7 +331,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             queryPwStatusLiveData.observe(this@LoginActivity) {
                 if (it.editPw == 0) {
-                    verifyAccount()
+                    if (streetChoosedList.isNotEmpty()) {
+                        caVerifyAccount()
+                    } else {
+                        verifyAccount()
+                    }
                 } else {
                     dismissProgressDialog()
                     startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
@@ -341,17 +345,16 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 }
             }
             verifyAccountLiveDate.observe(this@LoginActivity) {
-                if (streetChoosedList.isNotEmpty()) {
-                    caLogin()
-                } else {
-                    dismissProgressDialog()
-                    runBlocking {
-                        PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, it.loginName.toString())
-                        startAct<StreetChooseActivity>(data = Bundle().apply {
-                            putParcelable(ARouterMap.LOGIN_INFO, it)
-                        })
-                    }
+                dismissProgressDialog()
+                runBlocking {
+                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, it.loginName.toString())
+                    startAct<StreetChooseActivity>(data = Bundle().apply {
+                        putParcelable(ARouterMap.LOGIN_INFO, it)
+                    })
                 }
+            }
+            caVerifyAccountLiveData.observe(this@LoginActivity){
+                caLogin()
             }
             caLoginLiveData.observe(this@LoginActivity) {
                 dismissProgressDialog()
@@ -485,6 +488,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["latitude"] = lat.toString()
         param["attr"] = jsonobject
         mViewModel.verifyAccount(param)
+    }
+
+    fun caVerifyAccount() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["loginName"] = binding.etAccount.text.toString()
+        jsonObject["password"] = binding.etPw.text.toString()
+        param["attr"] = jsonObject
+        mViewModel.caVerifyAccount(param)
     }
 
     fun caLogin() {

@@ -147,6 +147,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             R.id.rrl_debtCollection -> {
                 val debtCollectionBean = v.tag as DebtCollectionBean
                 ARouter.getInstance().build(ARouterMap.DEBT_ORDER_DETAIL).withParcelable(ARouterMap.DEBT_ORDER, debtCollectionBean)
+                    .withInt(ARouterMap.DEBT_ORDER_COUNT, debtCollectionList.size)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
         }

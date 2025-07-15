@@ -29,6 +29,7 @@ object ARouterMap {
     const val CA_DEBT_ORDER_DETAIL = "/ipms_app/caDebtOrderDetail"
     const val DEBT_ORDER_DETAIL = "/ipms_app/debtOrderDetail"
     const val DEBT_ORDER = "debtOrder"
+    const val DEBT_ORDER_COUNT = "oweCount"
 
     const val VIDEO_PIC = "/ipms_app/videoPic"
     const val VIDEO_PIC_ORDER_NO = "orderNo"
