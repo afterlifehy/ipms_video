@@ -207,7 +207,7 @@ class CAParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParking
             tokenLiveData.observe(this@CAParkingLotActivity) {
                 logout(it.token.toString())
             }
-            logoutLiveData.observe(this@CAParkingLotActivity) {
+            caLogoutLiveData.observe(this@CAParkingLotActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast("签退成功", 0)
                 Constant.APP_ID = tempStreet!!.appId

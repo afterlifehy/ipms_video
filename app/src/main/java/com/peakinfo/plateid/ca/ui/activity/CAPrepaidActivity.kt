@@ -273,7 +273,7 @@ class CAPrepaidActivity : VbBaseActivity<PrepaidViewModel, ActivityPrepaidBindin
             jsonobject["plateId"] = carLicense
             jsonobject["orderId"] = tradeNo
             jsonobject["payMoney"] = payMoney
-            jsonobject["orderType"] = "2"
+            jsonobject["orderType"] = "1"
             param["attr"] = jsonobject
             mViewModel.qrNotice(param)
         }

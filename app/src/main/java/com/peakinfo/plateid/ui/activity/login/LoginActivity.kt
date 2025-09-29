@@ -297,9 +297,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 querySimBean = it
                 if (querySimBean?.result != null && querySimBean?.result!!.isNotEmpty()) {
                     binding.rflStreet.show()
+                    binding.tvCaTips.show()
                     streetList = querySimBean?.result as MutableList<Street>
                 } else {
-//                    binding.rflStreet.gone()
+                    binding.rflStreet.gone()
+                    binding.tvCaTips.gone()
                 }
 //                val targetAppid = it.appIdLast
 //                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
