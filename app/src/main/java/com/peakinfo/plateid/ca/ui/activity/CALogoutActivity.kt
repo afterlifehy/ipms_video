@@ -126,13 +126,13 @@ class CALogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(
             R.id.tv_logout -> {
                 var rxPermissions = RxPermissions(this@CALogoutActivity)
                 if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    token()
+                    logoutDialog()
                 } else {
                     rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                         .subscribe {
                             if (it) {
                                 startBaiduMapLocation()
-                                token()
+                                logoutDialog()
                             } else {
                                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
@@ -145,7 +145,10 @@ class CALogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            logoutLiveData.observe(this@CALogoutActivity) {
+            logoutCheckOnWorkLiveData.observe(this@CALogoutActivity) {
+                token()
+            }
+            logInOutNoticeLiveData.observe(this@CALogoutActivity) {
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 EventBus.getDefault().post(BaiduLocationLoginEvent())
@@ -168,8 +171,6 @@ class CALogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(
             }
             caLogoutLiveData.observe(this@CALogoutActivity) {
                 logInOutNotice("2")
-                dismissProgressDialog()
-                ToastUtil.showBottomToast("签退成功", 0)
             }
             errMsg.observe(this@CALogoutActivity) {
                 dismissProgressDialog()
@@ -181,7 +182,24 @@ class CALogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(
         }
     }
 
-    fun token() {
+    fun checkOnWork(){
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
+            val streetNOs = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.streetNOs)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginName
+            jsonobject["streetNos"] = streetNOs
+            jsonobject["longitude"] = lon.toString()
+            jsonobject["latitude"] = lat.toString()
+            jsonobject["signTime"] = ""
+            jsonobject["signState"] = "02"
+            param["attr"] = jsonobject
+            mViewModel.logoutCheckOnWork(param)
+        }
+    }
+
+    fun logoutDialog() {
         DialogHelp.Builder().setTitle(i18N(com.peakinfo.base.R.string.确认签退))
             .setLeftMsg(i18N(com.peakinfo.base.R.string.取消))
             .setRightMsg(i18N(com.peakinfo.base.R.string.确定)).setCancelable(true)
@@ -193,16 +211,19 @@ class CALogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(
                 override fun onRightClickLinsener(msg: String) {
                     showProgressDialog(20000)
                     ToastUtil.showBottomToast("正在签退, 请稍后...", 0)
-                    val passwordMD5 = EncryptUtils.encryptMD5ToString(userId).lowercase()
-                    val param = HashMap<String, Any>()
-                    param["userId"] = userId
-                    param["simId"] = Constant.simId
-                    param["password"] = passwordMD5
-                    param["dataTime"] = System.currentTimeMillis()
-                    mViewModel.token(param)
-
+                    checkOnWork()
                 }
             }).build(this@CALogoutActivity).showDailog()
+    }
+
+    fun token(){
+        val passwordMD5 = EncryptUtils.encryptMD5ToString(userId).lowercase()
+        val param = HashMap<String, Any>()
+        param["userId"] = userId
+        param["simId"] = Constant.simId
+        param["password"] = passwordMD5
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.token(param)
     }
 
     fun caLogout(token: String) {

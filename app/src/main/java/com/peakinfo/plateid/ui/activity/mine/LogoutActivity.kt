@@ -127,19 +127,36 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
             R.id.tv_logout -> {
                 var rxPermissions = RxPermissions(this@LogoutActivity)
                 if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    logout()
+                    checkOnWork()
                 } else {
                     rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                         .subscribe {
                             if (it) {
                                 startBaiduMapLocation()
-                                logout()
+                                checkOnWork()
                             } else {
                                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
                         }
                 }
             }
+        }
+    }
+
+    fun checkOnWork(){
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
+            val streetNOs = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.streetNOs)
+            val param = HashMap<String, Any>()
+            val jsonobject = JSONObject()
+            jsonobject["loginName"] = loginName
+            jsonobject["streetNos"] = streetNOs
+            jsonobject["longitude"] = lon.toString()
+            jsonobject["latitude"] = lat.toString()
+            jsonobject["signTime"] = ""
+            jsonobject["signState"] = "02"
+            param["attr"] = jsonobject
+            mViewModel.logoutCheckOnWork(param)
         }
     }
 
@@ -189,6 +206,9 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            logoutCheckOnWorkLiveData.observe(this@LogoutActivity) {
+                logout()
+            }
             logoutLiveData.observe(this@LogoutActivity) {
                 dismissProgressDialog()
                 ARouter.getInstance().build(ARouterMap.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()

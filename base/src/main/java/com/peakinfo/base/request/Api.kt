@@ -345,4 +345,10 @@ interface Api {
      */
     @POST("S_VO2_20")
     suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any>
+
+    /**
+     * 签退考勤排班
+     */
+    @POST("S_VO3_20")
+    suspend fun logoutCheckOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any>
 }

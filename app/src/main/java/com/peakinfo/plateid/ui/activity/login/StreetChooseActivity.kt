@@ -132,7 +132,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     if (baiduLocationUtil == null) {
                         startBaiduMapLocation()
                     }
-                    login2()
+                    checkOnWork()
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
@@ -140,7 +140,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                             if (it) {
                                 startBaiduMapLocation()
-                                login2()
+                                checkOnWork()
                             } else {
                                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
@@ -158,6 +158,17 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
             }
         }
+    }
+
+    fun checkOnWork() {
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["loginName"] = loginInfo?.loginName
+        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+        jsonobject["longitude"] = lon.toString()
+        jsonobject["latitude"] = lat.toString()
+        param["attr"] = jsonobject
+        mViewModel.checkOnWork(param)
     }
 
     @SuppressLint("MissingPermission")
@@ -200,6 +211,9 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
+            checkOnWorkLiveData.observe(this@StreetChooseActivity){
+                login2()
+            }
             login2LiveData.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
                 for (i in streetChoosedList) {
@@ -214,6 +228,9 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         PreferencesKeys.account,
                         loginInfo!!.loginName.toString()
                     )
+                    PreferencesDataStore(BaseApplication.instance()).putString(
+                        PreferencesKeys.streetNOs,
+                        streetChoosedList.joinToString(separator = ",") { it.streetNo })
                 }
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)

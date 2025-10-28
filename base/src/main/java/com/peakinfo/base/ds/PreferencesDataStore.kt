@@ -113,6 +113,8 @@ object PreferencesKeys {
 
     val certSn by stringPreferencesKey()
 
+    val streetNOs by stringPreferencesKey()
+
     fun booleanPreferencesKey() =
         ReadOnlyProperty<Any, Preferences.Key<Boolean>> { _, property -> booleanPreferencesKey(property.name) }
 

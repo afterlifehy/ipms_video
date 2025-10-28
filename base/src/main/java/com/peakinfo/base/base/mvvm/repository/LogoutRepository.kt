@@ -54,4 +54,18 @@ class LogoutRepository : BaseRepository() {
     suspend fun logInOutNotice(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
         return rtServer.logInOutNotice(param)
     }
+
+    /**
+     * 考勤排班
+     */
+    suspend fun checkOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        return rtServer.checkOnWork(param)
+    }
+
+    /**
+     * 考勤排班
+     */
+    suspend fun logoutCheckOnWork(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        return rtServer.logoutCheckOnWork(param)
+    }
 }

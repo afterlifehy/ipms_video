@@ -17,6 +17,7 @@ class LogoutViewModel : BaseViewModel() {
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val caLogoutLiveData = MutableLiveData<Any>()
     val logInOutNoticeLiveData = MutableLiveData<Any>()
+    val logoutCheckOnWorkLiveData = MutableLiveData<Any>()
 
     fun logout(param: Map<String, Any?>) {
         launch {
@@ -50,7 +51,7 @@ class LogoutViewModel : BaseViewModel() {
                 mLogoutRepository.caLogout(param)
             }
             executeResponse(response, {
-                logoutLiveData.value = response.data
+                caLogoutLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogout"))
             })
@@ -66,6 +67,19 @@ class LogoutViewModel : BaseViewModel() {
                 logInOutNoticeLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
+            })
+        }
+    }
+
+    fun logoutCheckOnWork(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLogoutRepository.logoutCheckOnWork(param)
+            }
+            executeResponse(response, {
+                logoutCheckOnWorkLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
             })
         }
     }

@@ -355,10 +355,10 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     })
                 }
             }
-            caVerifyAccountLiveData.observe(this@LoginActivity){
+            caVerifyAccountLiveData.observe(this@LoginActivity) {
                 checkOnWork()
             }
-            checkOnWorkLiveData.observe(this@LoginActivity){
+            checkOnWorkLiveData.observe(this@LoginActivity) {
                 caLogin()
             }
             caLoginLiveData.observe(this@LoginActivity) {
@@ -367,6 +367,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, userId)
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
+                    PreferencesDataStore(BaseApplication.instance()).putString(
+                        PreferencesKeys.streetNOs,
+                        streetChoosedList.joinToString(separator = ",") { it.streetNo })
                     startHeartbeatService(this@LoginActivity)
                 }
                 RealmUtil.instance?.deleteAllStreet()
@@ -575,7 +578,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.logInOutNotice(param)
     }
 
-    fun checkOnWork(){
+    fun checkOnWork() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["loginName"] = binding.etAccount.text.toString()

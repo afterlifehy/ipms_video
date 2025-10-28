@@ -49,7 +49,7 @@ class HeartbeatService : Service() {
                     }
                 }
             }
-        }, 0, 60 * 1000) // 每15分钟一次
+        }, 0, 15 * 60 * 1000) // 每15分钟一次
 
         return START_STICKY
     }
