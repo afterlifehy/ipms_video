@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
@@ -44,10 +45,11 @@ class HeartbeatService : Service() {
                         stopSelf()
                     } else {
                         sendHeartbeat()
+                        locationUpload()
                     }
                 }
             }
-        }, 0, 15 * 60 * 1000) // 每15分钟一次
+        }, 0, 60 * 1000) // 每15分钟一次
 
         return START_STICKY
     }
@@ -67,6 +69,20 @@ class HeartbeatService : Service() {
             "dataTime" to System.currentTimeMillis()
         )
         vm.heartbeat(param)
+    }
+
+    private fun locationUpload() {
+        runBlocking {
+            val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
+            val param = hashMapOf(
+                "attr" to hashMapOf(
+                    "loginName" to loginName,
+                    "longitude" to longitude,
+                    "latitude" to latitude
+                )
+            )
+            vm.locationUpload(param)
+        }
     }
 
     private fun startForegroundServiceWithNotification() {

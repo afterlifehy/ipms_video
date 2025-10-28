@@ -31,6 +31,7 @@ class LoginViewModel : BaseViewModel() {
     val logInOutNoticeLiveData = MutableLiveData<Any>()
     val notifyUpdateCertLiveData = MutableLiveData<Any>()
     val refreshCertLiveData = MutableLiveData<Any>()
+    val checkOnWorkLiveData = MutableLiveData<Any>()
 
     fun notifyUpdateCert(param: Map<String, Any?>) {
         launch {
@@ -184,6 +185,19 @@ class LoginViewModel : BaseViewModel() {
                 refreshCertLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "refreshCert"))
+            })
+        }
+    }
+
+    fun checkOnWork(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mLoginRepository.checkOnWork(param)
+            }
+            executeResponse(response, {
+                checkOnWorkLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
             })
         }
     }

@@ -333,4 +333,16 @@ interface Api {
     suspend fun heartbeat(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<Any>
+
+    /**
+     * 轨迹上传
+     */
+    @POST("S_VO3_02")
+    suspend fun locationUpload(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 考勤排班
+     */
+    @POST("S_VO2_20")
+    suspend fun checkOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any>
 }

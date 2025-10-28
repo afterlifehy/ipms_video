@@ -2,6 +2,7 @@ package com.peakinfo.base.base.mvvm.repository
 
 import com.blankj.utilcode.util.EncryptUtils
 import com.peakinfo.base.base.mvvm.BaseRepository
+import com.peakinfo.base.bean.HttpWrapper
 import com.peakinfo.base.bean.HttpWrapper2
 import com.peakinfo.base.util.Constant
 
@@ -21,5 +22,12 @@ class HeartBeatRepository: BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.heartbeat(param, options)
+    }
+
+    /**
+     * 轨迹上传
+     */
+    suspend fun locationUpload(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.locationUpload(param)
     }
 }

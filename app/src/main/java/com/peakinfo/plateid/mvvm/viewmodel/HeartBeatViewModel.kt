@@ -14,6 +14,7 @@ class HeartBeatViewModel: BaseViewModel() {
     }
 
     val heartbeatLiveData = MutableLiveData<Any>()
+    val locationUploadLiveData = MutableLiveData<Any>()
 
     fun heartbeat(param: Map<String, Any?>) {
         launch {
@@ -24,6 +25,19 @@ class HeartBeatViewModel: BaseViewModel() {
                 heartbeatLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "heartbeat"))
+            })
+        }
+    }
+
+    fun locationUpload(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mHeartBeatRepository.locationUpload(param)
+            }
+            executeResponse(response, {
+                locationUploadLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "locationUpload"))
             })
         }
     }

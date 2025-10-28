@@ -356,6 +356,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 }
             }
             caVerifyAccountLiveData.observe(this@LoginActivity){
+                checkOnWork()
+            }
+            checkOnWorkLiveData.observe(this@LoginActivity){
                 caLogin()
             }
             caLoginLiveData.observe(this@LoginActivity) {
@@ -570,6 +573,17 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["version"] = AppUtils.getAppVersionName()
         param["attr"] = jsonobject
         mViewModel.logInOutNotice(param)
+    }
+
+    fun checkOnWork(){
+        val param = HashMap<String, Any>()
+        val jsonobject = JSONObject()
+        jsonobject["loginName"] = binding.etAccount.text.toString()
+        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
+        jsonobject["longitude"] = lon.toString()
+        jsonobject["latitude"] = lat.toString()
+        param["attr"] = jsonobject
+        mViewModel.checkOnWork(param)
     }
 
     @SuppressLint("CheckResult")
