@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.util.Constant
 import com.peakinfo.plateid.mvvm.viewmodel.HeartBeatViewModel
 import kotlinx.coroutines.runBlocking
 import java.util.Timer
@@ -44,7 +45,11 @@ class HeartbeatService : Service() {
                         cancel()
                         stopSelf()
                     } else {
-                        sendHeartbeat()
+                        if (Constant.APP_ID.isEmpty()) {
+
+                        } else {
+                            sendHeartbeat()
+                        }
                         locationUpload()
                     }
                 }

@@ -15,7 +15,6 @@ class StreetChooseViewModel : BaseViewModel() {
     }
 
     val login2LiveData = MutableLiveData<Login2Bean>()
-    val checkOnWorkLiveData = MutableLiveData<Any>()
 
     fun login2(param: Map<String, Any?>) {
         launch {
@@ -26,19 +25,6 @@ class StreetChooseViewModel : BaseViewModel() {
                 login2LiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
-
-    fun checkOnWork(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.checkOnWork(param)
-            }
-            executeResponse(response, {
-                checkOnWorkLiveData.value = response.data
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
             })
         }
     }

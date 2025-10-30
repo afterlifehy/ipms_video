@@ -2,6 +2,7 @@ package com.peakinfo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
@@ -36,6 +37,7 @@ import com.peakinfo.plateid.adapter.StreetChoosedAdapter
 import com.peakinfo.plateid.databinding.ActivityStreetChooseBinding
 import com.peakinfo.plateid.dialog.StreetChooseListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.StreetChooseViewModel
+import com.peakinfo.plateid.service.HeartbeatService
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
 
@@ -132,7 +134,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     if (baiduLocationUtil == null) {
                         startBaiduMapLocation()
                     }
-                    checkOnWork()
+                    login2()
                 } else {
                     if (rxPermissions.isGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.未获取到位置信息))
@@ -140,7 +142,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
                             if (it) {
                                 startBaiduMapLocation()
-                                checkOnWork()
+                                login2()
                             } else {
                                 ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.请打开位置信息))
                             }
@@ -158,17 +160,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                 }
             }
         }
-    }
-
-    fun checkOnWork() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["loginName"] = loginInfo?.loginName
-        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        param["attr"] = jsonobject
-        mViewModel.checkOnWork(param)
     }
 
     @SuppressLint("MissingPermission")
@@ -211,9 +202,6 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            checkOnWorkLiveData.observe(this@StreetChooseActivity){
-                login2()
-            }
             login2LiveData.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
                 for (i in streetChoosedList) {
@@ -231,6 +219,7 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
                     PreferencesDataStore(BaseApplication.instance()).putString(
                         PreferencesKeys.streetNOs,
                         streetChoosedList.joinToString(separator = ",") { it.streetNo })
+                    startHeartbeatService(this@StreetChooseActivity)
                 }
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
@@ -255,6 +244,15 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             mException.observe(this@StreetChooseActivity) {
                 dismissProgressDialog()
             }
+        }
+    }
+
+    fun startHeartbeatService(context: Context) {
+        val intent = Intent(context, HeartbeatService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
         }
     }
 
