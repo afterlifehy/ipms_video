@@ -207,10 +207,10 @@ class CATransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Act
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["token"] = token
-            jsonobject["carLicense"] = currentTransactionBean?.carLicense
-            param["attr"] = jsonobject
+            param["token"] = token
+            param["district"] = 1
+            param["plateId"] = currentTransactionBean?.carLicense.toString()
+            param["dataTime"] = System.currentTimeMillis()
             mViewModel.caDebtInquiry(param)
         }
     }

@@ -212,7 +212,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 binding.llOperation.show()
                 binding.tvNoData.gone()
                 binding.tvPlate.text = it.plateId
-                if (it.monthPay!! > 0L) {
+                if (it.monthPay != null && it.monthPay!! > 0L) {
                     binding.rtvMonthlyPayment.show()
                 } else {
                     binding.rtvMonthlyPayment.hide()
@@ -228,7 +228,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 val strings3 = arrayOf(i18N(com.peakinfo.base.R.string.已付金额), "${AppUtil.keepNDecimal(it.prepayMoney!! / 100.00, 2)}元")
                 binding.tvPaidAmount.text = AppUtil.getSpan(strings3, sizes, colors)
 
-                if (it.monthPay!! > 0L) {
+                if (it.monthPay != null && it.monthPay!! > 0L) {
                     val strings4 =
                         arrayOf(i18N(com.peakinfo.base.R.string.月结金额), "${AppUtil.keepNDecimal(it.monthPay!! / 100.00, 2)}元")
                     binding.tvMonthPay.text = AppUtil.getSpan(strings4, sizes, colors)

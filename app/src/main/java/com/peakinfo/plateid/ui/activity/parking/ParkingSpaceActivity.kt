@@ -238,7 +238,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 parkingSpaceBean = it
                 binding.tvPlate.text = it.carLicense
-                if (it.monthPay > 0L) {
+                if (it.monthPay != null && it.monthPay > 0L) {
                     binding.rtvMonthlyPayment.show()
                 } else {
                     binding.rtvMonthlyPayment.hide()

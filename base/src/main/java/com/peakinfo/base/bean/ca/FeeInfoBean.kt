@@ -11,7 +11,7 @@ data class FeeInfoBean(
     val roadId: String?,
     val roadName: String?,
     val plateId: String?,
-    val monthPay: Long? = 0L,
+    val monthPay: Long?,
     val plateColor: Int?,
     val arrivedTime: Long?,
     val leftTime: Long?,

@@ -48,6 +48,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
     val sizes2 = intArrayOf(19, 19)
     var paymentQrDialog: PaymentQrDialog? = null
     var orderId = ""
+    var oweOrderId = ""
     var owemoneyInfoBean: OwemoneyInfoBean? = null
     var token = ""
     var count = 0
@@ -76,7 +77,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         binding.layoutToolbar.ivRight.show()
 
         owemoneyInfoBean = intent.getParcelableExtra(ARouterMap.DEBT_ORDER) as? OwemoneyInfoBean
-        oweCount = intent.getIntExtra(ARouterMap.DEBT_ORDER_COUNT,1)
+        oweCount = intent.getIntExtra(ARouterMap.DEBT_ORDER_COUNT, 1)
 
         binding.tvPlate.text = owemoneyInfoBean!!.carLicense
         val strings1 = arrayOf("${AppUtil.keepNDecimal(owemoneyInfoBean!!.oweMoney!! / 100.00, 2)}", "元")
@@ -88,10 +89,16 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
         val strings4 = arrayOf(i18N(com.peakinfo.base.R.string.路段) + "：", owemoneyInfoBean!!.roadName.toString())
         binding.tvStreet.text = AppUtil.getSpan(strings4, sizes2, colors2)
         val strings5 =
-            arrayOf(i18N(com.peakinfo.base.R.string.入场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.arrivedTime!!, "yyyy-MM-dd HH:mm:ss"))
+            arrayOf(
+                i18N(com.peakinfo.base.R.string.入场) + "：",
+                TimeUtils.millis2String(owemoneyInfoBean!!.arrivedTime!!, "yyyy-MM-dd HH:mm:ss")
+            )
         binding.tvStartTime.text = AppUtil.getSpan(strings5, sizes2, colors2)
         val strings6 =
-            arrayOf(i18N(com.peakinfo.base.R.string.出场) + "：", TimeUtils.millis2String(owemoneyInfoBean!!.leftTime!!, "yyyy-MM-dd HH:mm:ss"))
+            arrayOf(
+                i18N(com.peakinfo.base.R.string.出场) + "：",
+                TimeUtils.millis2String(owemoneyInfoBean!!.leftTime!!, "yyyy-MM-dd HH:mm:ss")
+            )
         binding.tvEndTime.text = AppUtil.getSpan(strings6, sizes2, colors2)
 
     }
@@ -137,6 +144,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             payowemoneyLiveData.observe(this@CADebtOrderDetailActivity) {
                 payMoney = it.amount
                 orderId = it.orderId
+                oweOrderId = it.oweOrderId
                 consumeonline(it)
             }
             consumeonlineLiveData.observe(this@CADebtOrderDetailActivity) {
@@ -226,12 +234,23 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
             val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             val param = HashMap<String, Any>()
             val jsonobject = JSONObject()
-            jsonobject["loginName"] = loginName
-            jsonobject["businessId"] = owemoneyInfoBean!!.businessId.toString()
             jsonobject["plateId"] = owemoneyInfoBean!!.carLicense
-            jsonobject["orderId"] = orderId
-            jsonobject["payMoney"] = payMoney
-            jsonobject["orderType"] = "2"
+            jsonobject["oweMoney"] = owemoneyInfoBean!!.oweMoney.toString()
+            jsonobject["orderId"] = owemoneyInfoBean!!.orderId
+            jsonobject["companyPhone"] = owemoneyInfoBean!!.companyPhone ?: ""
+            jsonobject["arrivedTime"] = owemoneyInfoBean!!.arrivedTime
+            jsonobject["leftTime"] = owemoneyInfoBean!!.leftTime
+            jsonobject["arrivedTime"] = owemoneyInfoBean!!.arrivedTime
+            jsonobject["businessId"] = owemoneyInfoBean!!.businessId.toString()
+            jsonobject["companyName"] = owemoneyInfoBean!!.companyName
+            jsonobject["roadName"] = owemoneyInfoBean!!.roadName
+            jsonobject["oweTradeNo"] = oweOrderId
+            jsonobject["districtId"] = owemoneyInfoBean!!.districtId
+            jsonobject["parkingTime"] = owemoneyInfoBean!!.parkingTime
+            jsonobject["roadId"] = owemoneyInfoBean!!.roadId
+            jsonobject["berthId"] = owemoneyInfoBean!!.berthId
+            jsonobject["loginName"] = loginName
+            jsonobject["orderType"] = "3"
             param["attr"] = jsonobject
             mViewModel.qrNotice(param)
         }

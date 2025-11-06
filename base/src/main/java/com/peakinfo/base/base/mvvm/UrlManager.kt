@@ -8,7 +8,7 @@ object UrlManager {
     const val RT_FORMAL_HOST = "http://ipms.rentongtek.com/ipms/service/"
 
     const val DEV_HOST = "http://180.166.5.198:28080/service/parking/"
-    const val FORMAL_HOST = "http://roadparking.jtcx.sh.cn/"
+    const val FORMAL_HOST = "http://roadparking.jtcx.sh.cn/service/parking/"
 
     const val DEV_CA_REPORT = "http://114.94.20.110/ipms/service/"
     const val FORMAL_CA_REPORT = "http://ipms.rentongtek.com/ipms/service/"
