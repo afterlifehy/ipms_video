@@ -7,33 +7,20 @@ package com.custle.ksmkey;
 
 import android.content.Context;
 
-import com.custle.ksmkey.bean.MKResolveResponse;
 import com.custle.ksmkey.certificate.MKCertManager;
 import com.custle.ksmkey.certificate.MKCertSignature;
 import com.custle.ksmkey.certificate.MKSecurity;
 import com.custle.ksmkey.common.MKAppManager;
-import com.custle.ksmkey.common.MKAppNet;
-import com.custle.ksmkey.interfaces.MKBaseValueCallBack;
-import com.custle.ksmkey.service.MKCertService;
 import com.custle.ksmkey.util.MKAppUtils;
 import com.custle.ksmkey.util.MKDeviceIdUtil;
+import com.custle.ksmkey.util.MKNetUtils;
 import com.custle.ksmkey.util.MKUtils;
-import com.custle.okhttp.OkHttpUtils;
-import com.custle.okhttp.https.HttpsUtils;
-
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
-import okhttp3.OkHttpClient;
 
 public class MKeyApi {
     private static volatile MKeyApi mKeyApi = null;
 
     public static String getVersion() {
-        return "1.0.3";
+        return "1.0.4";
     }
 
     public static String getDeviceId(Context context) {
@@ -41,13 +28,13 @@ public class MKeyApi {
     }
 
     public static void initSDK(String url, String contCode) {
-        if (url != null && url.length() != 0) {
+        if (url != null && !url.isEmpty()) {
             MKAppManager.getInstance().setUrl(url);
         } else {
             MKAppManager.getInstance().setUrl("https://device.mkeysec.cn/sdk/v1");
         }
 
-        if (contCode != null && contCode.length() != 0) {
+        if (contCode != null && !contCode.isEmpty()) {
             MKAppManager.getInstance().setContCode(contCode);
         } else {
             MKAppManager.getInstance().setContCode("");
@@ -60,21 +47,21 @@ public class MKeyApi {
             MKAppManager.getInstance().setContext(context);
         }
 
-        if (appId != null && appId.length() != 0) {
+        if (appId != null && !appId.isEmpty()) {
             MKAppManager.getInstance().setAppId(appId);
         }
 
-        if (appCode != null && appCode.length() != 0) {
+        if (appCode != null && !appCode.isEmpty()) {
             MKAppManager.getInstance().setAppCode(appCode);
         }
 
-        if (certId != null && certId.length() != 0) {
+        if (certId != null && !certId.isEmpty()) {
             MKAppManager.getInstance().setCertId(certId);
         }
 
         if (mKeyApi == null) {
             Class var4 = MKeyApi.class;
-            synchronized(MKeyApi.class) {
+            synchronized (MKeyApi.class) {
                 if (mKeyApi == null) {
                     mKeyApi = new MKeyApi();
                 }
@@ -85,44 +72,32 @@ public class MKeyApi {
     }
 
     public MKeyApi() {
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory((InputStream[])null, (InputStream)null, (String)null);
-        OkHttpClient okHttpClient = (new OkHttpClient.Builder()).sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager).hostnameVerifier(new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        }).connectTimeout(30L, TimeUnit.SECONDS).readTimeout(60L, TimeUnit.SECONDS).build();
-        OkHttpUtils.initClient(okHttpClient);
     }
 
     public void applyCert(final String deviceCode, final String unitName, final String envSn, final String certSn, final String pin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getAppCode().length() != 0 && MKAppManager.getInstance().getCertId().length() != 0 && deviceCode != null && deviceCode.length() != 0 && unitName != null && unitName.length() != 0 && pin != null && pin.length() != 0) {
-            MKAppNet.userAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKAppNet.UserAuthCallBack() {
-                public void onSuccess() {
-                    if (certSn != null && certSn.length() != 0) {
-                        MKCertService.certResolve(certSn, new MKBaseValueCallBack() {
-                            public void onResult(Integer ret, String msg, Object object) {
-                                if (ret != 0) {
-                                    MKAppUtils.mkeyResultCallBack(callback, ret, msg);
-                                } else {
-                                    MKResolveResponse.ResolveData resolveData = (MKResolveResponse.ResolveData)object;
-                                    if (resolveData == null) {
-                                        MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+        if (!MKAppManager.getInstance().getAppCode().isEmpty() && !MKAppManager.getInstance().getCertId().isEmpty() && deviceCode != null && !deviceCode.isEmpty() && unitName != null && !unitName.isEmpty() && pin != null && !pin.isEmpty()) {
+            MKNetUtils.MK_UserAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKNetUtils.BaseCallBack() {
+                public void onResult(int ret, String msg) {
+                    if (ret == 0) {
+                        if (certSn != null && !certSn.isEmpty()) {
+                            MKNetUtils.MK_CertResolve(certSn, new MKNetUtils.CertResolveCallBack() {
+                                public void onResult(int ret, String msg, String equipmentCode, String deviceId, String deptName) {
+                                    if (ret != 0) {
+                                        MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                                     } else {
-                                        String certDn = "C=CN,CN=" + resolveData.getEquipmentCode() + ",O=" + resolveData.getDeptName() + ",OU=" + resolveData.getDeviceId();
+                                        String certDn = "C=CN,CN=" + equipmentCode + ",O=" + deptName + ",OU=" + deviceId;
                                         MKCertManager.getInstance().certApply(envSn, certSn, certDn, pin, callback);
                                     }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            String certDn = "C=CN,CN=" + deviceCode + ",O=" + unitName + ",OU=" + MKUtils.getDeviceUuid();
+                            MKCertManager.getInstance().certApply(envSn, certSn, certDn, pin, callback);
+                        }
                     } else {
-                        String certDn = "C=CN,CN=" + deviceCode + ",O=" + unitName + ",OU=" + MKUtils.getDeviceUuid();
-                        MKCertManager.getInstance().certApply(envSn, certSn, certDn, pin, callback);
+                        MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                     }
 
-                }
-
-                public void onFailure(int errCode, String errMsg) {
-                    MKAppUtils.mkeyResultCallBack(callback, errCode, errMsg);
                 }
             });
         } else {
@@ -131,15 +106,16 @@ public class MKeyApi {
     }
 
     public void updateCert(final String deviceCode, final String unitName, final String envSn, final String pin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getAppCode().length() != 0 && MKAppManager.getInstance().getCertId().length() != 0 && deviceCode != null && deviceCode.length() != 0 && pin != null && pin.length() != 0) {
-            MKAppNet.userAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKAppNet.UserAuthCallBack() {
-                public void onSuccess() {
-                    String certDn = "C=CN,CN=" + deviceCode + ",O=" + unitName + ",OU=" + MKDeviceIdUtil.getDeviceId(MKAppManager.getInstance().getContext());
-                    MKCertManager.getInstance().certUpdate(envSn, certDn, pin, callback);
-                }
+        if (!MKAppManager.getInstance().getAppCode().isEmpty() && !MKAppManager.getInstance().getCertId().isEmpty() && deviceCode != null && !deviceCode.isEmpty() && pin != null && !pin.isEmpty()) {
+            MKNetUtils.MK_UserAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKNetUtils.BaseCallBack() {
+                public void onResult(int ret, String msg) {
+                    if (ret == 0) {
+                        String certDn = "C=CN,CN=" + deviceCode + ",O=" + unitName + ",OU=" + MKDeviceIdUtil.getDeviceId(MKAppManager.getInstance().getContext());
+                        MKCertManager.getInstance().certUpdate(envSn, certDn, pin, callback);
+                    } else {
+                        MKAppUtils.mkeyResultCallBack(callback, ret, msg);
+                    }
 
-                public void onFailure(int errCode, String errMsg) {
-                    MKAppUtils.mkeyResultCallBack(callback, errCode, errMsg);
                 }
             });
         } else {
@@ -148,7 +124,7 @@ public class MKeyApi {
     }
 
     public void deleteCert(final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         } else {
             MKCertManager.getInstance().certDelete(callback);
@@ -156,7 +132,7 @@ public class MKeyApi {
     }
 
     public void getCert(final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         } else {
             MKCertManager.getInstance().certGet(callback);
@@ -164,7 +140,7 @@ public class MKeyApi {
     }
 
     public void getCertInfo(String strCert, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         } else {
             MKCertManager.getInstance().certInfoGet(strCert, callback);
@@ -172,7 +148,7 @@ public class MKeyApi {
     }
 
     public void getCertInfoByOid(String strCert, final String strOid, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         }
 
@@ -180,14 +156,15 @@ public class MKeyApi {
     }
 
     public void signature(String deviceCode, final String signSrc, final String pin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getAppCode().length() != 0 && MKAppManager.getInstance().getCertId().length() != 0 && deviceCode != null && deviceCode.length() != 0 && signSrc != null && signSrc.length() != 0 && pin != null && pin.length() != 0) {
-            MKAppNet.userAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKAppNet.UserAuthCallBack() {
-                public void onSuccess() {
-                    MKCertSignature.getInstance().signature(signSrc, pin, callback);
-                }
+        if (!MKAppManager.getInstance().getAppCode().isEmpty() && !MKAppManager.getInstance().getCertId().isEmpty() && deviceCode != null && !deviceCode.isEmpty() && signSrc != null && !signSrc.isEmpty() && pin != null && !pin.isEmpty()) {
+            MKNetUtils.MK_UserAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKNetUtils.BaseCallBack() {
+                public void onResult(int ret, String msg) {
+                    if (ret == 0) {
+                        MKCertSignature.getInstance().signature(signSrc, pin, callback);
+                    } else {
+                        MKAppUtils.mkeyResultCallBack(callback, ret, msg);
+                    }
 
-                public void onFailure(int errCode, String errMsg) {
-                    MKAppUtils.mkeyResultCallBack(callback, errCode, errMsg);
                 }
             });
         } else {
@@ -196,7 +173,7 @@ public class MKeyApi {
     }
 
     public void verifySignature(final String signSrc, String strCert, final String signValue, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() != 0 && signSrc != null && signSrc.length() != 0 && strCert != null && strCert.length() != 0 && signValue != null && signValue.length() != 0) {
+        if (!MKAppManager.getInstance().getCertId().isEmpty() && signSrc != null && !signSrc.isEmpty() && strCert != null && !strCert.isEmpty() && signValue != null && !signValue.isEmpty()) {
             MKCertSignature.getInstance().verifySignature(signSrc, strCert, signValue, callback);
         } else {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
@@ -204,7 +181,7 @@ public class MKeyApi {
     }
 
     public void sm2Encrypt(String srcData, String strCert, MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() != 0 && srcData != null && srcData.length() != 0 && strCert != null && strCert.length() != 0) {
+        if (!MKAppManager.getInstance().getCertId().isEmpty() && srcData != null && !srcData.isEmpty() && strCert != null && !strCert.isEmpty()) {
             MKCertSignature.getInstance().sm2PartEncrypt(srcData, strCert, callback);
         } else {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
@@ -212,14 +189,15 @@ public class MKeyApi {
     }
 
     public void sm2Decrypt(String deviceCode, final String encData, final String pin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getAppCode().length() != 0 && MKAppManager.getInstance().getCertId().length() != 0 && deviceCode != null && deviceCode.length() != 0 && encData != null && encData.length() != 0 && pin != null && pin.length() != 0) {
-            MKAppNet.userAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKAppNet.UserAuthCallBack() {
-                public void onSuccess() {
-                    MKCertSignature.getInstance().sm2PairDecrypt(encData, pin, callback);
-                }
+        if (!MKAppManager.getInstance().getAppCode().isEmpty() && !MKAppManager.getInstance().getCertId().isEmpty() && deviceCode != null && !deviceCode.isEmpty() && encData != null && !encData.isEmpty() && pin != null && !pin.isEmpty()) {
+            MKNetUtils.MK_UserAuth(MKAppManager.getInstance().getContext(), deviceCode, MKAppManager.getInstance().getAppCode(), new MKNetUtils.BaseCallBack() {
+                public void onResult(int ret, String msg) {
+                    if (ret == 0) {
+                        MKCertSignature.getInstance().sm2PairDecrypt(encData, pin, callback);
+                    } else {
+                        MKAppUtils.mkeyResultCallBack(callback, ret, msg);
+                    }
 
-                public void onFailure(int errCode, String errMsg) {
-                    MKAppUtils.mkeyResultCallBack(callback, errCode, errMsg);
                 }
             });
         } else {
@@ -252,7 +230,7 @@ public class MKeyApi {
     }
 
     public void verifyPin(final String pin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() != 0 && pin != null && pin.length() != 0) {
+        if (!MKAppManager.getInstance().getCertId().isEmpty() && pin != null && !pin.isEmpty()) {
             MKCertManager.getInstance().pinVerify(pin, callback);
         } else {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
@@ -260,7 +238,7 @@ public class MKeyApi {
     }
 
     public void modifyPin(final String oldPin, final String newPin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         } else {
             MKCertManager.getInstance().pinChange(oldPin, newPin, callback);
@@ -268,7 +246,7 @@ public class MKeyApi {
     }
 
     public void unlockPin(final String adminPin, final String newPin, final MKeyApiCallback callback) {
-        if (MKAppManager.getInstance().getCertId().length() == 0) {
+        if (MKAppManager.getInstance().getCertId().isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 2, "输入参数错误");
         } else {
             MKCertManager.getInstance().pinUnlock(adminPin, newPin, callback);

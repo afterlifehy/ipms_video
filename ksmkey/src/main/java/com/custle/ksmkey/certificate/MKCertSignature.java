@@ -7,16 +7,10 @@ package com.custle.ksmkey.certificate;
 
 import android.content.Context;
 import android.util.Base64;
-
 import com.custle.ksmkey.MKeyApiCallback;
-import com.custle.ksmkey.bean.MKDecryptValueBean;
-import com.custle.ksmkey.bean.MKSignValueBean;
 import com.custle.ksmkey.common.MKAppManager;
-import com.custle.ksmkey.interfaces.MKBaseValueCallBack;
-import com.custle.ksmkey.service.MKCertService;
 import com.custle.ksmkey.util.MKAppUtils;
-
-import java.util.List;
+import com.custle.ksmkey.util.MKNetUtils;
 
 public class MKCertSignature {
     private static volatile MKCertSignature certSignature = null;
@@ -47,7 +41,7 @@ public class MKCertSignature {
         } else {
             String strCert = Base64.encodeToString(pbCert, 0, iCertLen[0], 2);
             KSCertInfo certInfo = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfo(strCert);
-            if (certInfo != null && certInfo.getCertSn() != null && certInfo.getCertSn().length() != 0) {
+            if (certInfo != null && certInfo.getCertSn() != null && !certInfo.getCertSn().isEmpty()) {
                 iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).verifyPin(certId, pin);
                 if (iRet == 0) {
                     this.signature(certId, certInfo.getCertSn(), signSrc, pin, callback);
@@ -96,33 +90,27 @@ public class MKCertSignature {
             byte[] pbSignS1 = new byte[64];
             iRet = KSCertificate.getInstance(context).sm2PartSignS1(userID, signHandle[0], pin, pbSignS1);
             if (iRet != 0) {
-                MKAppUtils.mkeyResultCallBack(callback, iRet, "签名失败");
+                MKAppUtils.mkeyResultCallBack(callback, iRet, "签名S1失败");
                 return;
             }
 
             String strSignS1 = Base64.encodeToString(pbSignS1, 0, 64, 2);
-            MKCertService.serverSignNet(certSn, strSignS1, strDigest, strKeyId, new MKBaseValueCallBack() {
-                public void onResult(Integer ret, String msg, Object object) {
+            MKNetUtils.MK_KeySign(certSn, strKeyId, strDigest, strSignS1, new MKNetUtils.BaseValueCallBack() {
+                public void onResult(int ret, String msg, Object object) {
                     if (ret != 0) {
                         MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                     } else {
-                        MKSignValueBean.SignData signData = (MKSignValueBean.SignData)object;
-                        if (signData == null) {
-                            MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+                        byte[] pbSignS2 = Base64.decode((String)object, 2);
+                        byte[] pbSignValue = new byte[128];
+                        int[] iSignValueLen = new int[2];
+                        int res = KSCertificate.getInstance(context).sm2PartSignS3(userID, signHandle[0], pbSignS2, pin, pbSignValue, iSignValueLen);
+                        if (res == 0) {
+                            String strSign = Base64.encodeToString(pbSignValue, 0, iSignValueLen[0], 2);
+                            MKAppUtils.mkeyResultCallBack(callback, 0, "签名成功", strSign);
                         } else {
-                            List<String> signValueList = signData.getSignValue();
-                            byte[] pbSignS2 = Base64.decode((String)signValueList.get(0), 2);
-                            byte[] pbSignValue = new byte[128];
-                            int[] iSignValueLen = new int[2];
-                            int res = KSCertificate.getInstance(context).sm2PartSignS3(userID, signHandle[0], pbSignS2, pin, pbSignValue, iSignValueLen);
-                            if (res == 0) {
-                                String strSign = Base64.encodeToString(pbSignValue, 0, iSignValueLen[0], 2);
-                                MKAppUtils.mkeyResultCallBack(callback, 0, "签名成功", strSign);
-                            } else {
-                                MKAppUtils.mkeyResultCallBack(callback, res, "签名失败");
-                            }
-
+                            MKAppUtils.mkeyResultCallBack(callback, res, "签名失败");
                         }
+
                     }
                 }
             });
@@ -215,7 +203,7 @@ public class MKCertSignature {
         } else {
             String strCert = Base64.encodeToString(pbCert, 0, iCertLen[0], 2);
             KSCertInfo certInfo = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfo(strCert);
-            if (certInfo != null && certInfo.getCertSn() != null && certInfo.getCertSn().length() != 0) {
+            if (certInfo != null && certInfo.getCertSn() != null && !certInfo.getCertSn().isEmpty()) {
                 iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).verifyPin(certId, pin);
                 if (iRet == 0) {
                     this.sm2PairDecrypt(certId, encData, certInfo.getCertSn(), pin, callback);
@@ -263,27 +251,22 @@ public class MKCertSignature {
             }
 
             String strT1 = Base64.encodeToString(pbDecT1, 0, iT1Len[0], 2);
-            MKCertService.serverDecryptNet(strT1, certSn, strKeyId, new MKBaseValueCallBack() {
-                public void onResult(Integer ret, String msg, Object object) {
+            MKNetUtils.MK_KeyDecrypt(certSn, strKeyId, strT1, new MKNetUtils.BaseValueCallBack() {
+                public void onResult(int ret, String msg, Object object) {
                     if (ret != 0) {
                         MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                     } else {
-                        MKDecryptValueBean.DecryptData decryptData = (MKDecryptValueBean.DecryptData)object;
-                        if (decryptData != null && decryptData.getDecStr() != null) {
-                            byte[] pbDecT2 = Base64.decode(decryptData.getDecStr(), 2);
-                            byte[] pbDecT3 = new byte[encData.length() - 90];
-                            int[] iT3Len = new int[2];
-                            int res = KSCertificate.getInstance(context).sm2PartDecryptT3(userID, decHandle[0], pbDecT2, pbDecT2.length, pbDecT3, iT3Len);
-                            if (res == 0) {
-                                String strDec = new String(pbDecT3, 0, iT3Len[0]);
-                                MKAppUtils.mkeyResultCallBack(callback, 0, "解密成功", strDec);
-                            } else {
-                                MKAppUtils.mkeyResultCallBack(callback, res, "解密失败");
-                            }
-
+                        byte[] pbDecT2 = Base64.decode((String)object, 2);
+                        byte[] pbDecT3 = new byte[encData.length() - 90];
+                        int[] iT3Len = new int[2];
+                        int res = KSCertificate.getInstance(context).sm2PartDecryptT3(userID, decHandle[0], pbDecT2, pbDecT2.length, pbDecT3, iT3Len);
+                        if (res == 0) {
+                            String strDec = new String(pbDecT3, 0, iT3Len[0]);
+                            MKAppUtils.mkeyResultCallBack(callback, 0, "解密成功", strDec);
                         } else {
-                            MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+                            MKAppUtils.mkeyResultCallBack(callback, res, "解密失败");
                         }
+
                     }
                 }
             });

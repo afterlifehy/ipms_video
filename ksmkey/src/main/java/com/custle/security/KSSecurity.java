@@ -13,9 +13,6 @@ public class KSSecurity {
 
     public KSSecurity() {
     }
-    static {
-        System.loadLibrary("KSSecurity");
-    }
 
     public static native String getVersion();
 
@@ -32,6 +29,8 @@ public class KSSecurity {
     public static native boolean logout(long handle);
 
     public static native int makeP10(Context ctx, long handle, String key, String dn, byte[] p10, int[] p10Len, boolean isApply);
+
+    public static native int MakeP10TmpKeyDelete(long handle, boolean isApply);
 
     public static native int saveCert(Context ctx, long handle, String cont, String key, String signCert, String encCert, String encKey, boolean isApply);
 

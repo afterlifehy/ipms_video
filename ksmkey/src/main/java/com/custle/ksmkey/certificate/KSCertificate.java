@@ -6,11 +6,9 @@
 package com.custle.ksmkey.certificate;
 
 import android.content.Context;
-
 import com.custle.ksmkey.util.MKDateUtils;
 import com.custle.ksmkey.util.MKFileUtils;
 import com.custle.security.KSSecurity;
-
 import java.text.ParseException;
 import java.util.Date;
 
@@ -77,7 +75,7 @@ public class KSCertificate {
     public KSCertInfo getCertInfo(String cert) {
         KSCertInfo certInfo = null;
         long handle = KSSecurity.initialize("");
-        if (cert != null && cert.length() != 0) {
+        if (cert != null && !cert.isEmpty()) {
             certInfo = new KSCertInfo();
             byte[] info = new byte[128];
             int[] infoLen = new int[2];
@@ -139,7 +137,7 @@ public class KSCertificate {
     public String getCertInfoByOid(String cert, String oid) {
         String strOidValue = null;
         long handle = KSSecurity.initialize("");
-        if (cert != null && cert.length() != 0) {
+        if (cert != null && !cert.isEmpty()) {
             byte[] info = new byte[128];
             int[] infoLen = new int[2];
             int iRet = KSSecurity.getCertInfoByOid(handle, cert, oid, info, infoLen);
@@ -212,6 +210,14 @@ public class KSCertificate {
                 return iRet;
             }
         }
+    }
+
+    public int makeP10TmpKeyDelete(String userId, boolean isApply) {
+        String path = this.mRootPath + userId;
+        long handle = KSSecurity.initialize(path);
+        int iRet = KSSecurity.MakeP10TmpKeyDelete(handle, isApply);
+        KSSecurity.release(handle);
+        return iRet;
     }
 
     public int saveCert(String userId, String signCert, String encCert, String encKey, String pin, boolean isApply) {

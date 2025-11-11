@@ -5,9 +5,11 @@
 
 package com.custle.ksmkey.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 public class MKAppManager {
+    @SuppressLint({"StaticFieldLeak"})
     private static volatile MKAppManager appManager = null;
     private Context context;
     private String url;

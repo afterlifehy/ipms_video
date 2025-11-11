@@ -5,10 +5,10 @@
 
 package com.custle.ksmkey.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings.Secure;
-
 import java.security.MessageDigest;
 import java.util.Locale;
 
@@ -18,19 +18,19 @@ public class MKDeviceIdUtil {
 
     public static String getDeviceId(Context context) {
         String androidId = getAndroidId(context);
-        if (androidId != null && androidId.length() != 0) {
+        if (androidId != null && !androidId.isEmpty()) {
             return androidId;
         } else {
             String serial = getSERIAL();
-            return serial != null && serial.length() != 0 ? getSERIAL() : getDeviceUUID();
+            return serial != null && !serial.isEmpty() ? getSERIAL() : getDeviceUUID();
         }
     }
 
+    @SuppressLint({"HardwareIds"})
     private static String getAndroidId(Context context) {
         try {
             return Secure.getString(context.getContentResolver(), "android_id");
         } catch (Exception var2) {
-            var2.printStackTrace();
             return "";
         }
     }

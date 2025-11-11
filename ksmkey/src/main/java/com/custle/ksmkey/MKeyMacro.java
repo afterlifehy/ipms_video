@@ -15,6 +15,7 @@ public class MKeyMacro {
     public static final int ERR_USER_AUTH = 13;
     public static final int ERR_APP_AUTH = 14;
     public static final int ERR_RESPONSE_NULL = 15;
+    public static final int ERR_RESPONSE_DATA = 16;
     public static final int ERR_CERT_APPLY = 100;
     public static final int ERR_CSR_MAKE = 101;
     public static final int ERR_KEY_GEN = 102;

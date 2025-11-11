@@ -6,16 +6,12 @@
 package com.custle.ksmkey.certificate;
 
 import android.util.Base64;
-
 import com.custle.ksmkey.MKeyApiCallback;
-import com.custle.ksmkey.bean.MKApplyCertResponse;
 import com.custle.ksmkey.common.MKAppManager;
-import com.custle.ksmkey.interfaces.MKBaseCallBack;
-import com.custle.ksmkey.interfaces.MKBaseValueCallBack;
-import com.custle.ksmkey.service.MKCertService;
 import com.custle.ksmkey.util.MKAppUtils;
-import com.custle.ksmkey.util.MKJsonUtil;
+import com.custle.ksmkey.util.MKNetUtils;
 import com.custle.ksmkey.util.MKUtils;
+import org.json.JSONObject;
 
 public class MKCertManager {
     private static volatile MKCertManager certManager = null;
@@ -50,14 +46,14 @@ public class MKCertManager {
 
     private void certApplyByKeyId(final String envSn, final String certSn, final String p10, final String pin, final MKeyApiCallback callback) {
         String keyId = MKUtils.getP10Item(p10, 2);
-        MKCertService.getCertFormKeyId(keyId, new MKCertService.QueryCertCallBack() {
-            public void onResult(int ret, String msg, String cert) {
+        MKNetUtils.MK_GetCertFormKeyId(keyId, new MKNetUtils.BaseValueCallBack() {
+            public void onResult(int ret, String msg, Object object) {
                 if (ret == 0) {
-                    int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), cert, "", "", pin, true);
+                    int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), (String)object, "", "", pin, true);
                     if (iRet == 0) {
-                        MKAppUtils.mkeyResultCallBack(callback, 0, "证书更新成功");
+                        MKAppUtils.mkeyResultCallBack(callback, 0, "证书申请成功");
                     } else {
-                        MKAppUtils.mkeyResultCallBack(callback, iRet, "证书更新失败");
+                        MKCertManager.this.certApplyGenKey(envSn, certSn, p10, pin, callback);
                     }
                 } else {
                     MKCertManager.this.certApplyGenKey(envSn, certSn, p10, pin, callback);
@@ -71,11 +67,15 @@ public class MKCertManager {
         String key = MKUtils.getP10Item(p10, 1);
         final String keyId = MKUtils.getP10Item(p10, 2);
         final String csr = MKUtils.getP10Item(p10, 3);
-        MKCertService.genKeyPairPostServerNet(key, keyId, new MKBaseCallBack() {
-            public void onResult(Integer ret, String msg) {
+        MKNetUtils.MK_PostGenKey(key, keyId, new MKNetUtils.BaseCallBack() {
+            public void onResult(int ret, String msg) {
                 if (ret == 0) {
                     MKCertManager.this.CertApplyRequestCert(envSn, certSn, csr, keyId, pin, callback);
                 } else {
+                    if (ret == 1050) {
+                        KSCertificate.getInstance(MKAppManager.getInstance().getContext()).makeP10TmpKeyDelete(MKCertManager.this.getCertId(), true);
+                    }
+
                     MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                 }
 
@@ -84,45 +84,43 @@ public class MKCertManager {
     }
 
     private void CertApplyRequestCert(String envSn, String certSn, String csr, String keyId, final String pin, final MKeyApiCallback callback) {
-        if (certSn != null && certSn.length() != 0) {
-            MKCertService.reApplyCertRequestCertNet(envSn, certSn, csr, keyId, new MKBaseValueCallBack() {
-                public void onResult(Integer ret, String msg, Object object) {
+        if (certSn != null && !certSn.isEmpty()) {
+            MKNetUtils.MK_ReApplyCert(envSn, certSn, keyId, csr, new MKNetUtils.BaseValueCallBack() {
+                public void onResult(int ret, String msg, Object object) {
                     if (ret != 0) {
+                        if (ret == 1050) {
+                            KSCertificate.getInstance(MKAppManager.getInstance().getContext()).makeP10TmpKeyDelete(MKCertManager.this.getCertId(), true);
+                        }
+
                         MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                     } else {
-                        MKApplyCertResponse.CertInfo certInfo = (MKApplyCertResponse.CertInfo)object;
-                        if (certInfo == null) {
-                            MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+                        int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), (String)object, "", "", pin, true);
+                        if (iRet == 0) {
+                            MKAppUtils.mkeyResultCallBack(callback, 0, "证书重签成功");
                         } else {
-                            int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), certInfo.getCert(), "", "", pin, true);
-                            if (iRet == 0) {
-                                MKAppUtils.mkeyResultCallBack(callback, 0, "证书重签成功");
-                            } else {
-                                MKAppUtils.mkeyResultCallBack(callback, iRet, "证书保存失败");
-                            }
-
+                            MKAppUtils.mkeyResultCallBack(callback, iRet, "证书保存失败");
                         }
+
                     }
                 }
             });
         } else {
-            MKCertService.applyCertRequestCertNet(envSn, csr, keyId, new MKBaseValueCallBack() {
-                public void onResult(Integer ret, String msg, Object object) {
+            MKNetUtils.MK_ApplyCert(envSn, keyId, csr, new MKNetUtils.BaseValueCallBack() {
+                public void onResult(int ret, String msg, Object object) {
                     if (ret != 0) {
+                        if (ret == 1050) {
+                            KSCertificate.getInstance(MKAppManager.getInstance().getContext()).makeP10TmpKeyDelete(MKCertManager.this.getCertId(), true);
+                        }
+
                         MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                     } else {
-                        MKApplyCertResponse.CertInfo certInfo = (MKApplyCertResponse.CertInfo)object;
-                        if (certInfo == null) {
-                            MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+                        int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), (String)object, "", "", pin, true);
+                        if (iRet == 0) {
+                            MKAppUtils.mkeyResultCallBack(callback, 0, "证书申请成功");
                         } else {
-                            int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), certInfo.getCert(), "", "", pin, true);
-                            if (iRet == 0) {
-                                MKAppUtils.mkeyResultCallBack(callback, 0, "证书申请成功");
-                            } else {
-                                MKAppUtils.mkeyResultCallBack(callback, iRet, "证书保存失败");
-                            }
-
+                            MKAppUtils.mkeyResultCallBack(callback, iRet, "证书保存失败");
                         }
+
                     }
                 }
             });
@@ -140,7 +138,7 @@ public class MKCertManager {
         } else {
             String strCert = Base64.encodeToString(pbCert, 0, iCertLen[0], 2);
             KSCertInfo certInfo = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfo(strCert);
-            if (certInfo != null && certInfo.getCertSn() != null && certInfo.getCertSn().length() != 0) {
+            if (certInfo != null && certInfo.getCertSn() != null && !certInfo.getCertSn().isEmpty()) {
                 iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).verifyPin(certId, pin);
                 if (iRet == 0) {
                     byte[] pbP10 = new byte[1024];
@@ -171,10 +169,10 @@ public class MKCertManager {
 
     private void certUpdateByKeyId(final String envSn, final String p10, final String pin, final String certSn, final MKeyApiCallback callback) {
         String keyId = MKUtils.getP10Item(p10, 2);
-        MKCertService.getCertFormKeyId(keyId, new MKCertService.QueryCertCallBack() {
-            public void onResult(int ret, String msg, String cert) {
+        MKNetUtils.MK_GetCertFormKeyId(keyId, new MKNetUtils.BaseValueCallBack() {
+            public void onResult(int ret, String msg, Object object) {
                 if (ret == 0) {
-                    int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), cert, "", "", pin, false);
+                    int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), (String)object, "", "", pin, false);
                     if (iRet == 0) {
                         MKAppUtils.mkeyResultCallBack(callback, 0, "证书更新成功");
                     } else {
@@ -192,11 +190,15 @@ public class MKCertManager {
         String key = MKUtils.getP10Item(p10, 1);
         final String keyId = MKUtils.getP10Item(p10, 2);
         final String csr = MKUtils.getP10Item(p10, 3);
-        MKCertService.genKeyPairPostServerNet(key, keyId, new MKBaseCallBack() {
-            public void onResult(Integer ret, String msg) {
+        MKNetUtils.MK_PostGenKey(key, keyId, new MKNetUtils.BaseCallBack() {
+            public void onResult(int ret, String msg) {
                 if (ret == 0) {
                     MKCertManager.this.CertUpdateRequestCert(envSn, certSn, csr, keyId, pin, callback);
                 } else {
+                    if (ret == 1050) {
+                        KSCertificate.getInstance(MKAppManager.getInstance().getContext()).makeP10TmpKeyDelete(MKCertManager.this.getCertId(), false);
+                    }
+
                     MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                 }
 
@@ -205,23 +207,22 @@ public class MKCertManager {
     }
 
     private void CertUpdateRequestCert(String envSn, String certSn, String p10, String keyId, final String pin, final MKeyApiCallback callback) {
-        MKCertService.updateCertRequestCertNet(envSn, certSn, p10, keyId, new MKBaseValueCallBack() {
-            public void onResult(Integer ret, String msg, Object object) {
+        MKNetUtils.MK_UpdateCert(envSn, certSn, keyId, p10, new MKNetUtils.BaseValueCallBack() {
+            public void onResult(int ret, String msg, Object object) {
                 if (ret != 0) {
+                    if (ret == 1050) {
+                        KSCertificate.getInstance(MKAppManager.getInstance().getContext()).makeP10TmpKeyDelete(MKCertManager.this.getCertId(), false);
+                    }
+
                     MKAppUtils.mkeyResultCallBack(callback, ret, msg);
                 } else {
-                    MKApplyCertResponse.CertInfo certInfo = (MKApplyCertResponse.CertInfo)object;
-                    if (certInfo == null) {
-                        MKAppUtils.mkeyResultCallBack(callback, 15, "服务返回数据为空");
+                    int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), (String)object, "", "", pin, false);
+                    if (iRet == 0) {
+                        MKAppUtils.mkeyResultCallBack(callback, 0, "证书更新成功");
                     } else {
-                        int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).saveCert(MKCertManager.this.getCertId(), certInfo.getCert(), "", "", pin, false);
-                        if (iRet == 0) {
-                            MKAppUtils.mkeyResultCallBack(callback, 0, "证书更新成功");
-                        } else {
-                            MKAppUtils.mkeyResultCallBack(callback, iRet, "证书更新失败");
-                        }
-
+                        MKAppUtils.mkeyResultCallBack(callback, iRet, "证书更新失败");
                     }
+
                 }
             }
         });
@@ -240,33 +241,45 @@ public class MKCertManager {
     }
 
     public void certInfoGet(String strCert, MKeyApiCallback callback) {
-        String strTCert = "";
-        if (strCert != null && strCert.length() != 0) {
-            strTCert = strCert;
-        } else {
-            byte[] pbCert = new byte[2048];
-            int[] iCertLen = new int[2];
-            int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCert(this.getCertId(), 1, pbCert, iCertLen);
-            if (iRet != 0) {
-                MKAppUtils.mkeyResultCallBack(callback, iRet, "证书获取失败");
+        try {
+            String strTCert = "";
+            if (strCert != null && !strCert.isEmpty()) {
+                strTCert = strCert;
+            } else {
+                byte[] pbCert = new byte[2048];
+                int[] iCertLen = new int[2];
+                int iRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCert(this.getCertId(), 1, pbCert, iCertLen);
+                if (iRet != 0) {
+                    MKAppUtils.mkeyResultCallBack(callback, iRet, "证书获取失败");
+                    return;
+                }
+
+                strTCert = Base64.encodeToString(pbCert, 0, iCertLen[0], 2);
+            }
+
+            KSCertInfo certInfo = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfo(strTCert);
+            if (certInfo == null || certInfo.getCertSn() == null || certInfo.getCertSn().isEmpty()) {
+                MKAppUtils.mkeyResultCallBack(callback, 104, "获取证书信息失败");
                 return;
             }
 
-            strTCert = Base64.encodeToString(pbCert, 0, iCertLen[0], 2);
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("certSn", certInfo.getCertSn());
+            jsonObj.put("certIssuer", certInfo.getIssuerCN());
+            jsonObj.put("certSubject", certInfo.getSubjectCN());
+            jsonObj.put("startDate", certInfo.getStartDate());
+            jsonObj.put("endDate", certInfo.getEndDate());
+            String strCertInfo = jsonObj.toString();
+            MKAppUtils.mkeyResultCallBack(callback, 0, "证书信息获取成功", strCertInfo);
+        } catch (Exception var7) {
+            MKAppUtils.mkeyResultCallBack(callback, 12, var7.getLocalizedMessage());
         }
 
-        KSCertInfo certInfo = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfo(strTCert);
-        if (certInfo != null && certInfo.getCertSn() != null && certInfo.getCertSn().length() != 0) {
-            String strCertInfo = MKJsonUtil.toJson(certInfo);
-            MKAppUtils.mkeyResultCallBack(callback, 0, "证书信息获取成功", strCertInfo);
-        } else {
-            MKAppUtils.mkeyResultCallBack(callback, 104, "获取证书信息失败");
-        }
     }
 
     public void certOidInfoGet(String strCert, String strOid, MKeyApiCallback callback) {
         String strTCert = "";
-        if (strCert != null && strCert.length() != 0) {
+        if (strCert != null && !strCert.isEmpty()) {
             strTCert = strCert;
         } else {
             byte[] pbCert = new byte[2048];
@@ -281,7 +294,7 @@ public class MKCertManager {
         }
 
         String strOidValue = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).getCertInfoByOid(strTCert, strOid);
-        if (strOidValue != null && strOidValue.length() != 0) {
+        if (strOidValue != null && !strOidValue.isEmpty()) {
             MKAppUtils.mkeyResultCallBack(callback, 0, "证书OID信息获取成功", strOidValue);
         } else {
             MKAppUtils.mkeyResultCallBack(callback, 106, "证书OID信息获取失败");
@@ -290,7 +303,7 @@ public class MKCertManager {
     }
 
     public void certDelete(MKeyApiCallback callback) {
-        Boolean bRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).deleteCert(this.getCertId());
+        boolean bRet = KSCertificate.getInstance(MKAppManager.getInstance().getContext()).deleteCert(this.getCertId());
         if (bRet) {
             MKAppUtils.mkeyResultCallBack(callback, 0, "证书删除成功");
         } else {
