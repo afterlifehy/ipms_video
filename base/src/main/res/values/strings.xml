@@ -171,4 +171,9 @@
     <string name="更正泊位号">更正泊位号</string>
     <string name="告知书">告知书</string>
     <string name="预支付">预支付</string>
+    <string name="全选">全选</string>
+    <string name="确认上传">确认上传</string>
+    <string name="日志上传">日志上传</string>
+    <string name="温馨提示">温馨提示</string>
+    <string name="确认">确认</string>
 </resources>

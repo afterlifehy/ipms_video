@@ -11,6 +11,7 @@ import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import com.peakinfo.base.bean.ca.UrgeBean
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 
@@ -351,4 +352,11 @@ interface Api {
      */
     @POST("S_VO3_20")
     suspend fun logoutCheckOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any>
+
+    /**
+     * 日志上传
+     */
+    @Multipart
+    @POST("upload")
+    suspend fun logFileUpload(@Part file: MultipartBody.Part): HttpWrapper<Any>
 }

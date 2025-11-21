@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.aries.ui.view.radius.RadiusFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingEnd="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10"
+    app:rv_backgroundColor="@color/white"
+    app:rv_radius="@dimen/dp_10">
+
+    <CheckBox
+        android:id="@+id/cb_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:button="@drawable/selector_check"
+        android:paddingStart="@dimen/dp_12"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_16"
+        tools:text="2024-10-16.log" />
+</com.aries.ui.view.radius.RadiusFrameLayout>

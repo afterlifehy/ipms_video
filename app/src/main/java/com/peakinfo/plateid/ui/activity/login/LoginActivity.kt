@@ -66,14 +66,37 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var streetListDialog: StreetChooseListDialog? = null
     var streetList: MutableList<Street> = ArrayList()
     var streetChoosedList: MutableList<Street> = ArrayList()
+    var isFirst = true
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(baiduLocationLoginEvent: BaiduLocationLoginEvent) {
         startBaiduMapLocation()
     }
 
-    @SuppressLint("CheckResult", "MissingPermission")
     override fun initView() {
+        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
+        if (AppUtils.isAppInstalled("com.rt.ipms_video")) {
+            AppUtils.uninstallApp("com.rt.ipms_video")
+        }
+        if (AppUtils.isAppInstalled("com.rt.ipms_geo")) {
+            val info = packageManager.getPackageInfo("com.rt.ipms_geo", 0)
+            val versionName = info.versionName
+            if (versionName == "2.4.9") {
+                AppUtils.uninstallApp("com.rt.ipms_geo")
+            }
+        }
+        checkUpdate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirst) {
+            checkUpdateApi()
+        }
+    }
+
+    @SuppressLint("CheckResult", "MissingPermission")
+    fun checkUpdate() {
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT,
@@ -115,20 +138,11 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     }
                 }
                 Constant.deviceId = AppUtil.getDeviceId()
-                checkUpdate()
-                querySim()
-            }
-        }
-
-        binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
-        if (AppUtils.isAppInstalled("com.rt.ipms_video")) {
-            AppUtils.uninstallApp("com.rt.ipms_video")
-        }
-        if (AppUtils.isAppInstalled("com.rt.ipms_geo")) {
-            val info = packageManager.getPackageInfo("com.rt.ipms_geo", 0)
-            val versionName = info.versionName
-            if (versionName == "2.4.9") {
-                AppUtils.uninstallApp("com.rt.ipms_geo")
+                checkUpdateApi()
+                if (querySimBean == null) {
+                    querySim()
+                    isFirst = false
+                }
             }
         }
     }
@@ -520,7 +534,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.caLogin(param)
     }
 
-    fun checkUpdate() {
+    fun checkUpdateApi() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["version"] = AppUtils.getAppVersionCode()

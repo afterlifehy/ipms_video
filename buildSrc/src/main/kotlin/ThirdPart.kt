@@ -158,4 +158,7 @@ object ThirdPart {
     const val umeng_apm = "com.umeng.umsdk:apm:1.5.2"
 
     const val baiduMapLocation = "com.baidu.lbsyun:BaiduMapSDK_Location:9.3.7"
+
+    const val slf4j = "org.slf4j:slf4j-api:2.0.7"
+    const val logback = "com.github.tony19:logback-android:3.0.0"
 }

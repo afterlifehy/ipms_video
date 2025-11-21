@@ -18,5 +18,7 @@ object Constant {
 
     var APP_ID = ""
     var PASSWORD = ""
+
+    const val LOG_DIR_NAME = "logs"
 }
 

@@ -65,6 +65,7 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
         binding.flFeeRate.setOnClickListener(this)
         binding.rtvLogout.setOnClickListener(this)
         binding.flModifyPw.setOnClickListener(this)
+        binding.flLog.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -121,6 +122,10 @@ class MineActivity : VbBaseActivity<MineViewModel, ActivityMineBinding>(), OnCli
                         putString(ARouterMap.RESET_PW_ACCOUNT, loginName)
                     })
                 }
+            }
+
+            R.id.fl_log -> {
+                ARouter.getInstance().build(ARouterMap.LOG_UPLOAD).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rtv_logout -> {

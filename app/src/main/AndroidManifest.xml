@@ -313,5 +313,10 @@
             android:name="com.peakinfo.plateid.ca.ui.activity.CALogoutActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name="com.peakinfo.plateid.ui.activity.mine.LogUploadActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

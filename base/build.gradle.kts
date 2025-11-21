@@ -218,6 +218,9 @@ dependencies {
 //    }
     api(ThirdPart.baiduMapLocation)
 
+    api(ThirdPart.slf4j)
+    api(ThirdPart.logback)
+
 //    api(project(":ksmkey"))
     api(project(":security"))
     api(project(":ksmkey"))

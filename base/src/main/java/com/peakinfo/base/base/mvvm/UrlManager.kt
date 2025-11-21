@@ -17,6 +17,8 @@ object UrlManager {
     const val DEV_CA = "http://103.36.136.173:1880/possdk/v1"
     const val FORMAL_CA = "https://parkapp.jtcx.sh.cn/ca/possdk/v1"
 
+    const val File_HOST = "http://114.94.20.110/ipms/file/omor01/"
+
     fun getRTServerUrl(): String {
         if (BuildConfig.is_dev) {
             return RT_DEV_HOST
@@ -47,5 +49,9 @@ object UrlManager {
         } else {
             return FORMAL_CA
         }
+    }
+
+    fun getFileServerUrl(): String {
+        return File_HOST
     }
 }

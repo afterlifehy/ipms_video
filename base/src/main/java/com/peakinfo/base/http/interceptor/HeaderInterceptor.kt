@@ -28,6 +28,8 @@ class HeaderInterceptor : Interceptor {
             charset = contentType.charset(charset)
             val requestParams = buffer.readString(charset)
             sortParam = getSortForm(requestParams).toString()
+        } else if (contentType.type == "multipart") {
+
         } else {
             charset = contentType.charset(charset)
             val requestParams = buffer.readString(charset)

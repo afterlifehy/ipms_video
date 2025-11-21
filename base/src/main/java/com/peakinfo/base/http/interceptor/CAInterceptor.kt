@@ -13,7 +13,6 @@ import com.peakinfo.base.base.mvvm.UrlManager
 import com.peakinfo.base.base.mvvm.repository.LoginRepository
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
-import com.peakinfo.base.ext.log
 import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import kotlinx.coroutines.runBlocking
@@ -23,11 +22,14 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.Buffer
 import org.json.JSONObject
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.nio.charset.StandardCharsets
 
 class CAInterceptor : Interceptor {
     var unitName = "中科国智科技服务（上海）有限公司"
     private val pin = "1234567"
+    val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
 
     companion object {
         private val appId = "58"
@@ -58,9 +60,9 @@ class CAInterceptor : Interceptor {
         Log.v("1234", sign)
         val base64EncodedParams = base64Encode2String(parameterStr)
         if (base64EncodedParams.length < 400) {
-//            LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    签名body转base64:  $base64EncodedParams")
+            log.info("签名body转base64:  $base64EncodedParams")
         } else {
-//            LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    签名body转base64:  ${base64EncodedParams.substring(0, 400)}")
+            log.info("签名body转base64:  ${base64EncodedParams.substring(0, 400)}")
         }
 
         var time = 1000 * 20
@@ -68,14 +70,12 @@ class CAInterceptor : Interceptor {
         var type = "2"//1:申请证书，2：重签 ，3：更新证书
         if (Constant.needCert) {
             caClient.applyCert(deviceId, unitName, "", "", pin) {
-                log("申请证书结果 ${it.code},${it.data},${it.msg}")
-//                LogFileUtil.logToFile("${AppUtil.getCurrentTime()}   申请证书结果 ${it.code},${it.data},${it.msg}")
+                log.info("申请证书结果 ${it.code},${it.data},${it.msg}")
                 if (it.code == 0) {
                     Constant.needCert = false
                     type = "1"
                     caClient.getCertInfo("") {
-                        log(" 获取证书certSn ${it.code}${it.msg}${it.data} ")
-//                        LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    获取证书certSn ${it.code}${it.msg}${it.data} ")
+                        log.info(" 获取证书certSn ${it.code}${it.msg}${it.data} ")
                         if (it.code == 0) {
                             val jsonObject = JSONObject(it.data)
                             val certSn = jsonObject.getString("certSn")
@@ -107,8 +107,7 @@ class CAInterceptor : Interceptor {
 
                     caClient.signature(deviceId, base64EncodedParams, pin) {
                         val caSign = deviceId + "|" + it.data
-                        log(" 签名 head caSign $caSign")
-//                        LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    重签 head caSign $caSign")
+                        log.info(" 签名 head caSign $caSign")
                         if (request.method.equals("get", ignoreCase = true)) {
                             request = request.newBuilder().addHeader("ca-sign", caSign).addHeader("sign", sign)
                                 .addHeader("Accept", "application/json").get().build()
@@ -126,14 +125,12 @@ class CAInterceptor : Interceptor {
             }
         } else if (Constant.refreshCert) {
             caClient.updateCert(deviceId, unitName, "", pin) {
-                log("更新证书" + it.code + it.msg)
-//                LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    更新证书 " + it.code + it.msg)
+                log.info("更新证书" + it.code + it.msg)
                 if (it.code == 0) {
                     Constant.refreshCert = false
                     type = "3"
                     caClient.getCertInfo("") {
-                        log(" 获取证书certSn ${it.code}${it.msg}${it.data} ")
-//                        LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    获取证书certSn ${it.code}${it.msg}${it.data} ")
+                        log.info(" 获取证书certSn ${it.code}${it.msg}${it.data} ")
                         if (it.code == 0) {
                             val jsonObject = JSONObject(it.data)
                             val certSn = jsonObject.getString("certSn")
@@ -161,15 +158,13 @@ class CAInterceptor : Interceptor {
                                 ToastUtil.showBottomToast("获取失败（更新）:${it.code}${it.msg}", 1)
                                 ToastUtil.showBottomToast("${Constant.certSn}", 0)
                             }
-                            log("获取失败（更新）" + it.code + it.msg)
-//                            LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    获取失败（更新） " + it.code + it.msg)
+                            log.info("获取失败（更新）" + it.code + it.msg)
                         }
                     }
 
                     caClient.signature(deviceId, base64EncodedParams, pin) {
                         val caSign = deviceId + "|" + it.data
-                        log(" 签名 head caSign $caSign")
-//                        LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    重签 head caSign $caSign")
+                        log.info(" 签名 head caSign $caSign")
                         if (request.method.equals("get", ignoreCase = true)) {
                             request = request.newBuilder().addHeader("ca-sign", caSign).addHeader("sign", sign)
                                 .addHeader("Accept", "application/json").get().build()
@@ -187,17 +182,14 @@ class CAInterceptor : Interceptor {
             }
         } else {
             caClient.signature(deviceId, base64EncodedParams, pin) {
-                log(" signature" + it.msg + it.code)
-//                LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    signature " + it.msg + it.code)
+                log.info(" signature" + it.msg + it.code)
                 if (it.code == 4103 || it.code == 1032) {
                     caClient.applyCert(deviceId, unitName, "", Constant.certSn, pin) {
                         type = "2"
-                        log(" 4103重签（正常） ${it.code}${it.msg}")
-//                        LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    4103重签（正常）${it.code}${it.msg}")
+                        log.info(" 4103重签（正常） ${it.code}${it.msg}")
                         if (it.code == 0) {
                             caClient.getCertInfo("") {
-                                log(" 获取证书（正常） ${it.code}${it.msg}${it.data} ")
-//                                LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    获取证书（正常）${it.code}${it.msg}${it.data}")
+                                log.info(" 获取证书（正常） ${it.code}${it.msg}${it.data} ")
                                 if (it.code == 0) {
                                     val jsonObject = JSONObject(it.data)
                                     val certSn = jsonObject.getString("certSn")
@@ -230,8 +222,7 @@ class CAInterceptor : Interceptor {
 
                             caClient.signature(deviceId, base64EncodedParams, pin) {
                                 val caSign = deviceId + "|" + it.data
-                                log(" 重签 head caSign $caSign")
-//                                LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    重签 head caSign $caSign")
+                                log.info(" 重签 head caSign $caSign")
                                 if (request.method.equals("get", ignoreCase = true)) {
                                     request = request.newBuilder().addHeader("ca-sign", caSign).addHeader("sign", sign)
                                         .addHeader("Accept", "application/json").get().build()
@@ -250,8 +241,7 @@ class CAInterceptor : Interceptor {
                     }
                 } else if (it.code == 0) {
                     val caSign = deviceId + "|" + it.data
-                    log(" 签名head caSign $caSign")
-//                    LogFileUtil.logToFile("${AppUtil.getCurrentTime()}   签名head caSign $caSign")
+                    log.info(" 签名head caSign $caSign")
                     if (request.method.equals("get", ignoreCase = true)) {
                         request = request.newBuilder().addHeader("ca-sign", caSign).addHeader("sign", sign)
                             .addHeader("Accept", "application/json").get().build()
@@ -276,9 +266,8 @@ class CAInterceptor : Interceptor {
             }
             continue
         }
-        log("request $request")
+        log.info("request $request")
         if (!request.url.toUri().path.endsWith("/photo")) {
-//            LogFileUtil.logToFile("${AppUtil.getCurrentTime()}    request $request")
         }
         return chain.proceed(request)
     }

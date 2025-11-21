@@ -20,6 +20,8 @@ import me.yokeyword.fragmentation.SupportActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportActivity{
     protected lateinit var mViewModel: VM
@@ -31,13 +33,25 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     //用来存储需要监听的网络错误
     private var networkErrorTagList = ArrayList<String>()
     private lateinit var mProgressDialog: IOSLoadingDialog
+    val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public fun onEvent(baseEvent: BaseEvent) {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        log.info("-------------${javaClass.simpleName} RESUME--------------------------")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        log.info("-------------${javaClass.simpleName} PAUSE--------------------------")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        log.info("-------------${javaClass.simpleName} CREATE--------------------------")
         if (!isHorizontalScreen()) {//设置智能竖屏
             try {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -153,6 +167,7 @@ abstract class BaseActivity<VM : BaseViewModel> : SupportActivity(), ISupportAct
     }
 
     override fun onDestroy() {
+        log.info("-------------${javaClass.simpleName} DESTROY--------------------------")
         if (::mViewModel.isInitialized) {
             mViewModel.let {
                 lifecycle.removeObserver(it)

@@ -148,6 +148,35 @@
                 android:src="@mipmap/ic_arrow_right" />
         </FrameLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_below="@+id/fl_modifyPw"
+            android:background="@color/color_ffcccccc" />
+
+        <FrameLayout
+            android:id="@+id/fl_log"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_72"
+            android:layout_below="@+id/fl_modifyPw">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@mipmap/ic_base_info"
+                android:drawablePadding="@dimen/dp_13"
+                android:text="@string/日志上传"
+                android:textColor="@color/color_ff1a1a1a"
+                android:textSize="@dimen/sp_19" />
+
+            <ImageView
+                android:layout_width="@dimen/dp_7"
+                android:layout_height="@dimen/dp_12"
+                android:layout_gravity="end|center_vertical"
+                android:src="@mipmap/ic_arrow_right" />
+        </FrameLayout>
+
         <com.aries.ui.view.radius.RadiusTextView
             android:id="@+id/rtv_logout"
             android:layout_width="match_parent"
