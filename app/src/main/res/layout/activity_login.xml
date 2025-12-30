@@ -27,65 +27,6 @@
             android:layout_marginBottom="@dimen/dp_44"
             android:src="@mipmap/ic_xun_logo" />
 
-        <com.aries.ui.view.radius.RadiusRelativeLayout
-            android:id="@+id/rfl_street"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_60"
-            android:layout_marginStart="@dimen/dp_15"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_15"
-            android:paddingEnd="@dimen/dp_13"
-            app:rv_backgroundColor="@color/white"
-            app:rv_radius="@dimen/dp_7"
-            app:rv_strokeColor="@color/color_ff0371f4"
-            app:rv_strokeWidth="@dimen/dp_1">
-
-            <ImageView
-                android:id="@+id/iv_parking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginEnd="@dimen/dp_15"
-                android:src="@mipmap/ic_p" />
-
-            <TextView
-                android:id="@+id/tv_street"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:layout_toStartOf="@+id/cb_street"
-                android:layout_toEndOf="@+id/iv_parking"
-                android:ellipsize="end"
-                android:hint="@string/请选择工作路段"
-                android:maxLines="1"
-                android:textColor="@color/color_ff1a1a1a"
-                android:textColorHint="@color/color_ff6c737b"
-                android:textSize="@dimen/sp_19"
-                tools:text="定西路(愚园路～安化路)西侧" />
-
-            <CheckBox
-                android:id="@+id/cb_street"
-                android:layout_width="@dimen/dp_22"
-                android:layout_height="@dimen/dp_22"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="@color/transparent"
-                android:button="@drawable/selector_lot_arrow"
-                android:checked="false" />
-        </com.aries.ui.view.radius.RadiusRelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_caTips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginStart="@dimen/dp_13"
-            android:text="非CA路段请签到后选择"
-            android:textColor="@color/color_ffe92404"/>
-
         <com.aries.ui.view.radius.RadiusLinearLayout
             android:id="@+id/rll_account"
             android:layout_width="match_parent"

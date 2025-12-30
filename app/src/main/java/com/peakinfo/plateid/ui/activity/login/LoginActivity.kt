@@ -2,8 +2,6 @@ package com.peakinfo.plateid.ui.activity.login
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -18,35 +16,26 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.baidu.location.LocationClientOption
 import com.blankj.utilcode.util.AppUtils
-import com.blankj.utilcode.util.EncryptUtils
 import com.blankj.utilcode.util.PhoneUtils
-import com.custle.ksmkey.MKeyApi
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
 import com.peakinfo.base.bean.UpdateBean
-import com.peakinfo.base.bean.WorkingHoursBean
 import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
-import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
-import com.peakinfo.base.ext.show
 import com.peakinfo.base.ext.startAct
 import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.BaiduLocationLoginEvent
-import com.peakinfo.common.realm.RealmUtil
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BaiduLocationUtil
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityLoginBinding
-import com.peakinfo.plateid.dialog.StreetChooseListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.LoginViewModel
-import com.peakinfo.plateid.service.HeartbeatService
-import com.peakinfo.plateid.ui.activity.MainActivity
 import com.peakinfo.plateid.util.UpdateUtil
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
@@ -61,18 +50,15 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     var lon = 31.238665
     var updateBean: UpdateBean? = null
     var locationEnable = 0
-    var needLogin = false
     var querySimBean: QuerySimBean? = null
-    var streetListDialog: StreetChooseListDialog? = null
     var streetList: MutableList<Street> = ArrayList()
-    var streetChoosedList: MutableList<Street> = ArrayList()
-    var isFirst = true
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(baiduLocationLoginEvent: BaiduLocationLoginEvent) {
         startBaiduMapLocation()
     }
 
+    @SuppressLint("CheckResult")
     override fun initView() {
         binding.tvVersion.text = "v" + AppUtils.getAppVersionName()
         if (AppUtils.isAppInstalled("com.rt.ipms_video")) {
@@ -85,18 +71,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 AppUtils.uninstallApp("com.rt.ipms_geo")
             }
         }
-        checkUpdate()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!isFirst) {
-            checkUpdateApi()
-        }
-    }
-
-    @SuppressLint("CheckResult", "MissingPermission")
-    fun checkUpdate() {
         var rxPermissions = RxPermissions(this@LoginActivity)
         rxPermissions.request(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT,
@@ -110,39 +84,44 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 startBaiduMapLocation()
                 baiduLocationUtil.startLocation()
             }
-            if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
-                val manufacturer = Build.MANUFACTURER
-                val model = Build.MODEL
-                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    try {
-                        Constant.imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                    } catch (e: Exception) {
-                        Constant.imei = id
-                    }
-                    try {
-                        Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                    } catch (e: Exception) {
-                        Constant.simId = ""
-                    }
-                } else {
-                    try {
-                        Constant.imei = PhoneUtils.getIMEI()
-                    } catch (e: Exception) {
-                        Constant.imei = id
-                    }
-                    try {
-                        Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                    } catch (e: Exception) {
-                        Constant.simId = ""
-                    }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+        var rxPermissions = RxPermissions(this@LoginActivity)
+        if (rxPermissions.isGranted(Manifest.permission.READ_PHONE_STATE)) {
+            val manufacturer = Build.MANUFACTURER
+            val model = Build.MODEL
+            val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+                    Constant.imei = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+                } catch (e: Exception) {
+                    Constant.imei = id
                 }
-                Constant.deviceId = AppUtil.getDeviceId()
-                checkUpdateApi()
-                if (querySimBean == null) {
-                    querySim()
-                    isFirst = false
+                try {
+                    Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                } catch (e: Exception) {
+                    Constant.simId = ""
                 }
+            } else {
+                try {
+                    Constant.imei = PhoneUtils.getIMEI()
+                } catch (e: Exception) {
+                    Constant.imei = id
+                }
+                try {
+                    Constant.simId = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
+                } catch (e: Exception) {
+                    Constant.simId = ""
+                }
+            }
+            Constant.deviceId = AppUtil.getDeviceId()
+            checkUpdateApi()
+            if (querySimBean == null) {
+                querySim()
             }
         }
     }
@@ -172,8 +151,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
 
     override fun initListener() {
         binding.tvForgetPw.setOnClickListener(this)
-        binding.cbStreet.setOnClickListener(this)
-        binding.rflStreet.setOnClickListener(this)
         binding.etAccount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -245,48 +222,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     }
                 }
             }
-
-            R.id.cb_street,
-            R.id.rfl_street -> {
-                if (streetList.isEmpty()) {
-                    return
-                }
-                binding.cbStreet.isChecked = true
-                streetListDialog =
-                    StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
-                        override fun chooseStreets() {
-                            if (streetChoosedList.isNotEmpty()) {
-                                val firstStreet = streetChoosedList[0]
-                                binding.tvStreet.text = firstStreet.streetName
-                                Constant.APP_ID = firstStreet.appId
-                                Constant.PASSWORD = firstStreet.password
-                                if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
-                                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
-                                    binding.rtvLogin.alpha = 1f
-                                } else {
-                                    binding.rtvLogin.setOnClickListener(null)
-                                    binding.rtvLogin.alpha = 0.2f
-                                }
-                            } else {
-                                binding.tvStreet.text = ""
-                                Constant.APP_ID = ""
-                                Constant.PASSWORD = ""
-                                if (binding.etAccount.text.isNotEmpty() && binding.etPw.text.isNotEmpty()) {
-                                    binding.rtvLogin.setOnClickListener(this@LoginActivity)
-                                    binding.rtvLogin.alpha = 1f
-                                } else {
-                                    binding.rtvLogin.setOnClickListener(null)
-                                    binding.rtvLogin.alpha = 0.2f
-                                }
-                            }
-                        }
-
-                    })
-                streetListDialog?.show()
-                streetListDialog?.setOnDismissListener {
-                    binding.cbStreet.isChecked = false
-                }
-            }
         }
     }
 
@@ -310,12 +245,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             querySimLiveData.observe(this@LoginActivity) {
                 querySimBean = it
                 if (querySimBean?.result != null && querySimBean?.result!!.isNotEmpty()) {
-                    binding.rflStreet.show()
-                    binding.tvCaTips.show()
                     streetList = querySimBean?.result as MutableList<Street>
                 } else {
-                    binding.rflStreet.gone()
-                    binding.tvCaTips.gone()
                 }
 //                val targetAppid = it.appIdLast
 //                streetList.firstOrNull { targetAppid.isNotEmpty() && it.appId == targetAppid }?.let { matchedStreet ->
@@ -347,11 +278,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             queryPwStatusLiveData.observe(this@LoginActivity) {
                 if (it.editPw == 0) {
-                    if (streetChoosedList.isNotEmpty()) {
-                        caVerifyAccount()
-                    } else {
-                        verifyAccount()
-                    }
+//                    caVerifyAccount()
+                    verifyAccount()
                 } else {
                     dismissProgressDialog()
                     startArouter(ARouterMap.RESET_PW, data = Bundle().apply {
@@ -369,100 +297,13 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     })
                 }
             }
-            caVerifyAccountLiveData.observe(this@LoginActivity) {
-                checkOnWork()
-            }
-            checkOnWorkLiveData.observe(this@LoginActivity) {
-                caLogin()
-            }
-            caLoginLiveData.observe(this@LoginActivity) {
-                dismissProgressDialog()
-                val userId = binding.etAccount.text.toString()
-                runBlocking {
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, userId)
-                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, it.token)
-                    PreferencesDataStore(BaseApplication.instance()).putString(
-                        PreferencesKeys.streetNOs,
-                        streetChoosedList.joinToString(separator = ",") { it.streetNo })
-                    startHeartbeatService(this@LoginActivity)
-                }
-                RealmUtil.instance?.deleteAllStreet()
-                RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
-                RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
-                RealmUtil.instance?.addRealm(WorkingHoursBean(binding.etAccount.text.toString(), System.currentTimeMillis()))
-                if (it != null && it.token != "") {
-                    startAct<MainActivity>()
-                    logInOutNotice("1")
-                } else {
-                    ToastUtil.showBottomToast("登录失败, 响应结果为空或token为空!", 1)
-                }
-            }
-            tokenLiveData.observe(this@LoginActivity) {
-                logout(it.token.toString())
-            }
-            logoutLiveData.observe(this@LoginActivity) {
-                logInOutNotice("2")
-                if (needLogin) {
-                    queryPwStatus()
-                    needLogin = false
-                } else {
-                    dismissProgressDialog()
-                    ToastUtil.showBottomToast("签退成功", 0)
-                }
-            }
             errMsg.observe(this@LoginActivity) {
                 ToastUtil.showBottomToast(it.msg)
-                if (it.api == "caLogin") {
-                    if (it.code == 1012) {
-                        needLogin = true
-                        token()
-                    } else {
-                        dismissProgressDialog()
-                        val param = HashMap<String, Any>()
-                        param["deviceId"] = Constant.deviceId
-                        param["deviceCode"] = Constant.deviceId
-                        mViewModel.refreshCert(param)
-                    }
-//                    else if (it.code == 3006) {
-//                        CAInterceptor.caClient.getCertInfo("") {
-//                            if (it.code == 0) {
-//                                val jsonObject = org.json.JSONObject(it.data)
-//                                val certSn = jsonObject.getString("certSn")
-//                                Constant.certSn = certSn
-//                                runBlocking {
-//                                    PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, certSn)
-//                                }
-//                                notifyUpdateCert(certSn)
-//                            }
-//                        }
-//                    }
-                } else {
-                    dismissProgressDialog()
-                }
+                dismissProgressDialog()
             }
             mException.observe(this@LoginActivity) {
                 dismissProgressDialog()
             }
-        }
-    }
-
-    fun startHeartbeatService(context: Context) {
-        val intent = Intent(context, HeartbeatService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(intent)
-        } else {
-            context.startService(intent)
-        }
-    }
-
-    private fun notifyUpdateCert(certSn: String) {
-        if (!TextUtils.isEmpty(certSn)) {
-            val param = HashMap<String, Any>()
-            val jsonobject = JSONObject()
-            jsonobject["deviceId"] = MKeyApi.getDeviceId(BaseApplication.instance())
-            jsonobject["certSn"] = certSn
-            param["attr"] = jsonobject
-            mViewModel.notifyUpdateCert(param)
         }
     }
 
@@ -512,28 +353,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         mViewModel.verifyAccount(param)
     }
 
-    fun caVerifyAccount() {
-        val param = HashMap<String, Any>()
-        val jsonObject = JSONObject()
-        jsonObject["loginName"] = binding.etAccount.text.toString()
-        jsonObject["password"] = binding.etPw.text.toString()
-        param["attr"] = jsonObject
-        mViewModel.caVerifyAccount(param)
-    }
-
-    fun caLogin() {
-        val passwordMD5 = EncryptUtils.encryptMD5ToString(binding.etAccount.text.toString()).lowercase()
-        val param = HashMap<String, Any>()
-        param["userId"] = binding.etAccount.text.toString()
-        param["deviceId"] = Constant.deviceId
-        param["simId"] = Constant.simId
-        param["password"] = passwordMD5
-        param["longitude"] = lon
-        param["latitude"] = lat
-        param["dataTime"] = System.currentTimeMillis()
-        mViewModel.caLogin(param)
-    }
-
     fun checkUpdateApi() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
@@ -542,65 +361,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
         jsonobject["softType"] = "11"
         param["attr"] = jsonobject
         mViewModel.checkUpdate(param)
-    }
-
-    fun token() {
-        val userId = binding.etAccount.text.toString()
-        val password = binding.etPw.text.toString()
-        if (userId.isEmpty()) {
-            ToastUtil.showBottomToast("请输入账号")
-            return
-        }
-        if (password.isEmpty()) {
-            ToastUtil.showBottomToast("请输入密码")
-            return
-        }
-        ToastUtil.showBottomToast("正在签退, 请稍后...", 0)
-        val passwordMD5 = EncryptUtils.encryptMD5ToString(userId).lowercase()
-        val param = HashMap<String, Any>()
-        param["userId"] = userId
-        param["simId"] = Constant.simId
-        param["password"] = passwordMD5
-        param["dataTime"] = System.currentTimeMillis()
-        mViewModel.token(param)
-    }
-
-    fun logout(token: String) {
-        val userId = binding.etAccount.text.toString()
-        val passwordMD5 = EncryptUtils.encryptMD5ToString(userId).lowercase()
-        val param = HashMap<String, Any>()
-        param["token"] = token
-        param["userId"] = userId
-        param["deviceId"] = Constant.deviceId
-        param["simId"] = Constant.simId
-        param["password"] = passwordMD5
-        param["longitude"] = lon.toString()
-        param["latitude"] = lat.toString()
-        param["dataTime"] = System.currentTimeMillis()
-        mViewModel.logout(param)
-    }
-
-    fun logInOutNotice(state: String) {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["imei"] = Constant.imei
-        jsonobject["loginName"] = binding.etAccount.text.toString()
-        jsonobject["simId"] = Constant.simId
-        jsonobject["state"] = state
-        jsonobject["version"] = AppUtils.getAppVersionName()
-        param["attr"] = jsonobject
-        mViewModel.logInOutNotice(param)
-    }
-
-    fun checkOnWork() {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["loginName"] = binding.etAccount.text.toString()
-        jsonobject["streetNos"] = streetChoosedList.joinToString(separator = ",") { it.streetNo }
-        jsonobject["longitude"] = lon.toString()
-        jsonobject["latitude"] = lat.toString()
-        param["attr"] = jsonobject
-        mViewModel.checkOnWork(param)
     }
 
     @SuppressLint("CheckResult")

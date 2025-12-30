@@ -2,6 +2,8 @@ package com.peakinfo.base.viewbase
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +74,9 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
         startActivity(Intent(activity, z))
     }
 
-    fun showProgressDialog() {
+    fun showProgressDialog(i: Long) {
         mProgressDialog.show()
+        Handler(Looper.getMainLooper()).postDelayed({ dismissProgressDialog() }, i)
     }
 
     fun dismissProgressDialog() {

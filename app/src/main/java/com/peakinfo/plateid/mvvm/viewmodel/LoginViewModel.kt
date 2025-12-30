@@ -20,18 +20,14 @@ class LoginViewModel : BaseViewModel() {
     }
 
     val querySimLiveData = MutableLiveData<QuerySimBean>()
-    val loginLiveData = MutableLiveData<LoginBean>()
-    val caLoginLiveData = MutableLiveData<LoginInfoBean>()
     val checkUpdateLiveDate = MutableLiveData<UpdateBean>()
     val verifyAccountLiveDate = MutableLiveData<LoginBean>()
     val caVerifyAccountLiveData = MutableLiveData<Any>()
     val queryPwStatusLiveData = MutableLiveData<QueryPwStatusBean>()
     val tokenLiveData = MutableLiveData<TokenInfoBean>()
     val logoutLiveData = MutableLiveData<Any>()
-    val logInOutNoticeLiveData = MutableLiveData<Any>()
     val notifyUpdateCertLiveData = MutableLiveData<Any>()
     val refreshCertLiveData = MutableLiveData<Any>()
-    val checkOnWorkLiveData = MutableLiveData<Any>()
 
     fun notifyUpdateCert(param: Map<String, Any?>) {
         launch {
@@ -55,32 +51,6 @@ class LoginViewModel : BaseViewModel() {
                 querySimLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "querySim"))
-            })
-        }
-    }
-
-    fun login(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.login(param)
-            }
-            executeResponse(response, {
-                loginLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
-
-    fun caLogin(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.caLogin(param)
-            }
-            executeResponse(response, {
-                caLoginLiveData.value = response.data
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "caLogin"))
             })
         }
     }
@@ -163,19 +133,6 @@ class LoginViewModel : BaseViewModel() {
         }
     }
 
-    fun logInOutNotice(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.logInOutNotice(param)
-            }
-            executeResponse(response, {
-                logInOutNoticeLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "notifyUpdateCert"))
-            })
-        }
-    }
-
     fun refreshCert(param: Map<String, Any?>) {
         launch {
             val response = withContext(Dispatchers.IO) {
@@ -189,16 +146,4 @@ class LoginViewModel : BaseViewModel() {
         }
     }
 
-    fun checkOnWork(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.checkOnWork(param)
-            }
-            executeResponse(response, {
-                checkOnWorkLiveData.value = response.data
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
-            })
-        }
-    }
 }

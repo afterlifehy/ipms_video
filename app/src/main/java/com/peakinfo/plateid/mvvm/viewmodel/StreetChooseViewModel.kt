@@ -10,22 +10,4 @@ import kotlinx.coroutines.withContext
 
 class StreetChooseViewModel : BaseViewModel() {
 
-    val mLoginRepository by lazy {
-        LoginRepository()
-    }
-
-    val login2LiveData = MutableLiveData<Login2Bean>()
-
-    fun login2(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mLoginRepository.login2(param)
-            }
-            executeResponse(response, {
-                login2LiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
 }
