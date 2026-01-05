@@ -48,10 +48,9 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
     var needLogin = false
 
     companion object {
-        fun newInstance(loginInfo: LoginBean, streetList: MutableList<Street>): ChooseStreetCAFragment {
+        fun newInstance(loginInfo: LoginBean): ChooseStreetCAFragment {
             return ChooseStreetCAFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelableArrayList("streetList", ArrayList(streetList))
                     putParcelable("loginInfo", loginInfo)
                 }
             }
@@ -65,8 +64,9 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView() {
-        streetList = requireArguments().getParcelableArrayList("streetList", Street::class.java)!!
-        loginInfo = requireArguments().getParcelable("loginInfo", LoginBean::class.java)
+        loginInfo = requireArguments().getParcelable("loginInfo")
+        streetList.clear()
+        loginInfo?.caStreetList?.let { streetList.addAll(it) }
 
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
@@ -268,4 +268,7 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
     override fun onReloadData() {
     }
 
+    override fun providerVMClass(): Class<ChooseStreetCAViewModel> {
+        return ChooseStreetCAViewModel::class.java
+    }
 }

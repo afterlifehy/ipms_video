@@ -55,6 +55,10 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         binding.layoutToolbar.tvTitle.text = i18N(com.peakinfo.base.R.string.路段选择)
 
         loginInfo = intent.getParcelableExtra(ARouterMap.LOGIN_INFO) as? LoginBean
+        nonCaStreetList.clear()
+        loginInfo?.result?.let { nonCaStreetList.addAll(it) }
+        caStreetList.clear()
+        loginInfo?.caStreetList?.let { caStreetList.addAll(it) }
 
         var rxPermissions = RxPermissions(this@StreetChooseActivity)
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION).subscribe {
@@ -68,8 +72,8 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
             binding.vpStreet.offscreenPageLimit = 1
             binding.vpStreet.bindFragment(this) {
                 listOf(
-                    ChooseStreetNonCAFragment.newInstance(loginInfo!!,nonCaStreetList),
-                    ChooseStreetCAFragment.newInstance(loginInfo!!,caStreetList) // 使用静态工厂方法
+                    ChooseStreetNonCAFragment.newInstance(loginInfo!!),
+                    ChooseStreetCAFragment.newInstance(loginInfo!!) // 使用静态工厂方法
                 )
             }
         }

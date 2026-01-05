@@ -25,7 +25,7 @@ class FeeRateFragment : VbBaseFragment<FeeRateFragmentViewModel, FragmentFeeRate
     }
 
     override fun initData() {
-        showProgressDialog()
+        showProgressDialog(600000)
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
         jsonobject["streetNo"] = streetNo

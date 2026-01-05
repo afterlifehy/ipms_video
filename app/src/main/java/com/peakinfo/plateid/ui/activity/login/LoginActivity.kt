@@ -278,7 +278,6 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             queryPwStatusLiveData.observe(this@LoginActivity) {
                 if (it.editPw == 0) {
-//                    caVerifyAccount()
                     verifyAccount()
                 } else {
                     dismissProgressDialog()
@@ -290,6 +289,8 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
             }
             verifyAccountLiveDate.observe(this@LoginActivity) {
                 dismissProgressDialog()
+                it.caStreetList?.clear()
+                it.caStreetList?.addAll(streetList)
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.account, it.loginName.toString())
                     startAct<StreetChooseActivity>(data = Bundle().apply {

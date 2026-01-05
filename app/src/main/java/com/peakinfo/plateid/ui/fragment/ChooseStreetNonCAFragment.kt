@@ -49,7 +49,7 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
     var loginInfo: LoginBean? = null
 
     companion object {
-        fun newInstance(loginInfo: LoginBean, streetList: MutableList<Street>): ChooseStreetNonCAFragment {
+        fun newInstance(loginInfo: LoginBean): ChooseStreetNonCAFragment {
             return ChooseStreetNonCAFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList("streetList", ArrayList(streetList))
@@ -66,8 +66,9 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun initView() {
-        streetList = requireArguments().getParcelableArrayList("streetList", Street::class.java)!!
-        loginInfo = requireArguments().getParcelable("loginInfo", LoginBean::class.java)
+        loginInfo = requireArguments().getParcelable("loginInfo")
+        streetList.clear()
+        loginInfo?.result?.let { streetList.addAll(it) }
 
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
@@ -215,4 +216,7 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
     override fun onReloadData() {
     }
 
+    override fun providerVMClass(): Class<ChooseStreetNonCAViewModel> {
+        return ChooseStreetNonCAViewModel::class.java
+    }
 }

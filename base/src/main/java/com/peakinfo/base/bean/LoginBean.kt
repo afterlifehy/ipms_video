@@ -9,5 +9,6 @@ data class LoginBean(
     val loginName: String? = "",
     val phone: String? = "",
     val result: List<Street>? = ArrayList(),
-    var editPw: Int = 0
+    var editPw: Int = 0,
+    var caStreetList: MutableList<Street>? = ArrayList()
 ) : Parcelable
