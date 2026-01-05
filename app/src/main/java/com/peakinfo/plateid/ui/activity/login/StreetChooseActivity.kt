@@ -23,6 +23,7 @@ import com.peakinfo.base.bean.Street
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.bindFragment
+import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.util.BaiduLocationUtil
@@ -70,11 +71,28 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         binding.vpStreet.offscreenPageLimit = 1
         if (binding.vpStreet.adapter == null) {
             binding.vpStreet.offscreenPageLimit = 1
+            val info = loginInfo ?: run {
+                // 处理为空的情况，比如返回空列表或提前 return
+                binding.vpStreet.bindFragment(this) { listOf() }
+                return // 或其他逻辑
+            }
             binding.vpStreet.bindFragment(this) {
-                listOf(
-                    ChooseStreetNonCAFragment.newInstance(loginInfo!!),
-                    ChooseStreetCAFragment.newInstance(loginInfo!!) // 使用静态工厂方法
-                )
+                if (info.result!!.isNotEmpty() && info.caStreetList!!.isNotEmpty()) {
+                    listOf(
+                        ChooseStreetNonCAFragment.newInstance(info),
+                        ChooseStreetCAFragment.newInstance(info)
+                    )
+
+                } else if (info.result!!.isEmpty()) {
+                    binding.tlStreet.gone()
+                    listOf(ChooseStreetCAFragment.newInstance(info))
+                } else if (info.caStreetList!!.isEmpty()) {
+                    binding.tlStreet.gone()
+                    listOf(ChooseStreetNonCAFragment.newInstance(info))
+                } else {
+                    binding.tlStreet.gone()
+                    listOf()
+                }
             }
         }
 
