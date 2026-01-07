@@ -6,6 +6,6 @@
     <solid android:color="@color/transparent" />
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/white" />
+        android:color="@color/color_ff0371f4" />
     <padding android:top="@dimen/dp_5" android:bottom="@dimen/dp_5"/>
 </shape>

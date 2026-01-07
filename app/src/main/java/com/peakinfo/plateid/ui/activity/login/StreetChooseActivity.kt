@@ -99,11 +99,11 @@ class StreetChooseActivity : VbBaseActivity<StreetChooseViewModel, ActivityStree
         binding.tlStreet.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 currentTab = tab!!.position
-                tab.customView?.findViewById<TextView>(R.id.tab_text)?.setTextColor(ColorUtils.getColor(R.color.black))
+                tab.customView?.findViewById<TextView>(R.id.tab_text)?.setTextColor(ColorUtils.getColor(R.color.white))
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                tab?.customView?.findViewById<TextView>(R.id.tab_text)?.setTextColor(ColorUtils.getColor(R.color.white))
+                tab?.customView?.findViewById<TextView>(R.id.tab_text)?.setTextColor(ColorUtils.getColor(com.peakinfo.base.R.color.color_ff0371f4))
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {

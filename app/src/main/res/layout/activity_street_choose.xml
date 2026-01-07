@@ -35,8 +35,8 @@
             app:tabPaddingEnd="-0.1dp"
             app:tabPaddingStart="0.1dp"
             app:tabPaddingTop="0.1dp"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextColor="@color/white" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/color_ff0371f4" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_street"

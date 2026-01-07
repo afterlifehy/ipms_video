@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="非CA"
-        android:textColor="@color/black"
+        android:textColor="@color/color_ff0371f4"
         android:textSize="@dimen/sp_20"
         android:textStyle="bold" />
 
