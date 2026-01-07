@@ -146,7 +146,7 @@ interface Api {
     /**
      * 登录密码验证
      */
-    @POST("S_VO2_21")
+    @POST("S_VO2_21_0")
     suspend fun verifyAccount(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<LoginBean>
 
     /**

@@ -89,6 +89,14 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
                     StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
                         override fun chooseStreets() {
                             streetChoosedAdapter?.setList(streetChoosedList.distinct())
+                            if (streetChoosedList.isNotEmpty()) {
+                                val firstStreet = streetChoosedList.distinct()[0]
+                                Constant.APP_ID = firstStreet.appId
+                                Constant.PASSWORD = firstStreet.password
+                            } else {
+                                Constant.APP_ID = ""
+                                Constant.PASSWORD = ""
+                            }
                         }
 
                     })
@@ -126,9 +134,6 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
                         streetChoosedList.joinToString(separator = ",") { it.streetNo })
                     startHeartbeatService(requireContext())
                 }
-                val firstStreet = streetChoosedList[0]
-                Constant.APP_ID = firstStreet.appId
-                Constant.PASSWORD = firstStreet.password
                 RealmUtil.instance?.deleteAllStreet()
                 RealmUtil.instance?.addRealmAsyncList(streetChoosedList)
                 RealmUtil.instance?.updateCurrentStreet(streetChoosedList[0], null)
