@@ -24,6 +24,7 @@ import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.help.ActivityCacheManager
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.BaiduLocationLoginEvent
@@ -180,21 +181,8 @@ class LogoutActivity : VbBaseActivity<LogoutViewModel, ActivityLogOutBinding>(),
                         jsonobject["token"] = token
                         jsonobject["longitude"] = lon.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
                         jsonobject["latitude"] = lat.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            try {
-                                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                            } catch (e: Exception) {
-                                val manufacturer = Build.MANUFACTURER
-                                val model = Build.MODEL
-                                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                                jsonobject["imei"] = id
-                                jsonobject["simId"] = id
-                            }
-                        } else {
-                            jsonobject["imei"] = PhoneUtils.getIMEI()
-                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                        }
+                        jsonobject["imei"] = Constant.imei
+                        jsonobject["simId"] = Constant.simId
                         jsonobject["version"] = AppUtils.getAppVersionName()
                         param["attr"] = jsonobject
                         mViewModel.logout(param)

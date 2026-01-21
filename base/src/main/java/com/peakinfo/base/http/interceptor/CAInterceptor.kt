@@ -183,7 +183,7 @@ class CAInterceptor : Interceptor {
         } else {
             caClient.signature(deviceId, base64EncodedParams, pin) {
                 log.info(" signature" + it.msg + it.code)
-                if (it.code == 4103 || it.code == 1032) {
+                if (it.code == 4103 || it.code == 1032 || it.code == 4128) {
                     caClient.applyCert(deviceId, unitName, "", Constant.certSn, pin) {
                         type = "2"
                         log.info(" 4103重签（正常） ${it.code}${it.msg}")

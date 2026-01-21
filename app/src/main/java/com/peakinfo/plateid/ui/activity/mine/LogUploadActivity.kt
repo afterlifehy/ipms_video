@@ -23,22 +23,19 @@ class LogUploadActivity : VbBaseActivity<LogViewModel, ActivityLogUpdateBinding>
     lateinit var logAdapter: LogAdapter
     var logFileList: MutableList<File> = ArrayList()
     var logFileCheckedList: MutableList<File> = ArrayList()
-    var isCheckedAll = false
     lateinit var confirmDialog: ConfirmDialog
     var position = 0
 
     override fun initView() {
         binding.layoutToolbar.tvTitle.text = "日志上传"
         logAdapter = LogAdapter(logFileList, logFileCheckedList) { file, isChecked ->
-            if (isChecked) logFileCheckedList.add(file) else logFileCheckedList.remove(file)
-            binding.tvSelectCount.text = "已选择${logFileCheckedList.size}个日志"
-            if (logFileCheckedList.size == logFileList.size) {
-                binding.ivSelectAll.setImageResource(com.peakinfo.common.R.mipmap.ic_checked)
-                isCheckedAll = true
+            if (isChecked) {
+                logFileCheckedList.clear()
+                logFileCheckedList.add(file)
             } else {
-                binding.ivSelectAll.setImageResource(com.peakinfo.common.R.mipmap.ic_unchecked)
-                isCheckedAll = false
+                logFileCheckedList.remove(file)
             }
+            logAdapter.notifyDataSetChanged()
         }
         binding.rvLog.apply {
             setHasFixedSize(true)
@@ -49,7 +46,6 @@ class LogUploadActivity : VbBaseActivity<LogViewModel, ActivityLogUpdateBinding>
 
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
-        binding.llSelectAll.setOnClickListener(this)
         binding.rtvUpload.setOnClickListener(this)
     }
 
@@ -61,21 +57,6 @@ class LogUploadActivity : VbBaseActivity<LogViewModel, ActivityLogUpdateBinding>
         when (v?.id) {
             R.id.fl_back -> {
                 onBackPressedSupport()
-            }
-
-            R.id.ll_selectAll -> {
-                if (isCheckedAll) {
-                    binding.ivSelectAll.setImageResource(com.peakinfo.common.R.mipmap.ic_unchecked)
-                    logFileCheckedList.clear()
-                    isCheckedAll = false
-                } else {
-                    binding.ivSelectAll.setImageResource(com.peakinfo.common.R.mipmap.ic_checked)
-                    logFileCheckedList.clear()
-                    logFileCheckedList.addAll(logFileList)
-                    isCheckedAll = true
-                }
-                binding.tvSelectCount.text = "已选择${logFileCheckedList.size}个日志"
-                logAdapter.setCheckedFileList(logFileCheckedList)
             }
 
             R.id.rtv_upload -> {

@@ -32,7 +32,7 @@
         <!-- 滚动策略：按天滚动，保留30天的日志 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_DIR}/G2_%d{yyyy-MM-dd}.txt</fileNamePattern>
-            <maxHistory>30</maxHistory>
+            <maxHistory>7</maxHistory>
         </rollingPolicy>
     </appender>
 

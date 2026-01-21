@@ -246,22 +246,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                             jsonobject["token"] = token
                             jsonobject["longitude"] = longitude.toString()
                             jsonobject["latitude"] = latitude.toString()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                try {
-                                    jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                                    jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                                } catch (e: Exception) {
-                                    val manufacturer = Build.MANUFACTURER
-                                    val model = Build.MODEL
-                                    val id =
-                                        manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                                    jsonobject["imei"] = id
-                                    jsonobject["simId"] = id
-                                }
-                            } else {
-                                jsonobject["imei"] = PhoneUtils.getIMEI()
-                                jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                            }
+                            jsonobject["imei"] = Constant.imei
+                            jsonobject["simId"] = Constant.simId
                             jsonobject["version"] = AppUtils.getAppVersionName()
                             param["attr"] = jsonobject
                             mViewModel.logout(param)
@@ -354,21 +340,8 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                     jsonobject["streetNo"] = tempStreet?.streetNo
                     jsonobject["longitude"] = longitude
                     jsonobject["latitude"] = latitude
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        try {
-                            jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                            jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                        } catch (e: Exception) {
-                            val manufacturer = Build.MANUFACTURER
-                            val model = Build.MODEL
-                            val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                            jsonobject["imei"] = id
-                            jsonobject["simId"] = id
-                        }
-                    } else {
-                        jsonobject["imei"] = PhoneUtils.getIMEI()
-                        jsonobject["simId"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                    }
+                    jsonobject["imei"] = Constant.imei
+                    jsonobject["simId"] = Constant.simId
                     jsonobject["version"] = AppUtils.getAppVersionName()
                     param["attr"] = jsonobject
                     mViewModel.login2(param)

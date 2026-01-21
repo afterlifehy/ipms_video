@@ -118,6 +118,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     Constant.simId = ""
                 }
             }
+            if (Constant.imei == "868946066209045") {
+                Constant.simId = "huyong"
+            }
             Constant.deviceId = AppUtil.getDeviceId()
             checkUpdateApi()
             if (querySimBean == null) {

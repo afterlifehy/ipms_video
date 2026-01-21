@@ -28,6 +28,7 @@ import com.peakinfo.base.bean.Street
 import com.peakinfo.base.bean.WorkingHoursBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
+import com.peakinfo.base.util.Constant
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseFragment
 import com.peakinfo.common.realm.RealmUtil
@@ -125,24 +126,8 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
                 jsonobject["streetNo"] = streetChoosedList[0].streetNo
                 jsonobject["longitude"] = longitude.takeIf { it != 0.0 }?.toString() ?: longitude.toString()
                 jsonobject["latitude"] = latitude.takeIf { it != 0.0 }?.toString() ?: latitude.toString()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    try {
-                        jsonobject["imei"] = (requireActivity().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-                        jsonobject["simId"] = (requireActivity().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                    } catch (e: Exception) {
-                        val manufacturer = Build.MANUFACTURER
-                        val model = Build.MODEL
-                        val id = manufacturer + model + " " + Settings.Secure.getString(
-                            requireActivity().contentResolver,
-                            Settings.Secure.ANDROID_ID
-                        )
-                        jsonobject["imei"] = id
-                        jsonobject["simId"] = id
-                    }
-                } else {
-                    jsonobject["imei"] = PhoneUtils.getIMEI()
-                    jsonobject["simId"] = (requireActivity().getSystemService(TELEPHONY_SERVICE) as TelephonyManager).simSerialNumber
-                }
+                jsonobject["imei"] = Constant.imei
+                jsonobject["simId"] = Constant.simId
                 jsonobject["version"] = AppUtils.getAppVersionName()
                 param["attr"] = jsonobject
                 mViewModel.login2(param)
