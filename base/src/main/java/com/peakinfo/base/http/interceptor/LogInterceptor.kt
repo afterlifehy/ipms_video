@@ -14,17 +14,30 @@ class LogInterceptor //可以从连几次
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
-        log.info("okhttp3:$request")
+
+        val requestContent = request.toString()
+        val printContent = requestContent.replace(Regex("photo=([^&]*)")) { matchResult ->
+            val value = matchResult.groupValues[1] // 获取 photo 参数值
+            if (value.isEmpty()) {
+                "photo=空值"
+            } else {
+                "photo=${value.take(50)} 总字节数:${value.toByteArray().size}"
+            }
+        }
+
+        log.info("okhttp3:$printContent")
         val response: Response = chain.proceed(request)
-//        if (isDebug) {
-        val mediaType = response.body!!.contentType()
         val content = response.body!!.string()
+        val mediaType = response.body!!.contentType()
+//        if (isDebug) {
         log.info(response.toString())
-        log.info("request:{}\n=============response body:{}", request, content)
+        log.info("=============request:{}\n=============response body:{}\n", printContent, content)
+//        }
         return response.newBuilder()
             .body(okhttp3.ResponseBody.create(mediaType, content))
             .build();
 //        }
+//        return response
     }
 
     val currentTime: String
