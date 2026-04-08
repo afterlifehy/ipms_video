@@ -10,5 +10,8 @@ data class QuerySimBean(
     val code: String = "",
     val certSn: String?,
     val state: String?,
-    var appIdLast: String = ""
+    var appIdLast: String = "",
+    var unitName :String = "",
+    var pin:String = "",
+    var unitId:String = ""
 ) : Parcelable

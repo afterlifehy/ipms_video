@@ -11,6 +11,9 @@ object Constant {
     var needCert = false
     var certSn = ""
     var refreshCert = false
+    var unitName = ""
+    var pin = ""
+    var unitId = ""
 
     var imei = ""
     var deviceId = ""

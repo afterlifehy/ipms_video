@@ -165,7 +165,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
                     orderType = it.orderType
                 )
                 val printList = BluePrint.instance?.blueToothDevice!!
-                if (printList.size == 1) {
+                if (printList.size >= 1) {
                     Thread {
                         val device = printList[0]
                         var connectResult = BluePrint.instance?.connet(device.address)

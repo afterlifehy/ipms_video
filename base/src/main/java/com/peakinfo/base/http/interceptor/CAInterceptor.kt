@@ -27,17 +27,14 @@ import org.slf4j.LoggerFactory
 import java.nio.charset.StandardCharsets
 
 class CAInterceptor : Interceptor {
-    var unitName = "中科国智科技服务（上海）有限公司"
-    private val pin = "1234567"
     val log: Logger by lazy { LoggerFactory.getLogger(this::class.java) }
 
     companion object {
-        private val appId = "58"
         val deviceId = MKeyApi.getDeviceId(BaseApplication.instance())
         val caClient by lazy {
             MKeyApi.initSDK(UrlManager.getCAUrl(), "pos1")
             MKeyApi.getInstance(
-                BaseApplication.instance(), appId, Constant.code, "100"
+                BaseApplication.instance(), Constant.unitId, Constant.code, "100"
             )
         }
     }
@@ -69,7 +66,7 @@ class CAInterceptor : Interceptor {
         var flag = true
         var type = "2"//1:申请证书，2：重签 ，3：更新证书
         if (Constant.needCert) {
-            caClient.applyCert(deviceId, unitName, "", "", pin) {
+            caClient.applyCert(deviceId, Constant.unitName, "", "", Constant.pin) {
                 log.info("申请证书结果 ${it.code},${it.data},${it.msg}")
                 if (it.code == 0) {
                     Constant.needCert = false
@@ -105,7 +102,7 @@ class CAInterceptor : Interceptor {
                         }
                     }
 
-                    caClient.signature(deviceId, base64EncodedParams, pin) {
+                    caClient.signature(deviceId, base64EncodedParams, Constant.pin) {
                         val caSign = deviceId + "|" + it.data
                         log.info(" 签名 head caSign $caSign")
                         if (request.method.equals("get", ignoreCase = true)) {
@@ -124,7 +121,7 @@ class CAInterceptor : Interceptor {
                 }
             }
         } else if (Constant.refreshCert) {
-            caClient.updateCert(deviceId, unitName, "", pin) {
+            caClient.updateCert(deviceId, Constant.unitName, "", Constant.pin) {
                 log.info("更新证书" + it.code + it.msg)
                 if (it.code == 0) {
                     Constant.refreshCert = false
@@ -162,7 +159,7 @@ class CAInterceptor : Interceptor {
                         }
                     }
 
-                    caClient.signature(deviceId, base64EncodedParams, pin) {
+                    caClient.signature(deviceId, base64EncodedParams, Constant.pin) {
                         val caSign = deviceId + "|" + it.data
                         log.info(" 签名 head caSign $caSign")
                         if (request.method.equals("get", ignoreCase = true)) {
@@ -181,10 +178,10 @@ class CAInterceptor : Interceptor {
                 }
             }
         } else {
-            caClient.signature(deviceId, base64EncodedParams, pin) {
+            caClient.signature(deviceId, base64EncodedParams, Constant.pin) {
                 log.info(" signature" + it.msg + it.code)
                 if (it.code == 4103 || it.code == 1032 || it.code == 4128) {
-                    caClient.applyCert(deviceId, unitName, "", Constant.certSn, pin) {
+                    caClient.applyCert(deviceId, Constant.unitName, "", Constant.certSn, Constant.pin) {
                         type = "2"
                         log.info(" 4103重签（正常） ${it.code}${it.msg}")
                         if (it.code == 0) {
@@ -220,7 +217,7 @@ class CAInterceptor : Interceptor {
                                 }
                             }
 
-                            caClient.signature(deviceId, base64EncodedParams, pin) {
+                            caClient.signature(deviceId, base64EncodedParams, Constant.pin) {
                                 val caSign = deviceId + "|" + it.data
                                 log.info(" 重签 head caSign $caSign")
                                 if (request.method.equals("get", ignoreCase = true)) {

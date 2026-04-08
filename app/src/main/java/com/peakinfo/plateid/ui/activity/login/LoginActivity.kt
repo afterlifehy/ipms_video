@@ -118,8 +118,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     Constant.simId = ""
                 }
             }
-            if (Constant.imei == "868946066209045") {
+            if (Constant.imei == "868946066209045"||Constant.imei.startsWith("samsungSM-G9810")) {
                 Constant.simId = "huyong"
+                Constant.imei = "868946066209045"
             }
             Constant.deviceId = AppUtil.getDeviceId()
             checkUpdateApi()
@@ -277,6 +278,9 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                         PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.certSn, it.certSn.toString())
                     }
                     Constant.code = it.code
+                    Constant.unitName = it.unitName
+                    Constant.unitId = it.unitId
+                    Constant.pin = it.pin
                 }
             }
             queryPwStatusLiveData.observe(this@LoginActivity) {
