@@ -27,7 +27,9 @@ import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.realm.RealmUtil
+import com.peakinfo.common.util.CompressUtil
 import com.peakinfo.common.util.Constant
+import com.peakinfo.common.util.FileUtil
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityCaCollectionManagementBinding
@@ -42,7 +44,6 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     var streetList: MutableList<Street> = ArrayList()
     var streetNo = ""
     var currentStreet: Street? = null
-    var selectPicDialog: SelectPicDialog? = null
     var currentPic = 1
     var pic1Base64 = ""
     var pic2Base64 = ""
@@ -120,21 +121,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ).subscribe {
                     if (it) {
-                        selectPicDialog = null
-                        if (selectPicDialog == null) {
-                            selectPicDialog = SelectPicDialog(object : SelectPicDialog.Callback {
-                                override fun onTakePhoto() {
-                                    currentPic = 1
-                                    takePhoto()
-                                }
-
-                                override fun onPickPhoto() {
-                                    currentPic = 1
-                                    selectPhoto()
-                                }
-                            })
-                        }
-                        selectPicDialog?.show()
+                        currentPic = 1
+                        takePhoto()
                     }
                 }
             }
@@ -148,21 +136,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ).subscribe {
                     if (it) {
-                        selectPicDialog = null
-                        if (selectPicDialog == null) {
-                            selectPicDialog = SelectPicDialog(object : SelectPicDialog.Callback {
-                                override fun onTakePhoto() {
-                                    currentPic = 2
-                                    takePhoto()
-                                }
-
-                                override fun onPickPhoto() {
-                                    currentPic = 2
-                                    selectPhoto()
-                                }
-                            })
-                        }
-                        selectPicDialog?.show()
+                        currentPic = 2
+                        takePhoto()
                     }
                 }
             }
@@ -170,58 +145,36 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     }
 
     fun takePhoto() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        takePictureLauncher.launch(takePictureIntent)
-    }
-
-    fun selectPhoto() {
-        selectImageLauncher.launch("image/*")
-    }
-
-    val takePictureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            when (currentPic) {
-                1 -> {
-                    binding.rivPic1.show()
-                    GlideUtils.instance?.loadImage(binding.rivPic1, imageBitmap)
-                    val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
-                    val bytes = file?.readBytes()
-                    pic1Base64 = EncodeUtils.base64Encode2String(bytes)
-                }
-
-                2 -> {
-                    binding.rivPic2.show()
-                    GlideUtils.instance?.loadImage(binding.rivPic2, imageBitmap)
-                    val file = ImageUtils.save2Album(imageBitmap, Bitmap.CompressFormat.JPEG)
-                    val bytes = file?.readBytes()
-                    pic2Base64 = EncodeUtils.base64Encode2String(bytes)
-                }
-            }
+        if (currentPic == 1) {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            takePictureLauncher1.launch(takePictureIntent)
+        } else {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            takePictureLauncher2.launch(takePictureIntent)
         }
     }
 
-    val selectImageLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            when (currentPic) {
-                1 -> {
-                    binding.rivPic1.show()
-                    val file = UriUtils.uri2File(it)
-                    GlideUtils.instance?.loadImageFile(binding.rivPic1, file)
-                    val bytes = file?.readBytes()
-                    pic1Base64 = EncodeUtils.base64Encode2String(bytes)
-                }
+    val takePictureLauncher1 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
+            binding.rivPic1.show()
+            GlideUtils.instance?.loadImage(binding.rivPic1, compressImageBitmap)
+            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
+            val bytes = file?.readBytes()
+            pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+        }
+    }
 
-                2 -> {
-                    binding.rivPic2.show()
-                    val file = UriUtils.uri2File(it)
-                    GlideUtils.instance?.loadImageFile(binding.rivPic2, file)
-                    val bytes = file?.readBytes()
-                    pic2Base64 = EncodeUtils.base64Encode2String(bytes)
-                }
-            }
+    val takePictureLauncher2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
+            binding.rivPic2.show()
+            GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
+            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
+            val bytes = file?.readBytes()
+            pic2Base64 = EncodeUtils.base64Encode2String(bytes)
         }
     }
 

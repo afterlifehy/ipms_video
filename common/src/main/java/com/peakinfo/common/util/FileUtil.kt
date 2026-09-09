@@ -2,6 +2,7 @@ package com.peakinfo.common.util
 
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaScannerConnection
@@ -10,6 +11,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import com.peakinfo.base.BaseApplication
@@ -150,5 +152,41 @@ object FileUtil {
             BaseApplication.instance(), "${BaseApplication.instance().packageName}.provider",
             file
         )
+    }
+
+    /**
+     * 保存图片到沙盒目录
+     *
+     * @param context  上下文
+     * @param fileName 文件名
+     * @param bitmap   文件
+     * @return 路径，为空时表示保存失败
+     */
+    fun FileSaveToInside(context: Context, fileName: String?, bitmap: Bitmap): File? {
+        var fos: FileOutputStream? = null
+        var resultFile: File? = null // 声明一个变量用于保存结果
+        try {
+            val folder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            Log.e("rt", "file   " + folder!!.absolutePath)
+
+            // 判断目录是否存在，不存在时自动创建
+            if (folder != null && (folder.exists() || folder.mkdirs())) {
+                val file = File(folder, fileName)
+                fos = FileOutputStream(file)
+                // 写入文件
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, fos)
+                fos.flush()
+                resultFile = file // 写入成功，赋值给结果变量
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return resultFile
     }
 }

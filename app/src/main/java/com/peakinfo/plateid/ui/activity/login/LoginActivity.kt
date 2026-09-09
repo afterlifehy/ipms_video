@@ -268,7 +268,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                     if (it.state == "1") {
                         ToastUtil.showBottomToast("设备未注册", 1)
                         return@runBlocking
-                    } else if (it.state == "2" && TextUtils.isEmpty(certSn)) {
+                    } else if (it.state == "2") {
                         Constant.needCert = true
                     } else if (it.state == "3") {
                         Constant.refreshCert = true

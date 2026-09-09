@@ -140,7 +140,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
                     ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
-                if(checkedColor.isEmpty()){
+                if (checkedColor.isEmpty()) {
                     ToastUtil.showBottomToast("车牌颜色不能为空")
                     return
                 }
@@ -171,6 +171,10 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
         keyboardUtil.hideKeyboard()
         showProgressDialog(20000)
         carLicense = binding.etSearch.text.toString()
+        if (carLicense.isEmpty()) {
+            ToastUtil.showBottomToast("请输入车牌号")
+            return
+        }
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             val param = HashMap<String, Any>()
