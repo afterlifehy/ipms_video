@@ -177,4 +177,8 @@
     <string name="日志上传">日志上传</string>
     <string name="温馨提示">温馨提示</string>
     <string name="确认">确认</string>
+    <string name="催缴告知书催缴">催缴告知书催缴</string>
+    <string name="欠费订单">欠费订单</string>
+    <string name="月结欠费">月结欠费</string>
+    <string name="缴费">缴费</string>
 </resources>
