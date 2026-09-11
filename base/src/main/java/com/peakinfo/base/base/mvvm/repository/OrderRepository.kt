@@ -18,6 +18,7 @@ import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.UrgeBean
+import com.peakinfo.base.bean.ca.UrgeDetailBean
 import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
 
@@ -257,5 +258,53 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.owemoney(param, options)
+    }
+
+    /**
+     * 催缴告知书详情
+     */
+    suspend fun urgepaydetail(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UrgeDetailBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.urgepaydetail(param, options)
+    }
+
+    /**
+     * 催缴告知书支付二维码
+     */
+    suspend fun consumeUrgePay(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QRPayBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.consumeUrgePay(param, options)
+    }
+
+    /**
+     * 催缴告知书支付二维码
+     */
+    suspend fun urgepayQrcode(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QRInfoBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.urgepayQrcode(param, options)
     }
 }

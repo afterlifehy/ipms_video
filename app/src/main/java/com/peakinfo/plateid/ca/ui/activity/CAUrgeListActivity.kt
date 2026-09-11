@@ -2,6 +2,7 @@ package com.peakinfo.plateid.ca.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnClickListener
@@ -20,6 +21,7 @@ import com.peakinfo.base.ext.gone
 import com.peakinfo.base.ext.i18N
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.ext.show
+import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.event.RefreshDebtOrderListEvent
@@ -160,9 +162,9 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
 
             R.id.rrl_urge -> {
                 val urgeBean = v.tag as UrgeBean
-                ARouter.getInstance().build(ARouterMap.CA_COLLECTION_MANAGEMENT).withParcelable(ARouterMap.URGE, urgeBean)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .navigation()
+                startArouter(ARouterMap.CA_URGE_DETAIL, data = Bundle().apply {
+                    putParcelable(ARouterMap.URGE, urgeBean)
+                })
             }
         }
     }

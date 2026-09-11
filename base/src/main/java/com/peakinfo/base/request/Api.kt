@@ -11,6 +11,7 @@ import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.QuerySimBean
 import com.peakinfo.base.bean.ca.TokenInfoBean
 import com.peakinfo.base.bean.ca.UrgeBean
+import com.peakinfo.base.bean.ca.UrgeDetailBean
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -359,4 +360,28 @@ interface Api {
     @Multipart
     @POST("upload")
     suspend fun logFileUpload(@Part file: MultipartBody.Part): HttpWrapper<Any>
+
+    /**
+     * 催缴告知书详情
+     */
+    @POST("urgepaydetail")
+    suspend fun urgepaydetail(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<UrgeDetailBean>
+
+    /**
+     * 催缴告知书支付二维码
+     */
+    @POST("consume/urgepay")
+    suspend fun consumeUrgePay(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRPayBean>
+
+    /**
+     * 催缴告知书二维码
+     */
+    @POST("urgepay/qrcode")
+    suspend fun urgepayQrcode(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<QRInfoBean>
 }

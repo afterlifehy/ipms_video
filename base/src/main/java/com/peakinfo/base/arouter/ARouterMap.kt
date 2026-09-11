@@ -96,6 +96,9 @@ object ARouterMap {
     const val CA_URGE = "/ipms_app/urge"
 
     const val LOG_UPLOAD = "/ipms_app/log"
+
+    const val CA_URGE_DETAIL = "/ipms_app/caUrgeDetail"
+
     class common {
         companion object {
 
