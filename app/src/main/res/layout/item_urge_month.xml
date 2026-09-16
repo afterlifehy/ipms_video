@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:drawableStart="@mipmap/ic_no"
-            android:drawablePadding="@dimen/dp_11"
+            android:drawablePadding="@dimen/dp_10"
             android:textColor="@color/color_ff1a1a1a"
             android:textSize="@dimen/sp_19"
             tools:text="CN-007-025" />
@@ -68,28 +68,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_oweAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/dp_10"
+                android:drawableStart="@mipmap/ic_fee"
                 android:textColor="@color/color_ffe92404"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_19"
                 tools:text="欠费:15.00元" />
-
-            <com.aries.ui.view.radius.RadiusTextView
-                android:id="@+id/rtv_pay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:paddingStart="@dimen/dp_5"
-                android:paddingTop="@dimen/dp_3"
-                android:paddingEnd="@dimen/dp_5"
-                android:paddingBottom="@dimen/dp_3"
-                android:text="@string/缴费"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_17"
-                app:rv_backgroundColor="@color/color_ff0371f4"
-                app:rv_radius="@dimen/dp_3" />
         </FrameLayout>
 
     </com.aries.ui.view.radius.RadiusLinearLayout>

@@ -79,8 +79,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/月结欠费"
                 android:layout_marginTop="@dimen/dp_5"
+                android:text="@string/月结欠费"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_17" />
 
@@ -92,19 +92,55 @@
         </com.aries.ui.view.radius.RadiusLinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.aries.ui.view.radius.RadiusTextView
-        android:id="@+id/rtv_urge"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_47"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginEnd="@dimen/dp_13"
         android:layout_marginBottom="@dimen/dp_13"
-        android:gravity="center"
-        android:text="@string/催缴告知书催缴"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_19"
-        android:textStyle="bold"
-        app:rv_backgroundColor="@color/color_ffffa906"
-        app:rv_radius="@dimen/dp_7" />
+        android:orientation="horizontal">
+
+        <com.aries.ui.view.radius.RadiusTextView
+            android:id="@+id/rtv_urge"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_47"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/告知书催缴"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_19"
+            android:textStyle="bold"
+            app:rv_backgroundColor="@color/color_ffffa906"
+            app:rv_radius="@dimen/dp_7" />
+
+        <com.aries.ui.view.radius.RadiusTextView
+            android:id="@+id/rtv_print"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_47"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/告知书打印"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_19"
+            android:textStyle="bold"
+            app:rv_backgroundColor="@color/color_ffffa906"
+            app:rv_radius="@dimen/dp_7" />
+
+        <com.aries.ui.view.radius.RadiusTextView
+            android:id="@+id/rtv_pay"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_47"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/告知书支付"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_19"
+            android:textStyle="bold"
+            app:rv_backgroundColor="@color/color_ff0371f4"
+            app:rv_radius="@dimen/dp_7" />
+
+    </LinearLayout>
 </RelativeLayout>

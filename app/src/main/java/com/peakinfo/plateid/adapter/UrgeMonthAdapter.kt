@@ -15,8 +15,6 @@ class UrgeMonthAdapter(data: MutableList<UrgeMonthBean>? = null, val onclick: (o
         holder.vb.tvMonth.text = "月结月份：${item.month}"
         holder.vb.tvMonthPayId.text = item.monthPayId
         holder.vb.tvOweAmount.text = "欠费：${AppUtil.keepNDecimal(item.oweAmount / 100.0, 2)}"
-        holder.vb.rtvPay.setOnClickListener { onclick(item) }
-
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemUrgeMonthBinding {

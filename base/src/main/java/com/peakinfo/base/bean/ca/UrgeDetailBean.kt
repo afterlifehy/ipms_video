@@ -2,7 +2,10 @@ package com.peakinfo.base.bean.ca
 
 data class UrgeDetailBean(
     val monthList: List<UrgeMonthBean>,
-    val oweList: List<UrgeOrderBean>
+    val oweList: List<UrgeOrderBean>,
+    var qrcode: String? = null,
+    var plateId: String? = "",
+    var urgePayId:String = ""
 )
 data class UrgeMonthBean(
     val applyId: String,

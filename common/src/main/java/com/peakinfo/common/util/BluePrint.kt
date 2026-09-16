@@ -13,6 +13,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.bean.IncomeCountingBean
 import com.peakinfo.base.bean.PrintInfoBean
+import com.peakinfo.base.bean.ca.UrgeDetailBean
 import com.peakinfo.base.ext.i18n
 import com.peakinfo.base.help.ActivityCacheManager
 import com.peakinfo.base.util.ToastUtil
@@ -52,10 +53,10 @@ class BluePrint() {
     )
 
     @Throws(JSONException::class)
-    fun zkblueprint(content: String) {
+    fun zkblueprint(content: String, type: Int) {
         //打印文本
         try {
-            printResult = Print1(content)
+            printResult = Print1(content, type)
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
                 ToastUtil.showBottomToast("打印机状态异常")
@@ -128,7 +129,7 @@ class BluePrint() {
      * @param printText 打印内容
      * @return
      */
-    fun Print1(printText: String?): Int {
+    fun Print1(printText: String, type: Int): Int {
         var printText = printText
         var yLocation = 182
         if (printText !== "" && printText != null) {
@@ -140,7 +141,7 @@ class BluePrint() {
             if (zpSDK == null) {
                 return -1
             }
-            if (receipt) {
+            if (type == 1) {
                 val incomeCountingBean = JSONObject.parseObject(printText, IncomeCountingBean::class.java)
                 var height = 300
                 if (incomeCountingBean.list2 != null && incomeCountingBean.list2.size > 0) {
@@ -213,7 +214,7 @@ class BluePrint() {
                 zpSDK!!.printerStatus()
                 printGetStatus()
                 return 0
-            } else {
+            } else if (type == 2) {
                 val currentStreet = RealmUtil.instance?.findCurrentStreet()
                 if (currentStreet!!.streetNo.startsWith("JSW") || currentStreet.streetNo.startsWith("CN")
                     || currentStreet.streetNo.startsWith("CNW")
@@ -373,7 +374,8 @@ class BluePrint() {
                     yLocation += 36
                     var bitmap: Bitmap? = null
                     if (printInfo.ticketQrCode.isEmpty()) {
-                        bitmap = BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                        bitmap =
+                            BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
                     } else {
                         bitmap = AppUtil.base64ToBitmap(printInfo.ticketQrCode)
                     }
@@ -427,6 +429,84 @@ class BluePrint() {
                         drawText(yLocation + 36, 24, printInfo.company.substring(22))
                     }
                 }
+            } else if (type == 3) {
+                val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
+                zpSDK!!.pageSetup(800, 1600)
+                zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市道路停车欠费催缴告知书", 0, 0, 0) //3
+                zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 20, "编号:${printInfo.urgePayId}", 0, 0, 0) //3
+                yLocation = 86
+                drawText(10 + 36 + 40, 20, "${printInfo.plateId}驾驶人：")
+                yLocation += 32
+                drawText(yLocation, 20, "您驾驶的车牌号为:${printInfo.plateId}的车辆在本市xx区道路停车场停车后，")
+                yLocation += 32
+                drawText(yLocation, 20, "年  月  日——  年  月  日，尚有${printInfo.oweList.size}笔道路停车费未支付，欠付停车费共计XX")
+                yLocation += 32
+                drawText(yLocation, 20, "元。")
+                yLocation += 32
+                drawText(yLocation, 20, "根据《上海市社会信用条例》《上海市停车场（库）管理办法》《上海市公")
+                yLocation += 32
+                drawText(yLocation, 20, "共信用信息归集和使用管理办法》《上海市道路停车场管理规定》等相关规定：")
+                yLocation += 32
+                drawText(yLocation, 20, "请在收到本告知书后15个工作日内，使用“上海停车”APP（小程序）缴清上述")
+                yLocation += 32
+                drawText(yLocation, 20, "欠费，也可在本区任一道路停车场通过电子收费系统核实相关机动车辆的道路停")
+                yLocation += 32
+                drawText(yLocation, 20, "车信息后缴清上述欠费。如您对上述欠费信息有异议的，请在收到本告知书后15")
+                yLocation += 32
+                drawText(yLocation, 20, "个工作日内，通过电话（咨询电话：   ，服务时间：工作日    ）或下载使用")
+                yLocation += 32
+                drawText(yLocation, 20, "“上海停车”APP（小程序）在线向本单位提出异议申诉，本单位将在接到您的")
+                yLocation += 32
+                drawText(yLocation, 20, "异议申诉后5个工作日予以复核答复。逾期未提出异议的，视为无异议。")
+                yLocation += 32
+                drawText(yLocation, 20, "如您非当事的机动车驾驶人：请在收到本告知书后及时通知当事的机动车驾")
+                yLocation += 32
+                drawText(yLocation, 20, "驶人按照上述要求限时补缴欠费；您也可以直接代为补缴欠费或者通过上述咨询")
+                yLocation += 32
+                drawText(yLocation, 20, "电话、“上海停车”APP（小程序）等向本单位提供当事的机动车驾驶人信息并")
+                yLocation += 32
+                drawText(yLocation, 20, "提交相关佐证材料。")
+                yLocation += 32
+                drawText(yLocation, 20, "特别告知：")
+                yLocation += 32
+                drawText(yLocation, 20, "一、逾期未按要求缴清欠费的，相关执法部门可按照《上海市停车场（库）")
+                yLocation += 32
+                drawText(yLocation, 20, "管理办法》的规定责令补交，并予以行政处罚；")
+                yLocation += 32
+                drawText(yLocation, 20, "二、逾期未按要求缴清欠费的，相关执法部门可依据《中华人民共和国行政")
+                yLocation += 32
+                drawText(yLocation, 20, "强制法》的规定申请人民法院强制执行。")
+                yLocation += 32
+                drawText(yLocation, 20, "三、逾期未按要求缴清欠费的，本单位可依法将您的道路停车欠费信息作为")
+                yLocation += 32
+                drawText(yLocation, 20, "公共信用失信信息向上海市公共信用信息服务平台归集。")
+                yLocation += 32
+                drawText(yLocation, 20, "具体欠费信息告知如下：")
+                yLocation += 32
+                for(i in printInfo.oweList){
+                    drawText(yLocation, 20, "年  月  日  时  分——  年  月  日  时  分，在  （           ）路")
+                    yLocation += 32
+                    drawText(yLocation, 20, "段停放，欠付停车费  元；")
+                    yLocation += 32
+                }
+                var bitmap: Bitmap? = null
+                if (printInfo.qrcode!!.isEmpty()) {
+                    bitmap =
+                        BitmapFactory.decodeResource(BaseApplication.instance().resources, com.peakinfo.common.R.mipmap.ic_print_qr)
+                } else {
+                    bitmap = AppUtil.base64ToBitmap(printInfo.qrcode!!)
+                }
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap!!, 300, 300, true)
+                zpSDK!!.drawGraphic(
+                    65 + 60,
+                    yLocation,
+                    300,
+                    300,
+                    scaledBitmap
+                )
+                yLocation += (300 + 18)
+                drawText(yLocation, 20, "扫描二维码，获取欠费催缴告知书原件（电子版），支付道路停车费")
+                yLocation += 32
             }
         }
         zpSDK!!.print(0, 0)

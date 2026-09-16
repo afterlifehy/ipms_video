@@ -293,7 +293,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                     runOnUiThread {
                         ToastUtil.showBottomToast("开始打印")
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
                 }
             }.start()
         }

@@ -437,7 +437,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 val device = printList[0]
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
                 }
             }.start()
         }

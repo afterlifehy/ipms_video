@@ -132,7 +132,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                                         runOnUiThread {
                                             ToastUtil.showBottomToast("开始打印")
                                         }
-                                        BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                        BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                                     }
                                 }.start()
                             }
@@ -148,7 +148,7 @@ class IncomeCountingActivity : VbBaseActivity<IncomeCountingViewModel, ActivityI
                                 runOnUiThread {
                                     ToastUtil.showBottomToast("开始打印")
                                 }
-                                BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean))
+                                BluePrint.instance?.zkblueprint(str + JSONObject.toJSONString(incomeCountingBean),1)
                             }
                         }.start()
                     }

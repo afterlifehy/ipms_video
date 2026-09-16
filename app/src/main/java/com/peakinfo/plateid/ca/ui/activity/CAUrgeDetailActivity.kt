@@ -1,7 +1,6 @@
 package com.peakinfo.plateid.ca.ui.activity
 
 import android.Manifest
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -10,14 +9,15 @@ import android.view.View
 import android.view.View.OnClickListener
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.PrintInfoBean
+import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.UrgeBean
+import com.peakinfo.base.bean.ca.UrgeDetailBean
 import com.peakinfo.base.bean.ca.UrgeMonthBean
 import com.peakinfo.base.bean.ca.UrgeOrderBean
 import com.peakinfo.base.ds.PreferencesDataStore
@@ -25,7 +25,6 @@ import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.startArouter
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
-import com.peakinfo.common.event.RefreshDebtOrderListEvent
 import com.peakinfo.common.util.AppUtil
 import com.peakinfo.common.util.BluePrint
 import com.peakinfo.plateid.R
@@ -36,17 +35,17 @@ import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.CAUrgeDetailViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
-import org.greenrobot.eventbus.EventBus
 
 @Route(path = ARouterMap.CA_URGE_DETAIL)
 class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDetailBinding>(), OnClickListener {
+    private var urgeDetailBean: UrgeDetailBean? = null
+    private var oweMoneyBean: OweMoneyBean? = null
     var urgeOrderAdapter: UrgeOrderAdapter? = null
     var urgeMonthAdapter: UrgeMonthAdapter? = null
     var urgeOrderList: MutableList<UrgeOrderBean> = ArrayList()
     var urgeMonthList: MutableList<UrgeMonthBean> = ArrayList()
     var paymentQrDialog: PaymentQrDialog? = null
     lateinit var urgeBean: UrgeBean
-    var urgeOrderBean: UrgeOrderBean? = null
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var token = ""
@@ -62,13 +61,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         binding.rvOrders.isNestedScrollingEnabled = true
         binding.rvOrders.setHasFixedSize(true)
         urgeOrderAdapter = UrgeOrderAdapter(urgeOrderList) { order: UrgeOrderBean ->
-            urgeOrderBean = order
-            val param = HashMap<String, Any>()
-            param["token"] = token
-            param["orderId"] = urgeBean.urgePayId
-            param["orderType"] = "7"
-            param["channel"] = "pos"
-            mViewModel.payowemoney(param)
         }
         binding.rvOrders.adapter = urgeOrderAdapter
 
@@ -83,6 +75,8 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
     override fun initListener() {
         binding.layoutToolbar.flBack.setOnClickListener(this)
         binding.rtvUrge.setOnClickListener(this)
+        binding.rtvPay.setOnClickListener(this)
+        binding.rtvPrint.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -113,10 +107,23 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                     putParcelable(ARouterMap.URGE, urgeBean)
                 })
             }
+
+            R.id.rtv_pay -> {
+                val param = HashMap<String, Any>()
+                param["token"] = token
+                param["orderId"] = urgeBean.urgePayId
+                param["orderType"] = "7"
+                param["channel"] = "pos"
+                mViewModel.payowemoney(param)
+            }
+
+            R.id.rtv_print -> {
+                urgepayQrcode()
+            }
         }
     }
 
-    fun urgepayQrcode(){
+    fun urgepayQrcode() {
         val param = HashMap<String, Any>()
         param["token"] = token
         param["urgePayId"] = urgeBean.urgePayId
@@ -130,6 +137,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         super.startObserve()
         mViewModel.apply {
             urgepaydetailLiveData.observe(this@CAUrgeDetailActivity) {
+                urgeDetailBean = it
                 dismissProgressDialog()
                 urgeOrderList.clear()
                 urgeOrderList.addAll(it.oweList)
@@ -139,7 +147,12 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 urgeMonthList.addAll(it.monthList)
                 urgeMonthAdapter?.setList(urgeMonthList)
             }
+            urgepayQrcodeLiveData.observe(this@CAUrgeDetailActivity) {
+                urgeDetailBean?.qrcode = it.qrcode
+                printNotice(urgeDetailBean!!)
+            }
             payowemoneyLiveData.observe(this@CAUrgeDetailActivity) {
+                oweMoneyBean = it
                 val param = HashMap<String, Any>()
                 param["urgePayId"] = urgeBean.urgePayId
                 param["orderId"] = it.orderId
@@ -152,7 +165,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                     PaymentQrDialog(
                         it.qrCode,
                         "",
-                        AppUtil.keepNDecimals((urgeOrderBean!!.oweMoney / 100).toString(), 2),
+                        AppUtil.keepNDecimals((oweMoneyBean!!.amount / 100).toString(), 2),
                         urgeBean.plateId
                     )
                 paymentQrDialog?.show()
@@ -206,7 +219,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
     fun querypay() {
         val param = HashMap<String, Any>()
         param["token"] = token
-        param["orderId"] = urgeOrderBean!!.orderId
+        param["orderId"] = oweMoneyBean!!.orderId
         mViewModel.querypay(param)
     }
 
@@ -257,7 +270,25 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                     runOnUiThread {
                         ToastUtil.showBottomToast("开始打印")
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo))
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
+                }
+            }.start()
+        }
+    }
+
+    fun printNotice(urgeDetailBean: UrgeDetailBean) {
+        val printList = BluePrint.instance?.blueToothDevice!!
+        urgeDetailBean.plateId = urgeBean.plateId
+        urgeDetailBean.urgePayId = urgeBean.urgePayId
+        if (printList.size >= 1) {
+            Thread {
+                val device = printList[0]
+                var connectResult = BluePrint.instance?.connet(device.address)
+                if (connectResult == 0) {
+                    runOnUiThread {
+                        ToastUtil.showBottomToast("开始打印")
+                    }
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(urgeDetailBean),3)
                 }
             }.start()
         }
