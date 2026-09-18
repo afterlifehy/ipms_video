@@ -23,5 +23,7 @@ object Constant {
     var PASSWORD = ""
 
     const val LOG_DIR_NAME = "logs"
+
+    var IS_CA = false
 }
 

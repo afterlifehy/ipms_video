@@ -75,6 +75,7 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
         streetChoosedAdapter = StreetChoosedAdapter(streetChoosedList, this)
         binding.rvStreet.adapter = streetChoosedAdapter
+        Constant.IS_CA = false
     }
 
     override fun initListener() {

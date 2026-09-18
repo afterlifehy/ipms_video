@@ -72,6 +72,7 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
         streetChoosedAdapter = StreetChoosedAdapter(streetChoosedList, this)
         binding.rvStreet.adapter = streetChoosedAdapter
+        Constant.IS_CA = true
     }
 
     override fun initListener() {

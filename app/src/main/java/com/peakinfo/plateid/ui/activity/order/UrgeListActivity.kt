@@ -1,4 +1,4 @@
-package com.peakinfo.plateid.ca.ui.activity
+package com.peakinfo.plateid.ui.activity.order
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -39,8 +39,8 @@ import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
-@Route(path = ARouterMap.CA_URGE_LIST)
-class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeListBinding>(), OnClickListener {
+@Route(path = ARouterMap.URGE_LIST)
+class UrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeListBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
     var caUrgeAdapter: CAUrgeAdapter? = null
     var urgeList: MutableList<UrgeBean> = ArrayList()
@@ -129,7 +129,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
             }
 
             R.id.iv_camera -> {
-                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@CAUrgeListActivity, 1)
+                ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@UrgeListActivity, 1)
             }
 
             R.id.tv_search -> {
@@ -162,7 +162,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
 
             R.id.rrl_urge -> {
                 val urgeBean = v.tag as UrgeBean
-                startArouter(ARouterMap.CA_URGE_DETAIL, data = Bundle().apply {
+                startArouter(ARouterMap.URGE_DETAIL, data = Bundle().apply {
                     putParcelable(ARouterMap.URGE, urgeBean)
                 })
             }
@@ -190,7 +190,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            urgepaylistLiveData.observe(this@CAUrgeListActivity) {
+            urgepaylistLiveData.observe(this@UrgeListActivity) {
                 dismissProgressDialog()
                 urgeList.clear()
                 urgeList.addAll(it)
@@ -204,7 +204,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
                     binding.layoutNoData.root.show()
                 }
             }
-            errMsg.observe(this@CAUrgeListActivity) {
+            errMsg.observe(this@UrgeListActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
                 if (it.api == "urgepaylist") {
@@ -214,7 +214,7 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
                     binding.layoutNoData.root.show()
                 }
             }
-            mException.observe(this@CAUrgeListActivity) {
+            mException.observe(this@UrgeListActivity) {
                 dismissProgressDialog()
             }
         }

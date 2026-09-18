@@ -203,7 +203,7 @@
             android:theme="@style/ColorTheme" />
 
         <activity
-            android:name="com.peakinfo.plateid.ui.activity.order.CollectionManagementActivity"
+            android:name="com.peakinfo.plateid.ui.activity.order.CollectionManagementActivity2"
             android:exported="false"
             android:launchMode="singleTask" />
 

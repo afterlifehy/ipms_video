@@ -42,7 +42,7 @@ class CAInterceptor : Interceptor {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        if (!request.url.toString().startsWith(UrlManager.getServerUrl())) {
+        if (!request.url.toString().startsWith(UrlManager.getServerUrl()) || !Constant.IS_CA) {
             return chain.proceed(request)
         }
         val body = request.body

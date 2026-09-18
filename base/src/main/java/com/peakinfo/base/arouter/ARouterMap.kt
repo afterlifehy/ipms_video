@@ -93,11 +93,13 @@ object ARouterMap {
     const val PREPAID_ORDER_NO = "orderNo"
     const val PREPAID_OWE_COUNT = "oweCount"
 
-    const val CA_URGE = "/ipms_app/urge"
+    const val CA_URGE_LIST = "/ipms_app/caUrgeList"
+    const val URGE_LIST = "/ipms_app/urgeList"
 
     const val LOG_UPLOAD = "/ipms_app/log"
 
     const val CA_URGE_DETAIL = "/ipms_app/caUrgeDetail"
+    const val URGE_DETAIL = "/ipms_app/urgeDetail"
 
     class common {
         companion object {
