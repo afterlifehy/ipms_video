@@ -70,18 +70,6 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
         loginInfo = requireArguments().getParcelable("loginInfo")
         streetList.clear()
         loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
-        loginInfo?.result?.let { streetList.addAll(it) }
 
         binding.rvStreet.setHasFixedSize(true)
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
