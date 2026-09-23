@@ -273,6 +273,46 @@
                     android:layout_marginTop="@dimen/dp_18"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/tv_reasonTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_17"
+                    android:text="@string/异常原因"
+                    android:textColor="@color/color_ff1a1a1a"
+                    android:textSize="@dimen/sp_19"
+                    android:visibility="gone" />
+
+                <com.aries.ui.view.radius.RadiusFrameLayout
+                    android:id="@+id/rfl_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_47"
+                    android:layout_marginTop="@dimen/dp_13"
+                    android:paddingStart="@dimen/dp_13"
+                    android:paddingEnd="@dimen/dp_13"
+                    android:visibility="gone"
+                    app:rv_backgroundColor="@color/white"
+                    app:rv_radius="@dimen/dp_7">
+
+                    <TextView
+                        android:id="@+id/tv_reason"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/摄像头识别有误"
+                        android:textColor="@color/color_ff1a1a1a"
+                        android:textSize="@dimen/sp_19" />
+
+                    <CheckBox
+                        android:id="@+id/cb_reason"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:background="@color/transparent"
+                        android:button="@drawable/selector_lot_arrow"
+                        android:checked="false" />
+                </com.aries.ui.view.radius.RadiusFrameLayout>
+
                 <com.aries.ui.view.radius.RadiusEditText
                     android:id="@+id/ret_remarks"
                     android:layout_width="match_parent"

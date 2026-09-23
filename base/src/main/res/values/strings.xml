@@ -182,4 +182,6 @@
     <string name="催缴告知书打印">催缴告知书打印</string>
     <string name="欠费支付">欠费支付</string>
     <string name="催缴告知书催缴">催缴告知书催缴</string>
+    <string name="摄像头识别有误">摄像头识别有误</string>
+    <string name="异常原因">异常原因</string>
 </resources>

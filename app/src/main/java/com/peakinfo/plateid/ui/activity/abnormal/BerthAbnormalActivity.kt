@@ -35,6 +35,7 @@ import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.CollectionPlateColorAdapter
 import com.peakinfo.plateid.databinding.ActivityBerthAbnormalBinding
 import com.peakinfo.plateid.dialog.AbnormalClassificationDialog
+import com.peakinfo.plateid.dialog.AbnormalReasonDialog
 import com.peakinfo.plateid.dialog.AbnormalStreetListDialog
 import com.peakinfo.plateid.mvvm.viewmodel.BerthAbnormalViewModel
 import kotlinx.coroutines.runBlocking
@@ -54,6 +55,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
     var abnormalClassificationDialog: AbnormalClassificationDialog? = null
     var classificationList: MutableList<String> = ArrayList()
     var currentStreet: Street? = null
+
+    var abnormalReasonDialog: AbnormalReasonDialog? = null
+    var reasonList: MutableList<String> = ArrayList()
 
     var parkingNo = ""
     var streetNo = ""
@@ -98,6 +102,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         binding.cbLotName.setOnClickListener(this)
         binding.cbAbnormalClassification.setOnClickListener(this)
         binding.rflAbnormalClassification.setOnClickListener(this)
+        binding.rflReason.setOnClickListener(this)
         binding.rflRecognize.setOnClickListener(this)
         binding.rflReport.setOnClickListener(this)
         binding.root.setOnClickListener(this)
@@ -132,6 +137,9 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         if (parkingNo.isNotEmpty()) {
             classificationList.add("泊位有误")
         }
+
+        reasonList.add("摄像头识别有误")
+        reasonList.add("其他")
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -214,6 +222,15 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                 ARouter.getInstance().build(ARouterMap.SCAN_PLATE).navigation(this@BerthAbnormalActivity, 1)
             }
 
+            R.id.cb_reason -> {
+                showReasonDialog()
+            }
+
+            R.id.rfl_reason -> {
+                binding.cbReason.isChecked = true
+                showReasonDialog()
+            }
+
             R.id.rfl_report -> {
                 type = AppUtil.fillZero((classificationList.indexOf(binding.tvAbnormalClassification.text.toString()) + 1).toString())
                 if (binding.retParkingNo.text.toString().isEmpty()) {
@@ -254,7 +271,16 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
                     }
                     jsonobject["type"] = type
-                    jsonobject["remark"] = binding.retRemarks.text.toString()
+                    if (type == "02" && binding.tvReason.text.toString() == "摄像头识别有误") {
+                        jsonobject["remark"] = binding.tvReason.text.toString()
+                    } else {
+                        if (binding.retRemarks.text.toString().isEmpty()) {
+                            ToastUtil.showBottomToast("备注不能为空")
+                            return@runBlocking
+                        } else {
+                            jsonobject["remark"] = binding.retRemarks.text.toString()
+                        }
+                    }
                     if (type == "02" || type == "04") {
                         jsonobject["carLicense"] = carLicense
                         jsonobject["carColor"] = carColor
@@ -289,7 +315,7 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         if (type == "03") {
                             showProgressDialog(20000)
                             mViewModel.abnormalReport(param)
-                        }else{
+                        } else {
                             mViewModel.abnormalReport(param)
                             ToastUtil.showBottomToast(i18n(com.peakinfo.base.R.string.已上报请等待处理))
                             onBackPressedSupport()
@@ -346,11 +372,17 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         binding.llPlate.show()
                         binding.rvPlateColor.show()
                         binding.llNewParkingNo.gone()
+                        binding.rflReason.gone()
+                        binding.tvReasonTitle.gone()
                     } else if (classification == "泊位有误") {
                         binding.llPlate.gone()
                         binding.rvPlateColor.gone()
                         binding.llNewParkingNo.show()
-                    } else {
+                        binding.rflReason.gone()
+                        binding.tvReasonTitle.gone()
+                    } else if (classification == "泊位无车POS有订单") {
+                        binding.rflReason.show()
+                        binding.tvReasonTitle.show()
                         binding.llPlate.gone()
                         binding.rvPlateColor.gone()
                         binding.llNewParkingNo.gone()
@@ -360,6 +392,20 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
         abnormalClassificationDialog?.show()
         abnormalClassificationDialog?.setOnDismissListener {
             binding.cbAbnormalClassification.isChecked = false
+        }
+    }
+
+    fun showReasonDialog() {
+        abnormalReasonDialog = AbnormalReasonDialog(reasonList,
+            binding.tvReason.text.toString(),
+            object : AbnormalReasonDialog.AbnormalReasonCallBack {
+                override fun chooseReason(reason: String) {
+                    binding.tvReason.text = reason
+                }
+            })
+        abnormalReasonDialog?.show()
+        abnormalReasonDialog?.setOnDismissListener {
+            binding.cbReason.isChecked = false
         }
     }
 
