@@ -22,6 +22,7 @@ import com.peakinfo.base.ext.show
 import com.peakinfo.base.util.ToastUtil
 import com.peakinfo.base.viewbase.VbBaseActivity
 import com.peakinfo.common.util.BluePrint
+import com.peakinfo.common.util.Constant
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.TransactionRecordAdapter
@@ -38,6 +39,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
     var token = ""
     var oweCount = 0
     var carLicense = ""
+    var carColor = Constant.BLUE
 
     override fun initView() {
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
@@ -46,6 +48,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
 
         orderNo = intent.getStringExtra(ARouterMap.TRANSACTION_RECORD_ORDER_NO).toString()
         carLicense = intent.getStringExtra(ARouterMap.TRANSACTION_RECORD_CARLICENSE).toString()
+        carColor = intent.getStringExtra(ARouterMap.TRANSACTION_RECORD_CARCOLOR).toString()
 
         binding.rvTransactionRecord.setHasFixedSize(true)
         binding.rvTransactionRecord.layoutManager = LinearLayoutManager(this@TransactionRecordActivity)
@@ -82,6 +85,7 @@ class TransactionRecordActivity : VbBaseActivity<TransactionRecordViewModel, Act
             val jsonobject = JSONObject()
             jsonobject["token"] = token
             jsonobject["carLicense"] = carLicense
+            jsonobject["carColor"] = carColor
             param["attr"] = jsonobject
             mViewModel.debtInquiry(param)
         }

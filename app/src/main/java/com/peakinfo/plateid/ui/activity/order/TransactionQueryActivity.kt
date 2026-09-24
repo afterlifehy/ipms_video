@@ -213,6 +213,7 @@ class TransactionQueryActivity : VbBaseActivity<TransactionQueryViewModel, Activ
             val jsonobject = JSONObject()
             jsonobject["token"] = token
             jsonobject["carLicense"] = currentTransactionBean?.carLicense
+            jsonobject["carColor"] = currentTransactionBean?.carColor
             param["attr"] = jsonobject
             mViewModel.debtInquiry(param)
         }

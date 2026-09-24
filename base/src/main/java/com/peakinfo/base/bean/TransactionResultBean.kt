@@ -6,6 +6,7 @@ data class TransactionResultBean(
 
 data class TransactionBean(
     var carLicense: String,
+    var carColor: String,
     var endTime: String,
     var hasPayed: String,
     var orderNo: String,

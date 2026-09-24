@@ -30,6 +30,7 @@ import com.peakinfo.common.view.keyboard.KeyboardUtil
 import com.peakinfo.common.view.keyboard.MyOnTouchListener
 import com.peakinfo.common.view.keyboard.MyTextWatcher
 import com.peakinfo.plateid.R
+import com.peakinfo.plateid.adapter.CollectionPlateColorAdapter
 import com.peakinfo.plateid.adapter.DebtCollectionAdapter
 import com.peakinfo.plateid.databinding.ActivityDebtCollectionBinding
 import com.peakinfo.plateid.dialog.CollectionDialog
@@ -46,6 +47,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
     var collectionDialog: CollectionDialog? = null
     var carLicense = ""
     var token = ""
+
+    var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
@@ -72,6 +77,18 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
         binding.rvDebt.layoutManager = LinearLayoutManager(this)
         debtCollectionAdapter = DebtCollectionAdapter(debtCollectionList, this)
         binding.rvDebt.adapter = debtCollectionAdapter
+
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
+        binding.rvCarColor.setHasFixedSize(true)
+        binding.rvCarColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
+        collectionPlateColorAdapter = CollectionPlateColorAdapter(3, collectioPlateColorList, this)
+        binding.rvCarColor.adapter = collectionPlateColorAdapter
 
         initKeyboard()
     }
@@ -136,6 +153,10 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                     ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
+                if (checkedColor.isEmpty()) {
+                    ToastUtil.showBottomToast("车牌颜色不能为空")
+                    return
+                }
                 query()
             }
 
@@ -150,6 +171,11 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
                     .withInt(ARouterMap.DEBT_ORDER_COUNT, debtCollectionList.size)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
+
+            R.id.fl_color -> {
+                checkedColor = v.tag as String
+                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+            }
         }
     }
 
@@ -162,6 +188,7 @@ class DebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, ActivityD
             val jsonobject = JSONObject()
             jsonobject["token"] = token
             jsonobject["carLicense"] = carLicense
+            jsonobject["carColor"] = checkedColor
             param["attr"] = jsonobject
             mViewModel.debtInquiry(param)
         }

@@ -44,6 +44,7 @@ object ARouterMap {
     const val TRANSACTION_RECORD = "/ipms_app/transactionRecord"
     const val TRANSACTION_RECORD_ORDER_NO = "orderNo"
     const val TRANSACTION_RECORD_CARLICENSE = "carLicense"
+    const val TRANSACTION_RECORD_CARCOLOR = "carColor"
 
     const val PREVIEW_IMG = "/ipms_app/previewImg"
     const val IMG_LIST = "imgList"

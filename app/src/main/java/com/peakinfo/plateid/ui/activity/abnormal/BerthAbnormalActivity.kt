@@ -271,14 +271,16 @@ class BerthAbnormalActivity : VbBaseActivity<BerthAbnormalViewModel, ActivityBer
                         jsonobject["parkingNo"] = currentStreet?.streetNo + "-" + fillZero(binding.retParkingNo.text.toString())
                     }
                     jsonobject["type"] = type
-                    if (type == "02" && binding.tvReason.text.toString() == "摄像头识别有误") {
-                        jsonobject["remark"] = binding.tvReason.text.toString()
-                    } else {
-                        if (binding.retRemarks.text.toString().isEmpty()) {
-                            ToastUtil.showBottomToast("备注不能为空")
-                            return@runBlocking
+                    if (type == "02") {
+                        if (binding.tvReason.text.toString() == "摄像头识别有误") {
+                            jsonobject["remark"] = binding.tvReason.text.toString()
                         } else {
-                            jsonobject["remark"] = binding.retRemarks.text.toString()
+                            if (binding.retRemarks.text.toString().isEmpty()) {
+                                ToastUtil.showBottomToast("备注不能为空")
+                                return@runBlocking
+                            } else {
+                                jsonobject["remark"] = binding.retRemarks.text.toString()
+                            }
                         }
                     }
                     if (type == "02" || type == "04") {

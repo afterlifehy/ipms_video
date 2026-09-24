@@ -146,6 +146,7 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                     ARouter.getInstance().build(ARouterMap.TRANSACTION_RECORD)
                         .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo)
                         .withString(ARouterMap.TRANSACTION_RECORD_CARLICENSE,order?.carLicense).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .withString(ARouterMap.TRANSACTION_RECORD_CARCOLOR,order?.carColor).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .navigation()
                 } else {
                     ARouter.getInstance().build(ARouterMap.CA_TRANSACTION_RECORD)

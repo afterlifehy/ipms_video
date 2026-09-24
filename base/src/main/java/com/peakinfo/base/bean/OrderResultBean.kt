@@ -11,6 +11,7 @@ data class OrderResultBean(
 data class OrderBean(
     val amount: String,
     val carLicense: String,
+    val carColor:String,
     var duration: String,
     var duration2: String,
     val endTime: String,
