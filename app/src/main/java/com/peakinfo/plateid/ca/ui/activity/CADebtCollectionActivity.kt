@@ -30,6 +30,7 @@ import com.peakinfo.common.view.keyboard.MyOnTouchListener
 import com.peakinfo.common.view.keyboard.MyTextWatcher
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.CAOweMoneyListAdapter
+import com.peakinfo.plateid.adapter.CollectionPlateColorAdapter
 import com.peakinfo.plateid.databinding.ActivityDebtCollectionBinding
 import com.peakinfo.plateid.dialog.CollectionDialog
 import com.peakinfo.plateid.mvvm.viewmodel.DebtCollectionViewModel
@@ -45,6 +46,10 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
     var collectionDialog: CollectionDialog? = null
     var carLicense = ""
     var token = ""
+
+    var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
+    var collectioPlateColorList: MutableList<String> = ArrayList()
+    var checkedColor = ""
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(refreshDebtOrderListEvent: RefreshDebtOrderListEvent) {
@@ -62,15 +67,31 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
         GlideUtils.instance?.loadImage(binding.layoutNoData.ivNoData, com.peakinfo.common.R.mipmap.ic_no_data_2)
         binding.layoutNoData.tvNoDataTitle.text = i18N(com.peakinfo.base.R.string.通过车牌号未查询到欠费订单)
 
-        if (intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE) != null) {
-            carLicense = intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE).toString()
-            binding.etSearch.setText(carLicense)
-            binding.etSearch.setSelection(carLicense.length)
-        }
+        collectioPlateColorList.add(Constant.BLUE)
+        collectioPlateColorList.add(Constant.GREEN)
+        collectioPlateColorList.add(Constant.YELLOW)
+        collectioPlateColorList.add(Constant.YELLOW_GREEN)
+        collectioPlateColorList.add(Constant.WHITE)
+        collectioPlateColorList.add(Constant.BLACK)
+        collectioPlateColorList.add(Constant.OTHERS)
+
         binding.rvDebt.setHasFixedSize(true)
         binding.rvDebt.layoutManager = LinearLayoutManager(this)
         caOweMoneyListAdapter = CAOweMoneyListAdapter(owemoneyInfoList, this)
         binding.rvDebt.adapter = caOweMoneyListAdapter
+
+        binding.rvCarColor.setHasFixedSize(true)
+        binding.rvCarColor.layoutManager = LinearLayoutManager(BaseApplication.instance(), LinearLayoutManager.HORIZONTAL, false)
+        collectionPlateColorAdapter = CollectionPlateColorAdapter(3, collectioPlateColorList, this)
+        binding.rvCarColor.adapter = collectionPlateColorAdapter
+
+        if (intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE) != null) {
+            carLicense = intent.getStringExtra(ARouterMap.DEBT_CAR_LICENSE).toString()
+            checkedColor = intent.getStringExtra(ARouterMap.DEBT_CAR_CARCOLOR).toString()
+            binding.etSearch.setText(carLicense)
+            binding.etSearch.setSelection(carLicense.length)
+            collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+        }
 
         initKeyboard()
     }
@@ -135,6 +156,10 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                     ToastUtil.showBottomToast(i18N(com.peakinfo.base.R.string.车牌长度只能是7位或8位))
                     return
                 }
+                if (checkedColor.isEmpty()) {
+                    ToastUtil.showBottomToast("车牌颜色不能为空")
+                    return
+                }
                 query()
             }
 
@@ -150,6 +175,11 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                     .withInt(ARouterMap.DEBT_ORDER_COUNT, owemoneyInfoList.size)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
+
+            R.id.fl_color -> {
+                checkedColor = v.tag as String
+                collectionPlateColorAdapter?.updateColor(checkedColor, collectioPlateColorList.indexOf(checkedColor))
+            }
         }
     }
 
@@ -162,6 +192,7 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
             param["token"] = token
             param["district"] = 1
             param["plateId"] = carLicense
+            param["plateColor"] = checkedColor
             param["dataTime"] = System.currentTimeMillis()
             mViewModel.owemoney(param)
         }
@@ -211,6 +242,28 @@ class CADebtCollectionActivity : VbBaseActivity<DebtCollectionViewModel, Activit
                     }
                     binding.etSearch.setText(plateId)
                     binding.etSearch.setSelection(plateId.length)
+                    if (plate.startsWith("蓝")) {
+                        checkedColor = Constant.BLUE
+                        collectionPlateColorAdapter?.updateColor(Constant.BLUE, 0)
+                    } else if (plate.startsWith("绿")) {
+                        checkedColor = Constant.GREEN
+                        collectionPlateColorAdapter?.updateColor(Constant.GREEN, 1)
+                    } else if (plate.startsWith("黄")) {
+                        checkedColor = Constant.YELLOW
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW, 2)
+                    } else if (plate.startsWith("黄绿")) {
+                        checkedColor = Constant.YELLOW_GREEN
+                        collectionPlateColorAdapter?.updateColor(Constant.YELLOW_GREEN, 3)
+                    } else if (plate.startsWith("白")) {
+                        checkedColor = Constant.WHITE
+                        collectionPlateColorAdapter?.updateColor(Constant.WHITE, 4)
+                    } else if (plate.startsWith("黑")) {
+                        checkedColor = Constant.BLACK
+                        collectionPlateColorAdapter?.updateColor(Constant.BLACK, 5)
+                    } else {
+                        checkedColor = Constant.OTHERS
+                        collectionPlateColorAdapter?.updateColor(Constant.OTHERS, 6)
+                    }
                 }
             } else if (requestCode == 2) {
                 val plate = data?.getStringExtra("plate")

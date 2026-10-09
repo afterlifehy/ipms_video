@@ -19,6 +19,8 @@ object UrlManager {
 
     const val File_HOST = "http://114.94.20.110/ipms/file/omor01/"
 
+    const val IMAGE_HOST = "http://114.94.20.110/ipms/rest/ZJPM0401/"
+
     fun getRTServerUrl(): String {
         if (BuildConfig.is_dev) {
             return RT_DEV_HOST
@@ -53,5 +55,9 @@ object UrlManager {
 
     fun getFileServerUrl(): String {
         return File_HOST
+    }
+
+    fun getImageServerUrl():String{
+        return IMAGE_HOST
     }
 }

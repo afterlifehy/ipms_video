@@ -100,6 +100,8 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
             }
 
             R.id.rtv_enterWorkBench -> {
+                Constant.APP_ID = ""
+                Constant.PASSWORD = ""
                 login()
             }
 

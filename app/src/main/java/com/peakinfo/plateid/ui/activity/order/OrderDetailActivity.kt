@@ -134,9 +134,11 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
             R.id.rtv_debtCollection -> {
                 if (Constant.APP_ID.isEmpty()) {
                     ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, order?.carLicense)
+                        .withString(ARouterMap.DEBT_CAR_CARCOLOR, order?.carColor)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 } else {
                     ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, order?.carLicense)
+                        .withString(ARouterMap.DEBT_CAR_CARCOLOR, order?.carColor)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
@@ -145,8 +147,8 @@ class OrderDetailActivity : VbBaseActivity<OrderDetailViewModel, ActivityOrderDe
                 if (Constant.APP_ID.isEmpty()) {
                     ARouter.getInstance().build(ARouterMap.TRANSACTION_RECORD)
                         .withString(ARouterMap.TRANSACTION_RECORD_ORDER_NO, order?.orderNo)
-                        .withString(ARouterMap.TRANSACTION_RECORD_CARLICENSE,order?.carLicense).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .withString(ARouterMap.TRANSACTION_RECORD_CARCOLOR,order?.carColor).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .withString(ARouterMap.TRANSACTION_RECORD_CARLICENSE, order?.carLicense).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .withString(ARouterMap.TRANSACTION_RECORD_CARCOLOR, order?.carColor).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .navigation()
                 } else {
                     ARouter.getInstance().build(ARouterMap.CA_TRANSACTION_RECORD)

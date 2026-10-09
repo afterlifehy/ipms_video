@@ -25,6 +25,7 @@ object ARouterMap {
     const val CA_DEBT_COLLECTION = "/ipms_app/caDebtCollection"
     const val DEBT_COLLECTION = "/ipms_app/debtCollection"
     const val DEBT_CAR_LICENSE = "carLicense"
+    const val DEBT_CAR_CARCOLOR = "carCarColor"
 
     const val CA_DEBT_ORDER_DETAIL = "/ipms_app/caDebtOrderDetail"
     const val DEBT_ORDER_DETAIL = "/ipms_app/debtOrderDetail"

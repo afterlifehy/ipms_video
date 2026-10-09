@@ -138,6 +138,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             R.id.rrl_arrears -> {
                 if (oweCount != 0) {
                     ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
+                        .withString(ARouterMap.DEBT_CAR_CARCOLOR, feeInfo.plateColor.toString())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }

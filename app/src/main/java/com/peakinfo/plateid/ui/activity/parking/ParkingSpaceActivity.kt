@@ -133,6 +133,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
             R.id.rrl_arrears -> {
                 if (parkingSpaceBean?.historyCount != 0) {
                     ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).withString(ARouterMap.DEBT_CAR_LICENSE, carLicense)
+                        .withString(ARouterMap.DEBT_CAR_CARCOLOR, parkingSpaceBean?.carColor.toString())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }

@@ -132,6 +132,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                 param["token"] = token
                 param["orderId"] = owemoneyInfoBean!!.orderId.toString()
                 param["channel"] = "pos"
+                param["orderType"] = "3"
                 mViewModel.payowemoney(param)
             }
         }
@@ -293,7 +294,7 @@ class CADebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activ
                     runOnUiThread {
                         ToastUtil.showBottomToast("开始打印")
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo), 2)
                 }
             }.start()
         }

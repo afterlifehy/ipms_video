@@ -35,6 +35,13 @@ open class BaseRepository {
         )
     }
 
+    val mImageServer by lazy {
+        RetrofitUtils.getInstance().createCoroutineRetrofit(
+            Api::class.java,
+            UrlManager.getImageServerUrl()
+        )
+    }
+
     suspend fun <T : Any> apiCall(call: suspend () -> ResResponse<T>): ResResponse<T> {
         return call.invoke()
     }

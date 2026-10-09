@@ -90,14 +90,6 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
                     StreetChooseListDialog(streetList, streetChoosedList, object : StreetChooseListDialog.StreetChooseCallBack {
                         override fun chooseStreets() {
                             streetChoosedAdapter?.setList(streetChoosedList.distinct())
-                            if (streetChoosedList.isNotEmpty()) {
-                                val firstStreet = streetChoosedList.distinct()[0]
-                                Constant.APP_ID = firstStreet.appId
-                                Constant.PASSWORD = firstStreet.password
-                            } else {
-                                Constant.APP_ID = ""
-                                Constant.PASSWORD = ""
-                            }
                         }
 
                     })
@@ -106,6 +98,14 @@ class ChooseStreetCAFragment : VbBaseFragment<ChooseStreetCAViewModel, FragmentC
 
             R.id.rtv_enterWorkBench -> {
                 showProgressDialog(60000)
+                if (streetChoosedList.isNotEmpty()) {
+                    val firstStreet = streetChoosedList.distinct()[0]
+                    Constant.APP_ID = firstStreet.appId
+                    Constant.PASSWORD = firstStreet.password
+                } else {
+                    Constant.APP_ID = ""
+                    Constant.PASSWORD = ""
+                }
                 checkOnWork()
             }
 

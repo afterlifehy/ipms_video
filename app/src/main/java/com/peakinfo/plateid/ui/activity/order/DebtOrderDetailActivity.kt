@@ -118,6 +118,7 @@ class DebtOrderDetailActivity : VbBaseActivity<DebtOrderDetailViewModel, Activit
                     jsonobject["parkingTime"] = debtCollectionBean!!.parkingTime
                     jsonobject["companyName"] = debtCollectionBean!!.companyName
                     jsonobject["companyPhone"] = debtCollectionBean!!.companyPhone
+                    jsonobject["orderType"] = "3"
                     param["attr"] = jsonobject
                     mViewModel.debtPay(param)
                 }

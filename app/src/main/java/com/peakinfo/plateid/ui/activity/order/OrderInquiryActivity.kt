@@ -158,6 +158,8 @@ class OrderInquiryActivity : VbBaseActivity<OrderInquiryViewModel, ActivityOrder
                         startDate = startTime
                         endDate = endTime
                         binding.tvDate.text = "日期：${startDate}~${endDate}"
+                        pageIndex = 1
+                        query()
                     }
 
                 })
