@@ -293,7 +293,7 @@ class OrderRepository : BaseRepository() {
     }
 
     /**
-     * 催缴告知书支付二维码
+     * 催缴告知书二维码
      */
     suspend fun urgepayQrcode(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<QRInfoBean> {
         val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()

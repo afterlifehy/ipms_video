@@ -23,10 +23,7 @@ data class OrderBean(
     val paidAmount: String
 ) : Parcelable {
     init {
-        if (duration == null) {
-            duration = "0"
-        }
-        if (duration2.isNullOrEmpty()) {
+        if (duration2.isEmpty()) {
             duration2 = "0"
         }
     }
