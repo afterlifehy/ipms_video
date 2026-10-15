@@ -384,4 +384,12 @@ interface Api {
     suspend fun urgepayQrcode(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<QRInfoBean>
+
+    /**
+     * 欠费催缴告知书打印通知
+     */
+    @POST("urgepayprint")
+    suspend fun urgepayprint(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<Any>
 }

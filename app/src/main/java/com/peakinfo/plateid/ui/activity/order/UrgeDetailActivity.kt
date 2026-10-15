@@ -206,6 +206,9 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
             urgepayQrcodeLiveData.observe(this@UrgeDetailActivity) {
 
             }
+            urgepayprintLiveData.observe(this@UrgeDetailActivity) {
+
+            }
             errMsg.observe(this@UrgeDetailActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
@@ -270,7 +273,7 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
                     runOnUiThread {
                         ToastUtil.showBottomToast("开始打印")
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),3)
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo), 3)
                 }
             }.start()
         }
@@ -288,10 +291,20 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
                     runOnUiThread {
                         ToastUtil.showBottomToast("开始打印")
                     }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(urgeDetailBean),3)
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(urgeDetailBean), 3)
+                    urgepayprint()
                 }
             }.start()
         }
+    }
+
+    fun urgepayprint() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["plateId"] = urgeBean.plateId
+        param["plateColor"] = urgeBean.plateColor
+        mViewModel.urgepayprint(param)
     }
 
     val runnable = object : Runnable {

@@ -307,4 +307,20 @@ class OrderRepository : BaseRepository() {
         )
         return mServer.urgepayQrcode(param, options)
     }
+
+    /**
+     * 欠费催缴告知书打印通知
+     */
+    suspend fun urgepayprint(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.urgepayprint(param, options)
+    }
 }

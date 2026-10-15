@@ -26,6 +26,7 @@ class CAUrgeDetailViewModel: BaseViewModel() {
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
     val payowemoneyLiveData = MutableLiveData<OweMoneyBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
+    val urgepayprintLiveData = MutableLiveData<Any>()
 
     fun urgepaydetail(param: Map<String, Any?>) {
         launch {
@@ -114,6 +115,19 @@ class CAUrgeDetailViewModel: BaseViewModel() {
                 invoiceQrcodeLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "invoiceQrcode"))
+            })
+        }
+    }
+
+    fun urgepayprint(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgepayprint(param)
+            }
+            executeResponse(response, {
+                urgepayprintLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "urgepayprint"))
             })
         }
     }
