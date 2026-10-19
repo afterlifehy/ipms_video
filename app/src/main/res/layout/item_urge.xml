@@ -47,11 +47,33 @@
         </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_no"
+            android:id="@+id/tv_oweAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14"
-            android:drawableStart="@mipmap/ic_no"
+            android:layout_marginTop="@dimen/dp_10"
+            android:drawableStart="@mipmap/ic_fee"
+            android:drawablePadding="@dimen/dp_11"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_19"
+            tools:text="CN-007-025" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_printCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:drawableStart="@mipmap/ic_count"
+            android:drawablePadding="@dimen/dp_11"
+            android:textColor="@color/color_ff1a1a1a"
+            android:textSize="@dimen/sp_19"
+            tools:text="CN-007-025" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_urgeCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:drawableStart="@mipmap/ic_count"
             android:drawablePadding="@dimen/dp_11"
             android:textColor="@color/color_ff1a1a1a"
             android:textSize="@dimen/sp_19"
@@ -61,11 +83,9 @@
             android:id="@+id/tv_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_10"
             android:drawableStart="@mipmap/ic_time"
             android:drawablePadding="@dimen/dp_11"
-            android:ellipsize="end"
-            android:lines="1"
             android:textColor="@color/color_ff1a1a1a"
             android:textSize="@dimen/sp_19"
             tools:text="定西路(愚园路～安化路)西侧" />

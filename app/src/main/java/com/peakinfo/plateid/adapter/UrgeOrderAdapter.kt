@@ -16,7 +16,8 @@ class UrgeOrderAdapter(data: MutableList<UrgeOrderBean>? = null, val onclick: (o
         holder.vb.tvOrderNo.text = item.orderId
         holder.vb.tvStartTime.text = TimeUtils.millis2String(item.arrivedTime, "yyyy-MM-dd HH:mm:ss")
         holder.vb.tvEndTime.text = TimeUtils.millis2String(item.leftTime, "yyyy-MM-dd HH:mm:ss")
-        holder.vb.tvOweAmount.text = "欠费：${AppUtil.keepNDecimal(item.oweMoney / 100.0, 2)}"
+        holder.vb.tvStreet.text = "${item.roadId}(${item.roadName})"
+        holder.vb.tvOweAmount.text = "欠费：${AppUtil.keepNDecimal(item.oweMoney / 100.0, 2)}元"
     }
 
     override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemUrgeOrderBinding {

@@ -325,6 +325,10 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
         return ActivityUrgeDetailBinding.inflate(layoutInflater)
     }
 
+    override fun providerVMClass(): Class<CAUrgeDetailViewModel>? {
+        return CAUrgeDetailViewModel::class.java
+    }
+
     override fun onReloadData() {
     }
 

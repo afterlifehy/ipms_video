@@ -17,8 +17,10 @@ class CAUrgeAdapter(data: MutableList<UrgeBean>? = null, val onClickListener: On
     override fun convert(holder: VBViewHolder<ItemUrgeBinding>, item: UrgeBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
         holder.vb.tvLicensePlate.text = carLicense
-        holder.vb.tvNo.text = item.districtId
-        holder.vb.tvTime.text = TimeUtils.millis2String(item.dataTime,"yyyy-MM-dd HH:mm:ss")
+        holder.vb.tvOweAmount.text = "欠费金额：${AppUtil.keepNDecimals((item.oweAmount / 100).toString(), 2)}元"
+        holder.vb.tvPrintCount.text = "打印次数：${item.printCount}"
+        holder.vb.tvUrgeCount.text = "催缴次数：${item.urgeCount}"
+        holder.vb.tvTime.text = "告知书生成时间：${TimeUtils.millis2String(item.dataTime, "yyyy-MM-dd HH:mm:ss")}"
 
         holder.vb.rrlUrge.tag = item
         holder.vb.rrlUrge.setOnClickListener(onClickListener)

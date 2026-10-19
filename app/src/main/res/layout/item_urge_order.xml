@@ -12,10 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/dp_13"
-        android:paddingTop="@dimen/dp_17"
-        android:paddingEnd="@dimen/dp_13"
-        android:paddingBottom="@dimen/dp_22"
         app:rv_backgroundColor="@color/white"
         app:rv_radius="@dimen/dp_7">
 
@@ -97,7 +93,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_oweAmount"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_5"
             android:drawableStart="@mipmap/ic_fee"
@@ -105,5 +101,11 @@
             android:textColor="@color/color_ffe92404"
             android:textSize="@dimen/sp_19"
             tools:text="欠费:15.00元" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginTop="@dimen/dp_5"
+            android:background="@color/color_ff999999" />
     </com.aries.ui.view.radius.RadiusLinearLayout>
 </FrameLayout>

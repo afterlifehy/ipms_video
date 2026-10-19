@@ -18,5 +18,6 @@ data class UrgeBean(
     val districtId: String,
     val urgePayFile: String,
     val overdueTime:Long,
-    val dataTime: Long
+    val dataTime: Long,
+    val printCount: Int,
 ): Parcelable

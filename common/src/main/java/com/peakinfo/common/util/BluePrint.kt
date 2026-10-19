@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
+import android.util.Log
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.ThreadUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -27,6 +29,7 @@ class BluePrint() {
     var zpSDK: zp_cpcl_BluetoothPrinter? = null
     private var printResult = 0
     var mAddress: String? = null
+    var owePageIndex = 0
 
     companion object {
         private var bluePrint: BluePrint? = null
@@ -53,7 +56,8 @@ class BluePrint() {
     )
 
     @Throws(JSONException::class)
-    fun zkblueprint(content: String, type: Int) {
+    fun zkblueprint(content: String, type: Int, owePageIndex: Int = 0) {
+        this.owePageIndex = owePageIndex
         //打印文本
         try {
             printResult = Print1(content, type)
@@ -83,6 +87,7 @@ class BluePrint() {
 
     fun connet(address: String): Int {
         //获取设备蓝牙地址
+        zpSDK = null
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
         ThreadUtils.runOnUiThread {
@@ -123,6 +128,8 @@ class BluePrint() {
             return deviceList
         }
 
+    var yLocation = 182
+
     /**
      * 打印
      *
@@ -131,7 +138,6 @@ class BluePrint() {
      */
     fun Print1(printText: String, type: Int): Int {
         var printText = printText
-        var yLocation = 182
         if (printText !== "" && printText != null) {
             val receipt = printText.contains("receipt")
             if (receipt) {
@@ -431,64 +437,112 @@ class BluePrint() {
                 }
             } else if (type == 3) {
                 val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
-                zpSDK!!.pageSetup(800, 1600)
-                zpSDK!!.DrawSpecialText(147, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市道路停车欠费催缴告知书", 0, 0, 0) //3
-                zpSDK!!.DrawSpecialText(197, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 20, "编号:${printInfo.urgePayId}", 0, 0, 0) //3
+                zpSDK!!.pageSetup(800, 1100)
+                zpSDK!!.DrawSpecialText(117, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市道路停车欠费催缴告知书", 0, 0, 0) //3
+                zpSDK!!.DrawSpecialText(167, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 20, "编号:${printInfo.urgePayId}", 0, 0, 0) //3
                 yLocation = 86
                 drawText(10 + 36 + 40, 20, "${printInfo.plateId}驾驶人：")
                 yLocation += 32
-                drawText(yLocation, 20, "您驾驶的车牌号为:${printInfo.plateId}的车辆在本市xx区道路停车场停车后，")
+                val district = when {
+                    printInfo.oweList[0].roadId.startsWith("CN") -> "长宁"
+                    printInfo.oweList[0].roadId.startsWith("JS") -> "金山"
+                    printInfo.oweList[0].roadId.startsWith("JA") -> "静安"
+                    else -> null
+                }
+                drawText(yLocation, 20, "   您驾驶的车牌号为:${printInfo.plateId}的车辆在本市${district}区道路停")
                 yLocation += 32
-                drawText(yLocation, 20, "年  月  日——  年  月  日，尚有${printInfo.oweList.size}笔道路停车费未支付，欠付停车费共计XX")
+                val startTime = TimeUtils.millis2String(printInfo.oweList[0].arrivedTime, "yyyy年MM月dd日")
+                val endTime = TimeUtils.millis2String(printInfo.oweList[printInfo.oweList.size - 1].leftTime, "yyyy年MM月dd日")
+                drawText(yLocation, 20, "车场停车后，${startTime}——${endTime}，尚有${printInfo.oweList.size}笔")
                 yLocation += 32
-                drawText(yLocation, 20, "元。")
+                drawText(yLocation, 20, "道路停车费未支付，欠付停车费共计${sumOweMoney(printInfo)}元。")
                 yLocation += 32
-                drawText(yLocation, 20, "根据《上海市社会信用条例》《上海市停车场（库）管理办法》《上海市公")
+                drawText(yLocation, 20, "   根据《上海市社会信用条例》《上海市停车场（库）管理")
                 yLocation += 32
-                drawText(yLocation, 20, "共信用信息归集和使用管理办法》《上海市道路停车场管理规定》等相关规定：")
+                drawText(yLocation, 20, "办法》《上海市公共信用信息归集和使用管理办法》《上海市")
                 yLocation += 32
-                drawText(yLocation, 20, "请在收到本告知书后15个工作日内，使用“上海停车”APP（小程序）缴清上述")
+                drawText(yLocation, 20, "道路停车场管理规定》等相关规定：请在收到本告知书后15个")
                 yLocation += 32
-                drawText(yLocation, 20, "欠费，也可在本区任一道路停车场通过电子收费系统核实相关机动车辆的道路停")
+                drawText(yLocation, 20, "工作日内，使用“上海停车”APP（小程序）缴清上述欠费，也")
                 yLocation += 32
-                drawText(yLocation, 20, "车信息后缴清上述欠费。如您对上述欠费信息有异议的，请在收到本告知书后15")
+                drawText(yLocation, 20, "可在本区任一道路停车场通过电子收费系统核实相关机动车辆")
                 yLocation += 32
-                drawText(yLocation, 20, "个工作日内，通过电话（咨询电话：   ，服务时间：工作日    ）或下载使用")
+                drawText(yLocation, 20, "的道路停车信息后缴清上述欠费。如您对上述欠费信息有异议")
                 yLocation += 32
-                drawText(yLocation, 20, "“上海停车”APP（小程序）在线向本单位提出异议申诉，本单位将在接到您的")
+                drawText(yLocation, 20, "的，请在收到本告知书后15个工作日内，通过电话")
                 yLocation += 32
-                drawText(yLocation, 20, "异议申诉后5个工作日予以复核答复。逾期未提出异议的，视为无异议。")
+                drawText(yLocation, 20, "（咨询电话：       ，服务时间：工作日）或下载使用“上海")
                 yLocation += 32
-                drawText(yLocation, 20, "如您非当事的机动车驾驶人：请在收到本告知书后及时通知当事的机动车驾")
+                drawText(yLocation, 20, "停车”APP（小程序）在线向本单位提出异议申诉，本单位将在")
                 yLocation += 32
-                drawText(yLocation, 20, "驶人按照上述要求限时补缴欠费；您也可以直接代为补缴欠费或者通过上述咨询")
+                drawText(yLocation, 20, "接到您的异议申诉后5个工作日予以复核答复。逾期未提出异议")
                 yLocation += 32
-                drawText(yLocation, 20, "电话、“上海停车”APP（小程序）等向本单位提供当事的机动车驾驶人信息并")
+                drawText(yLocation, 20, "的，视为无异议。")
                 yLocation += 32
-                drawText(yLocation, 20, "提交相关佐证材料。")
+                drawText(yLocation, 20, "   如您非当事的机动车驾驶人：请在收到本告知书后及时通知")
+                yLocation += 32
+                drawText(yLocation, 20, "当事的机动车驾驶人按照上述要求限时补缴欠费；")
+                yLocation += 32
+                drawText(yLocation, 20, "   您也可以直接代为补缴欠费或者通过上述咨询电话、“上海")
+                yLocation += 32
+                drawText(yLocation, 20, "停车”APP（小程序）等向本单位提供当事的机动车驾驶人信息")
+                yLocation += 32
+                drawText(yLocation, 20, "并提交相关佐证材料。")
                 yLocation += 32
                 drawText(yLocation, 20, "特别告知：")
                 yLocation += 32
-                drawText(yLocation, 20, "一、逾期未按要求缴清欠费的，相关执法部门可按照《上海市停车场（库）")
+                drawText(yLocation, 20, "一、逾期未按要求缴清欠费的，相关执法部门可按照《上海市")
+                yLocation += 32
+                drawText(yLocation, 20, "停车场（库）")
                 yLocation += 32
                 drawText(yLocation, 20, "管理办法》的规定责令补交，并予以行政处罚；")
                 yLocation += 32
-                drawText(yLocation, 20, "二、逾期未按要求缴清欠费的，相关执法部门可依据《中华人民共和国行政")
+                drawText(yLocation, 20, "二、逾期未按要求缴清欠费的，相关执法部门可依据《中华人")
+                yLocation += 32
+                drawText(yLocation, 20, "民共和国行政")
                 yLocation += 32
                 drawText(yLocation, 20, "强制法》的规定申请人民法院强制执行。")
                 yLocation += 32
-                drawText(yLocation, 20, "三、逾期未按要求缴清欠费的，本单位可依法将您的道路停车欠费信息作为")
+                drawText(yLocation, 20, "三、逾期未按要求缴清欠费的，本单位可依法将您的道路停车")
+                yLocation += 32
+                drawText(yLocation, 20, "欠费信息作为")
                 yLocation += 32
                 drawText(yLocation, 20, "公共信用失信信息向上海市公共信用信息服务平台归集。")
                 yLocation += 32
                 drawText(yLocation, 20, "具体欠费信息告知如下：")
                 yLocation += 32
-                for(i in printInfo.oweList){
-                    drawText(yLocation, 20, "年  月  日  时  分——  年  月  日  时  分，在  （           ）路")
+            } else if (type == 4) {
+                val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
+
+                // 【重点】按分片取当前页的明细
+                val oweListPages = printInfo.oweList.splitPage(10)
+                val currentPageList = oweListPages[owePageIndex]
+                // 每页最多10条，页面高度1100
+                zpSDK!!.pageSetup(800, 100 * currentPageList.size)
+                yLocation = 0
+
+                for (i in currentPageList) {
+                    drawText(
+                        yLocation,
+                        20,
+                        "${TimeUtils.millis2String(i.arrivedTime, "yyyy年MM月dd日HH时mm分")}——${
+                            TimeUtils.millis2String(
+                                i.leftTime,
+                                "yyyy年MM月dd日HH时mm分"
+                            )
+                        }，"
+                    )
                     yLocation += 32
-                    drawText(yLocation, 20, "段停放，欠付停车费  元；")
+                    drawText(yLocation, 20, "在（${i.roadName}）路")
+                    yLocation += 32
+                    drawText(yLocation, 20, "段停放，欠付停车费${i.oweMoney / 100}元；")
                     yLocation += 32
                 }
+            } else if (type == 5) {
+                Log.v("123", "${zpSDK!!.GatAllLen()}")
+                val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
+                zpSDK!!.pageSetup(800, 500)
+                yLocation = 10
                 var bitmap: Bitmap? = null
                 if (printInfo.qrcode!!.isEmpty()) {
                     bitmap =
@@ -505,11 +559,14 @@ class BluePrint() {
                     scaledBitmap
                 )
                 yLocation += (300 + 18)
-                drawText(yLocation, 20, "扫描二维码，获取欠费催缴告知书原件（电子版），支付道路停车费")
+                drawText(yLocation, 20, "扫描二维码，获取欠费催缴告知书原件（电子版），支付道路")
+                yLocation += 32
+                drawText(yLocation, 20, "停车费")
                 yLocation += 32
             }
         }
         zpSDK!!.print(0, 0)
+        Log.v("123", "${zpSDK!!.GatAllLen()}")
         zpSDK!!.printerStatus()
         printGetStatus()
         return 0
@@ -588,21 +645,21 @@ class BluePrint() {
         )
     }
 
-    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
-        val width = options.outWidth
-        val height = options.outHeight
-        var inSampleSize = 1
-        if (reqWidth > 0 && reqHeight > 0) {
-            if (width > reqWidth || height > reqHeight) {
-                val halfWidth = width / 2
-                val halfHeight = height / 2
+    fun sumOweMoney(urgeDetailBean: UrgeDetailBean): Int {
+        return urgeDetailBean.oweList.sumOf { it.oweMoney } / 100
+    }
 
-                // 计算最大的 inSampleSize 值，使得宽度和高度都大于请求的宽度和高度
-                while (halfWidth / inSampleSize >= reqWidth && halfHeight / inSampleSize >= reqHeight) {
-                    inSampleSize *= 2
-                }
-            }
+    /**
+     * 将列表分片，每一页最多[pageSize]条
+     */
+    fun <T> List<T>.splitPage(pageSize: Int): List<List<T>> {
+        val result = mutableListOf<List<T>>()
+        var start = 0
+        while (start < this.size) {
+            val end = minOf(start + pageSize, this.size)
+            result.add(this.subList(start, end))
+            start = end
         }
-        return inSampleSize
+        return result
     }
 }
