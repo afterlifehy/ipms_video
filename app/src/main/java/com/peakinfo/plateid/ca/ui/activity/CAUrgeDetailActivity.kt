@@ -46,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDetailBinding>(), OnClickListener {
     private var urgeDetailBean: UrgeDetailBean? = null
     private var oweMoneyBean: OweMoneyBean? = null
+    private var queryPayBean: QueryPayBean? = null
     var urgeOrderAdapter: UrgeOrderAdapter? = null
     var urgeMonthAdapter: UrgeMonthAdapter? = null
     var urgeOrderList: MutableList<UrgeOrderBean> = ArrayList()
@@ -55,6 +56,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
     var count = 0
     var handler = Handler(Looper.getMainLooper())
     var token = ""
+    var loginName = ""
     var ticketQrCode = ""
     lateinit var payResultBean: PayResultBean
     var printType = 3
@@ -93,6 +95,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
             urgepaydetail()
         }
     }
@@ -132,6 +135,8 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             R.id.rtv_print -> {
                 showProgressDialog(60000)
                 urgepayQrcode()
+                urgeBeanNotice()
+                urgeDetailNotice()
             }
         }
     }
@@ -152,11 +157,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             urgepaydetailLiveData.observe(this@CAUrgeDetailActivity) {
                 urgeDetailBean = it
                 dismissProgressDialog()
-                urgeDetailBean!!.oweList.addAll(it.oweList)
-                urgeDetailBean!!.oweList.addAll(it.oweList)
-                urgeDetailBean!!.oweList.addAll(it.oweList)
-                urgeDetailBean!!.oweList.removeAt(29)
-                urgeDetailBean!!.oweList.removeAt(28)
                 urgeOrderList.clear()
                 urgeOrderList.addAll(it.oweList)
                 urgeOrderAdapter?.setList(urgeOrderList)
@@ -167,6 +167,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             }
             urgepayQrcodeLiveData.observe(this@CAUrgeDetailActivity) {
                 dismissProgressDialog()
+                urgePrintNotice()
                 urgeDetailBean?.qrcode = it.qrcode
                 printType = 3
                 performPrintTasks(urgeDetailBean!!) {
@@ -184,6 +185,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 mViewModel.consumeUrgePay(param)
             }
             consumeUrgePayLiveData.observe(this@CAUrgeDetailActivity) {
+                urgePayNotice(it.qrCode, it.userId)
                 paymentQrDialog =
                     PaymentQrDialog(
                         it.qrCode,
@@ -197,7 +199,9 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 handler.postDelayed(runnable, 2000)
             }
             querypayLiveData.observe(this@CAUrgeDetailActivity) {
+                queryPayBean = it
                 if (it != null && it.payMoney != null) {
+                    urgePayResultNotice()
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast("支付成功")
                     payResultNotice(it)
@@ -269,6 +273,77 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         param["plateColor"] = urgeBean.plateColor
         param["dataTime"] = System.currentTimeMillis()
         mViewModel.invoiceQrcode(param)
+    }
+
+    fun urgeBeanNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["subject"] = urgeBean.subject
+        jsonObject["oweCount"] = urgeBean.oweCount
+        jsonObject["oweAmount"] = urgeBean.oweAmount
+        jsonObject["oweBeginTime"] = urgeBean.oweBeginTime
+        jsonObject["oweEndTime"] = urgeBean.oweEndTime
+        jsonObject["urgePayType"] = urgeBean.urgePayType
+        jsonObject["plateId"] = urgeBean.plateId
+        jsonObject["plateColor"] = urgeBean.plateColor
+        jsonObject["urgeCount"] = urgeBean.urgeCount
+        jsonObject["districtId"] = urgeBean.districtId
+        jsonObject["urgePayFile"] = urgeBean.urgePayFile
+        jsonObject["overdueTime"] = urgeBean.overdueTime
+        jsonObject["dataTime"] = urgeBean.dataTime
+        param["attr"] = jsonObject
+        mViewModel.urgeBeanNotice(param)
+    }
+
+    fun urgeDetailNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["plateId"] = urgeDetailBean?.plateId
+        jsonObject["plateColor"] = urgeDetailBean?.plateColor
+        jsonObject["oweList"] = urgeDetailBean?.oweList
+        jsonObject["monthList"] = urgeDetailBean?.monthList
+        param["attr"] = jsonObject
+        mViewModel.urgeDetailNotice(param)
+    }
+
+    fun urgePayNotice(qrCode: String, userId: String) {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["orderId"] = oweMoneyBean?.orderId
+        jsonObject["payMoney"] = oweMoneyBean?.amount
+        jsonObject["dataTime"] = System.currentTimeMillis()
+        jsonObject["qrCode"] = qrCode
+        jsonObject["payUrl"] = ""
+        jsonObject["userId"] = userId
+        param["attr"] = jsonObject
+        mViewModel.urgePayNotice(param)
+    }
+
+    fun urgePayResultNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["orderId"] = queryPayBean?.orderId
+        jsonObject["payStatus"] = queryPayBean?.payStatus
+        jsonObject["payTime"] = queryPayBean?.payTime
+        param["attr"] = jsonObject
+        mViewModel.urgePayResultNotice(param)
+    }
+
+    fun urgePrintNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["inputter"] = loginName
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        param["attr"] = jsonObject
+        mViewModel.urgePrintNotice(param)
     }
 
     fun startPrint(it: PayResultBean) {
@@ -356,9 +431,9 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             }
             val type = taskQueue[currentTaskIndex]
             var owePageIndex = 0
-            if(type ==4){
+            if (type == 4) {
                 // 统计前面有多少个type4，作为分片索引
-                owePageIndex = taskQueue.take(currentTaskIndex).count{it ==4}
+                owePageIndex = taskQueue.take(currentTaskIndex).count { it == 4 }
             }
             printNotice(urgeDetailBean, type, owePageIndex) {
                 currentTaskIndex++

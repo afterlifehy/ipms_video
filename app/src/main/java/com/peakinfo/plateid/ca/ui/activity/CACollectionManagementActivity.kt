@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.UriUtils
@@ -47,6 +48,11 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     var currentPic = 1
     var pic1Base64 = ""
     var pic2Base64 = ""
+    var pic1Url = ""
+    var pic2Url = ""
+    var imageType = 0
+    var loginName = ""
+    var token = ""
     lateinit var urgeBean: UrgeBean
     val plateMap = mutableMapOf(
         Constant.BLUE to com.peakinfo.common.R.mipmap.ic_plate_blue,
@@ -83,6 +89,10 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     }
 
     override fun initData() {
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
+        }
         streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
         if (streetNo.isNotEmpty()) {
             for (i in streetList) {
@@ -172,7 +182,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
             val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
             binding.rivPic2.show()
             GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
-            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
+            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_2.jpg", compressImageBitmap!!)
             val bytes = file?.readBytes()
             pic2Base64 = EncodeUtils.base64Encode2String(bytes)
         }
@@ -180,18 +190,15 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
 
     fun submit() {
         showProgressDialog(60000)
-        runBlocking {
-            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            param["token"] = token
-            param["urgePayId"] = urgeBean.urgePayId
-            param["roadId"] = streetNo
-            param["photo1"] = pic1Base64
-            param["photo2"] = pic2Base64
-            param["photoType"] = "jpg"
-            param["dataTime"] = System.currentTimeMillis()
-            mViewModel.urgepay(param)
-        }
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["roadId"] = streetNo
+        param["photo1"] = pic1Base64
+        param["photo2"] = pic2Base64
+        param["photoType"] = "jpg"
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.urgepay(param)
     }
 
     override fun startObserve() {
@@ -199,6 +206,26 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         mViewModel.apply {
             urgepayLiveData.observe(this@CACollectionManagementActivity) {
                 dismissProgressDialog()
+                imageType = 1
+                val params = HashMap<String, Any>()
+                params["fileName"] = "${urgeBean.urgePayId}_1.jpg"
+                params["file"] = pic1Base64
+                mViewModel.uploadFileForApp(params)
+            }
+            uploadFileForAppLiveData.observe(this@CACollectionManagementActivity) {
+                if (imageType == 1) {
+                    imageType = 2
+                    pic1Url = it.URL
+                    val params = HashMap<String, Any>()
+                    params["fileName"] = "${urgeBean.urgePayId}_2.jpg"
+                    params["file"] = pic2Base64
+                    mViewModel.uploadFileForApp(params)
+                } else {
+                    pic2Url = it.URL
+                    urgeNotice()
+                }
+            }
+            urgeNoticeLiveData.observe(this@CACollectionManagementActivity) {
                 ToastUtil.showBottomToast("催缴成功")
                 onBackPressedSupport()
             }
@@ -210,6 +237,20 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                 dismissProgressDialog()
             }
         }
+    }
+
+    fun urgeNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["roadId"] = streetNo
+        jsonObject["photo1"] = pic1Url
+        jsonObject["photo2"] = pic2Url
+        jsonObject["photoType"] = "jpg"
+        jsonObject["dataTime"] = System.currentTimeMillis()
+        jsonObject["inputter"] = loginName
+        param["attr"] = jsonObject
+        mViewModel.urgeNotice(param)
     }
 
     override fun getVbBindingView(): ViewBinding {

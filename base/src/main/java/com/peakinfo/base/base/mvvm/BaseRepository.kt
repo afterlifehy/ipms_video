@@ -35,10 +35,10 @@ open class BaseRepository {
         )
     }
 
-    val mImageServer by lazy {
+    val mImageUploadServer by lazy {
         RetrofitUtils.getInstance().createCoroutineRetrofit(
             Api::class.java,
-            UrlManager.getImageServerUrl()
+            UrlManager.getImageUploadServerUrl()
         )
     }
 

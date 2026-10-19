@@ -77,9 +77,9 @@ class LogoutViewModel : BaseViewModel() {
                 mLogoutRepository.logoutCheckOnWork(param)
             }
             executeResponse(response, {
-                logoutCheckOnWorkLiveData.value = response.data
+                logoutCheckOnWorkLiveData.value = response.attr
             }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code))
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
             })
         }
     }

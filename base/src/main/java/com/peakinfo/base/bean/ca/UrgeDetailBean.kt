@@ -5,6 +5,7 @@ data class UrgeDetailBean(
     var oweList: MutableList<UrgeOrderBean> = ArrayList(),
     var qrcode: String? = null,
     var plateId: String? = "",
+    var plateColor:Int,
     var urgePayId:String = ""
 )
 data class UrgeMonthBean(

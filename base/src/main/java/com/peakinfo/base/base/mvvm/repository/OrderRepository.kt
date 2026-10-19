@@ -11,6 +11,7 @@ import com.peakinfo.base.bean.PayQRBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.TransactionResultBean
+import com.peakinfo.base.bean.UploadImageBean
 import com.peakinfo.base.bean.VideoPicBean
 import com.peakinfo.base.bean.ca.DebtBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
@@ -21,6 +22,7 @@ import com.peakinfo.base.bean.ca.UrgeBean
 import com.peakinfo.base.bean.ca.UrgeDetailBean
 import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
+import retrofit2.http.POST
 
 class OrderRepository : BaseRepository() {
 
@@ -322,5 +324,60 @@ class OrderRepository : BaseRepository() {
             "appId" to Constant.APP_ID
         )
         return mServer.urgepayprint(param, options)
+    }
+
+    /**
+     * 欠费催缴单通知
+     */
+    suspend fun urgeBeanNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any> {
+        return rtServer.urgeBeanNotice(param)
+    }
+
+    /**
+     * 欠费催缴单欠费通知
+     */
+    @POST("S_URP_02")
+    suspend fun urgeDetailNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
+        return rtServer.urgeDetailNotice(param)
+    }
+
+    /**
+     * 欠费催缴单支付通知
+     */
+    @POST("S_UR_04")
+    suspend fun urgePayNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
+        return rtServer.urgePayNotice(param)
+    }
+
+    /**
+     * 欠费催缴单支付结果通知
+     */
+    @POST("S_UR_05")
+    suspend fun urgePayResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
+        return rtServer.urgePayResultNotice(param)
+    }
+
+    /**
+     * 欠费催缴单打印通知
+     */
+    @POST("S_UR_06")
+    suspend fun urgePrintNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
+        return rtServer.urgePrintNotice(param)
+    }
+
+    /**
+     * 欠费催缴单催缴通知
+     */
+    @POST("S_UR_07")
+    suspend fun urgeNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
+        return rtServer.urgeNotice(param)
+    }
+
+    /**
+     * 图片上传我们平台
+     */
+    @POST("uploadFileForApp")
+    suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>{
+        return mImageUploadServer.uploadFileForApp(param)
     }
 }

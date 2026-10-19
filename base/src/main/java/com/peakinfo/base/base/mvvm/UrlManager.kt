@@ -19,7 +19,8 @@ object UrlManager {
 
     const val File_HOST = "http://114.94.20.110/ipms/file/omor01/"
 
-    const val IMAGE_HOST = "http://114.94.20.110/ipms/rest/ZJPM0401/"
+    const val UPLOAD_IMAGE_DEV_HOST = "http://114.94.20.110/ipms/rest/ZJPM0401/"
+    const val UPLOAD_IMAGE_FORMAL_HOST = "http://ipms.rentongtek.com/ipms/rest/ZJPM0401/"
 
     fun getRTServerUrl(): String {
         if (BuildConfig.is_dev) {
@@ -57,7 +58,11 @@ object UrlManager {
         return File_HOST
     }
 
-    fun getImageServerUrl():String{
-        return IMAGE_HOST
+    fun getImageUploadServerUrl():String{
+        if (BuildConfig.is_dev) {
+            return UPLOAD_IMAGE_DEV_HOST
+        } else {
+            return UPLOAD_IMAGE_FORMAL_HOST
+        }
     }
 }

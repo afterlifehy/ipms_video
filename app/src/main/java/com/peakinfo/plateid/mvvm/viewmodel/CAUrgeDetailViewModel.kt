@@ -13,7 +13,7 @@ import com.peakinfo.base.bean.ca.UrgeDetailBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class CAUrgeDetailViewModel: BaseViewModel() {
+class CAUrgeDetailViewModel : BaseViewModel() {
 
     val mOrderRepository by lazy {
         OrderRepository()
@@ -27,6 +27,11 @@ class CAUrgeDetailViewModel: BaseViewModel() {
     val payowemoneyLiveData = MutableLiveData<OweMoneyBean>()
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
     val urgepayprintLiveData = MutableLiveData<Any>()
+    val urgeBeanNoticeLiveData = MutableLiveData<Any>()
+    val urgeDetailNoticeLiveData = MutableLiveData<Any>()
+    val urgePayNoticeLiveData = MutableLiveData<Any>()
+    val urgePayResultNoticeLiveData = MutableLiveData<Any>()
+    val urgePrintNoticeLiveData = MutableLiveData<Any>()
 
     fun urgepaydetail(param: Map<String, Any?>) {
         launch {
@@ -131,4 +136,70 @@ class CAUrgeDetailViewModel: BaseViewModel() {
             })
         }
     }
+
+    fun urgeBeanNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgeBeanNotice(param)
+            }
+            executeResponse(response, {
+                urgeBeanNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "urgeBeanNotice"))
+            })
+        }
+    }
+
+    fun urgeDetailNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgeDetailNotice(param)
+            }
+            executeResponse(response, {
+                urgeDetailNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "urgeDetailNotice"))
+            })
+        }
+    }
+
+    fun urgePayNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgePayNotice(param)
+            }
+            executeResponse(response, {
+                urgePayNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "urgePayNotice"))
+            })
+        }
+    }
+
+    fun urgePayResultNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgePayResultNotice(param)
+            }
+            executeResponse(response, {
+                urgePayResultNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "urgePayResultNotice"))
+            })
+        }
+    }
+
+    fun urgePrintNotice(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mOrderRepository.urgePrintNotice(param)
+            }
+            executeResponse(response, {
+                urgePrintNoticeLiveData.value = response.attr
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "urgePrintNotice"))
+            })
+        }
+    }
+
 }

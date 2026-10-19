@@ -352,7 +352,7 @@ interface Api {
      * 签退考勤排班
      */
     @POST("S_VO3_20")
-    suspend fun logoutCheckOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<Any>
+    suspend fun logoutCheckOnWork(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
 
     /**
      * 日志上传
@@ -392,4 +392,46 @@ interface Api {
     suspend fun urgepayprint(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<Any>
+
+    /**
+     * 欠费催缴单通知
+     */
+    @POST("S_UR_01")
+    suspend fun urgeBeanNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单欠费通知
+     */
+    @POST("S_UR_02")
+    suspend fun urgeDetailNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单支付通知
+     */
+    @POST("S_UR_04")
+    suspend fun urgePayNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单支付结果通知
+     */
+    @POST("S_UR_05")
+    suspend fun urgePayResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单打印通知
+     */
+    @POST("S_UR_06")
+    suspend fun urgePrintNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 欠费催缴单催缴通知
+     */
+    @POST("S_UR_07")
+    suspend fun urgeNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>
+
+    /**
+     * 图片上传我们平台
+     */
+    @POST("uploadFileForApp")
+    suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>
 }
