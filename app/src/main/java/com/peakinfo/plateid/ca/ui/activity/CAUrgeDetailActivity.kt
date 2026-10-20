@@ -185,7 +185,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 mViewModel.consumeUrgePay(param)
             }
             consumeUrgePayLiveData.observe(this@CAUrgeDetailActivity) {
-                urgePayNotice(it.qrCode, it.userId)
+                urgePayNotice(it.qrCode, it.userId ?: "")
                 paymentQrDialog =
                     PaymentQrDialog(
                         it.qrCode,
@@ -239,6 +239,9 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             errMsg.observe(this@CAUrgeDetailActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
+                if (it.api == "querypay") {
+                    urgePayResultNotice()
+                }
             }
             mException.observe(this@CAUrgeDetailActivity) {
                 dismissProgressDialog()
@@ -330,9 +333,9 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         val jsonObject = JSONObject()
         jsonObject["inputter"] = loginName
         jsonObject["urgePayId"] = urgeBean.urgePayId
-        jsonObject["orderId"] = queryPayBean?.orderId
-        jsonObject["payStatus"] = queryPayBean?.payStatus
-        jsonObject["payTime"] = queryPayBean?.payTime
+        jsonObject["orderId"] = oweMoneyBean?.orderId ?: "123"
+        jsonObject["payStatus"] = queryPayBean?.payStatus ?: "01"
+        jsonObject["payTime"] = queryPayBean?.payTime ?: "1792400040000"
         param["attr"] = jsonObject
         mViewModel.urgePayResultNotice(param)
     }
