@@ -162,31 +162,26 @@ object FileUtil {
      * @param bitmap   文件
      * @return 路径，为空时表示保存失败
      */
-    fun FileSaveToInside(context: Context, fileName: String?, bitmap: Bitmap): File? {
-        var fos: FileOutputStream? = null
-        var resultFile: File? = null // 声明一个变量用于保存结果
-        try {
-            val folder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            Log.e("rt", "file   " + folder!!.absolutePath)
-
-            // 判断目录是否存在，不存在时自动创建
-            if (folder != null && (folder.exists() || folder.mkdirs())) {
-                val file = File(folder, fileName)
-                fos = FileOutputStream(file)
-                // 写入文件
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, fos)
-                fos.flush()
-                resultFile = file // 写入成功，赋值给结果变量
+    fun FileSaveToInside(context: Context, fileName: String?, bytes: ByteArray): File? {
+        val folder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return try {
+            val file = File(folder, fileName)
+            FileOutputStream(file).use {
+                it.write(bytes)
             }
+            file
         } catch (e: Exception) {
             e.printStackTrace()
-        } finally {
-            try {
-                fos?.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+            null
         }
-        return resultFile
+    }
+
+    fun createImageFile(context: Context): File {
+        val storageDir = context.filesDir
+        return File.createTempFile(
+            "photo_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir
+        )
     }
 }

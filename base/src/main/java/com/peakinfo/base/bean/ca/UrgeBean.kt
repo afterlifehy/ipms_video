@@ -20,4 +20,11 @@ data class UrgeBean(
     val overdueTime:Long,
     val dataTime: Long,
     val printCount: Int,
+    val companyId: String,
+    val companyName: String,
+    val companyPhone: String,
+    val manageName: String,
+    val paidMoney: Int,
+    val status: Int,
 ): Parcelable
+

@@ -68,30 +68,24 @@ class BluePrint() {
         }
         ActivityCacheManager.instance().getCurrentActivity()!!.runOnUiThread {
             if (printResult == 0) {
-//                val toast = Toast.makeText(BaseApplication.instance(), "打印完成", Toast.LENGTH_LONG)
-//                toast.setGravity(Gravity.CENTER, 0, 0)
-//                toast.show()
             } else if (printResult == -1) {
-
+                ToastUtil.showBottomToast("蓝牙未连接", 1)
             } else if (printResult == -2) {
-                Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showBottomToast("路段名称过长...")
-                }
+                ToastUtil.showBottomToast("路段名称过长")
             } else {
-                Handler(Looper.getMainLooper()).post {
-                    ToastUtil.showBottomToast("打印失败")
-                }
+                ToastUtil.showBottomToast("打印失败")
             }
         }
     }
 
-    fun connet(address: String): Int {
+    fun connet(address: String, flag: Int = 0): Int {
         //获取设备蓝牙地址
-        zpSDK = null
         mAddress = address
         zpSDK = zp_cpcl_BluetoothPrinter(BaseApplication.instance())
-        ThreadUtils.runOnUiThread {
-            ToastUtil.showBottomToast("打印机开始连接")
+        if (flag == 0) {
+            ThreadUtils.runOnUiThread {
+                ToastUtil.showBottomToast("打印机开始连接")
+            }
         }
 
         if (!zpSDK!!.connect(mAddress)) {
@@ -102,8 +96,10 @@ class BluePrint() {
             printResult = -1
             return printResult
         }
-        ThreadUtils.runOnUiThread {
-            ToastUtil.showBottomToast("打印机连接成功")
+        if (flag == 0) {
+            ThreadUtils.runOnUiThread {
+                ToastUtil.showBottomToast("打印机连接成功")
+            }
         }
         return 0
     }
@@ -437,7 +433,7 @@ class BluePrint() {
                 }
             } else if (type == 3) {
                 val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
-                zpSDK!!.pageSetup(800, 1100)
+                zpSDK!!.pageSetup(800, 1150)
                 zpSDK!!.DrawSpecialText(117, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市道路停车欠费催缴告知书", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(167, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 20, "编号:${printInfo.urgePayId}", 0, 0, 0) //3
                 yLocation = 86
@@ -471,43 +467,45 @@ class BluePrint() {
                 yLocation += 32
                 drawText(yLocation, 20, "的，请在收到本告知书后15个工作日内，通过电话")
                 yLocation += 32
-                drawText(yLocation, 20, "（咨询电话：       ，服务时间：工作日）或下载使用“上海")
+                drawText(yLocation, 20, "（咨询电话：${printInfo.companyPhone}，服务时间：工作日）或下载使用")
                 yLocation += 32
-                drawText(yLocation, 20, "停车”APP（小程序）在线向本单位提出异议申诉，本单位将在")
+                drawText(yLocation, 20, "“上海停车”APP（小程序）在线向本单位提出异议申诉，本单")
                 yLocation += 32
-                drawText(yLocation, 20, "接到您的异议申诉后5个工作日予以复核答复。逾期未提出异议")
+                drawText(yLocation, 20, "位将在接到您的异议申诉后5个工作日予以复核答复。逾期未提")
                 yLocation += 32
-                drawText(yLocation, 20, "的，视为无异议。")
+                drawText(yLocation, 20, "出异议的，视为无异议。")
                 yLocation += 32
-                drawText(yLocation, 20, "   如您非当事的机动车驾驶人：请在收到本告知书后及时通知")
+                drawText(yLocation, 20, "    如您非当事的机动车驾驶人：请在收到本告知书后及时通")
                 yLocation += 32
-                drawText(yLocation, 20, "当事的机动车驾驶人按照上述要求限时补缴欠费；")
+                drawText(yLocation, 20, "知当事的机动车驾驶人按照上述要求限时补缴欠费；您也可以")
                 yLocation += 32
-                drawText(yLocation, 20, "   您也可以直接代为补缴欠费或者通过上述咨询电话、“上海")
+                drawText(yLocation, 20, "直接代为补缴欠费或者通过上述咨询电话、“上海停车”APP（")
                 yLocation += 32
-                drawText(yLocation, 20, "停车”APP（小程序）等向本单位提供当事的机动车驾驶人信息")
+                drawText(yLocation, 20, "小程序）等向本单位提供当事的机动车驾驶人信息并提交相关")
                 yLocation += 32
-                drawText(yLocation, 20, "并提交相关佐证材料。")
+                drawText(yLocation, 20, "佐证材料。")
                 yLocation += 32
-                drawText(yLocation, 20, "特别告知：")
+                drawText(yLocation, 20, "特别告知：", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "一、逾期未按要求缴清欠费的，相关执法部门可按照《上海市")
+                drawText(yLocation, 20, "    一、逾期未按要求缴清欠费的，相关执法部门可按照《上", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "停车场（库）")
+                drawText(yLocation, 20, "海市停车场（库）管理办法》的规定责令补交，并予以行政处；", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "管理办法》的规定责令补交，并予以行政处罚；")
+                drawText(yLocation, 20, "罚；", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "二、逾期未按要求缴清欠费的，相关执法部门可依据《中华人")
+                drawText(yLocation, 20, "    二、逾期未按要求缴清欠费的，相关执法部门可依据《中", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "民共和国行政")
+                drawText(yLocation, 20, "华人民共和国行政强制法》的规定申请人民法院强制执行。", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "强制法》的规定申请人民法院强制执行。")
+                drawText(yLocation, 20, "    三、逾期未按要求缴清欠费的，本单位可依法将您的道路", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "三、逾期未按要求缴清欠费的，本单位可依法将您的道路停车")
+                drawText(yLocation, 20, "停车欠费信息作为公共信用失信信息向上海市公共信用信息服", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "欠费信息作为")
+                drawText(yLocation, 20, "务平台归集。", 1, true)
                 yLocation += 32
-                drawText(yLocation, 20, "公共信用失信信息向上海市公共信用信息服务平台归集。")
+                drawText2(yLocation, 20, "${printInfo.manageName}(盖章)", 280, 0)
+                yLocation += 64
+                drawText2(yLocation, 20, "${TimeUtils.millis2String(System.currentTimeMillis(), "yyyy年MM月dd日")}", 360)
                 yLocation += 32
                 drawText(yLocation, 20, "具体欠费信息告知如下：")
                 yLocation += 32
@@ -566,7 +564,6 @@ class BluePrint() {
             }
         }
         zpSDK!!.print(0, 0)
-        Log.v("123", "${zpSDK!!.GatAllLen()}")
         zpSDK!!.printerStatus()
         printGetStatus()
         return 0
@@ -632,19 +629,35 @@ class BluePrint() {
         )
     }
 
-    fun drawText(y: Int, fontSize: Int, txt: String) {
-        zpSDK!!.DrawSpecialText(
+    fun drawText(y: Int, fontSize: Int, txt: String, bold: Int = 0, underline: Boolean = false) {
+        zpSDK!!.drawText(
             25,
             y,
-            PrinterInterface.Textfont.siyuanheiti,
-            fontSize,
             txt,
+            fontSize,
             0,
-            0,
+            bold,
+            false,
+            underline,
             0
         )
     }
 
+    fun drawText2(y: Int, fontSize: Int, txt: String, x: Int, bold: Int = 0, underline: Boolean = false) {
+        zpSDK!!.drawText(
+            x,
+            y,
+            txt,
+            fontSize,
+            0,
+            bold,
+            false,
+            underline,
+            0
+        )
+    }
+
+    //    int text_x, int text_y, String text, int fontSize, int rotate, int bold, boolean reverse, boolean underline, int location)
     fun sumOweMoney(urgeDetailBean: UrgeDetailBean): Int {
         return urgeDetailBean.oweList.sumOf { it.oweMoney } / 100
     }

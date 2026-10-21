@@ -6,7 +6,9 @@ data class UrgeDetailBean(
     var qrcode: String? = null,
     var plateId: String? = "",
     var plateColor:Int,
-    var urgePayId:String = ""
+    var urgePayId:String = "",
+    var manageName:String = "",
+    var companyPhone:String = ""
 )
 data class UrgeMonthBean(
     val applyId: String,

@@ -5,10 +5,13 @@
         path="" />
     <files-path
         name="files"
-        path="" />
+        path="." />
     <cache-path
         name="cache"
         path="" />
+    <cache-path
+        name="camera_photos"
+        path="camera/" />
     <external-path
         name="external"
         path="" />

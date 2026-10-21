@@ -19,7 +19,7 @@ object CompressUtil {
         targetWidth: Int,
         targetHeight: Int,
         maxFileSizeKb: Int = 1024
-    ): Bitmap? {
+    ): ByteArray? {
         // 1. 第一步：精确缩放到目标尺寸
         val exactBitmap = if (bitmap.width == targetWidth && bitmap.height == targetHeight) {
             bitmap
@@ -27,27 +27,44 @@ object CompressUtil {
             Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
         }
 
-        // 2. 第二步：质量压缩，直到小于目标大小
-        var quality = 90
         val outputStream = ByteArrayOutputStream()
-        while (quality > 10) {
+        var bestQuality = 0
+        var low = 10
+        var high = 100
+
+        // 二分查找最优quality
+        while (low <= high) {
+            val mid = (low + high) / 2
             outputStream.reset()
-            exactBitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            exactBitmap.compress(Bitmap.CompressFormat.JPEG, mid, outputStream)
             val sizeKb = outputStream.size() / 1024
-            if (sizeKb <= maxFileSizeKb) {
-                break
+
+            if (sizeKb <= maxFileSizeKb * 0.5) {
+                // 当前质量满足要求，尝试更高画质
+                bestQuality = mid
+                low = mid + 1
+            } else {
+                // 文件太大，降低画质
+                high = mid - 1
             }
-            quality -= 10 // 每次降低 10 档画质
         }
 
-        // 3. 将压缩后的字节流重新解码为 Bitmap 返回
+        // 兜底：如果没有找到可用quality（最低10还超标）
+        if (bestQuality < 10) {
+            outputStream.reset()
+            exactBitmap.compress(Bitmap.CompressFormat.JPEG, 10, outputStream)
+        } else {
+            outputStream.reset()
+            exactBitmap.compress(Bitmap.CompressFormat.JPEG, bestQuality, outputStream)
+        }
+
         val compressedBytes = outputStream.toByteArray()
 
-        // 如果生成了新的缩放图，回收它以释放内存
+        // 回收临时缩放bitmap
         if (exactBitmap !== bitmap) {
             exactBitmap.recycle()
         }
 
-        return BitmapFactory.decodeByteArray(compressedBytes, 0, compressedBytes.size)
+        return compressedBytes
     }
 }

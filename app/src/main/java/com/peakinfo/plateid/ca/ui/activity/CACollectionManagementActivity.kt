@@ -5,18 +5,19 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.EncodeUtils
-import com.blankj.utilcode.util.ImageUtils
-import com.blankj.utilcode.util.UriUtils
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
 import com.peakinfo.base.bean.Street
@@ -34,10 +35,10 @@ import com.peakinfo.common.util.FileUtil
 import com.peakinfo.common.util.GlideUtils
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.databinding.ActivityCaCollectionManagementBinding
-import com.peakinfo.plateid.dialog.SelectPicDialog
 import com.peakinfo.plateid.mvvm.viewmodel.CollectionManagementViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
+import java.io.InputStream
 
 @Route(path = ARouterMap.CA_COLLECTION_MANAGEMENT)
 class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCaCollectionManagementBinding>(),
@@ -154,37 +155,71 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         }
     }
 
+    private var photoUri: Uri? = null
+
     fun takePhoto() {
+        // 创建存放原图的文件
+        val photoFile = FileUtil.createImageFile(this@CACollectionManagementActivity)
+        photoUri = FileProvider.getUriForFile(
+            this@CACollectionManagementActivity,
+            // 这里替换成你AndroidManifest里配置的FileProvider authority
+            "com.peakinfo.plateid.fileprovider",
+            photoFile
+        )
         if (currentPic == 1) {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
             takePictureLauncher1.launch(takePictureIntent)
         } else {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
             takePictureLauncher2.launch(takePictureIntent)
         }
     }
 
     val takePictureLauncher1 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-            binding.rivPic1.show()
-            GlideUtils.instance?.loadImage(binding.rivPic1, compressImageBitmap)
-            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
-            val bytes = file?.readBytes()
-            pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+            photoUri?.let { uri ->
+                // 从uri读取原图bitmap（这里才是高清原图）
+                val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                // 压缩到目标尺寸1440*1920
+                val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes,0,compressedBytes!!.size)
+                binding.rivPic1.show()
+                GlideUtils.instance?.loadImage(binding.rivPic1, previewBmp)
+                val file = FileUtil.FileSaveToInside(
+                    this@CACollectionManagementActivity,
+                    "${urgeBean.urgePayId}_${System.currentTimeMillis()}_1.jpg",
+                    compressedBytes
+                )
+                val bytes = file?.readBytes()
+                pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+            }
         }
     }
 
     val takePictureLauncher2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-            binding.rivPic2.show()
-            GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
-            val file = FileUtil.FileSaveToInside(this@CACollectionManagementActivity, "${urgeBean.urgePayId}_2.jpg", compressImageBitmap!!)
-            val bytes = file?.readBytes()
-            pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+            photoUri?.let { uri ->
+                // 从uri读取原图bitmap（这里才是高清原图）
+                val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                // 压缩到目标尺寸1440*1920
+                val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes,0,compressedBytes!!.size)
+                binding.rivPic2.show()
+                GlideUtils.instance?.loadImage(binding.rivPic2, previewBmp)
+                val file = FileUtil.FileSaveToInside(
+                    this@CACollectionManagementActivity,
+                    "${urgeBean.urgePayId}_${System.currentTimeMillis()}_2.jpg",
+                    compressedBytes
+                )
+                val bytes = file?.readBytes()
+                pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+            }
         }
     }
 
@@ -205,10 +240,9 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
         super.startObserve()
         mViewModel.apply {
             urgepayLiveData.observe(this@CACollectionManagementActivity) {
-                dismissProgressDialog()
                 imageType = 1
                 val params = HashMap<String, Any>()
-                params["fileName"] = "${urgeBean.urgePayId}_1.jpg"
+                params["fileName"] = "${urgeBean.urgePayId}_${System.currentTimeMillis()}_1.jpg"
                 params["file"] = pic1Base64
                 mViewModel.uploadFileForApp(params)
             }
@@ -217,7 +251,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                     imageType = 2
                     pic1Url = it.URL
                     val params = HashMap<String, Any>()
-                    params["fileName"] = "${urgeBean.urgePayId}_2.jpg"
+                    params["fileName"] = "${urgeBean.urgePayId}_${System.currentTimeMillis()}_2.jpg"
                     params["file"] = pic2Base64
                     mViewModel.uploadFileForApp(params)
                 } else {
@@ -226,6 +260,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                 }
             }
             urgeNoticeLiveData.observe(this@CACollectionManagementActivity) {
+                dismissProgressDialog()
                 ToastUtil.showBottomToast("催缴成功")
                 onBackPressedSupport()
             }

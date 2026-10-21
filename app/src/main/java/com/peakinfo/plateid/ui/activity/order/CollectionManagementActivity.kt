@@ -156,25 +156,25 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
 
     val takePictureLauncher1 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-            binding.rivPic1.show()
-            GlideUtils.instance?.loadImage(binding.rivPic1, compressImageBitmap)
-            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
-            val bytes = file?.readBytes()
-            pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+//            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+//            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
+//            binding.rivPic1.show()
+//            GlideUtils.instance?.loadImage(binding.rivPic1, compressImageBitmap)
+//            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
+//            val bytes = file?.readBytes()
+//            pic1Base64 = EncodeUtils.base64Encode2String(bytes)
         }
     }
 
     val takePictureLauncher2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-            binding.rivPic2.show()
-            GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
-            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
-            val bytes = file?.readBytes()
-            pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+//            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+//            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
+//            binding.rivPic2.show()
+//            GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
+//            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
+//            val bytes = file?.readBytes()
+//            pic2Base64 = EncodeUtils.base64Encode2String(bytes)
         }
     }
 

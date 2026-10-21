@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:drawableStart="@mipmap/ic_wx"
-                android:drawablePadding="@dimen/dp_6"
+                android:drawablePadding="@dimen/dp_3"
                 android:gravity="center"
                 android:text="@string/微信"
                 android:textColor="@color/color_ff1a1a1a"
@@ -74,9 +74,9 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_marginStart="@dimen/dp_5"
                 android:drawableStart="@mipmap/ic_ali"
-                android:drawablePadding="@dimen/dp_6"
+                android:drawablePadding="@dimen/dp_3"
                 android:gravity="center"
                 android:text="@string/支付宝"
                 android:textColor="@color/color_ff1a1a1a"
@@ -85,9 +85,9 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_marginStart="@dimen/dp_5"
                 android:drawableStart="@mipmap/ic_cloud_pay"
-                android:drawablePadding="@dimen/dp_6"
+                android:drawablePadding="@dimen/dp_3"
                 android:gravity="center"
                 android:text="@string/云闪付"
                 android:textColor="@color/color_ff1a1a1a"
@@ -96,9 +96,9 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_11"
+                android:layout_marginStart="@dimen/dp_5"
                 android:drawableStart="@mipmap/ic_digital_rmb"
-                android:drawablePadding="@dimen/dp_6"
+                android:drawablePadding="@dimen/dp_3"
                 android:gravity="center"
                 android:text="@string/数字人民币"
                 android:textColor="@color/color_ff1a1a1a"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_14"
-                android:text="@string/扫描二维码向上海公共支付平台交纳停车费"
+                android:text="@string/扫描二维码向上海公共支付平台缴纳停车费"
                 android:textColor="@color/color_ffbfdbfc"
                 android:textSize="@dimen/sp_15" />
         </com.aries.ui.view.radius.RadiusLinearLayout>

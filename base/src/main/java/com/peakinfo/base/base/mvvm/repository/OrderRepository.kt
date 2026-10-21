@@ -336,7 +336,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单欠费通知
      */
-    @POST("S_URP_02")
     suspend fun urgeDetailNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
         return rtServer.urgeDetailNotice(param)
     }
@@ -344,7 +343,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单支付通知
      */
-    @POST("S_UR_04")
     suspend fun urgePayNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
         return rtServer.urgePayNotice(param)
     }
@@ -352,7 +350,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单支付结果通知
      */
-    @POST("S_UR_05")
     suspend fun urgePayResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
         return rtServer.urgePayResultNotice(param)
     }
@@ -360,7 +357,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单打印通知
      */
-    @POST("S_UR_06")
     suspend fun urgePrintNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
         return rtServer.urgePrintNotice(param)
     }
@@ -368,7 +364,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 欠费催缴单催缴通知
      */
-    @POST("S_UR_07")
     suspend fun urgeNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<Any>{
         return rtServer.urgeNotice(param)
     }
@@ -376,7 +371,6 @@ class OrderRepository : BaseRepository() {
     /**
      * 图片上传我们平台
      */
-    @POST("uploadFileForApp")
     suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>{
         return mImageUploadServer.uploadFileForApp(param)
     }

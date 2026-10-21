@@ -169,8 +169,11 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 dismissProgressDialog()
                 urgePrintNotice()
                 urgeDetailBean?.qrcode = it.qrcode
+                urgeDetailBean?.manageName = urgeBean.manageName
+                urgeDetailBean?.companyPhone = urgeBean.companyPhone
                 printType = 3
                 performPrintTasks(urgeDetailBean!!) {
+                    urgepayprint()
                     ToastUtil.showBottomToast("打印完成")
                 }
             }
@@ -239,9 +242,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
             errMsg.observe(this@CAUrgeDetailActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast(it.msg)
-                if (it.api == "querypay") {
-                    urgePayResultNotice()
-                }
             }
             mException.observe(this@CAUrgeDetailActivity) {
                 dismissProgressDialog()
@@ -392,19 +392,23 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         if (printList.size >= 1) {
             Thread {
                 val device = printList[0]
-                var connectResult = BluePrint.instance?.connet(device.address)
+                val flag = when (type) {
+                    3 -> 0
+                    4, 5 -> 1
+                    else -> 0
+                }
+                val connectResult = BluePrint.instance?.connet(device.address, flag)
                 if (connectResult == 0) {
-                    runOnUiThread {
-                        ToastUtil.showBottomToast("开始打印")
-                    }
                     // 把 owePageIndex 传给 zkblueprint，供urgepayprint读取
                     BluePrint.instance?.zkblueprint(JSONObject.toJSONString(urgeDetailBean), type, owePageIndex)
-                    urgepayprint()
                 }
             }.start()
         }
         GlobalScope.launch {
-            delay(5000)
+            when (type) {
+                3 -> delay(6000)
+                4, 5 -> delay(5000)
+            }
             onComplete()
         }
     }
@@ -425,7 +429,9 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         taskQueue.add(5) // 二维码页
 
         var currentTaskIndex = 0
-
+        runOnUiThread {
+            ToastUtil.showBottomToast("开始打印")
+        }
         fun printNext() {
             if (currentTaskIndex >= taskQueue.size) {
                 // 全部打印完成

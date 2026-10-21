@@ -40,7 +40,7 @@
     <string name="支付宝">支付宝</string>
     <string name="云闪付">云闪付</string>
     <string name="数字人民币">数字人民币</string>
-    <string name="扫描二维码向上海公共支付平台交纳停车费">扫描二维码向上海公共支付平台交纳停车费</string>
+    <string name="扫描二维码向上海公共支付平台缴纳停车费">扫描二维码向上海公共支付平台缴纳停车费</string>
     <string name="通过车牌号未查询到欠费订单">通过车牌号未查询到欠费订单</string>
     <string name="订单查询">订单查询</string>
     <string name="车辆入场">车辆入场</string>

@@ -122,6 +122,7 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
                 Constant.simId = "huyong"
                 Constant.imei = "868946066209045"
             }
+//            Constant.deviceId = "3fea367050852f59"
             Constant.deviceId = AppUtil.getDeviceId()
             checkUpdateApi()
             if (querySimBean == null) {
@@ -341,18 +342,19 @@ class LoginActivity : VbBaseActivity<LoginViewModel, ActivityLoginBinding>(), On
     fun verifyAccount() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            try {
-                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
-            } catch (e: Exception) {
-                val manufacturer = Build.MANUFACTURER
-                val model = Build.MODEL
-                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-                jsonobject["imei"] = id
-            }
-        } else {
-            jsonobject["imei"] = PhoneUtils.getIMEI()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            try {
+//                jsonobject["imei"] = (getSystemService(TELEPHONY_SERVICE) as TelephonyManager).imei
+//            } catch (e: Exception) {
+//                val manufacturer = Build.MANUFACTURER
+//                val model = Build.MODEL
+//                val id = manufacturer + model + " " + Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+//                jsonobject["imei"] = id
+//            }
+//        } else {
+//            jsonobject["imei"] = PhoneUtils.getIMEI()
+//        }
+        jsonobject["imei"] = Constant.imei
         jsonobject["loginName"] = binding.etAccount.text.toString()
         jsonobject["password"] = binding.etPw.text.toString()
         jsonobject["longitude"] = lon.toString()
