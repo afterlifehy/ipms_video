@@ -504,7 +504,7 @@ class BluePrint() {
                 drawText(yLocation, 20, "务平台归集。", 1, true)
                 yLocation += 32
                 drawText2(yLocation, 20, "${printInfo.manageName}(盖章)", 280, 0)
-                yLocation += 64
+                yLocation += 32
                 drawText2(yLocation, 20, "${TimeUtils.millis2String(System.currentTimeMillis(), "yyyy年MM月dd日")}", 360)
                 yLocation += 32
                 drawText(yLocation, 20, "具体欠费信息告知如下：")

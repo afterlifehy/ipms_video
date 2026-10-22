@@ -14,23 +14,9 @@ class CollectionManagementViewModel : BaseViewModel() {
         OrderRepository()
     }
 
-    val callSubmitLiveData = MutableLiveData<Any>()
     val urgepayLiveData = MutableLiveData<Any>()
     val urgeNoticeLiveData = MutableLiveData<Any>()
     val uploadFileForAppLiveData = MutableLiveData<UploadImageBean>()
-
-    fun callSubmit(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mOrderRepository.callSubmit(param)
-            }
-            executeResponse(response, {
-                callSubmitLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
 
     fun urgepay(param: Map<String, Any?>) {
         launch {

@@ -37,10 +37,13 @@ import com.peakinfo.plateid.databinding.ActivityUrgeDetailBinding
 import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.CAUrgeDetailViewModel
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Route(path = ARouterMap.CA_URGE_DETAIL)
 class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDetailBinding>(), OnClickListener {
@@ -386,33 +389,60 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         owePageIndex: Int = 0, // 明细分页索引，type=4时生效
         onComplete: () -> Unit
     ) {
-        val printList = BluePrint.instance?.blueToothDevice!!
+        val printList = BluePrint.instance?.blueToothDevice ?: run {
+            return
+        }
         urgeDetailBean.plateId = urgeBean.plateId
         urgeDetailBean.urgePayId = urgeBean.urgePayId
-        if (printList.size >= 1) {
-            Thread {
-                val device = printList[0]
-                val flag = when (type) {
-                    3 -> 0
-                    4, 5 -> 1
-                    else -> 0
-                }
-                val connectResult = BluePrint.instance?.connet(device.address, flag)
-                if (connectResult == 0) {
-                    // 把 owePageIndex 传给 zkblueprint，供urgepayprint读取
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(urgeDetailBean), type, owePageIndex)
-                }
-            }.start()
+        if (printList.isEmpty()) {
+            return
         }
-        GlobalScope.launch {
-            when (type) {
-                3 -> delay(6000)
-                4, 5 -> delay(5000)
+
+        val device = printList[0]
+        val flag = when (type) {
+            3 -> 0
+            4, 5 -> 1
+            else -> 0
+        }
+        // 启动协程处理重试+打印
+        CoroutineScope(Dispatchers.IO).launch {
+            var connectSuccess = false
+            val maxRetry = 3
+            for (retryCount in 0 until maxRetry) {
+                try {
+                    val connectResult = BluePrint.instance?.connet(device.address, flag)
+                    if (connectResult == 0) {
+                        // 连接成功，执行打印
+                        BluePrint.instance?.zkblueprint(
+                            JSONObject.toJSONString(urgeDetailBean),
+                            type,
+                            owePageIndex
+                        )
+                        connectSuccess = true
+                        break
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                if (retryCount != maxRetry - 1) {
+                    delay(2000)
+                }
             }
-            onComplete()
+            // 连接成功才需要等待对应时长，失败直接回调
+            if (connectSuccess) {
+                val waitTime = when (type) {
+                    3 -> 6000L
+                    4, 5 -> 5000L
+                    else -> 0L
+                }
+                delay(waitTime)
+            }
+            // 最终回调，切回主线程
+            withContext(Dispatchers.Main) {
+                onComplete()
+            }
         }
     }
-
 
     fun performPrintTasks(urgeDetailBean: UrgeDetailBean, onComplete: () -> Unit) {
         // 1. 拆分欠费明细，每页最多10条

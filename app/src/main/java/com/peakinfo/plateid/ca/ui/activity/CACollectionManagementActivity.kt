@@ -43,7 +43,6 @@ import java.io.InputStream
 @Route(path = ARouterMap.CA_COLLECTION_MANAGEMENT)
 class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCaCollectionManagementBinding>(),
     OnClickListener {
-    var streetList: MutableList<Street> = ArrayList()
     var streetNo = ""
     var currentStreet: Street? = null
     var currentPic = 1
@@ -67,7 +66,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
     override fun initView() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = "催缴单催缴"
+        binding.layoutToolbar.tvTitle.text = "催缴记录上传"
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
         urgeBean = intent.getParcelableExtra(ARouterMap.URGE)!!
@@ -94,17 +93,8 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
         }
-        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
-        if (streetNo.isNotEmpty()) {
-            for (i in streetList) {
-                if (i.streetNo == streetNo) {
-                    currentStreet = i
-                }
-            }
-        } else {
-            currentStreet = RealmUtil.instance?.findCurrentStreet()
-            streetNo = currentStreet!!.streetNo
-        }
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
+        streetNo = currentStreet!!.streetNo
         binding.tvStreetName.text = currentStreet?.streetName
     }
 
@@ -188,7 +178,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                 val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
                 // 压缩到目标尺寸1440*1920
                 val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
-                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes,0,compressedBytes!!.size)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes, 0, compressedBytes!!.size)
                 binding.rivPic1.show()
                 GlideUtils.instance?.loadImage(binding.rivPic1, previewBmp)
                 val file = FileUtil.FileSaveToInside(
@@ -209,7 +199,7 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
                 val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
                 // 压缩到目标尺寸1440*1920
                 val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
-                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes,0,compressedBytes!!.size)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes, 0, compressedBytes!!.size)
                 binding.rivPic2.show()
                 GlideUtils.instance?.loadImage(binding.rivPic2, previewBmp)
                 val file = FileUtil.FileSaveToInside(

@@ -60,7 +60,7 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     override fun initView() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         GlideUtils.instance?.loadImage(binding.layoutToolbar.ivBack, com.peakinfo.common.R.mipmap.ic_back_white)
-        binding.layoutToolbar.tvTitle.text = "催缴单催缴"
+        binding.layoutToolbar.tvTitle.text = "催缴记录上传"
         binding.layoutToolbar.tvTitle.setTextColor(ContextCompat.getColor(BaseApplication.instance(), com.peakinfo.base.R.color.white))
 
         urgeBean = intent.getParcelableExtra(ARouterMap.URGE)!!
