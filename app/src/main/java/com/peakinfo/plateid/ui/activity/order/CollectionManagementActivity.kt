@@ -5,14 +5,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.viewbinding.ViewBinding
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.EncodeUtils
 import com.blankj.utilcode.util.ImageUtils
 import com.blankj.utilcode.util.UriUtils
@@ -41,12 +45,16 @@ import kotlinx.coroutines.runBlocking
 @Route(path = ARouterMap.COLLECTION_MANAGEMENT)
 class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewModel, ActivityCaCollectionManagementBinding>(),
     OnClickListener {
-    var streetList: MutableList<Street> = ArrayList()
     var streetNo = ""
     var currentStreet: Street? = null
     var currentPic = 1
     var pic1Base64 = ""
     var pic2Base64 = ""
+    var pic1Url = ""
+    var pic2Url = ""
+    var imageType = 0
+    var loginName = ""
+    var token = ""
     lateinit var urgeBean: UrgeBean
     val plateMap = mutableMapOf(
         Constant.BLUE to com.peakinfo.common.R.mipmap.ic_plate_blue,
@@ -83,17 +91,12 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
     }
 
     override fun initData() {
-        streetList = RealmUtil.instance?.findCheckedStreetList() as MutableList<Street>
-        if (streetNo.isNotEmpty()) {
-            for (i in streetList) {
-                if (i.streetNo == streetNo) {
-                    currentStreet = i
-                }
-            }
-        } else {
-            currentStreet = RealmUtil.instance?.findCurrentStreet()
-            streetNo = currentStreet!!.streetNo
+        runBlocking {
+            token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
+            loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)
         }
+        currentStreet = RealmUtil.instance?.findCurrentStreet()
+        streetNo = currentStreet!!.streetNo
         binding.tvStreetName.text = currentStreet?.streetName
     }
 
@@ -144,60 +147,111 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
         }
     }
 
+    private var photoUri: Uri? = null
+
     fun takePhoto() {
+        // 创建存放原图的文件
+        val photoFile = FileUtil.createImageFile(this@CollectionManagementActivity)
+        photoUri = FileProvider.getUriForFile(
+            this@CollectionManagementActivity,
+            // 这里替换成你AndroidManifest里配置的FileProvider authority
+            "com.peakinfo.plateid.fileprovider",
+            photoFile
+        )
         if (currentPic == 1) {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
             takePictureLauncher1.launch(takePictureIntent)
         } else {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
             takePictureLauncher2.launch(takePictureIntent)
         }
     }
 
     val takePictureLauncher1 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-//            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-//            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-//            binding.rivPic1.show()
-//            GlideUtils.instance?.loadImage(binding.rivPic1, compressImageBitmap)
-//            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
-//            val bytes = file?.readBytes()
-//            pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+            photoUri?.let { uri ->
+                // 从uri读取原图bitmap（这里才是高清原图）
+                val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                // 压缩到目标尺寸1440*1920
+                val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes, 0, compressedBytes!!.size)
+                binding.rivPic1.show()
+                GlideUtils.instance?.loadImage(binding.rivPic1, previewBmp)
+                val file = FileUtil.FileSaveToInside(
+                    this@CollectionManagementActivity,
+                    "${urgeBean.urgePayId}_${System.currentTimeMillis()}_1.jpg",
+                    compressedBytes
+                )
+                val bytes = file?.readBytes()
+                pic1Base64 = EncodeUtils.base64Encode2String(bytes)
+            }
         }
     }
 
     val takePictureLauncher2 = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-//            val imageBitmap = result.data?.extras?.get("data") as Bitmap
-//            val compressImageBitmap = CompressUtil.compressBitmapToTargetSize(imageBitmap, 1440, 1920)
-//            binding.rivPic2.show()
-//            GlideUtils.instance?.loadImage(binding.rivPic2, compressImageBitmap)
-//            val file = FileUtil.FileSaveToInside(this@CollectionManagementActivity, "${urgeBean.urgePayId}_1.jpg", compressImageBitmap!!)
-//            val bytes = file?.readBytes()
-//            pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+            photoUri?.let { uri ->
+                // 从uri读取原图bitmap（这里才是高清原图）
+                val sourceBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+                // 压缩到目标尺寸1440*1920
+                val compressedBytes = CompressUtil.compressBitmapToTargetSize(sourceBitmap, 1440, 1920)
+                val previewBmp = BitmapFactory.decodeByteArray(compressedBytes, 0, compressedBytes!!.size)
+                binding.rivPic2.show()
+                GlideUtils.instance?.loadImage(binding.rivPic2, previewBmp)
+                val file = FileUtil.FileSaveToInside(
+                    this@CollectionManagementActivity,
+                    "${urgeBean.urgePayId}_${System.currentTimeMillis()}_2.jpg",
+                    compressedBytes
+                )
+                val bytes = file?.readBytes()
+                pic2Base64 = EncodeUtils.base64Encode2String(bytes)
+            }
         }
     }
 
     fun submit() {
         showProgressDialog(60000)
-        runBlocking {
-            val token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            val param = HashMap<String, Any>()
-            param["token"] = token
-            param["urgePayId"] = urgeBean.urgePayId
-            param["roadId"] = streetNo
-            param["photo1"] = pic1Base64
-            param["photo2"] = pic2Base64
-            param["photoType"] = "jpg"
-            param["dataTime"] = System.currentTimeMillis()
-            mViewModel.urgepay(param)
-        }
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["urgePayId"] = urgeBean.urgePayId
+        param["roadId"] = streetNo
+        param["photo1"] = pic1Base64
+        param["photo2"] = pic2Base64
+        param["photoType"] = "jpg"
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.urgepay(param)
     }
 
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
             urgepayLiveData.observe(this@CollectionManagementActivity) {
+                imageType = 1
+                val params = HashMap<String, Any>()
+                params["fileName"] = "${urgeBean.urgePayId}_${System.currentTimeMillis()}_1.jpg"
+                params["file"] = pic1Base64
+                mViewModel.uploadFileForApp(params)
+            }
+            uploadFileForAppLiveData.observe(this@CollectionManagementActivity) {
+                if (imageType == 1) {
+                    imageType = 2
+                    pic1Url = it.URL
+                    val params = HashMap<String, Any>()
+                    params["fileName"] = "${urgeBean.urgePayId}_${System.currentTimeMillis()}_2.jpg"
+                    params["file"] = pic2Base64
+                    mViewModel.uploadFileForApp(params)
+                } else {
+                    pic2Url = it.URL
+                    urgeNotice()
+                }
+            }
+            urgeNoticeLiveData.observe(this@CollectionManagementActivity) {
                 dismissProgressDialog()
                 ToastUtil.showBottomToast("催缴成功")
                 onBackPressedSupport()
@@ -210,6 +264,20 @@ class CollectionManagementActivity : VbBaseActivity<CollectionManagementViewMode
                 dismissProgressDialog()
             }
         }
+    }
+
+    fun urgeNotice() {
+        val param = HashMap<String, Any>()
+        val jsonObject = JSONObject()
+        jsonObject["urgePayId"] = urgeBean.urgePayId
+        jsonObject["roadId"] = streetNo
+        jsonObject["photo1"] = pic1Url
+        jsonObject["photo2"] = pic2Url
+        jsonObject["photoType"] = "jpg"
+        jsonObject["dataTime"] = System.currentTimeMillis()
+        jsonObject["inputter"] = loginName
+        param["attr"] = jsonObject
+        mViewModel.urgeNotice(param)
     }
 
     override fun getVbBindingView(): ViewBinding {

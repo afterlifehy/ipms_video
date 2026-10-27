@@ -11,6 +11,7 @@ import com.peakinfo.base.bean.ParkingSpaceBean
 import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.bean.ca.FeeInfoBean
+import com.peakinfo.base.bean.ca.FreeParkBean
 import com.peakinfo.base.bean.ca.LoginInfoBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
@@ -217,5 +218,21 @@ class ParkingRepository : BaseRepository() {
      */
     suspend fun payResultNotice(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper<PayResultBean> {
         return rtServer.payResultNotice(param)
+    }
+
+    /**
+     * 取票/开票二维码
+     */
+    suspend fun freePark(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<FreeParkBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.freePark(param, options)
     }
 }

@@ -79,7 +79,7 @@
         <TextView
             android:id="@+id/tv_startTime"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -88,7 +88,7 @@
         <TextView
             android:id="@+id/tv_parkingTime"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -97,7 +97,7 @@
         <TextView
             android:id="@+id/tv_paidAmount"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -106,7 +106,7 @@
         <TextView
             android:id="@+id/tv_monthPay"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -115,16 +115,25 @@
         <TextView
             android:id="@+id/tv_pendingFee"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             tools:text="待缴费用：15.00元" />
 
         <TextView
+            android:id="@+id/tv_freePark"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_38"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            tools:text="剩余免费短停次数：1次" />
+
+        <TextView
             android:id="@+id/tv_orderAmount"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_43"
+            android:layout_height="@dimen/dp_38"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"

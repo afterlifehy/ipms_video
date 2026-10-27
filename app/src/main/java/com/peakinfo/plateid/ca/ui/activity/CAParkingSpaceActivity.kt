@@ -51,8 +51,14 @@ import org.greenrobot.eventbus.ThreadMode
 @Route(path = ARouterMap.CA_PARKING_SPACE)
 class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParkingSpaceBinding>(), OnClickListener {
     val sizes = intArrayOf(19, 19)
+    val sizes2 = intArrayOf(19, 19, 19)
     val colors = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_fff70f0f)
+    val colors3 = intArrayOf(
+        com.peakinfo.base.R.color.color_ff666666,
+        com.peakinfo.base.R.color.color_ff1a1a1a,
+        com.peakinfo.base.R.color.color_ff0371f4
+    )
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD)
 
     var paymentQrDialog: PaymentQrDialog? = null
@@ -112,6 +118,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
         binding.rflAbnormalReport.setOnClickListener(this)
         binding.rflPrepaid.setOnClickListener(this)
         binding.rflPrintNotice.setOnClickListener(this)
+        binding.tvFreePark.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -120,7 +127,17 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             fee()
             owemoney()
+            freePark()
         }
+    }
+
+    fun freePark() {
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["plateId"] = "苏UQ2582"
+        param["plateColor"] = "5"
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.freePark(param)
     }
 
     override fun onClick(v: View?) {
@@ -141,6 +158,12 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                         .withString(ARouterMap.DEBT_CAR_CARCOLOR, feeInfo.plateColor.toString())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
+            }
+
+            R.id.tv_freePark->{
+                ARouter.getInstance().build(ARouterMap.CA_FREE_PARK_RECORD).withString(ARouterMap.FREE_PARK_CARLICENSE, carLicense)
+                    .withString(ARouterMap.FREE_PARK_CAR_COLOR, feeInfo.plateColor.toString())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
             R.id.rfl_prepaid -> {
@@ -250,6 +273,10 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 oweMoney = it.sumOf { it.oweMoney ?: 0 } ?: 0
                 binding.tvArrearsNum.text = "${oweCount}笔"
                 binding.tvArrearsAmount.text = "${AppUtil.keepNDecimal(oweMoney / 100.00, 2)}元"
+            }
+            freeParkLiveData.observe(this@CAParkingSpaceActivity) {
+                val strings = arrayOf("剩余免费短停次数：", "${it.remain}次","  查看记录")
+                binding.tvFreePark.text = AppUtil.getSpan(strings, sizes2, colors3)
             }
             payonspotLiveData.observe(this@CAParkingSpaceActivity) {
                 dismissProgressDialog()
@@ -438,7 +465,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 val device = printList[0]
                 var connectResult = BluePrint.instance?.connet(device.address)
                 if (connectResult == 0) {
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo),2)
+                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo), 2)
                 }
             }.start()
         }

@@ -328,5 +328,10 @@
             android:name=".ca.ui.activity.CAUrgeDetailActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ca.ui.activity.CAFreeParkRecordActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 </manifest>

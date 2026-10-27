@@ -9,6 +9,7 @@ import com.peakinfo.base.bean.PayResultBean
 import com.peakinfo.base.bean.QRPayBean
 import com.peakinfo.base.base.mvvm.repository.ParkingRepository
 import com.peakinfo.base.bean.ca.FeeInfoBean
+import com.peakinfo.base.bean.ca.FreeParkBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
 import com.peakinfo.base.bean.ca.QueryPayBean
@@ -31,6 +32,7 @@ class ParkingSpaceViewModel: BaseViewModel() {
     val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
     val qrNoticeLiveData = MutableLiveData<Any>()
     val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
+    val freeParkLiveData = MutableLiveData<FreeParkBean>()
 
     fun parkingSpaceFee(param: Map<String, Any?>) {
         launch {
@@ -171,6 +173,19 @@ class ParkingSpaceViewModel: BaseViewModel() {
                 payResultNoticeLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "payResultNotice"))
+            })
+        }
+    }
+
+    fun freePark(param: Map<String, Any?>) {
+        launch {
+            val response = withContext(Dispatchers.IO) {
+                mParkingRepository.freePark(param)
+            }
+            executeResponse(response, {
+                freeParkLiveData.value = response.data
+            }, {
+                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "freePark"))
             })
         }
     }

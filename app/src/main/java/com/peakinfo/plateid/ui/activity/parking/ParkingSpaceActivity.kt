@@ -104,9 +104,19 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             requestParkingSpaceFee()
+            freePark()
         }
+
     }
 
+    fun freePark(){
+        val param = HashMap<String, Any>()
+        param["token"] = token
+        param["plateId"] = carLicense
+        param["plateColor"] = parkingSpaceBean?.carColor.toString()
+        param["dataTime"] = System.currentTimeMillis()
+        mViewModel.parkingSpaceFee(param)
+    }
     fun requestParkingSpaceFee() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()

@@ -14,6 +14,7 @@ import com.peakinfo.base.bean.TransactionResultBean
 import com.peakinfo.base.bean.UploadImageBean
 import com.peakinfo.base.bean.VideoPicBean
 import com.peakinfo.base.bean.ca.DebtBean
+import com.peakinfo.base.bean.ca.FreeParkBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
 import com.peakinfo.base.bean.ca.QRInfoBean
@@ -373,5 +374,21 @@ class OrderRepository : BaseRepository() {
      */
     suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>{
         return mImageUploadServer.uploadFileForApp(param)
+    }
+
+    /**
+     * 免费停车记录
+     */
+    suspend fun freePark(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<FreeParkBean> {
+        val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()
+        val curTime = (System.currentTimeMillis() / 1000).toString()
+        val checkSum = EncryptUtils.encryptSHA1ToString(Constant.PASSWORD + nonce + curTime).lowercase()
+        val options: Map<String, String> = mapOf(
+            "nonce" to nonce,
+            "curTime" to curTime,
+            "checkSum" to checkSum,
+            "appId" to Constant.APP_ID
+        )
+        return mServer.freePark(param, options)
     }
 }
