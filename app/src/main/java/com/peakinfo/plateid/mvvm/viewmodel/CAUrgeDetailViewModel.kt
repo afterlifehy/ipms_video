@@ -23,9 +23,7 @@ class CAUrgeDetailViewModel : BaseViewModel() {
     val consumeUrgePayLiveData = MutableLiveData<QRPayBean>()
     val urgepayQrcodeLiveData = MutableLiveData<QRInfoBean>()
     val querypayLiveData = MutableLiveData<QueryPayBean>()
-    val payResultNoticeLiveData = MutableLiveData<PayResultBean>()
     val payowemoneyLiveData = MutableLiveData<OweMoneyBean>()
-    val invoiceQrcodeLiveData = MutableLiveData<QRInfoBean>()
     val urgepayprintLiveData = MutableLiveData<Any>()
     val urgeBeanNoticeLiveData = MutableLiveData<Any>()
     val urgeDetailNoticeLiveData = MutableLiveData<Any>()
@@ -94,32 +92,6 @@ class CAUrgeDetailViewModel : BaseViewModel() {
                 querypayLiveData.value = response.data
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "querypay"))
-            })
-        }
-    }
-
-    fun payResultNotice(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mOrderRepository.payResultNotice(param)
-            }
-            executeResponse(response, {
-                payResultNoticeLiveData.value = response.attr
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status, api = "payResultNotice"))
-            })
-        }
-    }
-
-    fun invoiceQrcode(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mOrderRepository.invoiceQrcode(param)
-            }
-            executeResponse(response, {
-                invoiceQrcodeLiveData.value = response.data
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "invoiceQrcode"))
             })
         }
     }

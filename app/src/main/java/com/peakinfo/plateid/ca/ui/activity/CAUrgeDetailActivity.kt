@@ -60,8 +60,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
     var handler = Handler(Looper.getMainLooper())
     var token = ""
     var loginName = ""
-    var ticketQrCode = ""
-    lateinit var payResultBean: PayResultBean
     var printType = 3
 
     override fun initView() {
@@ -210,31 +208,16 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                     urgePayResultNotice()
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast("支付成功")
-                    payResultNotice(it)
+//                    payResultNotice(it)
                 }
             }
-            payResultNoticeLiveData.observe(this@CAUrgeDetailActivity) {
-                payResultBean = it
+            urgePayResultNoticeLiveData.observe(this@CAUrgeDetailActivity){
                 if (!isDestroyed && !isFinishing) {
                     if (paymentQrDialog != null) {
                         paymentQrDialog?.dismiss()
                     }
                 }
-                invoiceQrcode()
                 urgepaydetail()
-            }
-            invoiceQrcodeLiveData.observe(this@CAUrgeDetailActivity) {
-                ticketQrCode = it.qrcode.toString()
-                var rxPermissions = RxPermissions(this@CAUrgeDetailActivity)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            startPrint(payResultBean)
-                        }
-                    }
-                } else {
-                    startPrint(payResultBean)
-                }
             }
             urgepayQrcodeLiveData.observe(this@CAUrgeDetailActivity) {
 
@@ -257,28 +240,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         param["token"] = token
         param["orderId"] = oweMoneyBean!!.orderId
         mViewModel.querypay(param)
-    }
-
-    fun payResultNotice(queryPayBean: QueryPayBean) {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["payType"] = queryPayBean.payType
-        jsonobject["payStatus"] = queryPayBean.payStatus
-        jsonobject["payTime"] = queryPayBean.payTime
-        jsonobject["tradeNo"] = queryPayBean.orderId
-        jsonobject["payMoney"] = queryPayBean.payMoney
-        param["attr"] = jsonobject
-        mViewModel.payResultNotice(param)
-    }
-
-    fun invoiceQrcode() {
-        val param = HashMap<String, Any>()
-        param["token"] = token
-        param["orderId"] = urgeBean.urgePayId
-        param["plateId"] = urgeBean.plateId
-        param["plateColor"] = urgeBean.plateColor
-        param["dataTime"] = System.currentTimeMillis()
-        mViewModel.invoiceQrcode(param)
     }
 
     fun urgeBeanNotice() {
@@ -350,37 +311,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
         jsonObject["urgePayId"] = urgeBean.urgePayId
         param["attr"] = jsonObject
         mViewModel.urgePrintNotice(param)
-    }
-
-    fun startPrint(it: PayResultBean) {
-        val payMoney = it.payMoney
-        val printInfo = PrintInfoBean(
-            roadId = it.roadName,
-            plateId = it.carLicense,
-            payMoney = String.format("%.2f", payMoney.toFloat()),
-            orderId = it.tradeNo,
-            phone = it.phone,
-            startTime = it.startTime,
-            leftTime = it.endTime,
-            remark = it.remark,
-            company = it.businessCname,
-            oweCount = it.oweCount,
-            ticketQrCode = ticketQrCode,
-            orderType = it.orderType
-        )
-        val printList = BluePrint.instance?.blueToothDevice!!
-        if (printList.size >= 1) {
-            Thread {
-                val device = printList[0]
-                var connectResult = BluePrint.instance?.connet(device.address)
-                if (connectResult == 0) {
-                    runOnUiThread {
-                        ToastUtil.showBottomToast("开始打印")
-                    }
-                    BluePrint.instance?.zkblueprint(JSONObject.toJSONString(printInfo), 2)
-                }
-            }.start()
-        }
     }
 
     fun printNotice(

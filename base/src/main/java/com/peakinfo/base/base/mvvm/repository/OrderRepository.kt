@@ -23,7 +23,6 @@ import com.peakinfo.base.bean.ca.UrgeBean
 import com.peakinfo.base.bean.ca.UrgeDetailBean
 import com.peakinfo.base.util.Constant
 import retrofit2.http.Body
-import retrofit2.http.POST
 
 class OrderRepository : BaseRepository() {
 
