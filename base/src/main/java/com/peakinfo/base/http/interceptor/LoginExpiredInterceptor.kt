@@ -35,7 +35,7 @@ class LoginExpiredInterceptor : Interceptor {
                     .build()
             } else if (content.contains("code")) {
                 val contentData = GsonUtils.fromJson(content, HttpWrapper2::class.java)
-                if (Constant.APP_ID.isEmpty()) {
+                if (!Constant.IS_CA) {
                     if (contentData.code == 1010 || contentData.code == 1012 || contentData.code == 1015) {
                         EventBus.getDefault().post(ReLoginEvent(contentData.code))
                     }

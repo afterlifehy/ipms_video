@@ -190,6 +190,7 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
                 mViewModel.consumeUrgePay(param)
             }
             consumeUrgePayLiveData.observe(this@UrgeDetailActivity) {
+                dismissProgressDialog()
                 urgePayNotice(it.qrCode, it.userId ?: "")
                 paymentQrDialog =
                     PaymentQrDialog(
@@ -209,31 +210,15 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
                     urgePayResultNotice()
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast("支付成功")
-                    payResultNotice(it)
                 }
             }
-            payResultNoticeLiveData.observe(this@UrgeDetailActivity) {
-                payResultBean = it
+            urgePayResultNoticeLiveData.observe(this@UrgeDetailActivity) {
                 if (!isDestroyed && !isFinishing) {
                     if (paymentQrDialog != null) {
                         paymentQrDialog?.dismiss()
                     }
                 }
-                invoiceQrcode()
                 urgepaydetail()
-            }
-            invoiceQrcodeLiveData.observe(this@UrgeDetailActivity) {
-                ticketQrCode = it.qrcode.toString()
-                var rxPermissions = RxPermissions(this@UrgeDetailActivity)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    rxPermissions.request(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).subscribe {
-                        if (it) {
-                            startPrint(payResultBean)
-                        }
-                    }
-                } else {
-                    startPrint(payResultBean)
-                }
             }
             urgepayQrcodeLiveData.observe(this@UrgeDetailActivity) {
 
@@ -256,28 +241,6 @@ class UrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeDet
         param["token"] = token
         param["orderId"] = oweMoneyBean!!.orderId
         mViewModel.querypay(param)
-    }
-
-    fun payResultNotice(queryPayBean: QueryPayBean) {
-        val param = HashMap<String, Any>()
-        val jsonobject = JSONObject()
-        jsonobject["payType"] = queryPayBean.payType
-        jsonobject["payStatus"] = queryPayBean.payStatus
-        jsonobject["payTime"] = queryPayBean.payTime
-        jsonobject["tradeNo"] = queryPayBean.orderId
-        jsonobject["payMoney"] = queryPayBean.payMoney
-        param["attr"] = jsonobject
-        mViewModel.payResultNotice(param)
-    }
-
-    fun invoiceQrcode() {
-        val param = HashMap<String, Any>()
-        param["token"] = token
-        param["orderId"] = urgeBean.urgePayId
-        param["plateId"] = urgeBean.plateId
-        param["plateColor"] = urgeBean.plateColor
-        param["dataTime"] = System.currentTimeMillis()
-        mViewModel.invoiceQrcode(param)
     }
 
     fun urgeBeanNotice() {

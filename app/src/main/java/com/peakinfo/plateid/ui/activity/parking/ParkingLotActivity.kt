@@ -217,6 +217,8 @@ class ParkingLotActivity : VbBaseActivity<ParkingLotViewModel, ActivityParkingLo
                 parkingLotAdapter?.setList(parkingLotList)
             }
             logoutLiveData.observe(this@ParkingLotActivity) {
+                Constant.APP_ID = tempStreet!!.appId
+                Constant.PASSWORD = tempStreet!!.password
                 runBlocking {
                     PreferencesDataStore(BaseApplication.instance()).putString(PreferencesKeys.token, "")
                     val loginName = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.account)

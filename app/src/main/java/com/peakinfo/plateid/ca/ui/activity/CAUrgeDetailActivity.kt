@@ -1,7 +1,5 @@
 package com.peakinfo.plateid.ca.ui.activity
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,8 +12,6 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.fastjson.JSONObject
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
-import com.peakinfo.base.bean.PayResultBean
-import com.peakinfo.base.bean.PrintInfoBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.QueryPayBean
 import com.peakinfo.base.bean.ca.UrgeBean
@@ -36,10 +32,8 @@ import com.peakinfo.plateid.adapter.UrgeOrderAdapter
 import com.peakinfo.plateid.databinding.ActivityUrgeDetailBinding
 import com.peakinfo.plateid.dialog.PaymentQrDialog
 import com.peakinfo.plateid.mvvm.viewmodel.CAUrgeDetailViewModel
-import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -208,7 +202,6 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                     urgePayResultNotice()
                     handler.removeCallbacks(runnable)
                     ToastUtil.showBottomToast("支付成功")
-//                    payResultNotice(it)
                 }
             }
             urgePayResultNoticeLiveData.observe(this@CAUrgeDetailActivity){

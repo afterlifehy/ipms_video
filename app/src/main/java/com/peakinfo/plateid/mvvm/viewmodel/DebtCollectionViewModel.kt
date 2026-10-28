@@ -16,7 +16,6 @@ class DebtCollectionViewModel : BaseViewModel() {
     }
 
     val debtInquiryLiveData = MutableLiveData<DebtCollectionResultBean>()
-    val urgepaylistLiveData = MutableLiveData<List<UrgeBean>>()
     val owemoneyLiveData = MutableLiveData<List<OwemoneyInfoBean>>()
 
     fun debtInquiry(param: Map<String, Any?>) {
@@ -28,19 +27,6 @@ class DebtCollectionViewModel : BaseViewModel() {
                 debtInquiryLiveData.value = response.attr
             }, {
                 traverseErrorMsg(ErrorMessage(msg = response.msg, code = response.status))
-            })
-        }
-    }
-
-    fun urgepaylist(param: Map<String, Any?>) {
-        launch {
-            val response = withContext(Dispatchers.IO) {
-                mOrderRepository.urgepaylist(param)
-            }
-            executeResponse(response, {
-                urgepaylistLiveData.value = response.data
-            }, {
-                traverseErrorMsg(ErrorMessage(msg = response.message, code = response.code, api = "urgepaylist"))
             })
         }
     }

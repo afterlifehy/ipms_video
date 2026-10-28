@@ -34,13 +34,13 @@ import com.peakinfo.plateid.R
 import com.peakinfo.plateid.adapter.CAUrgeAdapter
 import com.peakinfo.plateid.adapter.CollectionPlateColorAdapter
 import com.peakinfo.plateid.databinding.ActivityUrgeListBinding
-import com.peakinfo.plateid.mvvm.viewmodel.DebtCollectionViewModel
+import com.peakinfo.plateid.mvvm.viewmodel.UrgeListViewModel
 import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 @Route(path = ARouterMap.CA_URGE_LIST)
-class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeListBinding>(), OnClickListener {
+class CAUrgeListActivity : VbBaseActivity<UrgeListViewModel, ActivityUrgeListBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
     var caUrgeAdapter: CAUrgeAdapter? = null
     var urgeList: MutableList<UrgeBean> = ArrayList()
@@ -220,8 +220,8 @@ class CAUrgeListActivity : VbBaseActivity<DebtCollectionViewModel, ActivityUrgeL
         }
     }
 
-    override fun providerVMClass(): Class<DebtCollectionViewModel> {
-        return DebtCollectionViewModel::class.java
+    override fun providerVMClass(): Class<UrgeListViewModel> {
+        return UrgeListViewModel::class.java
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

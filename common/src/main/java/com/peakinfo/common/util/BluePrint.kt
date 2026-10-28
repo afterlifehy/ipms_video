@@ -433,7 +433,7 @@ class BluePrint() {
                 }
             } else if (type == 3) {
                 val printInfo = JSONObject.parseObject(printText, UrgeDetailBean::class.java)
-                zpSDK!!.pageSetup(800, 1150)
+                zpSDK!!.pageSetup(800, 1200)
                 zpSDK!!.DrawSpecialText(117, 10, PrinterInterface.Textfont.siyuanheiti, 24, "上海市道路停车欠费催缴告知书", 0, 0, 0) //3
                 zpSDK!!.DrawSpecialText(167, 10 + 36, PrinterInterface.Textfont.siyuanheiti, 20, "编号:${printInfo.urgePayId}", 0, 0, 0) //3
                 yLocation = 86
@@ -506,7 +506,7 @@ class BluePrint() {
                 drawText2(yLocation, 20, "${printInfo.manageName}(盖章)", 280, 0)
                 yLocation += 32
                 drawText2(yLocation, 20, "${TimeUtils.millis2String(System.currentTimeMillis(), "yyyy年MM月dd日")}", 360)
-                yLocation += 32
+                yLocation += 82
                 drawText(yLocation, 20, "具体欠费信息告知如下：")
                 yLocation += 32
             } else if (type == 4) {
