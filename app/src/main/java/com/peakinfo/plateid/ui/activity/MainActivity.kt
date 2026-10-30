@@ -278,11 +278,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.ll_parkingLot -> {
-                if (Constant.APP_ID.isEmpty()) {
-                    val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
+                if (Constant.IS_CA) {
+                    val intent = Intent(this@MainActivity, CAParkingLotActivity::class.java)
                     startActivity(intent)
                 } else {
-                    val intent = Intent(this@MainActivity, CAParkingLotActivity::class.java)
+                    val intent = Intent(this@MainActivity, ParkingLotActivity::class.java)
                     startActivity(intent)
                 }
             }
@@ -303,11 +303,11 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
             }
 
             R.id.fl_logout -> {
-                if (Constant.APP_ID.isEmpty()) {
-                    val intent = Intent(this@MainActivity, LogoutActivity::class.java)
+                if (Constant.IS_CA) {
+                    val intent = Intent(this@MainActivity, CALogoutActivity::class.java)
                     startActivity(intent)
                 }else{
-                    val intent = Intent(this@MainActivity, CALogoutActivity::class.java)
+                    val intent = Intent(this@MainActivity, LogoutActivity::class.java)
                     startActivity(intent)
                 }
             }

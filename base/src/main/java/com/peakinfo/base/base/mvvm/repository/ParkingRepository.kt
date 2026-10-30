@@ -221,7 +221,7 @@ class ParkingRepository : BaseRepository() {
     }
 
     /**
-     * 取票/开票二维码
+     * 免费停车额度查询
      */
     suspend fun freePark(param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<FreeParkBean> {
         val nonce = EncryptUtils.encryptMD5ToString(Math.random().toString()).lowercase()

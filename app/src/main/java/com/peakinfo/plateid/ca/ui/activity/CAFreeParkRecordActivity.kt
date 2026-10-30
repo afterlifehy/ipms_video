@@ -12,7 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.peakinfo.base.BaseApplication
 import com.peakinfo.base.arouter.ARouterMap
-import com.peakinfo.base.bean.ca.ParkRecordBean
+import com.peakinfo.base.bean.ca.FreeParkDetailBean
 import com.peakinfo.base.ds.PreferencesDataStore
 import com.peakinfo.base.ds.PreferencesKeys
 import com.peakinfo.base.ext.gone
@@ -37,11 +37,12 @@ import kotlinx.coroutines.runBlocking
 class CAFreeParkRecordActivity : VbBaseActivity<FreeParkRecordViewModel, ActivityFreeParkRecordBinding>(), OnClickListener {
     private lateinit var keyboardUtil: KeyboardUtil
     var freeParkRecordAdapter :FreeParkRecordAdapter? = null
-    var freeParkRecordList:MutableList<ParkRecordBean> = ArrayList()
+    var freeParkRecordList:MutableList<FreeParkDetailBean> = ArrayList()
 
     var collectionPlateColorAdapter: CollectionPlateColorAdapter? = null
     var collectioPlateColorList: MutableList<String> = ArrayList()
     var checkedColor = ""
+    var businessId = ""
     var carLicense = ""
     var token = ""
 
@@ -73,6 +74,7 @@ class CAFreeParkRecordActivity : VbBaseActivity<FreeParkRecordViewModel, Activit
 
         if (intent.getStringExtra(ARouterMap.FREE_PARK_CARLICENSE) != null) {
             carLicense = intent.getStringExtra(ARouterMap.FREE_PARK_CARLICENSE).toString()
+            businessId = intent.getStringExtra(ARouterMap.FREE_PARK_BUSINESS_ID).toString()
             checkedColor = intent.getStringExtra(ARouterMap.FREE_PARK_CAR_COLOR).toString()
             binding.etSearch.setText(carLicense)
             binding.etSearch.setSelection(carLicense.length)
@@ -107,17 +109,21 @@ class CAFreeParkRecordActivity : VbBaseActivity<FreeParkRecordViewModel, Activit
     override fun initData() {
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
-            freePark()
+            freeParkDetail()
         }
     }
 
-    fun freePark(){
+    fun freeParkDetail(){
         val param = HashMap<String, Any>()
         param["token"] = token
-        param["plateId"] = "苏UQ2582"
-        param["plateColor"] = "5"
+        param["plateId"] = carLicense
+        param["businessId"] = businessId
+        param["plateColor"] = checkedColor
+//        param["plateId"] = "沪A1G296"
+//        param["businessId"] = "202610300PD013028587828"
+//        param["plateColor"] = "5"
         param["dataTime"] = System.currentTimeMillis()
-        mViewModel.freePark(param)
+        mViewModel.freeParkDetail(param)
     }
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -143,7 +149,7 @@ class CAFreeParkRecordActivity : VbBaseActivity<FreeParkRecordViewModel, Activit
                     ToastUtil.showBottomToast("车牌颜色不能为空")
                     return
                 }
-                freePark()
+                freeParkDetail()
             }
 
             R.id.toolbar,
@@ -161,14 +167,13 @@ class CAFreeParkRecordActivity : VbBaseActivity<FreeParkRecordViewModel, Activit
     override fun startObserve() {
         super.startObserve()
         mViewModel.apply {
-            freeParkLiveData.observe(this@CAFreeParkRecordActivity) {
+            freeParkDetailLiveData.observe(this@CAFreeParkRecordActivity) {
                 dismissProgressDialog()
                 freeParkRecordList.clear()
-                it.parkRecord?.let { list ->
+                it?.let { list ->
                     freeParkRecordList.addAll(list)
                 }
                 if (freeParkRecordList.size > 0) {
-                    freeParkRecordAdapter?.updateCarLicense(carLicense)
                     binding.rvRecord.show()
                     binding.layoutNoData.root.gone()
                     freeParkRecordAdapter?.setList(freeParkRecordList)

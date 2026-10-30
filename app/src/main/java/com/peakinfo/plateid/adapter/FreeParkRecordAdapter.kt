@@ -6,25 +6,22 @@ import android.view.ViewGroup
 import com.blankj.utilcode.util.TimeUtils
 import com.peakinfo.base.adapter.BaseBindingAdapter
 import com.peakinfo.base.adapter.VBViewHolder
-import com.peakinfo.base.bean.ca.ParkRecordBean
+import com.peakinfo.base.bean.ca.FreeParkDetailBean
 import com.peakinfo.common.util.AppUtil
-import com.peakinfo.plateid.databinding.ItemFreeParkRecordBinding
+import com.peakinfo.plateid.databinding.ItemFreeParkDetailBinding
 import com.zrq.spanbuilder.TextStyle
 
-class FreeParkRecordAdapter(data: MutableList<ParkRecordBean>? = null, val onClickListener: View.OnClickListener) :
-    BaseBindingAdapter<ParkRecordBean, ItemFreeParkRecordBinding>(data) {
+class FreeParkRecordAdapter(data: MutableList<FreeParkDetailBean>? = null, val onClickListener: View.OnClickListener) :
+    BaseBindingAdapter<FreeParkDetailBean, ItemFreeParkDetailBinding>(data) {
     val colors = intArrayOf(com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404, com.peakinfo.base.R.color.color_ffe92404)
     val sizes = intArrayOf(16, 20, 16)
     val styles = arrayOf(TextStyle.NORMAL, TextStyle.BOLD, TextStyle.NORMAL)
     val colors2 = intArrayOf(com.peakinfo.base.R.color.color_ff666666, com.peakinfo.base.R.color.color_ff1a1a1a)
     val sizes2 = intArrayOf(19, 19)
-    var carLicense = ""
 
-    override fun convert(holder: VBViewHolder<ItemFreeParkRecordBinding>, item: ParkRecordBean) {
+    override fun convert(holder: VBViewHolder<ItemFreeParkDetailBinding>, item: FreeParkDetailBean) {
         holder.vb.tvNum.text = AppUtil.fillZero((data.indexOf(item) + 1).toString())
-        holder.vb.tvLicensePlate.text = carLicense
-        val strings = arrayOf("欠：", "${AppUtil.keepNDecimal(item.dueMoney / 100.00, 2)}", "元")
-        holder.vb.tvAmount.text = AppUtil.getSpan(strings, sizes, colors, styles)
+        holder.vb.tvLicensePlate.text = item.plateId
         val strings2 = arrayOf("入场：", TimeUtils.millis2String(item.arrivedTime,"yyyy-MM-dd HH:mm:ss"))
         holder.vb.tvStartTime.text = AppUtil.getSpan(strings2, sizes2, colors2)
         val strings3 = arrayOf("出场：", TimeUtils.millis2String(item.leftTime, "yyyy-MM-dd HH:mm:ss"))
@@ -36,11 +33,8 @@ class FreeParkRecordAdapter(data: MutableList<ParkRecordBean>? = null, val onCli
         holder.vb.rrlDebtCollection.setOnClickListener(onClickListener)
     }
 
-    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemFreeParkRecordBinding {
-        return ItemFreeParkRecordBinding.inflate(inflater)
+    override fun createViewBinding(inflater: LayoutInflater, parent: ViewGroup): ItemFreeParkDetailBinding {
+        return ItemFreeParkDetailBinding.inflate(inflater)
     }
 
-    fun updateCarLicense(carLicense: String) {
-        this.carLicense = carLicense
-    }
 }

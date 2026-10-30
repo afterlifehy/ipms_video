@@ -127,15 +127,18 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             fee()
             owemoney()
-            freePark()
         }
     }
 
     fun freePark() {
         val param = HashMap<String, Any>()
         param["token"] = token
-        param["plateId"] = "苏UQ2582"
-        param["plateColor"] = "5"
+        param["businessId"] = feeInfo.businessId.toString()
+        param["plateId"] = feeInfo.plateId.toString()
+        param["plateColor"] = feeInfo.plateColor.toString()
+//        param["plateId"] = "沪A1G296"
+//        param["businessId"] = "202610300PD013028587828"
+//        param["plateColor"] = "5"
         param["dataTime"] = System.currentTimeMillis()
         mViewModel.freePark(param)
     }
@@ -160,8 +163,9 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 }
             }
 
-            R.id.tv_freePark->{
+            R.id.tv_freePark -> {
                 ARouter.getInstance().build(ARouterMap.CA_FREE_PARK_RECORD).withString(ARouterMap.FREE_PARK_CARLICENSE, carLicense)
+                    .withString(ARouterMap.FREE_PARK_BUSINESS_ID, feeInfo.businessId)
                     .withString(ARouterMap.FREE_PARK_CAR_COLOR, feeInfo.plateColor.toString())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
@@ -231,6 +235,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
             feeLiveData.observe(this@CAParkingSpaceActivity) {
                 dismissProgressDialog()
                 feeInfo = it
+                freePark()
                 binding.rflPlate.show()
                 binding.rllParking.show()
                 binding.llOperation.show()
@@ -275,7 +280,7 @@ class CAParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityPar
                 binding.tvArrearsAmount.text = "${AppUtil.keepNDecimal(oweMoney / 100.00, 2)}元"
             }
             freeParkLiveData.observe(this@CAParkingSpaceActivity) {
-                val strings = arrayOf("剩余免费短停次数：", "${it.remain}次","  查看记录")
+                val strings = arrayOf("剩余免费短停次数：", "${it.remain}次", "  查看记录")
                 binding.tvFreePark.text = AppUtil.getSpan(strings, sizes2, colors3)
             }
             payonspotLiveData.observe(this@CAParkingSpaceActivity) {

@@ -46,18 +46,18 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_transactionQuery -> {
-                if (Constant.APP_ID.isEmpty()) {
-                    ARouter.getInstance().build(ARouterMap.TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                } else {
+                if (Constant.IS_CA) {
                     ARouter.getInstance().build(ARouterMap.CA_TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                } else {
+                    ARouter.getInstance().build(ARouterMap.TRANSACTION_QUERY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
 
             R.id.rfl_debtCollect -> {
-                if (Constant.APP_ID.isEmpty()) {
-                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                }else{
+                if (Constant.IS_CA) {
                     ARouter.getInstance().build(ARouterMap.CA_DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }else{
+                    ARouter.getInstance().build(ARouterMap.DEBT_COLLECTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
 
@@ -66,10 +66,10 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
             }
 
             R.id.rfl_collectionManagement -> {
-                if (Constant.APP_ID.isEmpty()) {
-                    ARouter.getInstance().build(ARouterMap.URGE_LIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                }else{
+                if (Constant.IS_CA) {
                     ARouter.getInstance().build(ARouterMap.CA_URGE_LIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
+                }else{
+                    ARouter.getInstance().build(ARouterMap.URGE_LIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
                 }
             }
         }

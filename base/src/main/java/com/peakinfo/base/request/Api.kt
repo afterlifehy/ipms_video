@@ -4,6 +4,7 @@ import com.peakinfo.base.bean.*
 import com.peakinfo.base.bean.ca.DebtBean
 import com.peakinfo.base.bean.ca.FeeInfoBean
 import com.peakinfo.base.bean.ca.FreeParkBean
+import com.peakinfo.base.bean.ca.FreeParkDetailBean
 import com.peakinfo.base.bean.ca.LoginInfoBean
 import com.peakinfo.base.bean.ca.OweMoneyBean
 import com.peakinfo.base.bean.ca.OwemoneyInfoBean
@@ -437,10 +438,18 @@ interface Api {
     suspend fun uploadFileForApp(@Body param: @JvmSuppressWildcards Map<String, Any?>): HttpWrapper2<UploadImageBean>
 
     /**
-     * 催缴告知书二维码
+     * 免费停车额度查询
      */
     @POST("freepark")
     suspend fun freePark(
         @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
     ): HttpWrapper2<FreeParkBean>
+
+    /**
+     * 免费停车记录查询
+     */
+    @POST("freepark/detail")
+    suspend fun freeParkDetail(
+        @Body param: @JvmSuppressWildcards Map<String, Any?>, @QueryMap options: @JvmSuppressWildcards Map<String, String>
+    ): HttpWrapper2<List<FreeParkDetailBean>>
 }

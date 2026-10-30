@@ -39,22 +39,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/dp_15"
-                android:layout_toStartOf="@+id/tv_amount"
                 android:layout_toEndOf="@+id/tv_num"
                 android:textColor="@color/color_ff1a1a1a"
                 android:textSize="@dimen/sp_20"
                 android:textStyle="bold"
                 tools:text="沪FHF227" />
 
-            <TextView
-                android:id="@+id/tv_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/color_ffe92404"
-                android:textSize="@dimen/sp_20"
-                tools:text="应付:15.00元" />
         </RelativeLayout>
 
         <LinearLayout

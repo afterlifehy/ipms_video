@@ -45,10 +45,10 @@ class HeartbeatService : Service() {
                         cancel()
                         stopSelf()
                     } else {
-                        if (Constant.APP_ID.isEmpty()) {
-
-                        } else {
+                        if (Constant.IS_CA) {
                             sendHeartbeat()
+                        } else {
+
                         }
                         locationUpload()
                     }

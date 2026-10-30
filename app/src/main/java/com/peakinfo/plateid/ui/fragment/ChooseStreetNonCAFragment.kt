@@ -75,7 +75,6 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
         binding.rvStreet.layoutManager = LinearLayoutManager(requireContext())
         streetChoosedAdapter = StreetChoosedAdapter(streetChoosedList, this)
         binding.rvStreet.adapter = streetChoosedAdapter
-        Constant.IS_CA = false
     }
 
     override fun initListener() {
@@ -102,14 +101,15 @@ class ChooseStreetNonCAFragment : VbBaseFragment<ChooseStreetNonCAViewModel, Fra
             R.id.rtv_enterWorkBench -> {
                 if (streetChoosedList.isNotEmpty()) {
                     val firstStreet = streetChoosedList.distinct()[0]
-//                    Constant.APP_ID = firstStreet.appId
-//                    Constant.PASSWORD = firstStreet.password
-                    Constant.APP_ID = "736b1f6c8cfe4b2881ef8c494ef6e54f"
-                    Constant.PASSWORD = "FHSqLmwQOX66MBtneD4YESPi1O46TF"
+                    Constant.APP_ID = firstStreet.appId
+                    Constant.PASSWORD = firstStreet.password
+//                    Constant.APP_ID = "736b1f6c8cfe4b2881ef8c494ef6e54f"
+//                    Constant.PASSWORD = "FHSqLmwQOX66MBtneD4YESPi1O46TF"
                 } else {
                     Constant.APP_ID = ""
                     Constant.PASSWORD = ""
                 }
+                Constant.IS_CA = false
                 login()
             }
 

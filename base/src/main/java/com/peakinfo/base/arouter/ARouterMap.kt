@@ -105,6 +105,7 @@ object ARouterMap {
 
     const val CA_FREE_PARK_RECORD = "/ipms_app/caFreeParkRecord"
     const val FREE_PARK_CARLICENSE = "carLicense"
+    const val FREE_PARK_BUSINESS_ID = "businessId"
     const val FREE_PARK_CAR_COLOR = "carColor"
 
     class common {
