@@ -183,6 +183,7 @@ class CAUrgeDetailActivity : VbBaseActivity<CAUrgeDetailViewModel, ActivityUrgeD
                 mViewModel.consumeUrgePay(param)
             }
             consumeUrgePayLiveData.observe(this@CAUrgeDetailActivity) {
+                dismissProgressDialog()
                 urgePayNotice(it.qrCode, it.userId ?: "")
                 paymentQrDialog =
                     PaymentQrDialog(

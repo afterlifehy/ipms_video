@@ -128,6 +128,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         param["dataTime"] = System.currentTimeMillis()
         mViewModel.freePark(param)
     }
+
     fun requestParkingSpaceFee() {
         val param = HashMap<String, Any>()
         val jsonobject = JSONObject()

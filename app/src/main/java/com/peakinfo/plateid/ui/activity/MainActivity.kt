@@ -39,6 +39,7 @@ import com.peakinfo.common.util.BluePrint
 import com.peakinfo.plateid.R
 import com.peakinfo.plateid.ca.ui.activity.CALogoutActivity
 import com.peakinfo.plateid.ca.ui.activity.CAParkingLotActivity
+import com.peakinfo.plateid.ca.ui.activity.CAUrgeListActivity
 import com.peakinfo.plateid.databinding.ActivityMainBinding
 import com.peakinfo.plateid.mvvm.viewmodel.MainViewModel
 import com.peakinfo.plateid.pop.StreetPop
@@ -48,6 +49,7 @@ import com.peakinfo.plateid.ui.activity.login.LoginActivity
 import com.peakinfo.plateid.ui.activity.mine.LogoutActivity
 import com.peakinfo.plateid.ui.activity.mine.MineActivity
 import com.peakinfo.plateid.ui.activity.order.OrderMainActivity
+import com.peakinfo.plateid.ui.activity.order.UrgeListActivity
 import com.peakinfo.plateid.ui.activity.parking.ParkingLotActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
 import kotlinx.coroutines.runBlocking
@@ -87,6 +89,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
         binding.flOrder.setOnClickListener(this)
         binding.flBerthAbnormal.setOnClickListener(this)
         binding.flLogout.setOnClickListener(this)
+        binding.flUrge.setOnClickListener(this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -297,6 +300,17 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 startActivity(intent)
             }
 
+            R.id.fl_urge -> {
+                ToastUtil.showBottomToast("功能开发中，敬请期待")
+//                if (Constant.IS_CA) {
+//                    val intent = Intent(this@MainActivity, CAUrgeListActivity::class.java)
+//                    startActivity(intent)
+//                } else {
+//                    val intent = Intent(this@MainActivity, UrgeListActivity::class.java)
+//                    startActivity(intent)
+//                }
+            }
+
             R.id.fl_berthAbnormal -> {
                 val intent = Intent(this@MainActivity, BerthAbnormalActivity::class.java)
                 startActivity(intent)
@@ -306,7 +320,7 @@ class MainActivity : VbBaseActivity<MainViewModel, ActivityMainBinding>(), OnCli
                 if (Constant.IS_CA) {
                     val intent = Intent(this@MainActivity, CALogoutActivity::class.java)
                     startActivity(intent)
-                }else{
+                } else {
                     val intent = Intent(this@MainActivity, LogoutActivity::class.java)
                     startActivity(intent)
                 }

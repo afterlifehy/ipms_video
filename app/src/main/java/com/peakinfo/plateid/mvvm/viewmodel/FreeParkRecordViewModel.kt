@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.peakinfo.base.base.mvvm.BaseViewModel
 import com.peakinfo.base.base.mvvm.ErrorMessage
 import com.peakinfo.base.base.mvvm.repository.OrderRepository
-import com.peakinfo.base.bean.ca.FreeParkBean
 import com.peakinfo.base.bean.ca.FreeParkDetailBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

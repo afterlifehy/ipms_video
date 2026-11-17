@@ -33,7 +33,6 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
         binding.rflTransactionQuery.setOnClickListener(this)
         binding.rflDebtCollect.setOnClickListener(this)
         binding.rflOrderInquiry.setOnClickListener(this)
-        binding.rflCollectionManagement.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -65,13 +64,6 @@ class OrderMainActivity : VbBaseActivity<OrderMainViewmodel, ActivityOrderMainBi
                 ARouter.getInstance().build(ARouterMap.ORDER_INQUIRY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
             }
 
-            R.id.rfl_collectionManagement -> {
-                if (Constant.IS_CA) {
-                    ARouter.getInstance().build(ARouterMap.CA_URGE_LIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                }else{
-                    ARouter.getInstance().build(ARouterMap.URGE_LIST).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).navigation()
-                }
-            }
         }
     }
 

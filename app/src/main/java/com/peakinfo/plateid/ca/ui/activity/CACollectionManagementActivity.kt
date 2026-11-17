@@ -106,6 +106,10 @@ class CACollectionManagementActivity : VbBaseActivity<CollectionManagementViewMo
             }
 
             R.id.rfl_submit -> {
+                if (pic1Base64.isEmpty() || pic2Base64.isEmpty()) {
+                    ToastUtil.showBottomToast("请上传图片")
+                    return
+                }
                 submit()
             }
 

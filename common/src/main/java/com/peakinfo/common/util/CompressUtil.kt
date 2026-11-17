@@ -39,7 +39,7 @@ object CompressUtil {
             exactBitmap.compress(Bitmap.CompressFormat.JPEG, mid, outputStream)
             val sizeKb = outputStream.size() / 1024
 
-            if (sizeKb <= maxFileSizeKb * 0.5) {
+            if (sizeKb <= maxFileSizeKb * 0.2) {
                 // 当前质量满足要求，尝试更高画质
                 bestQuality = mid
                 low = mid + 1
