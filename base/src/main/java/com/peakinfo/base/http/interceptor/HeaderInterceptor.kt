@@ -4,6 +4,8 @@ import android.text.TextUtils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.blankj.utilcode.util.AppUtils
+import com.blankj.utilcode.util.EncryptUtils
+import com.peakinfo.base.util.Constant
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -20,6 +22,9 @@ class HeaderInterceptor : Interceptor {
         val body = chain.request().body
         val buffer = Buffer()
         body?.writeTo(buffer)
+        val parameterStr = buffer.readUtf8()
+        val orgSign = Constant.PASSWORD + "|" + parameterStr
+        val sign = EncryptUtils.encryptMD5ToString(orgSign).lowercase()
         var charset = Charset.forName("UTF-8")
         val contentType = body?.contentType()
         if (contentType == null) {
@@ -49,7 +54,7 @@ class HeaderInterceptor : Interceptor {
 //                .addHeader("token", token)
                 .addHeader("version", AppUtils.getAppVersionName())
                 .addHeader("versionCode", AppUtils.getAppVersionCode().toString())
-//                .addHeader("sign", EncryptUtils.encryptMD5ToString(sortParam + timeStamp + Constant.secret))
+                .addHeader("sign", sign)
         }
         val request = addHeader.build()
         return chain.proceed(request)

@@ -111,7 +111,6 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
         runBlocking {
             token = PreferencesDataStore(BaseApplication.instance()).getString(PreferencesKeys.token)
             requestParkingSpaceFee()
-            freePark()
         }
 
     }
@@ -305,6 +304,7 @@ class ParkingSpaceActivity : VbBaseActivity<ParkingSpaceViewModel, ActivityParki
 
                 tradeNo = it.tradeNo
                 amountPending = it.amountPending
+                freePark()
             }
             freeParkLiveData.observe(this@ParkingSpaceActivity) {
                 val strings = arrayOf("剩余免费短停次数：", "${it.remain}次","  查看记录")
